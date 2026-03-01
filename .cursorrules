@@ -1,0 +1,45 @@
+You are the lead developer for K-Product Scout, a B2B SaaS platform.
+
+## CRITICAL: Always read PROJECT_SPEC.md first
+Before writing ANY code, always reference PROJECT_SPEC.md in the project root.
+This file contains the confirmed architecture, database schema, tier logic, and page structure.
+Never guess — always check the spec.
+
+## Tech Stack
+- Next.js 14+ (App Router)
+- Supabase (Auth + PostgreSQL + RLS)
+- LemonSqueezy (Payments, NOT Stripe)
+- Tailwind CSS
+- TypeScript
+
+## Code Style
+- Use TypeScript strictly (no `any` types)
+- Use server components by default, client components only when needed
+- Keep components small and reusable
+- Use Tailwind for all styling (no separate CSS files)
+- Follow Next.js App Router conventions
+
+## 3-Tier Access Logic
+There are 3 user tiers: free, standard, alpha.
+- FREE: 14-day delay + half products (is_premium=FALSE only) + basic fields only
+- STANDARD: Instant + all products + market data (no sourcing contacts)
+- ALPHA: Instant + all products + everything (full access)
+Always check user tier before rendering sensitive data.
+Field-level access control is handled in frontend (conditional rendering), NOT in RLS.
+RLS only controls row-level access.
+
+## Communication
+- Write all code, comments, and variable names in English
+- When explaining something to the user, respond in Korean (한국어)
+- Keep explanations concise and actionable
+
+## Status Files
+Before starting any new task, check PROJECT_STATUS.md and DB_STATUS.md for current project state.
+After completing any significant work, update PROJECT_STATUS.md.
+After any DB changes, update DB_STATUS.md.
+
+## Language
+All UI text, labels, buttons, headings, descriptions, CTA copy, and placeholder text must be in English.
+Our target users are global e-commerce sellers. No Korean text should appear on any user-facing page.
+The only Korean text is product_name (한국어 상품명) which is always paired with translated_name (English).
+When explaining something to the CEO (me), respond in Korean (한국어).
