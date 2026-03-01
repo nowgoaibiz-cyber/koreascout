@@ -34,23 +34,23 @@ export default async function WeeklyHubPage() {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-[#030303] text-white pt-[72px] px-4 py-12">
-        <div className="max-w-2xl mx-auto text-center">
-          <p className="text-red-400">Failed to load weeks.</p>
-          <Link href="/" className="text-indigo-400 hover:text-indigo-300 text-sm font-medium mt-4 inline-block">← Back to home</Link>
+      <div className="min-h-screen bg-[#F8F7F4] pt-[72px] px-4 py-12">
+        <div className="max-w-4xl mx-auto text-center">
+          <p className="text-[#DC2626]">Failed to load weeks.</p>
+          <Link href="/" className="text-[#16A34A] hover:text-[#15803D] text-sm font-medium mt-4 inline-block">← Back to home</Link>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-[#030303] text-white pt-[72px] px-4 py-12">
-      <div className="max-w-2xl mx-auto">
-        <h1 className="font-[family-name:var(--font-syne)] text-2xl font-bold text-white mb-2">Weekly Reports</h1>
-        <p className="text-white/60 mb-8">Week-by-week product intelligence. Open a week to see products.</p>
+    <div className="min-h-screen bg-[#F8F7F4] pt-[72px]">
+      <div className="max-w-4xl mx-auto px-6 py-8">
+        <h1 className="text-2xl font-bold text-[#1A1916] mb-2">Weekly Reports</h1>
+        <p className="text-sm text-[#6B6860] mb-8">Week-by-week product intelligence. Open a week to see products.</p>
 
         {!weeks?.length ? (
-          <p className="text-white/50">No reports published yet. Check back soon.</p>
+          <p className="text-[#9E9C98]">No reports published yet. Check back soon.</p>
         ) : (
           <ul className="space-y-4">
             {weeks.map((week) => {
@@ -61,39 +61,39 @@ export default async function WeeklyHubPage() {
               return (
                 <li key={week.week_id}>
                   <div
-                    className={`rounded-xl border p-5 transition-colors ${
+                    className={`rounded-2xl border p-6 transition-colors ${
                       lockedForFree
-                        ? "border-white/10 bg-white/[0.02]"
-                        : "border-white/10 bg-[var(--bg-card)] hover:border-white/20"
+                        ? "border-[#E8E6E1] bg-[#F8F7F4] opacity-60"
+                        : "border-[#E8E6E1] bg-white shadow-[0_1px_3px_0_rgb(26_25_22/0.06)] hover:border-[#BBF7D0] cursor-pointer"
                     }`}
                   >
                     <div className="flex flex-col gap-1">
                       <div className="flex items-center justify-between gap-2">
-                        <span className="font-semibold text-white">
+                        <span className="text-lg font-semibold text-[#1A1916]">
                           {week.week_label}
                         </span>
                         {lockedForFree && (
-                          <span className="rounded bg-amber-500/20 px-2 py-0.5 text-xs font-medium text-amber-400">
+                          <span className="text-xs text-[#9E9C98] flex items-center gap-1">
                             🔒 Available {availableDate}
                           </span>
                         )}
                       </div>
-                      <p className="text-sm text-white/50">
+                      <p className="text-sm text-[#6B6860]">
                         {week.product_count} product{week.product_count !== 1 ? "s" : ""}
                         {availableForFree && !isPaid && " · Free access"}
                         {availableForFree && isPaid && " · Just released"}
                         {lockedForFree && availableDate && ` · Unlocks ${availableDate}`}
                       </p>
                       {week.summary && (
-                        <p className="text-sm text-white/70 mt-1">{week.summary}</p>
+                        <p className="text-sm text-[#3D3B36] mt-1">{week.summary}</p>
                       )}
                     </div>
                     {lockedForFree ? (
-                      <p className="mt-3 text-sm text-white/40">Open this week after {availableDate}.</p>
+                      <p className="mt-3 text-xs text-[#9E9C98]">Open this week after {availableDate}.</p>
                     ) : (
                       <Link
                         href={`/weekly/${week.week_id}`}
-                        className="mt-4 inline-block text-sm font-medium text-indigo-400 hover:text-indigo-300"
+                        className="mt-4 inline-block text-sm font-medium text-[#16A34A]"
                       >
                         View products →
                       </Link>
@@ -105,7 +105,7 @@ export default async function WeeklyHubPage() {
           </ul>
         )}
 
-        <Link href="/" className="mt-8 inline-block text-sm font-medium text-white/60 hover:text-white">← Back to home</Link>
+        <Link href="/" className="mt-8 inline-block text-sm font-medium text-[#9E9C98] hover:text-[#1A1916] transition-colors">← Back to home</Link>
       </div>
     </div>
   );

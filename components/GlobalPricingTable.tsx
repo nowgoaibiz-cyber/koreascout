@@ -88,10 +88,10 @@ export function GlobalPricingTable({ prices, tier, isTeaser, sourcingTip }: Glob
         <table className="min-w-full text-sm">
           <thead className="bg-white/[0.03]">
             <tr className="text-left">
-              <th className="px-3 py-2 text-xs font-semibold uppercase tracking-wider text-white/60">Country</th>
-              <th className="px-3 py-2 text-xs font-semibold uppercase tracking-wider text-white/60">Platform</th>
-              <th className="px-3 py-2 text-xs font-semibold uppercase tracking-wider text-white/60">Price</th>
-              <th className="px-3 py-2 text-xs font-semibold uppercase tracking-wider text-white/60">Link</th>
+              <th className="px-3 py-2 text-xs font-semibold uppercase tracking-widest text-white/60">Country</th>
+              <th className="px-3 py-2 text-xs font-semibold uppercase tracking-widest text-white/60">Platform</th>
+              <th className="px-3 py-2 text-xs font-semibold uppercase tracking-widest text-white/60">Price</th>
+              <th className="px-3 py-2 text-xs font-semibold uppercase tracking-widest text-white/60">Link</th>
             </tr>
           </thead>
           <tbody>
@@ -106,7 +106,7 @@ export function GlobalPricingTable({ prices, tier, isTeaser, sourcingTip }: Glob
                 <td className="px-3 py-2 whitespace-nowrap text-white/80">
                   {row.platform || <span className="text-white/30">—</span>}
                 </td>
-                <td className="px-3 py-2 whitespace-nowrap text-white/80">
+                <td className="px-3 py-2 whitespace-nowrap text-white/80 font-mono">
                   {!isZeroOrNoPrice(row.price_original) ? (
                     row.price_original
                   ) : (
@@ -125,7 +125,7 @@ export function GlobalPricingTable({ prices, tier, isTeaser, sourcingTip }: Glob
                         🔗 Visit →
                       </a>
                     ) : (
-                      <span className="blur-sm text-gray-500 select-none inline-block">🔒 ██████</span>
+                      <span className="blur-sm text-[#9E9C98] select-none inline-block">🔒 ██████</span>
                     )
                   ) : (
                     <span className="text-white/30 text-xs">—</span>

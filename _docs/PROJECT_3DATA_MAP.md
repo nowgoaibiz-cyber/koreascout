@@ -1,7 +1,7 @@
 # K-Product Scout — 상세 페이지 데이터 매핑 (v1.3)
 
 > **대상:** 상품 상세 페이지 대공사 — 9개 섹션 ↔ DB 필드 매핑  
-> **기준:** PROJECT_1SPEC.md v1.2 + v1.3 신규 컬럼(28개)  
+> **기준:** 01_CORE_SPEC.md v1.2 + v1.3 신규 컬럼(28개)  
 > **용도:** 각 섹션별 컴포넌트 코딩 시 참조
 
 ---
@@ -156,7 +156,7 @@
   - Section 6–8: Alpha (또는 is_teaser)  
   - Section 9: 공통, CTA만 Tier별 분기  
 
-이 문서는 `PROJECT_1SPEC.md` 및 실제 마이그레이션과 함께 사용하며, v1.3 마이그레이션 확정 시 필드 목록을 최종 갱신한다.
+이 문서는 `01_CORE_SPEC.md` 및 실제 마이그레이션과 함께 사용하며, v1.3 마이그레이션 확정 시 필드 목록을 최종 갱신한다.
 
 ---
 
@@ -164,7 +164,7 @@
 
 ### 5-1. 전제
 
-- **PROJECT_1SPEC.md:** v1.2 기준. DB 변경 규칙(ADD 자유, ALTER/DROP CEO 컨펌), Tier 매트릭스, RLS, 상세 페이지 섹션(1–7 + Paywall 문구) 확정.
+- **01_CORE_SPEC.md:** v1.2 기준. DB 변경 규칙(ADD 자유, ALTER/DROP CEO 컨펌), Tier 매트릭스, RLS, 상세 페이지 섹션(1–7 + Paywall 문구) 확정.
 - **PROJECT_3DATA_MAP.md:** 9개 섹션(Product Identity ~ Media Vault, + Navigation) 및 Tier별 노출·URL 잠금 규칙, v1.3 신규 컬럼(28개) 인식·매핑 준비.
 
 ### 5-2. DB / 타입

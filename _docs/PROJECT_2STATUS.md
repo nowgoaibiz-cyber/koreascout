@@ -16,13 +16,19 @@ K-ProductScout/
 ├── .env.local
 ├── .env.local.example
 ├── .gitignore
-├── DB_STATUS.md
-├── PROJECT_1SPEC.md
-├── PROJECT_2DB_STATUS.md
-├── PROJECT_2STATUS.md
-├── PROJECT_SPEC.md
-├── PROJECT_STATUS.md
 ├── README.md
+├── _docs/
+│   ├── 01_CORE_SPEC.md
+│   ├── 02_DESIGN_SYSTEM.md
+│   ├── 03_AUDIT_PROJECT_STATE.md
+│   ├── 04_AUDIT_DARK_REMNANTS.md
+│   ├── PROJECT_2DB_STATUS.md
+│   ├── PROJECT_2STATUS.md
+│   ├── PROJECT_3DATA_MAP.md
+│   ├── PROJECT_4UI_STRATEGY.md
+│   ├── PROJECT_CURRENT_DESIGN.md
+│   ├── SECTION_5_EXPORT_LOGISTICS_DATA_REPORT.md
+│   └── SECTION_6_MEDIA_VAULT_DIAGNOSTIC.md
 ├── eslint.config.mjs
 ├── middleware.ts
 ├── next-env.d.ts
@@ -264,4 +270,4 @@ K-ProductScout/
 
 ---
 
-이 문서는 `PROJECT_1SPEC.md`, `PROJECT_2DB_STATUS.md`와 함께 사용하면 현재 구현 범위와 결제·웹훅 상태를 한눈에 맞출 수 있습니다.
+이 문서는 `01_CORE_SPEC.md`, `PROJECT_2DB_STATUS.md`와 함께 사용하면 현재 구현 범위와 결제·웹훅 상태를 한눈에 맞출 수 있습니다.

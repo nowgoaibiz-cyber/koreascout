@@ -199,7 +199,7 @@ ORDER BY created_at DESC LIMIT 3;
 | weeks | 예: week_id, week_label, status |
 | scout_final_reports | 예: id, product_name, week_id, status |
 
-※ Phase 2 이후 시드 데이터는 PROJECT_SPEC §14, DB_STATUS “Next Steps”에 따라 `weeks` 1행 + `scout_final_reports` 5~10행 정도 넣어서 테스트하는 것을 권장.
+※ Phase 2 이후 시드 데이터는 01_CORE_SPEC.md §14, DB_STATUS “Next Steps”에 따라 `weeks` 1행 + `scout_final_reports` 5~10행 정도 넣어서 테스트하는 것을 권장.
 
 ---
 
@@ -225,7 +225,7 @@ ORDER BY tablename, indexname;
 
 ---
 
-## 7. PROJECT_SPEC.md Section 7와의 비교
+## 7. 01_CORE_SPEC.md Section 7와의 비교
 
 - **테이블 구조:** `profiles`, `weeks`, `scout_final_reports` 구성·컬럼·타입·기본값이 설계서 §7과 일치함.
 - **트리거:**  
@@ -274,4 +274,4 @@ SELECT schemaname, relname, n_live_tup FROM pg_stat_user_tables WHERE schemaname
 
 ---
 
-이 문서는 `PROJECT_SPEC.md` §7, `PROJECT_STATUS.md`와 함께 사용하면 DB 현재 상태와 스펙 차이를 빠르게 맞출 수 있습니다.
+이 문서는 `01_CORE_SPEC.md` §7, `PROJECT_2STATUS.md`와 함께 사용하면 DB 현재 상태와 스펙 차이를 빠르게 맞출 수 있습니다.

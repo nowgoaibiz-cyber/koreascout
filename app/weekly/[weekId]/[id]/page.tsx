@@ -251,7 +251,7 @@ function ProductIdentity({ report }: { report: ScoutFinalReportsRow }) {
               {report.estimated_cost_usd && (
                 <>
                   <div className="mt-1 flex items-baseline gap-2 flex-wrap">
-                    <span className="text-xs font-medium text-[#9E9C98] uppercase tracking-wider">Est. Wholesale</span>
+                    <span className="text-xs font-medium text-[#9E9C98] uppercase tracking-widest">Est. Wholesale</span>
                     <span className="text-lg font-mono font-semibold text-[#16A34A]">~${report.estimated_cost_usd}</span>
                     <span className="inline-flex items-center gap-1 text-xs text-[#6B6860]">
                       <AlertTriangle className="w-3 h-3 text-[#D97706] shrink-0" />
@@ -268,7 +268,7 @@ function ProductIdentity({ report }: { report: ScoutFinalReportsRow }) {
           )}
           {report.viability_reason && (
             <div className="mt-4 bg-[#F8F7F4] rounded-xl border-l-4 border-l-[#16A34A] border border-[#E8E6E1] p-4">
-              <p className="text-xs font-semibold text-[#16A34A] uppercase tracking-wider mb-1">Why It&apos;s Trending</p>
+              <p className="text-xs font-semibold text-[#16A34A] uppercase tracking-widest mb-1">Why It&apos;s Trending</p>
               <p className="text-sm text-[#3D3B36] leading-relaxed">
                 {report.viability_reason}
               </p>
@@ -304,7 +304,7 @@ function TrendSignalDashboard({ report }: { report: ScoutFinalReportsRow }) {
       <h2 className="font-[family-name:var(--font-syne)] text-lg font-bold text-[#1A1916] mb-4">Trend Signal Dashboard</h2>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="bg-[#F8F7F4] rounded-xl border border-[#E8E6E1] p-5 flex flex-col items-center gap-3">
-          <p className="text-xs uppercase tracking-wider text-[#6B6860] font-semibold">Market Score</p>
+          <p className="text-xs uppercase tracking-widest text-[#6B6860] font-semibold">Market Score</p>
           <DonutGauge value={score} size={120} strokeWidth={10} />
           <p className="text-2xl font-bold font-mono text-[#1A1916]">{score}</p>
           <p className="text-xs text-[#6B6860] text-center leading-relaxed">
@@ -312,14 +312,14 @@ function TrendSignalDashboard({ report }: { report: ScoutFinalReportsRow }) {
           </p>
         </div>
         <div className="bg-[#F8F7F4] rounded-xl border border-[#E8E6E1] p-5 flex flex-col items-center justify-center gap-3">
-          <p className="text-xs uppercase tracking-wider text-[#6B6860] font-semibold">Competition Level</p>
+          <p className="text-xs uppercase tracking-widest text-[#6B6860] font-semibold">Competition Level</p>
           <Badge variant={competitionVariant(competitionLevel)}>{competitionLevel}</Badge>
           <p className="text-xs text-[#6B6860] text-center leading-relaxed">
             How crowded this niche is on global marketplaces
           </p>
         </div>
         <div className="bg-[#F8F7F4] rounded-xl border border-[#E8E6E1] p-5 flex flex-col items-center justify-center gap-3">
-          <p className="text-xs uppercase tracking-wider text-[#6B6860] font-semibold">Opportunity Status</p>
+          <p className="text-xs uppercase tracking-widest text-[#6B6860] font-semibold">Opportunity Status</p>
           <Badge variant={opportunityVariant(gapStatus)}>{gapStatus}</Badge>
           <p className="text-xs text-[#6B6860] text-center leading-relaxed">
             Gap between Korean buzz and global availability
@@ -467,7 +467,7 @@ function MarketIntelligence({
 
       {hasProfitBlock && (
         <>
-          <p className="text-xs font-medium text-[#9E9C98] uppercase tracking-wider mb-3">Profit Potential</p>
+          <p className="text-xs font-medium text-[#9E9C98] uppercase tracking-widest mb-3">Profit Potential</p>
           {(krPrice && usPrice) && (
             <div className="mb-4">
               <PriceComparisonBar krPrice={krPrice} usPrice={usPrice} />
@@ -487,7 +487,7 @@ function MarketIntelligence({
       {/* Global Retail Evidence */}
       {(report.global_price || report.global_prices || report.kr_price) && (
         <div className="mt-4">
-          <p className="text-xs font-semibold text-[#9E9C98] uppercase tracking-wider mb-2">
+          <p className="text-xs font-semibold text-[#9E9C98] uppercase tracking-widest mb-2">
             Global Retail Evidence
           </p>
 
@@ -533,7 +533,7 @@ function MarketIntelligence({
             const visibleCountClass = "grid-cols-2 sm:grid-cols-3 md:grid-cols-5";
             return (
               <div className="mt-4">
-                <p className="text-xs font-semibold text-[#9E9C98] uppercase tracking-wider mb-2">Global Retail Prices</p>
+                <p className="text-xs font-semibold text-[#9E9C98] uppercase tracking-widest mb-2">Global Retail Prices</p>
                 <div className={`grid gap-3 ${visibleCountClass}`}>
                   {rows.map((row, i) =>
                     row.isBlueOcean ? (
@@ -565,7 +565,7 @@ function MarketIntelligence({
 
       {hasSearchGrowth && (
         <>
-          <p className="text-xs uppercase tracking-wider text-[#9E9C98] font-semibold mt-6 mb-3">Search & Growth</p>
+          <p className="text-xs uppercase tracking-widest text-[#9E9C98] font-semibold mt-6 mb-3">Search & Growth</p>
           <div className={`grid grid-cols-1 ${searchGrowthGridCols} gap-3`}>
             {report.search_volume?.trim() && (
               <div className="w-full rounded-xl border border-[#E8E6E1] bg-[#F8F7F4] p-3 text-center">
@@ -599,7 +599,7 @@ function MarketIntelligence({
       <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-3">
         {report.top_selling_point?.trim() && (
           <div className="bg-[#DCFCE7] rounded-xl border border-[#BBF7D0] p-4">
-            <p className="text-xs font-semibold text-[#16A34A] uppercase tracking-wider mb-1 inline-flex items-center gap-1.5">
+            <p className="text-xs font-semibold text-[#16A34A] uppercase tracking-widest mb-1 inline-flex items-center gap-1.5">
               <TrendingUp className="w-4 h-4" />
               Winning Feature
             </p>
@@ -608,7 +608,7 @@ function MarketIntelligence({
         )}
         {report.common_pain_point?.trim() && (
           <div className="bg-[#FEE2E2] rounded-xl border border-[#FECACA] p-4">
-            <p className="text-xs font-semibold text-[#DC2626] uppercase tracking-wider mb-1 inline-flex items-center gap-1.5">
+            <p className="text-xs font-semibold text-[#DC2626] uppercase tracking-widest mb-1 inline-flex items-center gap-1.5">
               <AlertTriangle className="w-4 h-4" />
               Consumer Pain Point
             </p>
@@ -647,7 +647,7 @@ function SocialProofTrendIntelligence({
       {/* Block 1 — Social Buzz */}
       {report.buzz_summary?.trim() && (
         <div className="bg-[#F8F7F4] rounded-xl border-l-4 border-l-[#16A34A] border border-[#E8E6E1] p-4">
-          <p className="text-xs font-semibold text-[#16A34A] uppercase tracking-wider mb-2">Social Buzz</p>
+          <p className="text-xs font-semibold text-[#16A34A] uppercase tracking-widest mb-2">Social Buzz</p>
           <p className="text-sm text-[#3D3B36] leading-relaxed italic">
             &quot;{report.buzz_summary}&quot;
           </p>
@@ -656,7 +656,7 @@ function SocialProofTrendIntelligence({
 
       {/* Block 2 — Market Gap Analysis */}
       <div className="mt-6">
-        <p className="text-xs font-semibold text-[#9E9C98] uppercase tracking-wider mb-3">Market Gap Analysis</p>
+        <p className="text-xs font-semibold text-[#9E9C98] uppercase tracking-widest mb-3">Market Gap Analysis</p>
 
         <div className="grid grid-cols-2 gap-4">
           <div className="p-4 rounded-xl border border-[#E8E6E1] bg-[#F8F7F4]">
@@ -725,21 +725,21 @@ function SocialProofTrendIntelligence({
 
         return (
           <div className="mt-6">
-            <p className="text-xs font-semibold text-[#9E9C98] uppercase tracking-wider mb-3">Platform Breakdown</p>
+            <p className="text-xs font-semibold text-[#9E9C98] uppercase tracking-widest mb-3">Platform Breakdown</p>
             <div className="grid grid-cols-4 gap-3">
               {platforms.map(({ key, label }) => {
                 const data = platformData[key];
                 const score = data?.score ?? 0;
                 return (
                   <div key={key} className="bg-[#F8F7F4] rounded-xl border border-[#E8E6E1] p-4 flex flex-col items-center gap-2">
-                    <p className="text-xs font-semibold text-[#1A1916] uppercase tracking-wider">{label}</p>
+                    <p className="text-xs font-semibold text-[#1A1916] uppercase tracking-widest">{label}</p>
                     <DonutGauge value={score} size={64} strokeWidth={8} />
                     <p className="text-lg font-bold text-[#1A1916]">{score}</p>
                   </div>
                 );
               })}
               <div className="bg-[#F8F7F4] rounded-xl border border-[#E8E6E1] p-4 flex flex-col items-center justify-center gap-2">
-                <p className="text-xs font-semibold text-[#1A1916] uppercase tracking-wider">Reddit</p>
+                <p className="text-xs font-semibold text-[#1A1916] uppercase tracking-widest">Reddit</p>
                 {reddit?.sentiment ? (
                   <Badge
                     variant={
@@ -776,7 +776,7 @@ function SocialProofTrendIntelligence({
 
         return (
           <div className="mt-6">
-            <p className="text-xs font-semibold text-[#9E9C98] uppercase tracking-wider mb-3">Trending Signals</p>
+            <p className="text-xs font-semibold text-[#9E9C98] uppercase tracking-widest mb-3">Trending Signals</p>
 
             {risingKw.length > 0 && (
               <div className="mb-4">
@@ -848,7 +848,7 @@ function SocialProofTrendIntelligence({
 
         return (
           <div className="mt-6 relative">
-            <p className="text-xs font-semibold text-[#9E9C98] uppercase tracking-wider mb-3">Scout Strategy Report</p>
+            <p className="text-xs font-semibold text-[#9E9C98] uppercase tracking-widest mb-3">Scout Strategy Report</p>
 
             <div
               className={`bg-[#F8F7F4] rounded-xl border border-[#E8E6E1] p-5 space-y-3 ${!canSeeAlpha ? "blur-md select-none pointer-events-none" : ""}`}
@@ -899,7 +899,7 @@ function SourcingIntel({
 
       {/* Block 1: Export Readiness */}
       <div className="mb-6">
-        <p className="text-xs font-semibold text-[#9E9C98] uppercase tracking-wider mb-2">Export Readiness</p>
+        <p className="text-xs font-semibold text-[#9E9C98] uppercase tracking-widest mb-2">Export Readiness</p>
         <BlurredValue canSee={canSeeAlpha}>
           <div className="p-4 rounded-xl border border-[#E8E6E1] bg-[#F8F7F4]">
             <div className="flex items-center gap-3">
@@ -941,7 +941,7 @@ function SourcingIntel({
 
       {/* Block 2: HS Code & Classification */}
       <div className="mb-6">
-        <p className="text-xs font-semibold text-[#9E9C98] uppercase tracking-wider mb-2">HS Code & Classification</p>
+        <p className="text-xs font-semibold text-[#9E9C98] uppercase tracking-widest mb-2">HS Code & Classification</p>
         <BlurredValue canSee={canSeeAlpha}>
           <div className="p-5 rounded-xl border border-[#E8E6E1] bg-[#F8F7F4]">
             {report.hs_code?.trim() ? (
@@ -985,7 +985,7 @@ function SourcingIntel({
 
       {/* Block 4: Weight & Shipping */}
       <div className="mb-6">
-        <p className="text-xs font-semibold text-[#9E9C98] uppercase tracking-wider mb-2">Weight & Shipping</p>
+        <p className="text-xs font-semibold text-[#9E9C98] uppercase tracking-widest mb-2">Weight & Shipping</p>
         <BlurredValue canSee={canSeeAlpha}>
           <div>
             {(() => {
@@ -998,7 +998,7 @@ function SourcingIntel({
                 <div className="flex flex-col sm:flex-row items-center gap-3 mb-3">
                   {hasActual && (
                     <div className="flex-1 min-w-0 p-4 rounded-xl border border-[#E8E6E1] bg-[#F8F7F4] text-center">
-                      <p className="text-xs text-[#9E9C98] uppercase tracking-wider mb-1">Actual Weight</p>
+                      <p className="text-xs text-[#9E9C98] uppercase tracking-widest mb-1">Actual Weight</p>
                       <p className="text-2xl font-mono font-semibold text-[#1A1916]">{report.actual_weight_g}g</p>
                     </div>
                   )}
@@ -1007,7 +1007,7 @@ function SourcingIntel({
                   )}
                   {hasVol && (
                     <div className="flex-1 min-w-0 p-4 rounded-xl border border-[#E8E6E1] bg-[#F8F7F4] text-center">
-                      <p className="text-xs text-[#9E9C98] uppercase tracking-wider mb-1">Volumetric Weight</p>
+                      <p className="text-xs text-[#9E9C98] uppercase tracking-widest mb-1">Volumetric Weight</p>
                       <p className="text-2xl font-mono font-semibold text-[#1A1916]">{report.volumetric_weight_g}g</p>
                     </div>
                   )}
@@ -1016,7 +1016,7 @@ function SourcingIntel({
                   )}
                   {hasBillable && (
                     <div className="flex-1 min-w-0 p-4 rounded-xl border border-[#BBF7D0] bg-[#DCFCE7] text-center">
-                      <p className="text-xs text-[#9E9C98] uppercase tracking-wider mb-1">Billable Weight</p>
+                      <p className="text-xs text-[#9E9C98] uppercase tracking-widest mb-1">Billable Weight</p>
                       <p className="text-2xl font-mono font-semibold text-[#16A34A]">{report.billable_weight_g}g</p>
                     </div>
                   )}
@@ -1047,7 +1047,7 @@ function SourcingIntel({
 
       {/* Block 5: Hazmat & Compliance */}
       <div className="mb-6">
-        <p className="text-xs font-semibold text-[#9E9C98] uppercase tracking-wider mb-2">Hazmat & Compliance</p>
+        <p className="text-xs font-semibold text-[#9E9C98] uppercase tracking-widest mb-2">Hazmat & Compliance</p>
         <BlurredValue canSee={canSeeAlpha}>
           <div className="p-4 rounded-xl border border-[#E8E6E1] bg-[#F8F7F4] space-y-3">
             <HazmatBadges status={report.hazmat_status as unknown} />
@@ -1074,7 +1074,7 @@ function SourcingIntel({
       {/* Block 6: Product Specs */}
       {(report.composition_info?.trim() || report.spec_summary?.trim()) && (
         <div className="mb-6">
-          <p className="text-xs font-semibold text-[#9E9C98] uppercase tracking-wider mb-2">Product Specs</p>
+          <p className="text-xs font-semibold text-[#9E9C98] uppercase tracking-widest mb-2">Product Specs</p>
           {report.composition_info?.trim() && (
             <p className="text-xs text-[#9E9C98] italic mt-0 mb-2">
               *Ingredients may be truncated. Always verify full INCI list via the provided product image link.
@@ -1099,7 +1099,7 @@ function SourcingIntel({
         if (!notes || /tier/i.test(notes)) return null;
         return (
           <div className="mb-6">
-            <p className="text-xs font-semibold text-[#9E9C98] uppercase tracking-wider mb-2">Shipping Notes</p>
+            <p className="text-xs font-semibold text-[#9E9C98] uppercase tracking-widest mb-2">Shipping Notes</p>
             <BlurredValue canSee={canSeeAlpha}>
               <p className="text-sm text-[#3D3B36] leading-relaxed">{report.shipping_notes}</p>
             </BlurredValue>
@@ -1115,7 +1115,7 @@ function SourcingIntel({
 
         return (
           <div className="mb-6">
-            <p className="text-xs font-semibold text-[#9E9C98] uppercase tracking-wider mb-2">
+            <p className="text-xs font-semibold text-[#9E9C98] uppercase tracking-widest mb-2">
               Compliance & Logistics Strategy
             </p>
             <BlurredValue canSee={canSeeAlpha}>
@@ -1699,7 +1699,7 @@ export default async function ProductDetailPage({
       <div className="flex-1 pl-56">
         <div className="max-w-5xl mx-auto px-6 py-8">
           <div className="space-y-6">
-        <Link href={`/weekly/${weekId}`} className="text-sm font-medium text-white/60 hover:text-white inline-block">← Back to week</Link>
+        <Link href={`/weekly/${weekId}`} className="text-sm font-medium text-[#9E9C98] hover:text-[#1A1916] inline-block">← Back to week</Link>
 
         {isTeaser && (
           <div className="rounded-lg bg-emerald-500/15 border border-emerald-500/30 px-4 py-2 text-sm text-emerald-300">

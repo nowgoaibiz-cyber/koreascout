@@ -110,7 +110,7 @@ export function GlobalPricesHelper({
       <button
         type="button"
         onClick={() => setRawOpen((o) => !o)}
-        className="text-[10px] text-zinc-600 hover:text-zinc-400 w-fit"
+        className="text-xs text-zinc-600 hover:text-zinc-400 w-fit"
       >
         {rawOpen ? "▼ Hide Raw JSON" : "▶ Show Raw JSON"}
       </button>
@@ -119,10 +119,10 @@ export function GlobalPricesHelper({
           readOnly
           value={currentJson}
           rows={6}
-          className="bg-zinc-950 text-zinc-500 text-[10px] font-mono rounded-lg px-3 py-2 border border-zinc-800 resize-none w-full"
+          className="bg-zinc-950 text-zinc-500 text-xs font-mono rounded-lg px-3 py-2 border border-zinc-800 resize-none w-full"
         />
       )}
-      <p className="text-[10px] text-zinc-600 italic">
+      <p className="text-xs text-zinc-600 italic">
         Leave URL empty to show 🔵 Blue Ocean badge on the product page.
       </p>
     </div>

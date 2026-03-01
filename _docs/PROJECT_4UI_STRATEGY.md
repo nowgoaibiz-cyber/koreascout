@@ -2,7 +2,7 @@
 
 > **작성:** 둘째 (Claude) — UI/UX 기획 & 전략 파트너
 > **대상:** 셋째 (Cursor) — 프론트엔드 구현용
-> **참조:** PROJECT_1SPEC.md (v1.2), PROJECT_3DATA_MAP.md (v1.3)
+> **참조:** 01_CORE_SPEC.md (v1.2), PROJECT_3DATA_MAP.md (v1.3)
 > **Date:** 2026-02-27
 
 ---

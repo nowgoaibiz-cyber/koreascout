@@ -124,7 +124,7 @@ export function BrokerEmailDraft({ report }: { report: ScoutFinalReportsRow }) {
           <span className="text-lg font-bold text-emerald-400">Broker Email Draft</span>
           <span className="text-emerald-400/70 shrink-0">{open ? "▲" : "▼"}</span>
         </div>
-        <p className="text-[11px] text-white/40 mt-1">
+        <p className="text-xs text-white/40 mt-1">
           *Includes English drafts for HS Code, Hazmat, and INCI lists for your broker.
         </p>
       </button>

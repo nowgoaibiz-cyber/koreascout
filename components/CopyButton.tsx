@@ -43,7 +43,7 @@ export function CopyButton({ value, variant = "default" }: CopyButtonProps) {
     >
       <span aria-hidden>📋</span>
       <span className="sr-only">Copy</span>
-      {copied && <span className="ml-2 text-[10px] text-emerald-400">Copied!</span>}
+      {copied && <span className="ml-2 text-xs text-emerald-400">Copied!</span>}
     </button>
   );
 }

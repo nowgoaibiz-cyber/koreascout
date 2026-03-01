@@ -49,7 +49,7 @@ export function GoogleSignInButton({ className }: { className?: string }) {
       onClick={handleGoogleSignIn}
       className={
         className ??
-        "w-full flex items-center justify-center gap-3 rounded-xl bg-white text-gray-800 py-3 px-4 text-sm font-medium border border-white/80 hover:bg-gray-100 transition"
+        "w-full flex items-center justify-center gap-3 rounded-xl bg-white text-[#1A1916] py-3 px-4 text-sm font-medium border border-white/80 hover:bg-[#F2F1EE] transition"
       }
     >
       <GoogleLogo />

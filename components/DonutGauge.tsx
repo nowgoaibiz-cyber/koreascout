@@ -60,7 +60,7 @@ export function DonutGauge({
         />
       </svg>
       <div className="absolute inset-0 flex flex-col items-center justify-center">
-        <span className="font-[family-name:var(--font-syne)] text-2xl font-bold tabular-nums text-white">
+        <span className="font-mono text-2xl font-bold tabular-nums text-white">
           {Math.round(clamped)}
         </span>
         <span className="text-xs text-white/50">/100</span>
