@@ -65,17 +65,17 @@ export function HazmatCheckboxes({
   ];
 
   return (
-    <div className="grid grid-cols-2 gap-3">
+    <div className="grid grid-cols-2 gap-3 bg-[#F8F7F4] p-3 rounded-lg">
       {items.map(({ key, icon, label }) => (
         <label
           key={key}
-          className="flex items-center gap-2 cursor-pointer text-sm text-zinc-300"
+          className="flex items-center gap-2 cursor-pointer text-sm text-[#3D3B36]"
         >
           <input
             type="checkbox"
             checked={state[key]}
             onChange={() => toggle(key)}
-            className="appearance-none w-4 h-4 rounded border border-zinc-600 bg-zinc-800 checked:bg-emerald-600 checked:border-emerald-500 focus:border-emerald-500 outline-none"
+            className="appearance-none w-4 h-4 rounded border border-[#E8E6E1] bg-white checked:bg-[#16A34A] checked:border-[#16A34A] focus:border-[#16A34A] outline-none"
           />
           <span>
             {icon} {label}

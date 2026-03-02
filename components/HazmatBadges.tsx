@@ -38,10 +38,10 @@ const ITEMS: Array<{
   trueClass: string;
   falseClass: string;
 }> = [
-  { key: "contains_liquid", label: "Liquid", icon: "💧", trueClass: "bg-blue-600/80 border-blue-500/80 text-white", falseClass: "bg-white/10 border-white/20 text-white/50" },
-  { key: "contains_powder", label: "Powder", icon: "🧪", trueClass: "bg-[#6B6860]/80 border-[#9E9C98]/80 text-white", falseClass: "bg-white/10 border-white/20 text-white/50" },
-  { key: "contains_battery", label: "Battery", icon: "🔋", trueClass: "bg-orange-600/80 border-orange-500/80 text-white", falseClass: "bg-white/10 border-white/20 text-white/50" },
-  { key: "contains_aerosol", label: "Aerosol", icon: "💨", trueClass: "bg-red-600/80 border-red-500/80 text-white", falseClass: "bg-white/10 border-white/20 text-white/50" },
+  { key: "contains_liquid", label: "Liquid", icon: "💧", trueClass: "bg-[#DBEAFE] border-[#BFDBFE] text-[#2563EB]", falseClass: "bg-[#F8F7F4] border-[#E8E6E1] text-[#9E9C98]" },
+  { key: "contains_powder", label: "Powder", icon: "🧪", trueClass: "bg-[#6B6860]/80 border-[#9E9C98]/80 text-white", falseClass: "bg-[#F8F7F4] border-[#E8E6E1] text-[#9E9C98]" },
+  { key: "contains_battery", label: "Battery", icon: "🔋", trueClass: "bg-[#FEF3C7] border-[#FDE68A] text-[#D97706]", falseClass: "bg-[#F8F7F4] border-[#E8E6E1] text-[#9E9C98]" },
+  { key: "contains_aerosol", label: "Aerosol", icon: "💨", trueClass: "bg-[#FEE2E2] border-[#FECACA] text-[#DC2626]", falseClass: "bg-[#F8F7F4] border-[#E8E6E1] text-[#9E9C98]" },
 ];
 
 export function HazmatBadges({ status }: HazmatBadgesProps) {

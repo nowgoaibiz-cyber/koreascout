@@ -1,3 +1,5 @@
+// ORPHAN COMPONENT — not currently imported. Pending CEO decision on removal.
+
 type CountryPrice = {
   platform?: string | null;
   price_original?: string | null;
@@ -74,43 +76,43 @@ export function GlobalPricingTable({ prices, tier, isTeaser, sourcingTip }: Glob
   const canSeeLinks = tier === "alpha" || isTeaser;
 
   return (
-    <section className="rounded-xl border border-white/10 bg-[var(--bg-card)] p-6">
-      <h2 className="font-[family-name:var(--font-syne)] text-lg font-bold text-white mb-3">Global Pricing Matrix</h2>
+    <section className="rounded-xl border border-[#E8E6E1] bg-white p-6">
+      <h2 className="text-lg font-bold text-[#1A1916] mb-3">Global Pricing Matrix</h2>
 
       {sourcingTip?.trim() && (
-        <p className="mb-4 text-sm italic text-white/80 flex items-start gap-2">
+        <p className="mb-4 text-sm italic text-[#3D3B36] flex items-start gap-2">
           <span aria-hidden>💡</span>
           <span>{sourcingTip}</span>
         </p>
       )}
 
-      <div className="overflow-x-auto rounded-lg border border-white/10 bg-black/30">
+      <div className="overflow-x-auto rounded-lg border border-[#E8E6E1] bg-[#F2F1EE]">
         <table className="min-w-full text-sm">
-          <thead className="bg-white/[0.03]">
+          <thead className="bg-[#F8F7F4]">
             <tr className="text-left">
-              <th className="px-3 py-2 text-xs font-semibold uppercase tracking-widest text-white/60">Country</th>
-              <th className="px-3 py-2 text-xs font-semibold uppercase tracking-widest text-white/60">Platform</th>
-              <th className="px-3 py-2 text-xs font-semibold uppercase tracking-widest text-white/60">Price</th>
-              <th className="px-3 py-2 text-xs font-semibold uppercase tracking-widest text-white/60">Link</th>
+              <th className="px-3 py-2 text-xs font-semibold uppercase tracking-widest text-[#6B6860]">Country</th>
+              <th className="px-3 py-2 text-xs font-semibold uppercase tracking-widest text-[#6B6860]">Platform</th>
+              <th className="px-3 py-2 text-xs font-semibold uppercase tracking-widest text-[#6B6860]">Price</th>
+              <th className="px-3 py-2 text-xs font-semibold uppercase tracking-widest text-[#6B6860]">Link</th>
             </tr>
           </thead>
           <tbody>
             {rows.map((row, idx) => (
-              <tr key={row.key} className={idx % 2 === 0 ? "bg-white/[0.01]" : ""}>
-                <td className="px-3 py-2 whitespace-nowrap text-white/80">
+              <tr key={row.key} className={idx % 2 === 0 ? "bg-[#F8F7F4]" : ""}>
+                <td className="px-3 py-2 whitespace-nowrap text-[#3D3B36]">
                   <span className="mr-1" aria-hidden>
                     {row.flag}
                   </span>
                   <span>{row.label}</span>
                 </td>
-                <td className="px-3 py-2 whitespace-nowrap text-white/80">
-                  {row.platform || <span className="text-white/30">—</span>}
+                <td className="px-3 py-2 whitespace-nowrap text-[#3D3B36]">
+                  {row.platform || <span className="text-[#9E9C98]">—</span>}
                 </td>
-                <td className="px-3 py-2 whitespace-nowrap text-white/80 font-mono">
+                <td className="px-3 py-2 whitespace-nowrap text-[#3D3B36] font-mono">
                   {!isZeroOrNoPrice(row.price_original) ? (
                     row.price_original
                   ) : (
-                    <span className="text-white/70" title="Blue Ocean, no sellers found">🔵</span>
+                    <span className="text-[#6B6860]" title="Blue Ocean, no sellers found">🔵</span>
                   )}
                 </td>
                 <td className="px-3 py-2 whitespace-nowrap">
@@ -125,10 +127,10 @@ export function GlobalPricingTable({ prices, tier, isTeaser, sourcingTip }: Glob
                         🔗 Visit →
                       </a>
                     ) : (
-                      <span className="blur-sm text-[#9E9C98] select-none inline-block">🔒 ██████</span>
+                      <span className="text-[#9E9C98] select-none inline-block">🔒 ██████</span>
                     )
                   ) : (
-                    <span className="text-white/30 text-xs">—</span>
+                    <span className="text-[#9E9C98] text-xs">—</span>
                   )}
                 </td>
               </tr>
@@ -136,7 +138,7 @@ export function GlobalPricingTable({ prices, tier, isTeaser, sourcingTip }: Glob
           </tbody>
         </table>
       </div>
-      <p className="mt-2 text-xs text-white/40">
+      <p className="mt-2 text-xs text-[#9E9C98]">
         🔵 = Blue Ocean, no sellers found
       </p>
     </section>

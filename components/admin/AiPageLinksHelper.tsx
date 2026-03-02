@@ -56,13 +56,13 @@ export function AiPageLinksHelper({
   }
 
   const inputClass =
-    "bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-sm text-white focus:border-emerald-500 outline-none flex-1 min-w-0";
+    "bg-white border border-[#E8E6E1] rounded-lg px-3 py-2 text-sm text-[#1A1916] placeholder:text-[#C4C2BE] focus:border-[#16A34A] outline-none flex-1 min-w-0";
 
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-col gap-2 bg-[#F8F7F4] border border-[#E8E6E1] rounded-lg p-3">
       {links.map((link, i) => (
         <div key={i} className="flex items-center gap-2">
-          <span className="text-zinc-500 text-xs w-14">Link {i + 1}:</span>
+          <span className="text-[#9E9C98] text-xs w-14">Link {i + 1}:</span>
           <input
             type="url"
             value={link}
@@ -73,7 +73,7 @@ export function AiPageLinksHelper({
           <button
             type="button"
             onClick={() => removeLink(i)}
-            className="text-zinc-600 hover:text-red-400 p-1 shrink-0"
+            className="text-[#9E9C98] hover:text-[#DC2626] p-1 shrink-0"
             aria-label="Remove"
           >
             🗑
@@ -84,7 +84,7 @@ export function AiPageLinksHelper({
         <button
           type="button"
           onClick={addLink}
-          className="text-xs text-emerald-400 hover:text-emerald-300 w-fit"
+          className="text-xs text-[#16A34A] hover:text-[#15803D] w-fit"
         >
           + Add Link
         </button>

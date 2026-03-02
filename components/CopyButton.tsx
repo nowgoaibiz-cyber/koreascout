@@ -39,11 +39,11 @@ export function CopyButton({ value, variant = "default" }: CopyButtonProps) {
     <button
       type="button"
       onClick={handleClick}
-      className="ml-2 inline-flex items-center rounded-md border border-white/20 bg-white/5 px-2 py-1 text-xs text-white/80 hover:bg-white/10"
+      className="ml-2 inline-flex items-center rounded-md border border-[#E8E6E1] bg-[#F8F7F4] px-2 py-1 text-xs text-[#3D3B36] hover:bg-[#F2F1EE]"
     >
       <span aria-hidden>📋</span>
       <span className="sr-only">Copy</span>
-      {copied && <span className="ml-2 text-xs text-emerald-400">Copied!</span>}
+      {copied && <span className="ml-2 text-xs text-[#16A34A]">Copied!</span>}
     </button>
   );
 }

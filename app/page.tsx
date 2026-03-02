@@ -90,7 +90,7 @@ export default function Home() {
             <h1
               data-reveal
               id="hero-title"
-              className={`font-[family-name:var(--font-syne)] text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold leading-tight tracking-tight mb-5 ${reveal("hero-title")}`}
+              className={`text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold leading-tight tracking-tight mb-5 ${reveal("hero-title")}`}
             >
               <span className="block text-[#1A1916]">Stop Chasing Trends.</span>
               <span className="block text-[#16A34A]">Scout Them First.</span>
@@ -150,7 +150,7 @@ export default function Home() {
                 { num: "FULL KIT", label: "Video + Supplier Contacts" },
               ].map((s) => (
                 <div key={s.num} className="text-center">
-                  <span className="font-[family-name:var(--font-syne)] text-2xl font-bold text-[#16A34A] block">
+                  <span className="text-2xl font-bold text-[#16A34A] block">
                     {s.num}
                   </span>
                   <span className="text-xs text-[#9E9C98] uppercase tracking-widest">
@@ -175,7 +175,7 @@ export default function Home() {
             <p className="text-xs uppercase tracking-widest text-[#16A34A] font-semibold mb-4">
               The Raw Truth
             </p>
-            <h2 className="font-[family-name:var(--font-syne)] text-2xl sm:text-3xl md:text-4xl font-extrabold tracking-tight text-[#1A1916] mb-3">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-extrabold tracking-tight text-[#1A1916] mb-3">
               Stop chasing what&apos;s already viral.
               <br />
               Start sourcing where it starts.
@@ -240,7 +240,7 @@ export default function Home() {
                 ))}
               </div>
             </div>
-            <div className="hidden md:flex absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10 w-9 h-9 bg-[#F8F7F4] border border-[#E8E6E1] rounded-full items-center justify-center font-[family-name:var(--font-syne)] text-xs font-bold text-[#6B6860]">
+            <div className="hidden md:flex absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10 w-9 h-9 bg-[#F8F7F4] border border-[#E8E6E1] rounded-full items-center justify-center text-xs font-bold text-[#6B6860]">
               VS
             </div>
           </div>
@@ -260,7 +260,7 @@ export default function Home() {
               <p className="text-xs uppercase tracking-widest text-[#16A34A] font-semibold mb-4">
                 How It Gets Made
               </p>
-              <h2 className="font-[family-name:var(--font-syne)] text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold uppercase tracking-tight text-[#1A1916] mb-3">
+              <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold uppercase tracking-tight text-[#1A1916] mb-3">
                 We Do The Grunt Work.
                 <br />
                 You Get The Files.
@@ -301,11 +301,11 @@ export default function Home() {
                       key={step.n}
                       className="grid grid-cols-[40px_1fr] gap-4 py-6 border-b border-[#E8E6E1] last:border-0 items-start"
                     >
-                      <span className="font-[family-name:var(--font-syne)] text-xs font-bold text-[#9E9C98] tracking-wide pt-0.5">
+                      <span className="text-xs font-bold text-[#9E9C98] tracking-wide pt-0.5">
                         {step.n}
                       </span>
                       <div>
-                        <h3 className="font-[family-name:var(--font-syne)] text-sm font-bold text-[#1A1916] mb-2">
+                        <h3 className="text-sm font-bold text-[#1A1916] mb-2">
                           {step.title}
                         </h3>
                         <p className="text-sm text-[#6B6860] leading-relaxed">
@@ -418,7 +418,7 @@ export default function Home() {
               <span className="inline-block text-xs font-bold uppercase tracking-widest text-[#9E9C98] bg-[#F8F7F4] border border-[#E8E6E1] px-3 py-1 rounded mb-4">
                 Standard · $9/mo · The Core Engine
               </span>
-              <h2 className="font-[family-name:var(--font-syne)] text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold tracking-tight text-[#1A1916] mb-4">
+              <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold tracking-tight text-[#1A1916] mb-4">
                 Stop Scrolling.
                 <br />
                 Start Scaling.
@@ -465,7 +465,7 @@ export default function Home() {
                     className="object-cover opacity-90 group-hover:scale-105 group-hover:opacity-100 transition-all duration-500"
                     sizes="(max-width: 768px) 50vw, 25vw"
                   />
-                  <span className="absolute bottom-3 left-3 bg-black/70 backdrop-blur-sm text-white font-[family-name:var(--font-syne)] font-bold text-xs px-2.5 py-1 rounded-full border border-white/15">
+                  <span className="absolute bottom-3 left-3 bg-black/70 backdrop-blur-sm text-white font-bold text-xs px-2.5 py-1 rounded-full border border-white/15">
                     {item.label}
                   </span>
                 </div>
@@ -484,7 +484,7 @@ export default function Home() {
               <p className="text-xs uppercase tracking-widest text-[#D97706] font-bold mb-4">
                 Alpha — First 500 Partners Only
               </p>
-              <h2 className="font-[family-name:var(--font-syne)] text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold tracking-tight text-white mb-4">
+              <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold tracking-tight text-white mb-4">
                 Verified Assets.
                 <br />
                 Minimized Risk.
@@ -533,7 +533,7 @@ export default function Home() {
                     className="bg-[#D97706]/5 border border-[#D97706]/15 rounded-2xl p-5 hover:border-[#D97706]/25 hover:bg-[#D97706]/10 transition-all relative overflow-hidden"
                   >
                     <Icon className="w-7 h-7 text-[#D97706] mb-3" />
-                    <h3 className="font-[family-name:var(--font-syne)] text-sm font-bold text-white mb-2">
+                    <h3 className="text-sm font-bold text-white mb-2">
                       {item.title}
                     </h3>
                     <p className="text-sm text-[#9E9C98] font-light leading-relaxed">
@@ -550,10 +550,10 @@ export default function Home() {
               className={`bg-[#0d0d0f] border border-[#3D3B36] rounded-2xl p-8 sm:p-10 relative overflow-hidden mb-6 ${reveal("vault-price")}`}
             >
               <div className="flex items-baseline justify-center gap-1 mb-2">
-                <span className="font-[family-name:var(--font-syne)] text-3xl font-bold text-[#D97706]">
+                <span className="text-3xl font-bold text-[#D97706]">
                   $
                 </span>
-                <span className="font-[family-name:var(--font-syne)] text-6xl sm:text-7xl font-extrabold tracking-tight text-white">
+                <span className="text-6xl sm:text-7xl font-extrabold tracking-tight text-white">
                   29
                 </span>
                 <span className="text-lg text-[#9E9C98] font-light">/mo</span>
@@ -589,7 +589,7 @@ export default function Home() {
               <p className="text-xs font-bold uppercase tracking-widest text-[#16A34A] mb-4 flex items-center gap-2">
                 Who We Are
               </p>
-              <h2 className="font-[family-name:var(--font-syne)] text-2xl sm:text-3xl md:text-4xl font-extrabold tracking-tight text-[#1A1916] mb-4">
+              <h2 className="text-2xl sm:text-3xl md:text-4xl font-extrabold tracking-tight text-[#1A1916] mb-4">
                 A Partnership Born
                 <br />
                 <span className="text-[#16A34A]">in Korea&apos;s Amazon.</span>
@@ -648,7 +648,7 @@ export default function Home() {
                   >
                     <s.icon className="w-6 h-6 text-[#9E9C98]" />
                     <div>
-                      <p className="font-[family-name:var(--font-syne)] text-sm font-bold text-[#1A1916] mb-0.5">
+                      <p className="text-sm font-bold text-[#1A1916] mb-0.5">
                         {s.value}
                       </p>
                       <p className="text-xs text-[#6B6860] font-light">
@@ -671,7 +671,7 @@ export default function Home() {
             <p className="text-xs font-bold uppercase tracking-widest text-[#9E9C98] mb-5">
               K-Product Scout · Seoul Intelligence
             </p>
-            <h2 className="font-[family-name:var(--font-syne)] text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight text-[#1A1916] mb-6 uppercase">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight text-[#1A1916] mb-6 uppercase">
               Stop Sourcing
               <br />
               <span className="text-[#16A34A]">Alone.</span>
@@ -710,7 +710,7 @@ export default function Home() {
             <p className="text-xs uppercase tracking-widest text-[#16A34A] font-semibold mb-3">
               Pricing
             </p>
-            <h2 className="font-[family-name:var(--font-syne)] text-2xl sm:text-3xl md:text-4xl font-extrabold tracking-tight text-[#1A1916]">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-extrabold tracking-tight text-[#1A1916]">
               Choose Your Intelligence Level.
             </h2>
           </div>
@@ -724,7 +724,7 @@ export default function Home() {
               <p className="text-xs font-bold uppercase tracking-widest text-[#9E9C98] mb-3">
                 Preview
               </p>
-              <p className="font-[family-name:var(--font-syne)] text-4xl font-extrabold tracking-tight text-[#1A1916] mb-1">
+              <p className="text-4xl font-extrabold tracking-tight text-[#1A1916] mb-1">
                 $0
               </p>
               <p className="text-xs text-[#9E9C98] mb-5">forever free</p>
@@ -764,7 +764,7 @@ export default function Home() {
               <p className="text-xs font-bold uppercase tracking-widest text-[#9E9C98] mb-3">
                 Standard
               </p>
-              <p className="font-[family-name:var(--font-syne)] text-4xl font-extrabold tracking-tight text-[#1A1916] mb-1">
+              <p className="text-4xl font-extrabold tracking-tight text-[#1A1916] mb-1">
                 $9
               </p>
               <p className="text-xs text-[#9E9C98] mb-5">
@@ -808,10 +808,10 @@ export default function Home() {
                 Alpha
               </p>
               <div className="flex items-baseline gap-2 mb-1">
-                <span className="font-[family-name:var(--font-syne)] text-lg font-bold text-[#9E9C98] line-through">
+                <span className="text-lg font-bold text-[#9E9C98] line-through">
                   $149
                 </span>
-                <p className="font-[family-name:var(--font-syne)] text-4xl font-extrabold tracking-tight text-[#16A34A]">
+                <p className="text-4xl font-extrabold tracking-tight text-[#16A34A]">
                   $29
                 </p>
               </div>
@@ -859,7 +859,7 @@ export default function Home() {
             </p>
             <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-0 mb-4">
               <div className="flex-1 w-full sm:w-auto text-center py-3 px-3 bg-[#DCFCE7] border border-[#16A34A]/30 rounded-lg">
-                <p className="font-[family-name:var(--font-syne)] text-xl font-extrabold text-[#16A34A]">
+                <p className="text-xl font-extrabold text-[#16A34A]">
                   $29
                 </p>
                 <p className="text-xs text-[#16A34A]/80 leading-tight mt-1">
@@ -875,7 +875,7 @@ export default function Home() {
                 <ArrowRight className="w-4 h-4 sm:rotate-0 rotate-90 inline" />
               </span>
               <div className="flex-1 w-full sm:w-auto text-center py-3 px-3 bg-[#F8F7F4] border border-[#E8E6E1] rounded-lg">
-                <p className="font-[family-name:var(--font-syne)] text-xl font-extrabold text-[#9E9C98]">
+                <p className="text-xl font-extrabold text-[#9E9C98]">
                   $79
                 </p>
                 <p className="text-xs text-[#9E9C98] leading-tight mt-1">
@@ -888,7 +888,7 @@ export default function Home() {
                 <ArrowRight className="w-4 h-4 sm:rotate-0 rotate-90 inline" />
               </span>
               <div className="flex-1 w-full sm:w-auto text-center py-3 px-3 bg-[#F8F7F4] border border-[#E8E6E1] rounded-lg">
-                <p className="font-[family-name:var(--font-syne)] text-xl font-extrabold text-[#9E9C98]">
+                <p className="text-xl font-extrabold text-[#9E9C98]">
                   $149
                 </p>
                 <p className="text-xs text-[#9E9C98] leading-tight mt-1">
@@ -919,7 +919,7 @@ export default function Home() {
             <p className="text-xs uppercase tracking-widest text-[#16A34A] font-semibold mb-3">
               FAQ
             </p>
-            <h2 className="font-[family-name:var(--font-syne)] text-2xl sm:text-3xl font-extrabold tracking-tight text-[#1A1916]">
+            <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-[#1A1916]">
               Questions?
               <br />
               We&apos;ve got answers.
@@ -985,7 +985,7 @@ export default function Home() {
           className="py-16 sm:py-24 px-4 sm:px-6 text-center bg-white border-t border-[#E8E6E1]"
         >
           <div className="relative max-w-[600px] mx-auto">
-            <h2 className="font-[family-name:var(--font-syne)] text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight text-[#1A1916] mb-4">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight text-[#1A1916] mb-4">
               Ready to Scout First?
             </h2>
             <p className="text-base text-[#6B6860] mb-8">

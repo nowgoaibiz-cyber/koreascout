@@ -1,3 +1,4 @@
+// ORPHAN COMPONENT — not currently imported. Pending CEO decision on removal.
 /**
  * Tag cloud pills for rising_keywords. Display-only, hover brightens.
  * Section 4 Social Proof.

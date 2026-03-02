@@ -42,7 +42,7 @@ export function DonutGauge({
           cy={size / 2}
           r={r}
           fill="none"
-          stroke="rgba(255,255,255,0.1)"
+          stroke="#E8E6E1"
           strokeWidth={strokeWidth}
         />
         {/* progress ring */}
@@ -60,10 +60,10 @@ export function DonutGauge({
         />
       </svg>
       <div className="absolute inset-0 flex flex-col items-center justify-center">
-        <span className="font-mono text-2xl font-bold tabular-nums text-white">
+        <span className="font-mono text-2xl font-bold tabular-nums text-[#1A1916]">
           {Math.round(clamped)}
         </span>
-        <span className="text-xs text-white/50">/100</span>
+        <span className="text-xs text-[#9E9C98]">/100</span>
       </div>
     </div>
   );

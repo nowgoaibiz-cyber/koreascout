@@ -10,7 +10,7 @@ export type ContactPillProps = {
 };
 
 const pillClass =
-  "bg-white/5 border border-white/10 hover:border-emerald-500/40 text-sm text-zinc-300 px-4 py-2 rounded-full flex items-center gap-2 w-full transition-colors";
+  "bg-[#F8F7F4] border border-[#E8E6E1] hover:border-[#BBF7D0] text-sm text-[#6B6860] px-4 py-2 rounded-full flex items-center gap-2 w-full transition-colors";
 
 export function ContactPill({ icon, label, value, action }: ContactPillProps) {
   const [copied, setCopied] = useState(false);
@@ -77,17 +77,17 @@ export function ContactCard({
   }
 
   return (
-    <div className="bg-white/5 border border-white/10 rounded-2xl p-6 flex flex-col gap-4">
+    <div className="bg-[#F8F7F4] rounded-xl border border-[#E8E6E1] p-4 flex flex-col gap-4">
       {(name || corporateScale) && (
         <div>
           {name && (
-            <p className="text-xl font-bold text-white flex items-center gap-2">
+            <p className="text-xl font-bold text-[#1A1916] flex items-center gap-2">
               <span aria-hidden>🏭</span>
               <span>{name}</span>
             </p>
           )}
           {corporateScale && (
-            <span className="inline-block mt-1 text-xs bg-zinc-700 text-zinc-300 px-2 py-0.5 rounded-full w-fit">
+            <span className="inline-block mt-1 text-xs bg-[#F2F1EE] text-[#6B6860] px-2 py-0.5 rounded-full w-fit">
               {corporateScale}
             </span>
           )}

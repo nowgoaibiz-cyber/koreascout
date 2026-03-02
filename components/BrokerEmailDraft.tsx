@@ -124,24 +124,24 @@ export function BrokerEmailDraft({ report }: { report: ScoutFinalReportsRow }) {
           <span className="text-lg font-bold text-emerald-400">Broker Email Draft</span>
           <span className="text-emerald-400/70 shrink-0">{open ? "▲" : "▼"}</span>
         </div>
-        <p className="text-xs text-white/40 mt-1">
+        <p className="text-xs text-[#9E9C98] mt-1">
           *Includes English drafts for HS Code, Hazmat, and INCI lists for your broker.
         </p>
       </button>
 
       {open && (
-        <div className="mt-3 p-4 rounded-xl border border-white/10 bg-white/[0.03]">
+        <div className="mt-3 p-4 rounded-xl border border-[#E8E6E1] bg-[#F8F7F4]">
           <div className="mb-4">
-            <label className="text-sm font-medium text-white/60 block mb-2">Destination Country</label>
+            <label className="text-sm font-medium text-[#6B6860] block mb-2">Destination Country</label>
             <input
               type="text"
               value={destination}
               onChange={(e) => setDestination(e.target.value)}
               placeholder="e.g. United States, Germany, Japan..."
-              className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-base text-white placeholder:text-white/30 focus:outline-none focus:border-white/30"
+              className="w-full bg-white border border-[#E8E6E1] rounded-lg px-4 py-3 text-base text-[#1A1916] placeholder:text-[#C4C2BE] focus:outline-none focus:border-[#16A34A]"
             />
           </div>
-          <pre className="text-xs text-white/50 whitespace-pre-wrap leading-relaxed max-h-64 overflow-y-auto mb-3 p-3 bg-black/30 rounded-lg">
+          <pre className="text-xs text-[#9E9C98] whitespace-pre-wrap leading-relaxed max-h-64 overflow-y-auto mb-3 p-3 bg-[#F2F1EE] rounded-lg font-mono text-sm text-[#3D3B36]">
             {parts.map((segment, i) =>
               i % 2 === 1 ? (
                 <mark key={i} className="bg-amber-400/40 text-amber-200 font-bold rounded px-0.5">
@@ -154,7 +154,7 @@ export function BrokerEmailDraft({ report }: { report: ScoutFinalReportsRow }) {
           </pre>
           <button
             onClick={handleCopy}
-            className="px-4 py-2 rounded-lg bg-emerald-500 text-white text-sm font-semibold hover:bg-emerald-400 transition-colors"
+            className="px-4 py-2 rounded-lg bg-[#16A34A] text-white text-sm font-semibold hover:bg-[#15803D] transition-colors"
           >
             {copied ? "✅ Copied!" : "📋 Copy Email Draft"}
           </button>

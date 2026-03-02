@@ -31,16 +31,16 @@ function LockIcon({ className }: { className?: string }) {
 
 export function LockedSection({ message, cta, href, lockedFields }: LockedSectionProps) {
   return (
-    <div className="relative overflow-hidden rounded-xl border border-white/10 bg-[var(--bg-card)] p-8">
+    <div className="relative overflow-hidden rounded-xl border border-[#E8E6E1] bg-white p-8">
       {/* Blur overlay to suggest hidden content */}
       <div
-        className="absolute inset-0 bg-gradient-to-b from-white/[0.03] to-transparent backdrop-blur-[2px]"
+        className="absolute inset-0 bg-gradient-to-b from-[#F8F7F4] to-transparent backdrop-blur-[2px]"
         aria-hidden
       />
       <div className="relative flex flex-col items-center text-center">
-        <LockIcon className="mx-auto mb-4 text-white/40" />
+        <LockIcon className="mx-auto mb-4 text-[#9E9C98]" />
         {lockedFields && lockedFields.length > 0 && (
-          <div className="mb-4 flex flex-wrap justify-center gap-x-4 gap-y-1 text-sm text-white/40">
+          <div className="mb-4 flex flex-wrap justify-center gap-x-4 gap-y-1 text-sm text-[#9E9C98]">
             {lockedFields.map((field) => (
               <span key={field}>
                 🔒 {field}: ■■■■■■
@@ -48,10 +48,10 @@ export function LockedSection({ message, cta, href, lockedFields }: LockedSectio
             ))}
           </div>
         )}
-        <p className="text-lg font-medium text-white/90 mb-6 max-w-md">{message}</p>
+        <p className="text-lg font-medium text-[#1A1916] mb-6 max-w-md">{message}</p>
         <Link
           href={href}
-          className="inline-flex items-center gap-2 rounded-lg bg-indigo-500 px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-indigo-400"
+          className="inline-flex items-center gap-2 rounded-lg bg-[#16A34A] px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[#15803D]"
         >
           {cta}
           <span aria-hidden>→</span>

@@ -15,22 +15,22 @@ export function ExpandableText({ text, label }: { text: string; label: string })
 
   return (
     <div className="mb-3">
-      <p className="text-xs text-white/40 mb-1">{label}</p>
+      <p className="text-xs text-[#9E9C98] mb-1">{label}</p>
       <div className="relative">
         <p
           ref={ref}
-          className={`text-sm text-white/60 leading-relaxed ${!expanded ? "line-clamp-2" : ""}`}
+          className={`text-sm text-[#6B6860] leading-relaxed ${!expanded ? "line-clamp-2" : ""}`}
         >
           {text}
         </p>
         {!expanded && needsClamp && (
-          <div className="absolute bottom-0 left-0 right-0 h-6 bg-gradient-to-t from-[#0a0a0a] to-transparent" />
+          <div className="absolute bottom-0 left-0 right-0 h-6 bg-gradient-to-t from-[#F8F7F4] to-transparent" />
         )}
       </div>
       {needsClamp && (
         <button
           onClick={() => setExpanded(!expanded)}
-          className="text-xs text-emerald-400 hover:text-emerald-300 mt-1"
+          className="text-xs text-[#16A34A] hover:text-[#15803D] mt-1"
         >
           {expanded ? "Show Less ▲" : "Read More ▼"}
         </button>

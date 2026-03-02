@@ -82,13 +82,13 @@ export function GlobalPricesHelper({
   })();
 
   const inputClass =
-    "bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-sm text-white focus:border-emerald-500 outline-none";
+    "bg-white border border-[#E8E6E1] rounded-lg px-3 py-2 text-sm text-[#1A1916] focus:border-[#16A34A] focus:ring-1 focus:ring-[#16A34A] outline-none";
 
   return (
     <div className="flex flex-col gap-3">
       {REGIONS.map((r) => (
         <div key={r.id} className="flex items-center gap-2 flex-wrap">
-          <span className="text-zinc-400 text-sm w-16">
+          <span className="text-[#9E9C98] text-sm w-16">
             {r.flag} {r.name}
           </span>
           <input
@@ -110,7 +110,7 @@ export function GlobalPricesHelper({
       <button
         type="button"
         onClick={() => setRawOpen((o) => !o)}
-        className="text-xs text-zinc-600 hover:text-zinc-400 w-fit"
+        className="text-xs text-[#C4C2BE] hover:text-[#9E9C98] w-fit"
       >
         {rawOpen ? "▼ Hide Raw JSON" : "▶ Show Raw JSON"}
       </button>
@@ -119,10 +119,10 @@ export function GlobalPricesHelper({
           readOnly
           value={currentJson}
           rows={6}
-          className="bg-zinc-950 text-zinc-500 text-xs font-mono rounded-lg px-3 py-2 border border-zinc-800 resize-none w-full"
+          className="bg-[#F8F7F4] border border-[#E8E6E1] text-[#6B6860] text-xs font-mono rounded-lg px-3 py-2 resize-none w-full"
         />
       )}
-      <p className="text-xs text-zinc-600 italic">
+      <p className="text-xs text-[#9E9C98] italic">
         Leave URL empty to show 🔵 Blue Ocean badge on the product page.
       </p>
     </div>

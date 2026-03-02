@@ -18,7 +18,7 @@ export function LogoutButton({ className }: { className?: string }) {
     <button
       type="button"
       onClick={handleLogout}
-      className={className ?? "text-sm font-medium text-white/60 hover:text-white transition-colors"}
+      className={className ?? "text-sm font-medium text-[#6B6860] hover:text-[#1A1916] transition-colors"}
     >
       Logout
     </button>

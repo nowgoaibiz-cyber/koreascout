@@ -200,7 +200,7 @@ function ProductIdentity({ report }: { report: ScoutFinalReportsRow }) {
 
   return (
     <section id="section-1" className="bg-white rounded-2xl border border-[#E8E6E1] p-6 shadow-[0_1px_3px_0_rgb(26_25_22/0.06)]">
-      <h2 className="font-[family-name:var(--font-syne)] text-lg font-bold text-[#1A1916] mb-4">Product Identity</h2>
+      <h2 className="text-lg font-bold text-[#1A1916] mb-4">Product Identity</h2>
       <div className="flex flex-col md:flex-row gap-6">
         <div className="relative w-full md:w-52 shrink-0 overflow-hidden rounded-xl bg-[#F8F7F4] aspect-[3/4]">
           {report.image_url ? (
@@ -301,7 +301,7 @@ function TrendSignalDashboard({ report }: { report: ScoutFinalReportsRow }) {
 
   return (
     <section id="section-2" className="bg-white rounded-2xl border border-[#E8E6E1] p-6 shadow-[0_1px_3px_0_rgb(26_25_22/0.06)]">
-      <h2 className="font-[family-name:var(--font-syne)] text-lg font-bold text-[#1A1916] mb-4">Trend Signal Dashboard</h2>
+      <h2 className="text-lg font-bold text-[#1A1916] mb-4">Trend Signal Dashboard</h2>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="bg-[#F8F7F4] rounded-xl border border-[#E8E6E1] p-5 flex flex-col items-center gap-3">
           <p className="text-xs uppercase tracking-widest text-[#6B6860] font-semibold">Market Score</p>
@@ -313,14 +313,27 @@ function TrendSignalDashboard({ report }: { report: ScoutFinalReportsRow }) {
         </div>
         <div className="bg-[#F8F7F4] rounded-xl border border-[#E8E6E1] p-5 flex flex-col items-center justify-center gap-3">
           <p className="text-xs uppercase tracking-widest text-[#6B6860] font-semibold">Competition Level</p>
-          <Badge variant={competitionVariant(competitionLevel)}>{competitionLevel}</Badge>
+          <p className={`text-xl font-semibold mt-1 ${
+            competitionLevel === "Low" ? "text-[#16A34A]" :
+            competitionLevel === "High" ? "text-[#DC2626]" :
+            competitionLevel === "Medium" ? "text-[#D97706]" :
+            "text-[#6B6860]"
+          }`}>
+            {competitionLevel}
+          </p>
           <p className="text-xs text-[#6B6860] text-center leading-relaxed">
             How crowded this niche is on global marketplaces
           </p>
         </div>
         <div className="bg-[#F8F7F4] rounded-xl border border-[#E8E6E1] p-5 flex flex-col items-center justify-center gap-3">
           <p className="text-xs uppercase tracking-widest text-[#6B6860] font-semibold">Opportunity Status</p>
-          <Badge variant={opportunityVariant(gapStatus)}>{gapStatus}</Badge>
+          <p className={`text-xl font-semibold mt-1 ${
+            gapStatus === "Blue Ocean" || gapStatus === "Emerging" ? "text-[#16A34A]" :
+            gapStatus === "Saturated" ? "text-[#D97706]" :
+            "text-[#6B6860]"
+          }`}>
+            {gapStatus}
+          </p>
           <p className="text-xs text-[#6B6860] text-center leading-relaxed">
             Gap between Korean buzz and global availability
           </p>
@@ -545,7 +558,7 @@ function MarketIntelligence({
                       <div key={`${row.label}-${i}`} className="p-4 rounded-xl border border-[#E8E6E1] bg-[#F8F7F4] text-center">
                         <p className="text-xs text-[#6B6860] mb-1">{row.flag} {row.label}</p>
                         <p className="text-lg font-mono font-semibold text-[#1A1916]">{row.priceDisplay ?? "—"}</p>
-                        {row.platform && <p className="text-xs text-[#6B6860]">{row.platform}</p>}
+                        {row.platform && <p className="text-sm font-medium text-[#3D3B36]">{row.platform}</p>}
                       </div>
                     )
                   )}
@@ -570,13 +583,13 @@ function MarketIntelligence({
             {report.search_volume?.trim() && (
               <div className="w-full rounded-xl border border-[#E8E6E1] bg-[#F8F7F4] p-3 text-center">
                 <p className="text-xs uppercase text-[#6B6860] font-semibold">Search Volume</p>
-                <p className="text-lg font-semibold text-[#1A1916] mt-1">{report.search_volume}</p>
+                <p className="text-lg font-semibold font-mono tabular-nums text-[#1A1916] mt-1">{report.search_volume}</p>
               </div>
             )}
             {report.mom_growth?.trim() && (
               <div className="w-full rounded-xl border border-[#E8E6E1] bg-[#F8F7F4] p-3 text-center">
                 <p className="text-xs uppercase text-[#6B6860] font-semibold">MoM Growth</p>
-                <p className={`text-lg font-semibold mt-1 ${isPositiveGrowth(report.mom_growth) ? "text-[#16A34A]" : "text-[#DC2626]"}`}>
+                <p className={`text-lg font-semibold font-mono tabular-nums mt-1 ${isPositiveGrowth(report.mom_growth) ? "text-[#16A34A]" : "text-[#DC2626]"}`}>
                   {report.mom_growth.replace(" estimated", "")}
                   {report.mom_growth.includes("estimated") && <span className="text-xs text-[#9E9C98]"> (est.)</span>}
                   {" "}
@@ -587,7 +600,7 @@ function MarketIntelligence({
             {report.wow_rate?.trim() && report.wow_rate.trim() !== "N/A" && (
               <div className="w-full rounded-xl border border-[#E8E6E1] bg-[#F8F7F4] p-3 text-center">
                 <p className="text-xs uppercase text-[#6B6860] font-semibold">WoW Growth</p>
-                <p className={`text-lg font-semibold mt-1 ${isPositiveGrowth(report.wow_rate) ? "text-[#16A34A]" : "text-[#DC2626]"}`}>
+                <p className={`text-lg font-semibold font-mono tabular-nums mt-1 ${isPositiveGrowth(report.wow_rate) ? "text-[#16A34A]" : "text-[#DC2626]"}`}>
                   {report.wow_rate} {isPositiveGrowth(report.wow_rate) ? "↑" : "↓"}
                 </p>
               </div>
@@ -734,7 +747,7 @@ function SocialProofTrendIntelligence({
                   <div key={key} className="bg-[#F8F7F4] rounded-xl border border-[#E8E6E1] p-4 flex flex-col items-center gap-2">
                     <p className="text-xs font-semibold text-[#1A1916] uppercase tracking-widest">{label}</p>
                     <DonutGauge value={score} size={64} strokeWidth={8} />
-                    <p className="text-lg font-bold text-[#1A1916]">{score}</p>
+                    <p className="text-lg font-bold font-mono tabular-nums text-[#1A1916]">{score}</p>
                   </div>
                 );
               })}
@@ -1023,7 +1036,7 @@ function SourcingIntel({
                 </div>
               );
             })()}
-            <div className="flex flex-wrap items-center gap-4 text-xs text-[#6B6860]">
+            <div className="flex flex-wrap items-center gap-4 text-sm text-[#6B6860]">
               {report.dimensions_cm?.trim() && <span>{report.dimensions_cm}</span>}
               {report.shipping_tier?.trim() && (() => {
                 const { description } = describeShippingTier(report.shipping_tier);
@@ -1311,7 +1324,7 @@ function SupplierContact({
                   <div className="flex gap-6 flex-wrap">
                     {report.moq?.trim() && (
                       <div>
-                        <p className="text-2xl font-semibold text-[#1A1916]">
+                        <p className="text-2xl font-semibold font-mono tabular-nums text-[#1A1916]">
                           {report.moq}
                         </p>
                         <p className="text-xs text-[#9E9C98]">MOQ</p>
@@ -1319,7 +1332,7 @@ function SupplierContact({
                     )}
                     {report.lead_time?.trim() && (
                       <div>
-                        <p className="text-2xl font-semibold text-[#1A1916]">
+                        <p className="text-2xl font-semibold font-mono tabular-nums text-[#1A1916]">
                           {report.lead_time}
                         </p>
                         <p className="text-xs text-[#9E9C98]">LEAD TIME</p>
@@ -1350,7 +1363,7 @@ function SupplierContact({
                   <div className="flex gap-6 flex-wrap">
                     {report.moq?.trim() && (
                       <div>
-                        <p className="text-2xl font-semibold text-[#1A1916]">
+                        <p className="text-2xl font-semibold font-mono tabular-nums text-[#1A1916]">
                           {report.moq}
                         </p>
                         <p className="text-xs text-[#9E9C98]">MOQ</p>
@@ -1358,7 +1371,7 @@ function SupplierContact({
                     )}
                     {report.lead_time?.trim() && (
                       <div>
-                        <p className="text-2xl font-semibold text-[#1A1916]">
+                        <p className="text-2xl font-semibold font-mono tabular-nums text-[#1A1916]">
                           {report.lead_time}
                         </p>
                         <p className="text-xs text-[#9E9C98]">LEAD TIME</p>
