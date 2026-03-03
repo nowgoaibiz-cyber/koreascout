@@ -9,7 +9,7 @@ type GapStatus = "blue ocean" | "emerging" | "saturated";
 
 function getCompetitionStyle(value: string): { className: string; icon: string } {
   const v = value.toLowerCase().trim();
-  if (v === "low") return { className: "bg-emerald-500/15 text-emerald-300 border-emerald-500/30", icon: "🟢" };
+  if (v === "low") return { className: "bg-[#DCFCE7] text-[#16A34A] border-[#BBF7D0]", icon: "🟢" };
   if (v === "medium") return { className: "bg-amber-500/15 text-amber-300 border-amber-500/30", icon: "🟡" };
   if (v === "high") return { className: "bg-rose-500/15 text-rose-300 border-rose-500/30", icon: "🔴" };
   return { className: "bg-[#F8F7F4] text-[#6B6860] border-[#E8E6E1]", icon: "⬤" };

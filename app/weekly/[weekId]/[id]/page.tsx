@@ -91,7 +91,13 @@ const SECTION_ALPHA_SUPPLIER_CTA = {
     "The supplier is right here. One upgrade away. 💡 One successful product pays for a full year of Alpha.",
   cta: "Get Supplier Contact — $29/mo →",
   href: "/pricing",
-  lockedFields: [],
+  lockedFields: [
+    "Supplier Contact Info",
+    "Verified Wholesale Cost",
+    "MOQ & Lead Time",
+    "Direct Factory Link",
+    "B2B Negotiation Script",
+  ],
 };
 
 function safeParsePlatformScores(raw: unknown): Record<string, { score?: number; sentiment?: string }> | null {

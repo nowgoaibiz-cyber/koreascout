@@ -34,7 +34,7 @@ export function ViralHashtagPills({ tags }: { tags: string[] }) {
             onClick={() => copy(tag)}
             className={`rounded-full border px-3 py-1.5 text-xs font-medium transition-colors ${
               isCopied
-                ? "border-emerald-500/50 bg-emerald-500/20 text-emerald-300"
+                ? "border-[#BBF7D0] bg-[#DCFCE7] text-[#16A34A]"
                 : "border-[#E8E6E1] bg-[#F8F7F4] text-[#3D3B36] hover:border-[#BBF7D0] hover:bg-[#DCFCE7] hover:text-[#16A34A]"
             }`}
           >

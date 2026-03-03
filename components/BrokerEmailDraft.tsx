@@ -118,11 +118,11 @@ export function BrokerEmailDraft({ report }: { report: ScoutFinalReportsRow }) {
     <div>
       <button
         onClick={() => setOpen(!open)}
-        className="w-full text-left p-5 rounded-xl bg-emerald-500/10 border border-emerald-500/30 hover:bg-emerald-500/20 transition-colors flex flex-col items-start"
+        className="w-full text-left p-5 rounded-xl bg-[#DCFCE7] border border-[#BBF7D0] hover:bg-[#DCFCE7] transition-colors flex flex-col items-start"
       >
         <div className="flex w-full justify-between items-center">
-          <span className="text-lg font-bold text-emerald-400">Broker Email Draft</span>
-          <span className="text-emerald-400/70 shrink-0">{open ? "▲" : "▼"}</span>
+          <span className="text-lg font-bold text-[#16A34A]">Broker Email Draft</span>
+          <span className="text-[#16A34A]/70 shrink-0">{open ? "▲" : "▼"}</span>
         </div>
         <p className="text-xs text-[#9E9C98] mt-1">
           *Includes English drafts for HS Code, Hazmat, and INCI lists for your broker.

@@ -21,7 +21,7 @@ export function DonutGauge({
       ? "rgb(239, 68, 68)" // red-500
       : clamped <= 70
         ? "rgb(234, 179, 8)" // amber-400 / yellow
-        : "rgb(52, 211, 153)"; // emerald-400
+        : "#16A34A"; // Design System green
 
   const r = (size - strokeWidth) / 2;
   const circumference = 2 * Math.PI * r;

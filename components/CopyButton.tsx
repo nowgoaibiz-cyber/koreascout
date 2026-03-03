@@ -27,7 +27,7 @@ export function CopyButton({ value, variant = "default" }: CopyButtonProps) {
       <button
         type="button"
         onClick={handleClick}
-        className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg bg-emerald-500 text-white text-sm font-semibold hover:bg-emerald-400 transition-colors shrink-0"
+        className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg bg-[#16A34A] text-white text-sm font-semibold hover:bg-[#15803D] transition-colors shrink-0"
       >
         <span aria-hidden>📋</span>
         {copied ? "Copied!" : "Copy Code"}
