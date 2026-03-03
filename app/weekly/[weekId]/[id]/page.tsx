@@ -581,13 +581,13 @@ function MarketIntelligence({
           <p className="text-xs uppercase tracking-widest text-[#9E9C98] font-semibold mt-6 mb-3">Search & Growth</p>
           <div className={`grid grid-cols-1 ${searchGrowthGridCols} gap-3`}>
             {report.search_volume?.trim() && (
-              <div className="w-full rounded-xl border border-[#E8E6E1] bg-[#F8F7F4] p-3 text-center">
+              <div className="w-full rounded-xl border border-[#E8E6E1] bg-[#F8F7F4] p-4 text-center">
                 <p className="text-xs uppercase text-[#6B6860] font-semibold">Search Volume</p>
                 <p className="text-lg font-semibold font-mono tabular-nums text-[#1A1916] mt-1">{report.search_volume}</p>
               </div>
             )}
             {report.mom_growth?.trim() && (
-              <div className="w-full rounded-xl border border-[#E8E6E1] bg-[#F8F7F4] p-3 text-center">
+              <div className="w-full rounded-xl border border-[#E8E6E1] bg-[#F8F7F4] p-4 text-center">
                 <p className="text-xs uppercase text-[#6B6860] font-semibold">MoM Growth</p>
                 <p className={`text-lg font-semibold font-mono tabular-nums mt-1 ${isPositiveGrowth(report.mom_growth) ? "text-[#16A34A]" : "text-[#DC2626]"}`}>
                   {report.mom_growth.replace(" estimated", "")}
@@ -598,7 +598,7 @@ function MarketIntelligence({
               </div>
             )}
             {report.wow_rate?.trim() && report.wow_rate.trim() !== "N/A" && (
-              <div className="w-full rounded-xl border border-[#E8E6E1] bg-[#F8F7F4] p-3 text-center">
+              <div className="w-full rounded-xl border border-[#E8E6E1] bg-[#F8F7F4] p-4 text-center">
                 <p className="text-xs uppercase text-[#6B6860] font-semibold">WoW Growth</p>
                 <p className={`text-lg font-semibold font-mono tabular-nums mt-1 ${isPositiveGrowth(report.wow_rate) ? "text-[#16A34A]" : "text-[#DC2626]"}`}>
                   {report.wow_rate} {isPositiveGrowth(report.wow_rate) ? "↑" : "↓"}
@@ -1008,7 +1008,7 @@ function SourcingIntel({
               if (!hasActual && !hasVol && !hasBillable) return null;
 
               return (
-                <div className="flex flex-col sm:flex-row items-center gap-3 mb-3">
+                <div className="flex flex-col sm:flex-row items-center gap-4 mb-3">
                   {hasActual && (
                     <div className="flex-1 min-w-0 p-4 rounded-xl border border-[#E8E6E1] bg-[#F8F7F4] text-center">
                       <p className="text-xs text-[#9E9C98] uppercase tracking-widest mb-1">Actual Weight</p>
@@ -1715,7 +1715,7 @@ export default async function ProductDetailPage({
         <Link href={`/weekly/${weekId}`} className="text-sm font-medium text-[#9E9C98] hover:text-[#1A1916] inline-block">← Back to week</Link>
 
         {isTeaser && (
-          <div className="rounded-lg bg-emerald-500/15 border border-emerald-500/30 px-4 py-2 text-sm text-emerald-300">
+          <div className="rounded-lg bg-[#DCFCE7] border border-[#BBF7D0] px-4 py-2 text-sm text-[#16A34A]">
             🆓 FREE THIS WEEK — Full report unlocked for everyone.
           </div>
         )}

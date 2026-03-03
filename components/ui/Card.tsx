@@ -2,13 +2,13 @@
 
 const variantClasses = {
   default:
-    'bg-white rounded-xl border border-[#E8E6E1] p-6 shadow-[0_1px_3px_0_rgb(26_25_22/0.06),0_1px_2px_-1px_rgb(26_25_22/0.04)]',
+    'bg-white rounded-xl border border-[#E8E6E1] p-6 shadow-[0_2px_8px_0_rgb(26_25_22/0.08)]',
   elevated:
-    'bg-white rounded-xl border border-[#E8E6E1] p-6 shadow-[0_4px_6px_-1px_rgb(26_25_22/0.08),0_2px_4px_-2px_rgb(26_25_22/0.05)]',
+    'bg-white rounded-xl border border-[#E8E6E1] p-6 shadow-[0_8px_24px_-4px_rgb(26_25_22/0.12)]',
   subcard:
     'bg-[#F2F1EE] rounded-lg border border-[#E8E6E1] p-4',
   accent:
-    'bg-white rounded-xl border border-[#E8E6E1] border-l-4 border-l-[#16A34A] p-6 shadow-[0_1px_3px_0_rgb(26_25_22/0.06),0_1px_2px_-1px_rgb(26_25_22/0.04)]',
+    'bg-white rounded-xl border border-[#E8E6E1] border-l-4 border-l-[#16A34A] p-6 shadow-[0_2px_8px_0_rgb(26_25_22/0.08)]',
 } as const
 
 export type CardVariant = keyof typeof variantClasses
