@@ -217,7 +217,7 @@ export default function Home() {
               </div>
               <div className="rounded-2xl p-6 sm:p-8 bg-[#F8F7F4] border-2 border-[#16A34A]/30 text-left shadow-[0_1px_3px_0_rgb(26_25_22/0.06)]">
                 <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-md bg-[#DCFCE7] border border-[#BBF7D0] text-[#16A34A] text-xs font-bold uppercase tracking-widest mb-5">
-                  <Globe className="w-4 h-4" /> The K-Product Scout Way
+                  <Globe className="w-4 h-4" /> The KoreaScout Way
                 </div>
                 {[
                   "You spot products rising locally in Korea",
@@ -669,7 +669,7 @@ export default function Home() {
         >
           <div data-reveal id="img-cta" className={`relative max-w-[820px] mx-auto ${reveal("img-cta")}`}>
             <p className="text-xs font-bold uppercase tracking-widest text-[#9E9C98] mb-5">
-              K-Product Scout · Seoul Intelligence
+              KoreaScout · Seoul Intelligence
             </p>
             <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight text-[#1A1916] mb-6 uppercase">
               Stop Sourcing
@@ -1011,7 +1011,7 @@ export default function Home() {
         {/* Footer */}
         <footer className="py-8 px-4 sm:px-12 border-t border-[#E8E6E1] bg-[#1A1916] flex flex-col sm:flex-row items-center justify-between gap-4 flex-wrap">
           <span className="text-sm text-[#9E9C98] text-center sm:text-left">
-            © 2025 K-Product Scout. All rights reserved. · Digital product ·
+            © 2026 KoreaScout. All rights reserved. · Digital product ·
             Instant delivery.
           </span>
           <div className="flex gap-6">

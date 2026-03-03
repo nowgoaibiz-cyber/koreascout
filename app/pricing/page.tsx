@@ -3,7 +3,7 @@ import { Check, X, Sparkles } from "lucide-react";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Pricing — K-Product Scout",
+  title: "Pricing — KoreaScout",
   description: "Compare Free, Standard $9, and Alpha $29. Choose your intelligence level.",
 };
 

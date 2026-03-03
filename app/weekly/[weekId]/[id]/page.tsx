@@ -219,7 +219,7 @@ function ProductIdentity({ report }: { report: ScoutFinalReportsRow }) {
           <h3 className="text-3xl font-bold text-[#1A1916] leading-tight">
             {report.translated_name || report.product_name}
           </h3>
-          <p className="text-sm text-[#6B6860] mt-1">{report.product_name}</p>
+          <p className="text-sm text-[#6B6860] leading-relaxed mt-1">{report.product_name}</p>
           <div className="mt-3 flex flex-col gap-2">
             <div className="flex items-center gap-2">
               <span className="text-xs text-[#9E9C98]">Category:</span>
@@ -256,7 +256,7 @@ function ProductIdentity({ report }: { report: ScoutFinalReportsRow }) {
                       Estimated
                     </span>
                   </div>
-                  <p className="mt-0.5 text-sm text-[#6B6860] inline-flex items-center gap-1.5">
+                  <p className="mt-0.5 text-sm text-[#6B6860] leading-relaxed inline-flex items-center gap-1.5">
                     <Lock className="w-4 h-4 text-[#9E9C98] shrink-0" />
                     Alpha members get verified supplier quotes
                   </p>
@@ -301,7 +301,7 @@ function TrendSignalDashboard({ report }: { report: ScoutFinalReportsRow }) {
     <section id="section-2" className="bg-white rounded-2xl border border-[#E8E6E1] p-6 shadow-[0_1px_3px_0_rgb(26_25_22/0.06)]">
       <h2 className="text-lg font-bold text-[#1A1916] mb-4">Trend Signal Dashboard</h2>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="bg-[#F8F7F4] rounded-xl border border-[#E8E6E1] p-5 flex flex-col items-center gap-3">
+        <div className="bg-[#F8F7F4] rounded-xl border border-[#E8E6E1] p-4 flex flex-col items-center gap-3">
           <p className="text-xs uppercase tracking-widest text-[#6B6860] font-semibold">Market Score</p>
           <DonutGauge value={score} size={120} strokeWidth={10} />
           <p className="text-2xl font-bold font-mono text-[#1A1916]">{score}</p>
@@ -309,7 +309,7 @@ function TrendSignalDashboard({ report }: { report: ScoutFinalReportsRow }) {
             Product-market fit based on demand, margin & trend signals
           </p>
         </div>
-        <div className="bg-[#F8F7F4] rounded-xl border border-[#E8E6E1] p-5 flex flex-col items-center justify-center gap-3">
+        <div className="bg-[#F8F7F4] rounded-xl border border-[#E8E6E1] p-4 flex flex-col items-center justify-center gap-3">
           <p className="text-xs uppercase tracking-widest text-[#6B6860] font-semibold">Competition Level</p>
           <p className={`text-xl font-semibold mt-1 ${
             competitionLevel === "Low" ? "text-[#16A34A]" :
@@ -323,7 +323,7 @@ function TrendSignalDashboard({ report }: { report: ScoutFinalReportsRow }) {
             How crowded this niche is on global marketplaces
           </p>
         </div>
-        <div className="bg-[#F8F7F4] rounded-xl border border-[#E8E6E1] p-5 flex flex-col items-center justify-center gap-3">
+        <div className="bg-[#F8F7F4] rounded-xl border border-[#E8E6E1] p-4 flex flex-col items-center justify-center gap-3">
           <p className="text-xs uppercase tracking-widest text-[#6B6860] font-semibold">Opportunity Status</p>
           <p className={`text-xl font-semibold mt-1 ${
             gapStatus === "Blue Ocean" || gapStatus === "Emerging" ? "text-[#16A34A]" :
@@ -340,7 +340,7 @@ function TrendSignalDashboard({ report }: { report: ScoutFinalReportsRow }) {
       <div className="mt-4 flex items-start gap-2 rounded-xl border border-[#E8E6E1] bg-[#F8F7F4] px-4 py-3">
         <Award className="w-5 h-5 text-[#6B6860] shrink-0 mt-0.5" />
         <p className="text-sm text-[#6B6860] leading-relaxed">
-          Every week, K-Product Scout screens <span className="font-semibold text-[#1A1916]">500+ Korean products</span>
+          Every week, KoreaScout screens <span className="font-semibold text-[#1A1916]">500+ Korean products</span>
           {" "}and curates only those scoring above 50.{" "}
           <span className="font-semibold text-[#1A1916]">It&apos;s worth your attention.</span>
         </p>
@@ -848,7 +848,7 @@ function SocialProofTrendIntelligence({
                   <TrendingUp className="w-4 h-4" />
                   Growth Momentum
                 </p>
-                {report.growth_signal?.trim() && <p className="text-sm text-[#3D3B36]">{report.growth_signal}</p>}
+                {report.growth_signal?.trim() && <p className="text-sm text-[#3D3B36] leading-relaxed">{report.growth_signal}</p>}
                 {report.growth_evidence?.trim() && <p className="text-xs text-[#6B6860] mt-1">{report.growth_evidence}</p>}
                 {report.new_content_volume?.trim() && (
                   <p className="text-xs text-[#6B6860] mt-1">{report.new_content_volume}</p>
@@ -870,7 +870,7 @@ function SocialProofTrendIntelligence({
             <p className="text-xs font-semibold text-[#9E9C98] uppercase tracking-widest mb-3">Scout Strategy Report</p>
 
             {canSeeAlpha ? (
-              <div className="bg-[#F8F7F4] rounded-xl border border-[#E8E6E1] p-5 space-y-3">
+              <div className="bg-[#F8F7F4] rounded-xl border border-[#E8E6E1] p-4 space-y-3">
                 {steps.map((step, i) => (
                   <div key={i} className="bg-white rounded-lg border border-[#E8E6E1] p-4">
                     <Badge variant="success" className="mb-2">Step {i + 1}</Badge>
@@ -963,7 +963,7 @@ function SourcingIntel({
       <div className="mb-6">
         <p className="text-xs font-semibold text-[#9E9C98] uppercase tracking-widest mb-2">HS Code & Classification</p>
         {canSeeAlpha ? (
-          <div className="p-5 rounded-xl border border-[#E8E6E1] bg-[#F8F7F4]">
+          <div className="p-4 rounded-xl border border-[#E8E6E1] bg-[#F8F7F4]">
             {report.hs_code?.trim() ? (
               <>
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-3">
@@ -973,7 +973,7 @@ function SourcingIntel({
                   <CopyButton value={report.hs_code} variant="primary" />
                 </div>
                 {report.hs_description?.trim() && (
-                  <p className="text-sm text-[#6B6860] mb-3">{report.hs_description}</p>
+                  <p className="text-sm text-[#6B6860] leading-relaxed mb-3">{report.hs_description}</p>
                 )}
                 <p className="text-xs text-[#9E9C98] italic leading-relaxed">
                   Compiled from Korean sources by AI. Verify with a licensed customs broker before export.
@@ -995,7 +995,7 @@ function SourcingIntel({
 
       {/* Block 3: Broker Email Draft */}
       {canSeeAlpha && report.hs_code?.trim() && (
-        <div className="mb-6 p-5 rounded-xl border border-[#E8E6E1] bg-[#F8F7F4]">
+        <div className="mb-6 p-4 rounded-xl border border-[#E8E6E1] bg-[#F8F7F4]">
           <BrokerEmailDraft report={report} />
         </div>
       )}
@@ -1045,7 +1045,7 @@ function SourcingIntel({
                 </div>
               );
             })()}
-            <div className="flex flex-wrap items-center gap-4 text-sm text-[#6B6860]">
+            <div className="flex flex-wrap items-center gap-4 text-sm text-[#6B6860] leading-relaxed">
               {report.dimensions_cm?.trim() && <span>{report.dimensions_cm}</span>}
               {report.shipping_tier?.trim() && (() => {
                 const { description } = describeShippingTier(report.shipping_tier);
@@ -1076,7 +1076,7 @@ function SourcingIntel({
           <div className="p-4 rounded-xl border border-[#E8E6E1] bg-[#F8F7F4] space-y-3">
             <HazmatBadges status={report.hazmat_status as unknown} />
             {report.key_risk_ingredient?.trim() && (
-              <p className="text-sm text-[#3D3B36]">
+              <p className="text-sm text-[#3D3B36] leading-relaxed">
                 <Badge variant="warning" className="mr-1.5">Risk Ingredient</Badge>
                 {report.key_risk_ingredient}
               </p>
@@ -1315,7 +1315,7 @@ function SupplierContact({
             <h2 className="text-xl font-semibold text-[#1A1916]">
               Launch & Execution Kit
             </h2>
-            <p className="text-sm text-[#6B6860] mt-1">
+            <p className="text-sm text-[#6B6860] leading-relaxed mt-1">
               From product discovery to live campaign — everything you need.
             </p>
           </div>
@@ -1375,7 +1375,7 @@ function SupplierContact({
 
               {verifiedCostUsd != null && verifiedCostUsd !== "" && isUndisclosed && (
                 <>
-                  <p className="text-sm text-[#6B6860] italic">
+                  <p className="text-sm text-[#6B6860] leading-relaxed italic">
                     Pricing verified and on file. Contact the manufacturer
                     directly or use the broker email in Section 5.
                   </p>
@@ -1401,7 +1401,7 @@ function SupplierContact({
               )}
 
               {(!verifiedCostUsd || verifiedCostUsd === "") && (
-                <p className="text-sm text-[#9E9C98] flex items-center gap-1">
+                <p className="text-sm text-[#9E9C98] leading-relaxed flex items-center gap-1">
                   <span className="w-1.5 h-1.5 rounded-full bg-[#9E9C98] animate-pulse" />
                   Scout team is currently verifying pricing for this product.
                 </p>

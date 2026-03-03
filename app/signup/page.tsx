@@ -34,7 +34,7 @@ export default function SignUpPage() {
       <div className="min-h-screen bg-[#F8F7F4] flex items-center justify-center px-4 py-12">
         <div className="w-full max-w-md">
           <div className="text-center mb-8">
-            <Link href="/" className="inline-block text-2xl font-bold text-[#1A1916] text-center">K-Product Scout</Link>
+            <Link href="/" className="inline-block text-2xl font-bold text-[#1A1916] text-center">KoreaScout</Link>
           </div>
           <div className="bg-white rounded-2xl border border-[#E8E6E1] p-8 shadow-[0_4px_6px_-1px_rgb(26_25_22/0.08)] text-center">
             <div className="w-12 h-12 rounded-full bg-[#DCFCE7] border border-[#BBF7D0] flex items-center justify-center mx-auto mb-4 text-[#16A34A]">✓</div>
@@ -61,7 +61,7 @@ export default function SignUpPage() {
     <div className="min-h-screen bg-[#F8F7F4] flex items-center justify-center px-4 py-12">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
-          <Link href="/" className="inline-block text-2xl font-bold text-[#1A1916] text-center">K-Product Scout</Link>
+          <Link href="/" className="inline-block text-2xl font-bold text-[#1A1916] text-center">KoreaScout</Link>
         </div>
         <div className="bg-white rounded-2xl border border-[#E8E6E1] p-8 shadow-[0_4px_6px_-1px_rgb(26_25_22/0.08)]">
           <h1 className="text-lg font-semibold text-[#1A1916] text-center mt-6">Create account</h1>

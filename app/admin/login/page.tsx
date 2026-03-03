@@ -37,7 +37,7 @@ export default function AdminLoginPage() {
       <div className="max-w-sm mx-auto w-full px-4">
         <div className="bg-white border border-[#E8E6E1] rounded-2xl p-8 flex flex-col gap-6">
           <h1 className="text-xl font-bold text-[#1A1916] text-center">
-            🔐 K-Product Scout Admin
+            🔐 KoreaScout Admin
           </h1>
           <p className="text-xs text-[#9E9C98] text-center">
             Internal use only

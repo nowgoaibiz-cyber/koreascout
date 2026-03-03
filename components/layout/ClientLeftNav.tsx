@@ -70,7 +70,7 @@ export function ClientLeftNav({ sections }: ClientLeftNavProps) {
         })}
       </div>
       <div className="border-t border-[#E8E6E1] p-4 shrink-0">
-        <p className="text-xs text-[#9E9C98]">K-Product Scout</p>
+        <p className="text-xs text-[#9E9C98]">KoreaScout</p>
       </div>
     </nav>
   )

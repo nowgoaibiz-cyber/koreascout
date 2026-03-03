@@ -39,15 +39,17 @@ function LoginContent() {
     <div className="min-h-screen bg-[#F8F7F4] flex items-center justify-center px-4 py-12">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
-          <Link
-            href="/"
-            className="inline-block text-2xl font-bold text-[#1A1916]"
-          >
-            K-SCOUT
-          </Link>
-          <p className="text-xs text-[#9E9C98] text-center mt-1">
-            K-Product Scout
-          </p>
+          <div className="flex items-center justify-center gap-2 flex-wrap">
+            <Link
+              href="/"
+              className="text-2xl font-bold text-[#1A1916]"
+            >
+              KoreaScout
+            </Link>
+            <span className="text-[#9E9C98] font-light border-l border-[#E8E6E1] pl-2 text-sm">
+              Intelligence
+            </span>
+          </div>
         </div>
         <div className="bg-white rounded-2xl border border-[#E8E6E1] p-8 shadow-[0_4px_6px_-1px_rgb(26_25_22/0.08)]">
           <h1 className="text-lg font-semibold text-[#1A1916] text-center mt-6">

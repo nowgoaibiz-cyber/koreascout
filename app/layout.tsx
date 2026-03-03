@@ -18,7 +18,7 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "K-Product Scout",
+  title: "KoreaScout",
   description: "Korean product intelligence for global sellers",
 };
 

@@ -65,7 +65,7 @@ export function HazmatCheckboxes({
   ];
 
   return (
-    <div className="grid grid-cols-2 gap-3 bg-[#F8F7F4] p-3 rounded-lg">
+    <div className="grid grid-cols-2 gap-3 bg-[#F8F7F4] p-4 rounded-lg">
       {items.map(({ key, icon, label }) => (
         <label
           key={key}

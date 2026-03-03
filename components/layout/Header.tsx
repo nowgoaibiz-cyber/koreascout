@@ -11,10 +11,10 @@ export async function Header() {
       <div className="max-w-screen-2xl mx-auto px-6 h-full flex items-center justify-between">
         <Link href="/" className="flex items-center gap-2">
           <span className="text-lg font-bold text-[#1A1916] tracking-tight">
-            K-SCOUT
+            KoreaScout
           </span>
-          <span className="text-xs text-[#9E9C98] font-normal hidden sm:block ml-2">
-            K-Product Scout
+          <span className="text-[#9E9C98] font-light border-l border-[#E8E6E1] pl-2 hidden sm:inline text-sm">
+            Intelligence
           </span>
         </Link>
         <HeaderNavClient user={user} />

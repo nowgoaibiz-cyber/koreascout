@@ -59,7 +59,7 @@ export function AiPageLinksHelper({
     "bg-white border border-[#E8E6E1] rounded-lg px-3 py-2 text-sm text-[#1A1916] placeholder:text-[#C4C2BE] focus:border-[#16A34A] outline-none flex-1 min-w-0";
 
   return (
-    <div className="flex flex-col gap-2 bg-[#F8F7F4] border border-[#E8E6E1] rounded-lg p-3">
+    <div className="flex flex-col gap-2 bg-[#F8F7F4] border border-[#E8E6E1] rounded-lg p-4">
       {links.map((link, i) => (
         <div key={i} className="flex items-center gap-2">
           <span className="text-[#9E9C98] text-xs w-14">Link {i + 1}:</span>
