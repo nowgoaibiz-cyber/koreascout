@@ -1661,7 +1661,17 @@ export default async function ProductDetailPage({
 }) {
   const { weekId, id } = await params;
   const supabase = await createClient();
-  const { tier } = await getAuthTier();
+  const { userId, tier } = await getAuthTier();
+
+  let subscriptionStartAt: string | null = null;
+  if (userId) {
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("subscription_start_at")
+      .eq("id", userId)
+      .single();
+    subscriptionStartAt = profile?.subscription_start_at ?? null;
+  }
 
   const [{ data: report, error }, { data: weekReports }, { data: week }] = await Promise.all([
     supabase
@@ -1676,11 +1686,19 @@ export default async function ProductDetailPage({
       .select("id")
       .eq("week_id", weekId)
       .eq("status", "published")
-      .order("created_at", { ascending: true }),
+      .order("created_at", { ascending: false }),
     supabase.from("weeks").select("week_label").eq("week_id", weekId).single(),
   ]);
 
   if (error || !report) notFound();
+
+  const { data: latest3Reports } = await supabase
+    .from("scout_final_reports")
+    .select("id")
+    .eq("status", "published")
+    .order("created_at", { ascending: false })
+    .limit(3);
+  const latest3Ids = (latest3Reports ?? []).map((r) => r.id);
 
   const idList = (weekReports ?? []).map((r) => r.id);
   const currentIndex = idList.indexOf(id);
@@ -1691,6 +1709,19 @@ export default async function ProductDetailPage({
   const isTeaser = report.is_teaser === true;
   const canSeeStandard = tier === "standard" || tier === "alpha" || isTeaser;
   const canSeeAlpha = tier === "alpha" || isTeaser;
+
+  const isPaidUser = tier === "standard" || tier === "alpha";
+  let canAccessThisReport = false;
+  if (!isPaidUser || isTeaser) {
+    canAccessThisReport = true;
+  } else {
+    const isLatest3 = latest3Ids.includes(report.id);
+    const isAfterSubscription = subscriptionStartAt
+      ? new Date(report.created_at) >= new Date(subscriptionStartAt)
+      : false;
+    canAccessThisReport = isLatest3 || isAfterSubscription;
+  }
+
   const hazmatStatus = report.hazmat_status as Record<string, unknown> | null;
   const hasLogistics =
     (report.hs_code && report.hs_code.trim()) ||
@@ -1739,46 +1770,74 @@ export default async function ProductDetailPage({
           </div>
         )}
 
-        {/* Section 1–2: All tiers */}
+        {/* Section 1: All tiers */}
         <ProductIdentity report={report as ScoutFinalReportsRow} />
-        <TrendSignalDashboard report={report as ScoutFinalReportsRow} />
 
-        {/* Section 3–4: Standard+ or locked */}
-        {canSeeStandard ? (
-          <>
-            <MarketIntelligence report={report as ScoutFinalReportsRow} tier={tier as "free" | "standard" | "alpha"} isTeaser={isTeaser} />
-            <SocialProofTrendIntelligence report={report as ScoutFinalReportsRow} tier={tier as "free" | "standard" | "alpha"} isTeaser={isTeaser} />
-          </>
-        ) : (
-          <>
-            <LockedSection {...SECTION_3_LOCKED_CTA} />
-            <LockedSection {...SECTION_4_LOCKED_CTA} />
-            <LockedSection {...SECTION_CONSUMER_CTA} />
-          </>
-        )}
-
-        {/* Section 5: Export & Logistics Intel (Standard+ visible; values blurred for non-Alpha) */}
-        {hasLogistics && (
-          canSeeStandard ? (
-            <SourcingIntel
-              report={report as ScoutFinalReportsRow}
-              tier={tier as string}
-              isTeaser={isTeaser}
-            />
-          ) : (
-            <LockedSection {...SECTION_ALPHA_SOURCING_CTA} />
-          )
-        )}
-
-        {/* Section 6: Launch Kit — Supplier & Contact (Alpha only or locked) */}
-        {hasSupplier && (
-          <div id="section-6">
-            {canSeeAlpha ? (
-              <SupplierContact report={report as ScoutFinalReportsRow} tier={tier as "free" | "standard" | "alpha"} isTeaser={isTeaser} />
-            ) : (
-              <LockedSection {...SECTION_ALPHA_SUPPLIER_CTA} />
-            )}
+        {!canAccessThisReport && (
+          <div className="rounded-2xl border border-[#E8E6E1] bg-white p-8 text-center">
+            <div className="mb-4 text-4xl">🔒</div>
+            <p className="text-lg font-semibold text-[#1A1916] mb-2">
+              This report is from your archive.
+            </p>
+            <p className="text-sm text-[#6B6860] leading-relaxed mb-6 max-w-sm mx-auto">
+              Your access covers reports published after you subscribed,
+              plus the 3 most recent reports.
+              Stay subscribed to unlock more every week.
+            </p>
+            <Link
+              href="/pricing"
+              className="inline-flex items-center gap-2 rounded-lg bg-[#16A34A] px-6 py-3 text-sm font-semibold text-white hover:bg-[#15803D] shadow-[0_2px_8px_0_rgb(22_163_74/0.3)]"
+            >
+              View Current Plan →
+            </Link>
+            <p className="mt-3 text-xs text-[#9E9C98]">
+              Cancel anytime · New reports unlock every Monday.
+            </p>
           </div>
+        )}
+
+        {canAccessThisReport && (
+          <>
+            <TrendSignalDashboard report={report as ScoutFinalReportsRow} />
+
+            {/* Section 3–4: Standard+ or locked */}
+            {canSeeStandard ? (
+              <>
+                <MarketIntelligence report={report as ScoutFinalReportsRow} tier={tier as "free" | "standard" | "alpha"} isTeaser={isTeaser} />
+                <SocialProofTrendIntelligence report={report as ScoutFinalReportsRow} tier={tier as "free" | "standard" | "alpha"} isTeaser={isTeaser} />
+              </>
+            ) : (
+              <>
+                <LockedSection {...SECTION_3_LOCKED_CTA} />
+                <LockedSection {...SECTION_4_LOCKED_CTA} />
+                <LockedSection {...SECTION_CONSUMER_CTA} />
+              </>
+            )}
+
+            {/* Section 5: Export & Logistics Intel (Standard+ visible; values blurred for non-Alpha) */}
+            {hasLogistics && (
+              canSeeStandard ? (
+                <SourcingIntel
+                  report={report as ScoutFinalReportsRow}
+                  tier={tier as string}
+                  isTeaser={isTeaser}
+                />
+              ) : (
+                <LockedSection {...SECTION_ALPHA_SOURCING_CTA} />
+              )
+            )}
+
+            {/* Section 6: Launch Kit — Supplier & Contact (Alpha only or locked) */}
+            {hasSupplier && (
+              <div id="section-6">
+                {canSeeAlpha ? (
+                  <SupplierContact report={report as ScoutFinalReportsRow} tier={tier as "free" | "standard" | "alpha"} isTeaser={isTeaser} />
+                ) : (
+                  <LockedSection {...SECTION_ALPHA_SUPPLIER_CTA} />
+                )}
+              </div>
+            )}
+          </>
         )}
 
         {/* Section 8: Navigation (all tiers) — dark footer anchor */}
