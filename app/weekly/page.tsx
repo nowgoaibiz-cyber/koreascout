@@ -60,45 +60,52 @@ export default async function WeeklyHubPage() {
 
               return (
                 <li key={week.week_id}>
-                  <div
-                    className={`rounded-2xl border p-6 transition-colors ${
-                      lockedForFree
-                        ? "border-[#E8E6E1] bg-[#F8F7F4] opacity-60"
-                        : "border-[#E8E6E1] bg-white shadow-[0_1px_3px_0_rgb(26_25_22/0.06)] hover:border-[#BBF7D0] cursor-pointer"
-                    }`}
-                  >
-                    <div className="flex flex-col gap-1">
-                      <div className="flex items-center justify-between gap-2">
-                        <span className="text-lg font-semibold text-[#1A1916]">
-                          {week.week_label}
-                        </span>
-                        {lockedForFree && (
+                  {lockedForFree ? (
+                    <div className="rounded-2xl border p-6 transition-colors border-[#E8E6E1] bg-[#F8F7F4] opacity-60">
+                      <div className="flex flex-col gap-1">
+                        <div className="flex items-center justify-between gap-2">
+                          <span className="text-lg font-semibold text-[#1A1916]">
+                            {week.week_label}
+                          </span>
                           <span className="text-xs text-[#9E9C98] flex items-center gap-1">
                             🔒 Available {availableDate}
                           </span>
+                        </div>
+                        <p className="text-sm text-[#6B6860]">
+                          {week.product_count} product{week.product_count !== 1 ? "s" : ""}
+                          {lockedForFree && availableDate && ` · Unlocks ${availableDate}`}
+                        </p>
+                        {week.summary && (
+                          <p className="text-sm text-[#3D3B36] mt-1">{week.summary}</p>
                         )}
                       </div>
-                      <p className="text-sm text-[#6B6860]">
-                        {week.product_count} product{week.product_count !== 1 ? "s" : ""}
-                        {availableForFree && !isPaid && " · Free access"}
-                        {availableForFree && isPaid && " · Just released"}
-                        {lockedForFree && availableDate && ` · Unlocks ${availableDate}`}
-                      </p>
-                      {week.summary && (
-                        <p className="text-sm text-[#3D3B36] mt-1">{week.summary}</p>
-                      )}
-                    </div>
-                    {lockedForFree ? (
                       <p className="mt-3 text-xs text-[#9E9C98]">Open this week after {availableDate}.</p>
-                    ) : (
-                      <Link
-                        href={`/weekly/${week.week_id}`}
-                        className="mt-4 inline-block text-sm font-medium text-[#16A34A]"
-                      >
+                    </div>
+                  ) : (
+                    <Link
+                      href={`/weekly/${week.week_id}`}
+                      className="rounded-2xl border p-6 transition-colors border-[#E8E6E1] bg-white shadow-[0_1px_3px_0_rgb(26_25_22/0.06)] hover:border-[#BBF7D0] cursor-pointer hover:shadow-[0_4px_16px_-4px_rgb(26_25_22/0.12)] transition-shadow duration-200 block"
+                    >
+                      <div className="flex flex-col gap-1">
+                        <div className="flex items-center justify-between gap-2">
+                          <span className="text-lg font-semibold text-[#1A1916]">
+                            {week.week_label}
+                          </span>
+                        </div>
+                        <p className="text-sm text-[#6B6860]">
+                          {week.product_count} product{week.product_count !== 1 ? "s" : ""}
+                          {availableForFree && !isPaid && " · Free access"}
+                          {availableForFree && isPaid && " · Just released"}
+                        </p>
+                        {week.summary && (
+                          <p className="text-sm text-[#3D3B36] mt-1">{week.summary}</p>
+                        )}
+                      </div>
+                      <span className="mt-4 inline-block text-[#16A34A] text-sm font-medium">
                         View products →
-                      </Link>
-                    )}
-                  </div>
+                      </span>
+                    </Link>
+                  )}
                 </li>
               );
             })}
