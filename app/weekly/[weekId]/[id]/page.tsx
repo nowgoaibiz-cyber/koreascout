@@ -1730,7 +1730,7 @@ export default async function ProductDetailPage({
     <div className="flex min-h-screen bg-[#F8F7F4]">
       <ClientLeftNav sections={sections} />
       <div className="flex-1 pl-56">
-        <div className="max-w-5xl mx-auto px-6 py-8">
+        <div className="max-w-6xl mx-auto px-6 sm:px-8 py-10">
           <div className="space-y-6">
         <Link href={`/weekly/${weekId}`} className="text-sm font-medium text-[#9E9C98] hover:text-[#1A1916] inline-block">← Back to week</Link>
 

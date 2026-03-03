@@ -68,11 +68,11 @@ function TierCell({
 
 export default function PricingPage() {
   return (
-    <div className="min-h-screen bg-[#F8F7F4] pt-[72px]">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
+    <div className="min-h-screen bg-[#F8F7F4] pt-20">
+      <div className="max-w-7xl mx-auto px-6 sm:px-8 py-16 sm:py-20">
         {/* Header */}
-        <div className="bg-white border-b border-[#E8E6E1] -mx-4 sm:-mx-6 px-4 sm:px-6 py-8 mb-10 sm:mb-14">
-          <div className="max-w-6xl mx-auto text-center">
+        <div className="bg-white border-b border-[#E8E6E1] -mx-4 sm:-mx-6 px-4 sm:px-6 py-10 mb-12 sm:mb-16">
+          <div className="max-w-7xl mx-auto text-center">
             <p className="text-xs uppercase tracking-widest text-[#9E9C98] font-semibold mb-3">
               ✦ Pricing
             </p>

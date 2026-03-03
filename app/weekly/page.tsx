@@ -40,8 +40,8 @@ export default async function WeeklyHubPage() {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-[#F8F7F4] pt-[72px] px-4 py-12">
-        <div className="max-w-4xl mx-auto text-center">
+      <div className="min-h-screen bg-[#F8F7F4] pt-20 px-4 py-12">
+        <div className="max-w-5xl mx-auto text-center">
           <p className="text-[#DC2626]">Failed to load weeks.</p>
           <Link href="/" className="text-[#16A34A] hover:text-[#15803D] text-sm font-medium mt-4 inline-block">← Back to home</Link>
         </div>
@@ -66,10 +66,10 @@ export default async function WeeklyHubPage() {
       )[0]?.week_id ?? null;
 
   return (
-    <div className="min-h-screen bg-[#F8F7F4] pt-[72px]">
-      <div className="max-w-4xl mx-auto px-6 py-8">
-        <h1 className="text-2xl font-bold text-[#1A1916] mb-2">Weekly Reports</h1>
-        <p className="text-sm text-[#6B6860] mb-8">Week-by-week product intelligence. Open a week to see products.</p>
+    <div className="min-h-screen bg-[#F8F7F4] pt-20">
+      <div className="max-w-5xl mx-auto px-6 sm:px-8 py-10">
+        <h1 className="text-3xl font-bold text-[#1A1916] mb-3">Weekly Reports</h1>
+        <p className="text-base text-[#6B6860] mb-10">Week-by-week product intelligence. Open a week to see products.</p>
 
         {!weeks?.length ? (
           <p className="text-[#9E9C98]">No reports published yet. Check back soon.</p>

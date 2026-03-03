@@ -59,6 +59,7 @@
     background-color: var(--color-bg-page);
     color: var(--color-text-primary);
     font-family: var(--font-sans);
+    font-size: 1.0625rem; /* ~17px — global UI scale-up for 100% zoom */
     -webkit-font-smoothing: antialiased;
   }
 

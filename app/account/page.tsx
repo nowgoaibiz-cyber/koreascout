@@ -9,9 +9,9 @@ export default async function AccountPage() {
   if (!user) redirect("/login");
 
   return (
-    <div className="min-h-screen bg-[#F8F7F4]">
-      <div className="max-w-2xl mx-auto px-6 py-12">
-        <h1 className="text-2xl font-bold text-[#1A1916] mb-6">My Account</h1>
+    <div className="min-h-screen bg-[#F8F7F4] pt-20">
+      <div className="max-w-3xl mx-auto px-6 sm:px-8 py-16">
+        <h1 className="text-3xl font-bold text-[#1A1916] mb-8">My Account</h1>
 
         <div className="bg-white rounded-2xl border border-[#E8E6E1] p-6 shadow-[0_1px_3px_0_rgb(26_25_22/0.06)]">
           <p className="text-xs font-medium text-[#9E9C98] uppercase tracking-wider mb-1">

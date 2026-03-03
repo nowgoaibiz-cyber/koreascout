@@ -65,8 +65,8 @@ export default async function ProductListPage({
 
   if (!canAccess) {
     return (
-      <div className="min-h-screen bg-[#F8F7F4] pt-[72px]">
-        <div className="max-w-4xl mx-auto px-6 py-8">
+      <div className="min-h-screen bg-[#F8F7F4] pt-20">
+        <div className="max-w-5xl mx-auto px-6 sm:px-8 py-10">
           <Link
             href="/weekly"
             className="text-sm text-[#9E9C98] hover:text-[#1A1916] transition-colors flex items-center gap-1 mb-6"
@@ -113,8 +113,8 @@ export default async function ProductListPage({
 
   if (productsError) {
     return (
-      <div className="min-h-screen bg-[#F8F7F4] pt-[72px] px-4 py-12">
-        <div className="max-w-4xl mx-auto text-center">
+      <div className="min-h-screen bg-[#F8F7F4] pt-20 px-4 py-12">
+        <div className="max-w-5xl mx-auto text-center">
           <div className="bg-[#FEE2E2] border border-[#FECACA] rounded-xl p-6 text-[#DC2626]">Failed to load products.</div>
           <Link href="/weekly" className="text-[#16A34A] hover:text-[#15803D] text-sm font-medium mt-4 inline-block">← Back to weekly</Link>
         </div>
@@ -123,12 +123,12 @@ export default async function ProductListPage({
   }
 
   return (
-    <div className="min-h-screen bg-[#F8F7F4] pt-[72px]">
-      <div className="max-w-4xl mx-auto px-6 py-8">
-        <Link href="/weekly" className="text-sm text-[#9E9C98] hover:text-[#1A1916] transition-colors flex items-center gap-1 mb-6 inline-block"><ChevronLeft className="w-4 h-4" /> Weekly Reports</Link>
-        <h1 className="text-2xl font-bold text-[#1A1916] mb-2">{week.week_label}</h1>
-        {week.summary && <p className="text-[#6B6860] text-sm mb-6">{week.summary}</p>}
-        <p className="text-sm text-[#6B6860] mb-8">
+    <div className="min-h-screen bg-[#F8F7F4] pt-20">
+      <div className="max-w-5xl mx-auto px-6 sm:px-8 py-10">
+        <Link href="/weekly" className="text-base text-[#9E9C98] hover:text-[#1A1916] transition-colors flex items-center gap-1 mb-6 inline-block"><ChevronLeft className="w-4 h-4" /> Weekly Reports</Link>
+        <h1 className="text-3xl font-bold text-[#1A1916] mb-3">{week.week_label}</h1>
+        {week.summary && <p className="text-[#6B6860] text-base mb-6">{week.summary}</p>}
+        <p className="text-base text-[#6B6860] mb-10">
           {products?.length ?? 0} product{products?.length !== 1 ? "s" : ""} in this week
         </p>
 
