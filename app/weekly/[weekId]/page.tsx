@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
+import { getAuthTier } from "@/lib/auth-server";
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import Image from "next/image";
 import { ChevronLeft } from "lucide-react";
 
@@ -11,15 +12,96 @@ export default async function ProductListPage({
 }) {
   const { weekId } = await params;
   const supabase = await createClient();
+  const { userId, tier, subscriptionStartAt } = await getAuthTier();
+
+  if (!userId) redirect("/login");
+
+  const isPaid = tier === "standard" || tier === "alpha";
 
   const { data: week, error: weekError } = await supabase
     .from("weeks")
-    .select("week_id, week_label, product_count, summary")
+    .select("week_id, week_label, product_count, summary, published_at")
     .eq("week_id", weekId)
     .eq("status", "published")
     .single();
 
   if (weekError || !week) notFound();
+
+  const { data: latest3Weeks } = await supabase
+    .from("weeks")
+    .select("week_id")
+    .eq("status", "published")
+    .order("published_at", { ascending: false })
+    .limit(3);
+  const latest3WeekIds = (latest3Weeks ?? []).map((w) => w.week_id);
+  const isLatestWeek = latest3WeekIds.includes(weekId);
+
+  let canAccess = false;
+  if (isPaid) {
+    const isAfterSub =
+      subscriptionStartAt && week.published_at
+        ? new Date(week.published_at) >= new Date(subscriptionStartAt)
+        : false;
+    canAccess = isLatestWeek || isAfterSub;
+  } else {
+    const { data: allWeeks } = await supabase
+      .from("weeks")
+      .select("week_id, published_at")
+      .eq("status", "published");
+    const freeOpenWeekId =
+      allWeeks
+        ?.filter((w) => {
+          if (!w.published_at) return false;
+          const freeAt = new Date(w.published_at);
+          freeAt.setDate(freeAt.getDate() + 14);
+          return new Date() >= freeAt;
+        })
+        .sort(
+          (a, b) =>
+            new Date(b.published_at!).getTime() - new Date(a.published_at!).getTime()
+        )[0]?.week_id ?? null;
+    canAccess = weekId === freeOpenWeekId;
+  }
+
+  if (!canAccess) {
+    return (
+      <div className="min-h-screen bg-[#F8F7F4] pt-[72px]">
+        <div className="max-w-4xl mx-auto px-6 py-8">
+          <Link
+            href="/weekly"
+            className="text-sm text-[#9E9C98] hover:text-[#1A1916] transition-colors flex items-center gap-1 mb-6"
+          >
+            ← Weekly Reports
+          </Link>
+          <h1 className="text-2xl font-bold text-[#1A1916] mb-2">
+            {week.week_label}
+          </h1>
+          <div className="rounded-2xl border border-[#E8E6E1] bg-white p-10 text-center mt-8">
+            <div className="text-5xl mb-4">🔒</div>
+            <p className="text-lg font-semibold text-[#1A1916] mb-2">
+              {isPaid
+                ? "This week is in your archive."
+                : "Upgrade to access this week."}
+            </p>
+            <p className="text-sm text-[#6B6860] leading-relaxed mb-6 max-w-sm mx-auto">
+              {isPaid
+                ? "Your access covers weeks published after you subscribed, plus the 3 most recent weeks."
+                : "Subscribe to Standard or Alpha to unlock this week immediately."}
+            </p>
+            <Link
+              href="/pricing"
+              className="inline-flex items-center gap-2 rounded-lg bg-[#16A34A] px-6 py-3 text-sm font-semibold text-white hover:bg-[#15803D] shadow-[0_2px_8px_0_rgb(22_163_74/0.3)]"
+            >
+              {isPaid ? "View Current Plan →" : "See Plans →"}
+            </Link>
+            <p className="mt-3 text-xs text-[#9E9C98]">
+              Cancel anytime · New weeks unlock every Monday.
+            </p>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   // RLS filters by tier and free_list_at; we get only rows the user is allowed to see.
   const { data: products, error: productsError } = await supabase

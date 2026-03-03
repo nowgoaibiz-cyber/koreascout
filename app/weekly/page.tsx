@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { getAuthTier } from "@/lib/auth-server";
 import Link from "next/link";
+import { redirect } from "next/navigation";
 
 const FREE_DELAY_DAYS = 14;
 
@@ -23,7 +24,12 @@ function isWeekAvailableForFree(publishedAt: string | null): boolean {
 
 export default async function WeeklyHubPage() {
   const supabase = await createClient();
-  const { tier } = await getAuthTier();
+  const { userId, tier, subscriptionStartAt } = await getAuthTier();
+
+  if (!userId) {
+    redirect("/login");
+  }
+
   const isPaid = tier === "standard" || tier === "alpha";
 
   const { data: weeks, error } = await supabase
@@ -43,6 +49,22 @@ export default async function WeeklyHubPage() {
     );
   }
 
+  const { data: latest3Weeks } = await supabase
+    .from("weeks")
+    .select("week_id")
+    .eq("status", "published")
+    .order("published_at", { ascending: false })
+    .limit(3);
+  const latest3WeekIds = (latest3Weeks ?? []).map((w) => w.week_id);
+
+  const freeOpenWeekId =
+    weeks
+      ?.filter((w) => isWeekAvailableForFree(w.published_at))
+      .sort(
+        (a, b) =>
+          new Date(b.published_at!).getTime() - new Date(a.published_at!).getTime()
+      )[0]?.week_id ?? null;
+
   return (
     <div className="min-h-screen bg-[#F8F7F4] pt-[72px]">
       <div className="max-w-4xl mx-auto px-6 py-8">
@@ -54,32 +76,39 @@ export default async function WeeklyHubPage() {
         ) : (
           <ul className="space-y-4">
             {weeks.map((week) => {
-              const availableForFree = isWeekAvailableForFree(week.published_at);
-              const lockedForFree = !isPaid && !availableForFree;
-              const availableDate = week.published_at ? formatAvailableDate(week.published_at) : null;
+              const isLatestWeek = latest3WeekIds.includes(week.week_id);
+              const isAfterSub =
+                subscriptionStartAt && week.published_at
+                  ? new Date(week.published_at) >= new Date(subscriptionStartAt)
+                  : false;
+              const canAccess = isPaid
+                ? isLatestWeek || isAfterSub
+                : week.week_id === freeOpenWeekId;
+              const isLocked = !canAccess;
 
               return (
                 <li key={week.week_id}>
-                  {lockedForFree ? (
-                    <div className="rounded-2xl border p-6 transition-colors border-[#E8E6E1] bg-[#F8F7F4] opacity-60">
-                      <div className="flex flex-col gap-1">
-                        <div className="flex items-center justify-between gap-2">
-                          <span className="text-lg font-semibold text-[#1A1916]">
-                            {week.week_label}
-                          </span>
-                          <span className="text-xs text-[#9E9C98] flex items-center gap-1">
-                            🔒 Available {availableDate}
-                          </span>
-                        </div>
-                        <p className="text-sm text-[#6B6860]">
-                          {week.product_count} product{week.product_count !== 1 ? "s" : ""}
-                          {lockedForFree && availableDate && ` · Unlocks ${availableDate}`}
-                        </p>
-                        {week.summary && (
-                          <p className="text-sm text-[#3D3B36] mt-1">{week.summary}</p>
-                        )}
+                  {isLocked ? (
+                    <div className="rounded-2xl border border-[#E8E6E1] bg-[#F8F7F4] p-6 opacity-60 cursor-not-allowed">
+                      <div className="flex items-center justify-between gap-2">
+                        <span className="text-lg font-semibold text-[#1A1916]">
+                          {week.week_label}
+                        </span>
+                        <span className="text-xs text-[#9E9C98] flex items-center gap-1">
+                          🔒
+                          {!isPaid && week.published_at
+                            ? `Available ${formatAvailableDate(week.published_at)}`
+                            : "Archive"}
+                        </span>
                       </div>
-                      <p className="mt-3 text-xs text-[#9E9C98]">Open this week after {availableDate}.</p>
+                      <p className="text-sm text-[#6B6860] mt-1">
+                        {week.product_count} product{week.product_count !== 1 ? "s" : ""}
+                      </p>
+                      {!isPaid && (
+                        <p className="mt-3 text-xs text-[#9E9C98]">
+                          Upgrade to Standard to access immediately →
+                        </p>
+                      )}
                     </div>
                   ) : (
                     <Link
@@ -94,8 +123,8 @@ export default async function WeeklyHubPage() {
                         </div>
                         <p className="text-sm text-[#6B6860]">
                           {week.product_count} product{week.product_count !== 1 ? "s" : ""}
-                          {availableForFree && !isPaid && " · Free access"}
-                          {availableForFree && isPaid && " · Just released"}
+                          {!isPaid && " · Free access"}
+                          {isPaid && " · Just released"}
                         </p>
                         {week.summary && (
                           <p className="text-sm text-[#3D3B36] mt-1">{week.summary}</p>
