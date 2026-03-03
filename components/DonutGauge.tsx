@@ -59,11 +59,15 @@ export function DonutGauge({
           className="transition-[stroke-dasharray] duration-500 ease-out"
         />
       </svg>
-      <div className="absolute inset-0 flex flex-col items-center justify-center">
-        <span className="font-mono text-2xl font-bold tabular-nums text-[#1A1916]">
+      <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none leading-none">
+        <span
+          className={`font-mono font-bold tabular-nums text-[#1A1916] ${
+            size >= 150 ? "text-4xl" : size >= 80 ? "text-3xl" : "text-lg"
+          }`}
+        >
           {Math.round(clamped)}
         </span>
-        <span className="text-xs text-[#9E9C98]">/100</span>
+        <span className={`text-[#9E9C98] ${size >= 150 ? "text-sm" : "text-xs"}`}>/100</span>
       </div>
     </div>
   );

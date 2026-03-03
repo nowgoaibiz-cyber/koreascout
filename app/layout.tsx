@@ -33,7 +33,7 @@ export default function RootLayout({
         className={`${plusJakartaSans.variable} ${jetbrainsMono.variable} font-sans antialiased`}
       >
         <Header />
-        <main className="pt-16">{children}</main>
+        <main className="pt-20">{children}</main>
       </body>
     </html>
   );

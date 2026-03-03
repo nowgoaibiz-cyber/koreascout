@@ -197,10 +197,10 @@ function ProductIdentity({ report }: { report: ScoutFinalReportsRow }) {
   const exportLabelFallback = exportStatus ? `Export: ${report.export_status}` : "";
 
   return (
-    <section id="section-1" className="bg-white rounded-2xl border border-[#E8E6E1] p-6 shadow-[0_1px_3px_0_rgb(26_25_22/0.06)]">
-      <h2 className="text-lg font-bold text-[#1A1916] mb-4">Product Identity</h2>
+    <section id="section-1" className="scroll-mt-[160px] bg-white rounded-2xl border border-[#E8E6E1] p-6 shadow-[0_1px_3px_0_rgb(26_25_22/0.06)]">
+      <h2 className="text-3xl font-bold text-[#1A1916] mb-4 tracking-tight">Product Identity</h2>
       <div className="flex flex-col md:flex-row gap-6">
-        <div className="relative w-full md:w-52 shrink-0 overflow-hidden rounded-xl bg-[#F8F7F4] aspect-[3/4]">
+        <div className="relative w-full md:w-72 shrink-0 overflow-hidden rounded-xl bg-[#F8F7F4] aspect-[3/4]">
           {report.image_url ? (
             <div className="relative aspect-[3/4] w-full">
               <Image
@@ -208,66 +208,70 @@ function ProductIdentity({ report }: { report: ScoutFinalReportsRow }) {
                 alt={report.translated_name || report.product_name}
                 fill
                 className="object-contain p-2"
-                sizes="(max-width: 640px) 100vw, 208px"
+                sizes="(max-width: 640px) 100vw, 288px"
               />
             </div>
           ) : (
-            <div className="aspect-[3/4] w-full flex items-center justify-center text-[#9E9C98] text-sm">No image</div>
+            <div className="aspect-[3/4] w-full flex items-center justify-center text-[#9E9C98] text-base">No image</div>
           )}
         </div>
         <div className="min-w-0 flex-1">
-          <h3 className="text-3xl font-bold text-[#1A1916] leading-tight">
+          <h3 className="text-2xl font-bold text-[#1A1916] leading-tight">
             {report.translated_name || report.product_name}
           </h3>
-          <p className="text-sm text-[#6B6860] leading-relaxed mt-1">{report.product_name}</p>
-          <div className="mt-3 flex flex-col gap-2">
+          <p className="text-lg text-[#6B6860] leading-relaxed mt-1">{report.product_name}</p>
+          <div className="mt-4 flex flex-col gap-2">
             <div className="flex items-center gap-2">
-              <span className="text-xs text-[#9E9C98]">Category:</span>
-              <Badge variant="default">{report.category}</Badge>
+              <span className="text-sm font-semibold text-[#9E9C98]">Category:</span>
+              <Badge variant="default" className="text-lg font-bold text-[#1A1916]">{report.category}</Badge>
             </div>
             {exportStatus && (exportDisplay || exportLabelFallback) && (
               <div className="flex items-center gap-2">
-                <span className="text-xs text-[#9E9C98]">Export Status:</span>
+                <span className="text-sm font-semibold text-[#9E9C98]">Export Status:</span>
                 {exportDisplay ? (
-                  <Badge variant={exportDisplay.variant}>{exportDisplay.label}</Badge>
+                  <Badge variant={exportDisplay.variant} className="text-lg font-bold text-[#1A1916]">{exportDisplay.label}</Badge>
                 ) : (
-                  <Badge variant="default">{exportLabelFallback}</Badge>
+                  <Badge variant="default" className="text-lg font-bold text-[#1A1916]">{exportLabelFallback}</Badge>
                 )}
               </div>
             )}
           </div>
           {report.kr_price && (
-            <div className="mt-2">
-              <div className="flex items-baseline gap-2">
-                <span className="text-xl font-mono font-semibold text-[#1A1916]">
+            <div className="mt-3">
+              <div className="flex flex-wrap items-baseline gap-x-2 gap-y-1">
+                <span className="text-2xl font-mono font-bold text-[#1A1916]">
                   ₩{Number(report.kr_price).toLocaleString()}
+                  {report.kr_price_usd && (
+                    <span className="text-2xl font-mono font-bold text-[#6B6860]"> (~${report.kr_price_usd})</span>
+                  )}
                 </span>
-                {report.kr_price_usd && (
-                  <span className="text-base font-mono text-[#6B6860]">(~${report.kr_price_usd})</span>
+                {report.estimated_cost_usd && (
+                  <>
+                    <span className="text-xl font-mono font-bold text-[#9E9C98]">/</span>
+                    <span className="text-base font-bold text-[#9E9C98] uppercase tracking-wide">Est. Wholesale</span>
+                    <span className="text-2xl font-mono font-extrabold text-[#16A34A]">~${report.estimated_cost_usd}</span>
+                    <span className="inline-flex items-center gap-1 text-base text-[#6B6860]">
+                      <AlertTriangle className="w-4 h-4 text-[#D97706] shrink-0" />
+                      Estimated
+                    </span>
+                  </>
                 )}
               </div>
               {report.estimated_cost_usd && (
-                <>
-                  <div className="mt-1 flex items-baseline gap-2 flex-wrap">
-                    <span className="text-xs font-medium text-[#9E9C98] uppercase tracking-widest">Est. Wholesale</span>
-                    <span className="text-lg font-mono font-semibold text-[#16A34A]">~${report.estimated_cost_usd}</span>
-                    <span className="inline-flex items-center gap-1 text-xs text-[#6B6860]">
-                      <AlertTriangle className="w-3 h-3 text-[#D97706] shrink-0" />
-                      Estimated
-                    </span>
-                  </div>
-                  <p className="mt-0.5 text-sm text-[#6B6860] leading-relaxed inline-flex items-center gap-1.5">
-                    <Lock className="w-4 h-4 text-[#9E9C98] shrink-0" />
-                    Alpha members get verified supplier quotes
-                  </p>
-                </>
+                <p className="mt-2 text-base text-[#6B6860] leading-relaxed inline-flex flex-wrap items-center gap-1.5">
+                  <Lock className="w-4 h-4 text-[#9E9C98] shrink-0" />
+                  Alpha members{" "}
+                  <a href="#section-6" className="text-[#16A34A] font-bold underline cursor-pointer hover:text-[#15803D] transition-colors">
+                    get verified supplier quotes
+                  </a>
+                </p>
               )}
             </div>
           )}
           {report.viability_reason && (
-            <div className="mt-4 bg-[#F8F7F4] rounded-xl border-l-4 border-l-[#16A34A] border border-[#E8E6E1] p-4">
-              <p className="text-xs font-semibold text-[#16A34A] uppercase tracking-widest mb-1">Why It&apos;s Trending</p>
-              <p className="text-sm text-[#3D3B36] leading-relaxed">
+            <div className="mt-5 min-h-fit h-auto bg-[#F8F7F4] rounded-xl border-l-4 border-l-[#16A34A] border border-[#E8E6E1] p-6">
+              <p className="text-sm font-semibold text-[#16A34A] uppercase tracking-widest mb-2">Why It&apos;s Trending</p>
+              <p className="text-base text-[#3D3B36] leading-relaxed">
                 {report.viability_reason}
               </p>
             </div>
@@ -296,22 +300,41 @@ function TrendSignalDashboard({ report }: { report: ScoutFinalReportsRow }) {
   const score = typeof report.market_viability === "number" ? report.market_viability : 0;
   const competitionLevel = report.competition_level?.trim() || "—";
   const gapStatus = report.gap_status?.trim() || "—";
+  const platformData = safeParsePlatformScores(report.platform_scores);
+  const platforms = [
+    { key: "tiktok", label: "TikTok" },
+    { key: "instagram", label: "Instagram" },
+    { key: "youtube", label: "YouTube" },
+  ] as const;
+  const reddit = platformData?.["reddit"];
+  const hasGrowthMomentum =
+    report.growth_signal?.trim() ||
+    report.growth_evidence?.trim() ||
+    report.new_content_volume?.trim();
 
   return (
-    <section id="section-2" className="bg-white rounded-2xl border border-[#E8E6E1] p-6 shadow-[0_1px_3px_0_rgb(26_25_22/0.06)]">
-      <h2 className="text-lg font-bold text-[#1A1916] mb-4">Trend Signal Dashboard</h2>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="bg-[#F8F7F4] rounded-xl border border-[#E8E6E1] p-4 flex flex-col items-center gap-3">
-          <p className="text-xs uppercase tracking-widest text-[#6B6860] font-semibold">Market Score</p>
-          <DonutGauge value={score} size={120} strokeWidth={10} />
-          <p className="text-2xl font-bold font-mono text-[#1A1916]">{score}</p>
-          <p className="text-xs text-[#6B6860] text-center leading-relaxed">
+    <section id="section-2" className="scroll-mt-[160px] bg-white rounded-2xl border border-[#E8E6E1] p-6 shadow-[0_1px_3px_0_rgb(26_25_22/0.06)]">
+      <h2 className="text-3xl font-bold text-[#1A1916] mb-0 tracking-tight">Trend Signal Dashboard</h2>
+
+      {/* Authority blurb — frames the entire dashboard */}
+      <div className="bg-[#F8F7F4]/50 text-base italic text-[#6B6860] py-3 px-4 border-l-2 border-[#16A34A] mb-8 mt-4">
+        Every week, KoreaScout screens <span className="font-semibold not-italic text-[#1A1916]">500+ Korean products</span>
+        {" "}and curates only those scoring above 50.{" "}
+        <span className="font-semibold not-italic text-[#1A1916]">It&apos;s worth your attention.</span>
+      </div>
+
+      {/* Tier 1 — The Verdict: 3-column grid (titles level, values proportionate) */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="bg-[#F8F7F4] rounded-xl border border-[#E8E6E1] p-6 flex flex-col items-center gap-3">
+          <p className="text-xl font-bold text-[#1A1916] text-center h-8 flex items-center justify-center mt-0">Market Score</p>
+          <DonutGauge value={score} size={180} strokeWidth={14} />
+          <p className="text-sm text-[#6B6860] text-center leading-relaxed mt-4">
             Product-market fit based on demand, margin & trend signals
           </p>
         </div>
-        <div className="bg-[#F8F7F4] rounded-xl border border-[#E8E6E1] p-4 flex flex-col items-center justify-center gap-3">
-          <p className="text-xs uppercase tracking-widest text-[#6B6860] font-semibold">Competition Level</p>
-          <p className={`text-xl font-semibold mt-1 ${
+        <div className="bg-[#F8F7F4] rounded-xl border border-[#E8E6E1] p-6 flex flex-col items-center justify-center gap-3">
+          <p className="text-xl font-bold text-[#1A1916] text-center h-8 flex items-center justify-center mt-0">Competition Level</p>
+          <p className={`text-3xl font-extrabold text-center mt-1 mb-4 ${
             competitionLevel === "Low" ? "text-[#16A34A]" :
             competitionLevel === "High" ? "text-[#DC2626]" :
             competitionLevel === "Medium" ? "text-[#D97706]" :
@@ -319,31 +342,97 @@ function TrendSignalDashboard({ report }: { report: ScoutFinalReportsRow }) {
           }`}>
             {competitionLevel}
           </p>
-          <p className="text-xs text-[#6B6860] text-center leading-relaxed">
+          <p className="text-sm text-[#6B6860] text-center leading-relaxed">
             How crowded this niche is on global marketplaces
           </p>
         </div>
-        <div className="bg-[#F8F7F4] rounded-xl border border-[#E8E6E1] p-4 flex flex-col items-center justify-center gap-3">
-          <p className="text-xs uppercase tracking-widest text-[#6B6860] font-semibold">Opportunity Status</p>
-          <p className={`text-xl font-semibold mt-1 ${
+        <div className="bg-[#F8F7F4] rounded-xl border border-[#E8E6E1] p-6 flex flex-col items-center justify-center gap-3">
+          <p className="text-xl font-bold text-[#1A1916] text-center h-8 flex items-center justify-center mt-0">Opportunity Status</p>
+          <p className={`text-3xl font-extrabold text-center mt-1 mb-4 whitespace-nowrap ${
             gapStatus === "Blue Ocean" || gapStatus === "Emerging" ? "text-[#16A34A]" :
             gapStatus === "Saturated" ? "text-[#D97706]" :
             "text-[#6B6860]"
           }`}>
             {gapStatus}
           </p>
-          <p className="text-xs text-[#6B6860] text-center leading-relaxed">
+          <p className="text-sm text-[#6B6860] text-center leading-relaxed">
             Gap between Korean buzz and global availability
           </p>
         </div>
       </div>
-      <div className="mt-4 flex items-start gap-2 rounded-xl border border-[#E8E6E1] bg-[#F8F7F4] px-4 py-3">
-        <Award className="w-5 h-5 text-[#6B6860] shrink-0 mt-0.5" />
-        <p className="text-sm text-[#6B6860] leading-relaxed">
-          Every week, KoreaScout screens <span className="font-semibold text-[#1A1916]">500+ Korean products</span>
-          {" "}and curates only those scoring above 50.{" "}
-          <span className="font-semibold text-[#1A1916]">It&apos;s worth your attention.</span>
-        </p>
+
+      {/* Tier 2 — The Channels: full-width Platform Breakdown (left wall pl-12) */}
+      <div className="mt-8 bg-[#F8F7F4] rounded-xl border border-[#E8E6E1] p-6 pl-6 md:pl-10">
+        <h3 className="text-xl font-bold text-[#1A1916] mb-4">Platform Breakdown</h3>
+        {platformData ? (
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 items-start">
+            {platforms.map(({ key, label }) => {
+              const data = platformData[key];
+              const platformScore = data?.score ?? 0;
+              return (
+                <div key={key} className="flex flex-col items-center">
+                  <p className="text-base font-bold text-[#6B6860] mb-3 uppercase tracking-widest shrink-0">{label}</p>
+                  <DonutGauge value={platformScore} size={100} strokeWidth={8} />
+                </div>
+              );
+            })}
+            <div className="flex flex-col items-center">
+              <p className="text-base font-bold text-[#6B6860] mb-3 uppercase tracking-widest shrink-0">Reddit</p>
+              <div className="w-[100px] h-[100px] flex items-center justify-center">
+                {reddit?.sentiment ? (
+                  <Badge
+                    variant={
+                      reddit.sentiment.toLowerCase() === "positive"
+                        ? "success"
+                        : reddit.sentiment.toLowerCase() === "negative"
+                          ? "danger"
+                          : "default"
+                    }
+                  >
+                    {reddit.sentiment}
+                  </Badge>
+                ) : (
+                  <span className="text-sm text-[#9E9C98]">No data</span>
+                )}
+              </div>
+            </div>
+          </div>
+        ) : (
+          <p className="text-base text-[#9E9C98]">No platform data</p>
+        )}
+      </div>
+
+      {/* Tier 3 — The Velocity: full-width Growth Momentum (left wall pl-10, title + signal stacked) */}
+      <div className="mt-8 bg-[#F8F7F4] rounded-xl border border-[#E8E6E1] p-6 pl-6 md:pl-10">
+        {hasGrowthMomentum ? (
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
+            <div className="md:col-span-1 flex flex-col justify-center gap-1">
+              <p className="text-xl font-bold text-[#1A1916] inline-flex items-center gap-2">
+                Growth Momentum
+                <TrendingUp className="w-5 h-5 text-[#16A34A] shrink-0" />
+              </p>
+              {report.growth_signal?.trim() && (
+                <p className="text-4xl font-black text-[#16A34A] leading-tight">{report.growth_signal}</p>
+              )}
+            </div>
+            <div className="md:col-span-2 border-l-0 md:border-l-2 border-[#16A34A] pl-0 md:pl-6 flex flex-col justify-center space-y-2">
+              {report.growth_evidence?.trim() && (
+                <p className="text-xl leading-relaxed text-[#3D3B36]">{report.growth_evidence}</p>
+              )}
+              {report.new_content_volume?.trim() && (
+                <p className="text-xl leading-relaxed text-[#3D3B36]">{report.new_content_volume}</p>
+              )}
+            </div>
+          </div>
+        ) : (
+          <>
+            <p className="text-xl font-bold text-[#1A1916] mb-4 inline-flex items-center gap-2">
+              Growth Momentum
+              <TrendingUp className="w-5 h-5 text-[#16A34A] shrink-0" />
+            </p>
+            <p className="text-base text-[#9E9C98]">No growth data</p>
+          </>
+        )}
       </div>
     </section>
   );
@@ -473,8 +562,8 @@ function MarketIntelligence({
     searchGrowthCardCount >= 3 ? "sm:grid-cols-3" : searchGrowthCardCount === 2 ? "sm:grid-cols-2" : "grid-cols-1";
 
   return (
-    <section id="section-3" className="bg-white rounded-2xl border border-[#E8E6E1] p-6 shadow-[0_1px_3px_0_rgb(26_25_22/0.06)]">
-      <h2 className="text-xl font-semibold text-[#1A1916] mb-4">Market Intelligence</h2>
+    <section id="section-3" className="scroll-mt-[160px] bg-white rounded-2xl border border-[#E8E6E1] p-6 shadow-[0_1px_3px_0_rgb(26_25_22/0.06)]">
+      <h2 className="text-3xl font-bold text-[#1A1916] mb-4 tracking-tight">Market Intelligence</h2>
 
       {hasProfitBlock && (
         <>
@@ -652,8 +741,8 @@ function SocialProofTrendIntelligence({
   const canSeeAlpha = tier === "alpha" || isTeaser;
 
   return (
-    <section id="section-4" className="bg-white rounded-2xl border border-[#E8E6E1] p-6 shadow-[0_1px_3px_0_rgb(26_25_22/0.06)]">
-      <h2 className="text-xl font-semibold text-[#1A1916] mb-4">Social Proof & Trend Intelligence</h2>
+    <section id="section-4" className="scroll-mt-[160px] bg-white rounded-2xl border border-[#E8E6E1] p-6 shadow-[0_1px_3px_0_rgb(26_25_22/0.06)]">
+      <h2 className="text-3xl font-bold text-[#1A1916] mb-4 tracking-tight">Social Proof & Trend Intelligence</h2>
 
       {/* Block 1 — Social Buzz */}
       {report.buzz_summary?.trim() && (
@@ -722,57 +811,7 @@ function SocialProofTrendIntelligence({
         </div>
       </div>
 
-      {/* Block 3 — Platform Breakdown */}
-      {(() => {
-        const platformData = safeParsePlatformScores(report.platform_scores);
-        if (!platformData) return null;
-
-        const platforms = [
-          { key: "tiktok", label: "TikTok" },
-          { key: "instagram", label: "Instagram" },
-          { key: "youtube", label: "YouTube" },
-        ];
-        const reddit = platformData["reddit"];
-
-        return (
-          <div className="mt-6">
-            <p className="text-xs font-semibold text-[#9E9C98] uppercase tracking-widest mb-3">Platform Breakdown</p>
-            <div className="grid grid-cols-4 gap-3">
-              {platforms.map(({ key, label }) => {
-                const data = platformData[key];
-                const score = data?.score ?? 0;
-                return (
-                  <div key={key} className="bg-[#F8F7F4] rounded-xl border border-[#E8E6E1] p-4 flex flex-col items-center gap-2">
-                    <p className="text-xs font-semibold text-[#1A1916] uppercase tracking-widest">{label}</p>
-                    <DonutGauge value={score} size={64} strokeWidth={8} />
-                    <p className="text-lg font-bold font-mono tabular-nums text-[#1A1916]">{score}</p>
-                  </div>
-                );
-              })}
-              <div className="bg-[#F8F7F4] rounded-xl border border-[#E8E6E1] p-4 flex flex-col items-center justify-center gap-2">
-                <p className="text-xs font-semibold text-[#1A1916] uppercase tracking-widest">Reddit</p>
-                {reddit?.sentiment ? (
-                  <Badge
-                    variant={
-                      reddit.sentiment.toLowerCase() === "positive"
-                        ? "success"
-                        : reddit.sentiment.toLowerCase() === "negative"
-                          ? "danger"
-                          : "default"
-                    }
-                  >
-                    {reddit.sentiment}
-                  </Badge>
-                ) : (
-                  <span className="text-xs text-[#9E9C98]">No data</span>
-                )}
-              </div>
-            </div>
-          </div>
-        );
-      })()}
-
-      {/* Block 4 — Trending Signals */}
+      {/* Block 3 — Trending Signals */}
       {(() => {
         const risingKw = normalizeToArray(report.rising_keywords);
         const seoKw = normalizeToArray(report.seo_keywords);
@@ -780,9 +819,7 @@ function SocialProofTrendIntelligence({
         const hasAnyTrending =
           risingKw.length > 0 ||
           seoKw.length > 0 ||
-          viralHt.length > 0 ||
-          report.growth_signal?.trim() ||
-          report.growth_evidence?.trim();
+          viralHt.length > 0;
         if (!hasAnyTrending) return null;
 
         return (
@@ -841,20 +878,6 @@ function SocialProofTrendIntelligence({
                 </div>
               )}
             </div>
-
-            {(report.growth_signal?.trim() || report.growth_evidence?.trim() || report.new_content_volume?.trim()) && (
-              <div className="mt-4 p-4 rounded-xl border border-[#E8E6E1] bg-[#F8F7F4]">
-                <p className="text-xs text-[#6B6860] mb-2 inline-flex items-center gap-1.5">
-                  <TrendingUp className="w-4 h-4" />
-                  Growth Momentum
-                </p>
-                {report.growth_signal?.trim() && <p className="text-sm text-[#3D3B36] leading-relaxed">{report.growth_signal}</p>}
-                {report.growth_evidence?.trim() && <p className="text-xs text-[#6B6860] mt-1">{report.growth_evidence}</p>}
-                {report.new_content_volume?.trim() && (
-                  <p className="text-xs text-[#6B6860] mt-1">{report.new_content_volume}</p>
-                )}
-              </div>
-            )}
           </div>
         );
       })()}
@@ -912,8 +935,8 @@ function SourcingIntel({
   const canSeeAlpha = tier === "alpha" || isTeaser;
 
   return (
-    <section id="section-5" className="bg-white rounded-2xl border border-[#E8E6E1] p-6 shadow-[0_1px_3px_0_rgb(26_25_22/0.06)] relative">
-      <h2 className="text-xl font-semibold text-[#1A1916] mb-6">Export & Logistics Intel</h2>
+    <section id="section-5" className="scroll-mt-[160px] bg-white rounded-2xl border border-[#E8E6E1] p-6 shadow-[0_1px_3px_0_rgb(26_25_22/0.06)] relative">
+      <h2 className="text-3xl font-bold text-[#1A1916] mb-4 tracking-tight">Export & Logistics Intel</h2>
 
       {/* Block 1: Export Readiness */}
       <div className="mb-6">
@@ -1312,7 +1335,7 @@ function SupplierContact({
       {canSeeAlpha && (
         <>
           <div>
-            <h2 className="text-xl font-semibold text-[#1A1916]">
+            <h2 className="text-3xl font-bold text-[#1A1916] mb-4 tracking-tight">
               Launch & Execution Kit
             </h2>
             <p className="text-sm text-[#6B6860] leading-relaxed mt-1">
@@ -1729,9 +1752,9 @@ export default async function ProductDetailPage({
   return (
     <div className="flex min-h-screen bg-[#F8F7F4]">
       <ClientLeftNav sections={sections} />
-      <div className="flex-1 pl-56">
-        <div className="max-w-6xl mx-auto px-6 sm:px-8 py-10">
-          <div className="space-y-6">
+      <div className="flex-1 pl-[18rem]">
+        <div className="max-w-6xl mx-auto px-6 sm:px-8 pt-10 pb-[60vh]">
+          <div className="space-y-6 mt-10">
         <Link href={`/weekly/${weekId}`} className="text-sm font-medium text-[#9E9C98] hover:text-[#1A1916] inline-block">← Back to week</Link>
 
         {isTeaser && (
@@ -1773,7 +1796,7 @@ export default async function ProductDetailPage({
 
         {/* Section 6: Launch Kit — Supplier & Contact (Alpha only or locked) */}
         {hasSupplier && (
-          <div id="section-6">
+          <div id="section-6" className="scroll-mt-[160px]">
             {canSeeAlpha ? (
               <SupplierContact report={report as ScoutFinalReportsRow} tier={tier as "free" | "standard" | "alpha"} isTeaser={isTeaser} />
             ) : (
