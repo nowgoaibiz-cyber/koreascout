@@ -46,7 +46,7 @@ export function ClientLeftNav({ sections }: ClientLeftNavProps) {
 
   return (
     <nav
-      className="fixed left-0 top-20 h-[calc(100vh-5rem)] w-56 z-40 bg-[#F8F7F4] border-r border-[#E8E6E1] flex flex-col"
+      className="fixed left-0 top-[72px] h-[calc(100vh-4.5rem)] w-56 z-40 bg-[#F8F7F4] border-r border-[#E8E6E1] flex flex-col"
       aria-label="Page sections"
     >
       <div className="flex-1 overflow-y-auto py-5">
