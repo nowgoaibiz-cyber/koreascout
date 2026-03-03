@@ -19,14 +19,6 @@ import { Badge, Button, KeywordPill } from "@/components/ui";
 import { AlertTriangle, ArrowRight, Award, CheckCircle, Film, ImageIcon, LayoutTemplate, Lock, TrendingUp, XCircle } from "lucide-react";
 import type { ScoutFinalReportsRow } from "@/types/database";
 
-function BlurredValue({ canSee, children }: { canSee: boolean; children: React.ReactNode }) {
-  return (
-    <div className={!canSee ? "blur-sm select-none pointer-events-none" : ""}>
-      {children}
-    </div>
-  );
-}
-
 /** Format 6-digit HS code as 3304.99 */
 function formatHsCode(raw: string | null | undefined): string {
   const s = raw?.trim().replace(/\D/g, "") ?? "";
@@ -806,27 +798,35 @@ function SocialProofTrendIntelligence({
               {seoKw.length > 0 && (
                 <div className="mb-4">
                   <p className="text-xs text-[#6B6860] mb-2">Global SEO Keywords</p>
-                  <div className={`flex flex-wrap gap-2 ${!canSeeAlpha ? "blur-sm select-none pointer-events-none" : ""}`}>
-                    {seoKw.map((kw, i) => (
-                      <KeywordPill key={i} variant="default" keyword={kw} />
-                    ))}
-                  </div>
+                  {canSeeAlpha ? (
+                    <div className="flex flex-wrap gap-2">
+                      {seoKw.map((kw, i) => (
+                        <KeywordPill key={i} variant="default" keyword={kw} />
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="h-10 w-full rounded-lg bg-[#F2F1EE]" />
+                  )}
                 </div>
               )}
 
               {viralHt.length > 0 && (
                 <div className="mb-4">
                   <p className="text-xs text-[#6B6860] mb-2">Viral Hashtags</p>
-                  <div className={`flex flex-wrap gap-2 ${!canSeeAlpha ? "blur-sm select-none pointer-events-none" : ""}`}>
-                    {viralHt.map((tag, i) => (
-                      <KeywordPill key={i} variant="default" keyword={tag} />
-                    ))}
-                  </div>
+                  {canSeeAlpha ? (
+                    <div className="flex flex-wrap gap-2">
+                      {viralHt.map((tag, i) => (
+                        <KeywordPill key={i} variant="default" keyword={tag} />
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="h-10 w-full rounded-lg bg-[#F2F1EE]" />
+                  )}
                 </div>
               )}
 
               {!canSeeAlpha && (seoKw.length > 0 || viralHt.length > 0) && (
-                <div className="absolute inset-0 bg-gradient-to-t from-white via-white/80 to-transparent flex flex-col items-center justify-end pb-6 gap-3">
+                <div className="mt-4 flex flex-col items-center justify-center pb-6 gap-3 rounded-xl border border-[#E8E6E1] bg-[#F8F7F4] px-4 py-4">
                   <Lock className="w-5 h-5 text-[#9E9C98]" />
                   <p className="text-sm font-semibold text-[#3D3B36]">Unlock Global SEO Targets & Viral Hashtags</p>
                   <a href="/pricing">
@@ -860,24 +860,23 @@ function SocialProofTrendIntelligence({
         if (steps.length === 0) return null;
 
         return (
-          <div className="mt-6 relative">
+          <div className="mt-6">
             <p className="text-xs font-semibold text-[#9E9C98] uppercase tracking-widest mb-3">Scout Strategy Report</p>
 
-            <div
-              className={`bg-[#F8F7F4] rounded-xl border border-[#E8E6E1] p-5 space-y-3 ${!canSeeAlpha ? "blur-md select-none pointer-events-none" : ""}`}
-            >
-              {steps.map((step, i) => (
-                <div key={i} className="bg-white rounded-lg border border-[#E8E6E1] p-4">
-                  <Badge variant="success" className="mb-2">Step {i + 1}</Badge>
-                  <p className="text-sm font-semibold text-[#1A1916] mb-1">{step.label}</p>
-                  <p className="text-sm text-[#6B6860] leading-relaxed whitespace-pre-line">{step.content}</p>
-                </div>
-              ))}
-            </div>
-
-            {!canSeeAlpha && (
-              <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                <div className="pointer-events-auto flex flex-col items-center justify-end pb-6 gap-3 pt-24 bg-gradient-to-t from-white via-white/80 to-transparent rounded-xl">
+            {canSeeAlpha ? (
+              <div className="bg-[#F8F7F4] rounded-xl border border-[#E8E6E1] p-5 space-y-3">
+                {steps.map((step, i) => (
+                  <div key={i} className="bg-white rounded-lg border border-[#E8E6E1] p-4">
+                    <Badge variant="success" className="mb-2">Step {i + 1}</Badge>
+                    <p className="text-sm font-semibold text-[#1A1916] mb-1">{step.label}</p>
+                    <p className="text-sm text-[#6B6860] leading-relaxed whitespace-pre-line">{step.content}</p>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <>
+                <div className="h-32 w-full rounded-xl bg-[#F2F1EE]" />
+                <div className="mt-4 flex flex-col items-center justify-center gap-3 rounded-xl border border-[#E8E6E1] bg-[#F8F7F4] px-4 py-4">
                   <Lock className="w-5 h-5 text-[#9E9C98]" />
                   <p className="text-sm font-semibold text-[#3D3B36] text-center px-4">
                     Premium Strategy Report — Unlock the complete 5-Step B2B Sourcing & Marketing Strategy.
@@ -886,7 +885,7 @@ function SocialProofTrendIntelligence({
                     <Button variant="primary" size="sm">Go Alpha $29/mo →</Button>
                   </a>
                 </div>
-              </div>
+              </>
             )}
           </div>
         );
@@ -913,7 +912,7 @@ function SourcingIntel({
       {/* Block 1: Export Readiness */}
       <div className="mb-6">
         <p className="text-xs font-semibold text-[#9E9C98] uppercase tracking-widest mb-2">Export Readiness</p>
-        <BlurredValue canSee={canSeeAlpha}>
+        {canSeeAlpha ? (
           <div className="p-4 rounded-xl border border-[#E8E6E1] bg-[#F8F7F4]">
             <div className="flex items-center gap-3">
               {report.export_status === "Green" ? (
@@ -949,13 +948,15 @@ function SourcingIntel({
               </div>
             </div>
           </div>
-        </BlurredValue>
+        ) : (
+          <div className="h-16 w-full rounded-xl bg-[#F2F1EE]" />
+        )}
       </div>
 
       {/* Block 2: HS Code & Classification */}
       <div className="mb-6">
         <p className="text-xs font-semibold text-[#9E9C98] uppercase tracking-widest mb-2">HS Code & Classification</p>
-        <BlurredValue canSee={canSeeAlpha}>
+        {canSeeAlpha ? (
           <div className="p-5 rounded-xl border border-[#E8E6E1] bg-[#F8F7F4]">
             {report.hs_code?.trim() ? (
               <>
@@ -981,7 +982,9 @@ function SourcingIntel({
               </div>
             )}
           </div>
-        </BlurredValue>
+        ) : (
+          <div className="h-20 w-full rounded-xl bg-[#F2F1EE]" />
+        )}
       </div>
 
       {/* Block 3: Broker Email Draft */}
@@ -999,7 +1002,7 @@ function SourcingIntel({
       {/* Block 4: Weight & Shipping */}
       <div className="mb-6">
         <p className="text-xs font-semibold text-[#9E9C98] uppercase tracking-widest mb-2">Weight & Shipping</p>
-        <BlurredValue canSee={canSeeAlpha}>
+        {canSeeAlpha ? (
           <div>
             {(() => {
               const hasActual = report.actual_weight_g != null;
@@ -1055,13 +1058,15 @@ function SourcingIntel({
                 </p>
               )}
           </div>
-        </BlurredValue>
+        ) : (
+          <div className="h-24 w-full rounded-xl bg-[#F2F1EE]" />
+        )}
       </div>
 
       {/* Block 5: Hazmat & Compliance */}
       <div className="mb-6">
         <p className="text-xs font-semibold text-[#9E9C98] uppercase tracking-widest mb-2">Hazmat & Compliance</p>
-        <BlurredValue canSee={canSeeAlpha}>
+        {canSeeAlpha ? (
           <div className="p-4 rounded-xl border border-[#E8E6E1] bg-[#F8F7F4] space-y-3">
             <HazmatBadges status={report.hazmat_status as unknown} />
             {report.key_risk_ingredient?.trim() && (
@@ -1081,7 +1086,9 @@ function SourcingIntel({
               </div>
             )}
           </div>
-        </BlurredValue>
+        ) : (
+          <div className="h-20 w-full rounded-xl bg-[#F2F1EE]" />
+        )}
       </div>
 
       {/* Block 6: Product Specs */}
@@ -1093,7 +1100,7 @@ function SourcingIntel({
               *Ingredients may be truncated. Always verify full INCI list via the provided product image link.
             </p>
           )}
-          <BlurredValue canSee={canSeeAlpha}>
+          {canSeeAlpha ? (
             <div className="p-4 rounded-xl border border-[#E8E6E1] bg-[#F8F7F4]">
               {report.composition_info?.trim() && (
                 <ExpandableText text={report.composition_info} label="Ingredients" />
@@ -1102,7 +1109,9 @@ function SourcingIntel({
                 <ExpandableText text={report.spec_summary} label="Specifications" />
               )}
             </div>
-          </BlurredValue>
+          ) : (
+            <div className="h-20 w-full rounded-xl bg-[#F2F1EE]" />
+          )}
         </div>
       )}
 
@@ -1113,9 +1122,11 @@ function SourcingIntel({
         return (
           <div className="mb-6">
             <p className="text-xs font-semibold text-[#9E9C98] uppercase tracking-widest mb-2">Shipping Notes</p>
-            <BlurredValue canSee={canSeeAlpha}>
+            {canSeeAlpha ? (
               <p className="text-sm text-[#3D3B36] leading-relaxed">{report.shipping_notes}</p>
-            </BlurredValue>
+            ) : (
+              <div className="h-12 w-full rounded-xl bg-[#F2F1EE]" />
+            )}
           </div>
         );
       })()}
@@ -1131,7 +1142,7 @@ function SourcingIntel({
             <p className="text-xs font-semibold text-[#9E9C98] uppercase tracking-widest mb-2">
               Compliance & Logistics Strategy
             </p>
-            <BlurredValue canSee={canSeeAlpha}>
+            {canSeeAlpha ? (
               <div className="space-y-3">
                 {logisticsSteps.map((step, i) => (
                   <div key={i} className="bg-white rounded-lg border border-[#E8E6E1] p-4">
@@ -1141,7 +1152,9 @@ function SourcingIntel({
                   </div>
                 ))}
               </div>
-            </BlurredValue>
+            ) : (
+              <div className="h-24 w-full rounded-xl bg-[#F2F1EE]" />
+            )}
           </div>
         );
       })()}
