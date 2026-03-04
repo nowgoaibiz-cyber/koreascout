@@ -1092,19 +1092,26 @@ function SocialProofTrendIntelligence({
       {/* ── BLOCK 4: TRENDING SIGNALS ────────────────── */}
       {hasAnyTrending && (
         <div className="mb-24">
-          <p className="text-[10px] tracking-[0.2em] text-[#9E9C98] uppercase mb-10">
+
+          {/* Main Header — REF A */}
+          <p className="text-xl font-bold text-[#1A1916] mb-10">
             Trending Signals
           </p>
 
-          {/* Rising Keywords — all tiers */}
+          {/* Rising Keywords (KR) — all tiers */}
           {risingKw.length > 0 && (
-            <div className="mb-8">
-              <p className="text-[10px] tracking-[0.2em] text-[#9E9C98] uppercase mb-3">
+            <div className="mb-10">
+              <p className="text-sm font-bold text-[#6B6860] tracking-widest mb-4">
                 Rising Keywords (KR)
               </p>
-              <div className="flex flex-wrap gap-2">
+              <div className="flex flex-wrap gap-3 w-full">
                 {risingKw.map((kw) => (
-                  <KeywordPill key={kw} variant="trending" keyword={kw} />
+                  <span
+                    key={kw}
+                    className="flex-1 min-w-max text-center bg-[#DCFCE7] text-[#16A34A] rounded-full px-6 py-3 font-bold hover:bg-[#BBF7D0] transition-colors cursor-default text-lg"
+                  >
+                    ↗ {kw}
+                  </span>
                 ))}
               </div>
             </div>
@@ -1112,41 +1119,51 @@ function SocialProofTrendIntelligence({
 
           {/* Global SEO Keywords — Alpha only */}
           {seoKw.length > 0 && (
-            <div className="mb-8">
-              <p className="text-[10px] tracking-[0.2em] text-[#9E9C98] uppercase mb-3">
+            <div className="mb-10">
+              <p className="text-sm font-bold text-[#6B6860] tracking-widest mb-4">
                 Global SEO Keywords
               </p>
               {canSeeAlpha ? (
-                <div className="flex flex-wrap gap-2">
+                <div className="flex flex-wrap gap-3 w-full">
                   {seoKw.map((kw) => (
-                    <KeywordPill key={kw} variant="default" keyword={kw} />
+                    <span
+                      key={kw}
+                      className="flex-1 min-w-max text-center bg-white border border-[#E8E6E1] text-[#3D3B36] rounded-full px-6 py-3 hover:bg-[#F1F0ED] transition-colors cursor-default text-lg"
+                    >
+                      {kw}
+                    </span>
                   ))}
                 </div>
               ) : (
-                <div className="h-10 w-full rounded-lg bg-[#F2F1EE]" />
+                <div className="h-12 w-full rounded-full bg-[#F2F1EE]" />
               )}
             </div>
           )}
 
           {/* Viral Hashtags — Alpha only */}
           {viralHt.length > 0 && (
-            <div className="mb-8">
-              <p className="text-[10px] tracking-[0.2em] text-[#9E9C98] uppercase mb-3">
+            <div className="mb-10">
+              <p className="text-sm font-bold text-[#6B6860] tracking-widest mb-4">
                 Viral Hashtags
               </p>
               {canSeeAlpha ? (
-                <div className="flex flex-wrap gap-2">
+                <div className="flex flex-wrap gap-3 w-full">
                   {viralHt.map((ht) => (
-                    <KeywordPill key={ht} variant="default" keyword={ht} />
+                    <span
+                      key={ht}
+                      className="flex-1 min-w-max text-center bg-white border border-[#E8E6E1] text-[#3D3B36] rounded-full px-6 py-3 hover:bg-[#F1F0ED] transition-colors cursor-default text-lg"
+                    >
+                      #{ht.startsWith("#") ? ht.slice(1) : ht}
+                    </span>
                   ))}
                 </div>
               ) : (
-                <div className="h-10 w-full rounded-lg bg-[#F2F1EE]" />
+                <div className="h-12 w-full rounded-full bg-[#F2F1EE]" />
               )}
             </div>
           )}
 
-          {/* Lock CTA — Non-Alpha only */}
+          {/* Alpha Lock CTA — non-Alpha only */}
           {!canSeeAlpha && (seoKw.length > 0 || viralHt.length > 0) && (
             <div className="mt-6 flex flex-col items-center justify-center py-8 gap-3 rounded-xl border border-[#E8E6E1] bg-[#F8F7F4] px-4">
               <Lock className="w-4 h-4 text-[#9E9C98]" />
@@ -1158,6 +1175,7 @@ function SocialProofTrendIntelligence({
               </a>
             </div>
           )}
+
         </div>
       )}
 
