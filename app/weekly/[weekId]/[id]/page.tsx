@@ -1213,7 +1213,7 @@ function SocialProofTrendIntelligence({
                     <p className="text-base font-extrabold text-[#1A1916] mb-3">
                       {step.label}
                     </p>
-                    <p className="text-sm text-[#3D3B36] leading-relaxed whitespace-pre-line">
+                    <p className="text-lg text-[#1A1916] leading-relaxed mb-16 font-medium whitespace-pre-line">
                       {step.content}
                     </p>
                   </div>
