@@ -1290,20 +1290,41 @@ function SourcingIntel({
           </p>
 
           {canSeeAlpha ? (
-            <div className={`rounded-xl border ${exportConfig.border} ${exportConfig.bg} px-8 py-6`}>
+            <div className={`rounded-xl border-2 ${exportConfig.border} ${exportConfig.bg} px-8 py-6`}>
+
+              {/* Status row */}
               <div className="flex items-center gap-4 mb-4">
-                <span className={`text-4xl font-black ${exportConfig.color}`}>
-                  {exportConfig.icon}
-                </span>
-                <p className={`text-2xl font-extrabold ${exportConfig.color}`}>
+                {report.export_status === "Green" && (
+                  <CheckCircle className={`w-8 h-8 shrink-0 ${exportConfig.color}`} />
+                )}
+                {report.export_status === "Yellow" && (
+                  <AlertTriangle className={`w-8 h-8 shrink-0 ${exportConfig.color}`} />
+                )}
+                {report.export_status !== "Green" && report.export_status !== "Yellow" && (
+                  <XCircle className={`w-8 h-8 shrink-0 ${exportConfig.color}`} />
+                )}
+                <p className={`text-2xl font-black ${exportConfig.color}`}>
                   {exportConfig.label}
                 </p>
               </div>
+
+              {/* Status reason */}
               {report.status_reason?.trim() && (
-                <p className="text-lg text-[#1A1916] leading-relaxed mt-2">
+                <p className="text-lg text-[#1A1916] leading-relaxed">
                   {report.status_reason}
                 </p>
               )}
+
+              {/* KoreaScout Pro-Tip */}
+              <p className="text-sm font-semibold italic text-[#3D3B36] mt-4 pt-4 border-t border-black/5">
+                {report.export_status === "Green" &&
+                  "Market dominance is within reach. High-velocity export recommended."}
+                {report.export_status === "Yellow" &&
+                  "Strategic advantage found. Proceed with compliance-focused precision."}
+                {report.export_status !== "Green" && report.export_status !== "Yellow" &&
+                  "Unlocking this barrier is your moated opportunity. Consult with our brokers below."}
+              </p>
+
             </div>
           ) : (
             <div className="h-20 w-full rounded-xl bg-[#F2F1EE]" />
