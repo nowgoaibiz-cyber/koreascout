@@ -594,12 +594,12 @@ function MarketIntelligence({
 
         {/* ── TIER 1: THE MONEY ──────────────────────────── */}
         {hasProfitBlock && (
-          <div className="bg-[#F8F7F4] rounded-xl border border-[#E8E6E1] p-6">
+          <div className="bg-[#F8F7F4] rounded-xl border border-[#E8E6E1] p-6 mb-6">
 
-            {/* 도파민 헤더 */}
+            {/* Badge + Disclaimer */}
             <div className="mb-12">
-              <div className="bg-green-50 rounded-xl px-4 py-2 inline-flex items-center mb-3">
-                <p className="text-3xl font-extrabold text-[#16A34A] tracking-tight">
+              <div className="bg-green-50 border border-green-200 rounded-xl px-4 py-2 inline-flex items-center mb-2">
+                <p className="text-2xl font-extrabold text-[#16A34A] tracking-tight">
                   🔥 UP TO {profitMultiplier}× MARGIN POTENTIAL
                 </p>
               </div>
@@ -608,10 +608,10 @@ function MarketIntelligence({
               </p>
             </div>
 
-            {/* 양분할 — border-r 구분선만 */}
+            {/* Split columns — divider only, no boxes */}
             <div className="grid grid-cols-2">
 
-              {/* 좌: EST. WHOLESALE */}
+              {/* Left: EST. WHOLESALE */}
               <div className="pr-8 border-r border-[#E8E6E1]">
                 <p className="text-lg font-bold text-[#6B6860] uppercase tracking-widest mb-2">
                   Est. Wholesale
@@ -619,32 +619,34 @@ function MarketIntelligence({
                 <p className="text-5xl font-extrabold text-[#1A1916] tracking-tighter">
                   {estimatedCost ? `~$${estimatedCost}` : "—"}
                 </p>
-                <p className="text-xs text-[#9E9C98] mt-2 mb-6">
+                <p className="text-xs text-[#9E9C98] mt-2">
                   Est. KR Wholesale
                 </p>
 
-                {/* Killer CTA */}
-                {isAlpha ? (
-                  <ScrollToIdButton
-                    sectionId="section-6"
-                    className="text-base font-bold text-[#16A34A] hover:underline transition-colors"
-                  >
-                    ✓ View Verified Supplier Cost ↓
-                  </ScrollToIdButton>
-                ) : (
-                  <button
-                    disabled
-                    className="inline-flex items-center gap-2 text-base font-bold text-[#9E9C98] cursor-not-allowed"
-                  >
-                    🔒 View Verified Supplier Cost
-                    <span className="text-[10px] font-bold text-white bg-[#16A34A] rounded-full px-2 py-0.5">
-                      Alpha
-                    </span>
-                  </button>
-                )}
+                {/* CTA — mt-6 breathing room */}
+                <div className="mt-6">
+                  {isAlpha ? (
+                    <ScrollToIdButton
+                      sectionId="section-6"
+                      className="text-base font-bold text-[#16A34A] hover:underline transition-colors"
+                    >
+                      ✓ View Verified Supplier Cost ↓
+                    </ScrollToIdButton>
+                  ) : (
+                    <button
+                      disabled
+                      className="inline-flex items-center gap-2 text-base font-bold text-[#9E9C98] cursor-not-allowed"
+                    >
+                      🔒 View Verified Supplier Cost
+                      <span className="text-[10px] font-bold text-white bg-[#16A34A] rounded-full px-2 py-0.5">
+                        Alpha
+                      </span>
+                    </button>
+                  )}
+                </div>
               </div>
 
-              {/* 우: GLOBAL VALUATION */}
+              {/* Right: GLOBAL VALUATION */}
               <div className="pl-8">
                 <p className="text-lg font-bold text-[#6B6860] uppercase tracking-widest mb-2">
                   Global Valuation
