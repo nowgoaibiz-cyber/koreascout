@@ -1343,25 +1343,24 @@ function SourcingIntel({
 
           {canSeeAlpha ? (
             <>
-              {/* ── Weight 3분할 ─────────────────────────── */}
+              {/* ── Weight 3카드 + 화살표 ──────────────────── */}
               {hasWeight && (
-                <div className="grid grid-cols-3 mb-12">
+                <div className="flex items-center gap-3 mb-12">
 
                   {/* Actual Weight */}
-                  <div className="pr-8 border-r border-[#E8E6E1]">
-                    <p className="text-lg font-bold text-[#6B6860] uppercase tracking-widest mb-3">
-                      Actual Weight
-                    </p>
+                  <div className="flex-1 bg-white border border-[#E8E6E1] rounded-xl p-5 text-center">
+                    <p className="text-lg font-bold text-[#6B6860] uppercase tracking-widest mb-3">Actual Weight</p>
                     <p className="text-4xl font-black tracking-tighter text-[#1A1916]">
                       {hasActual ? `${report.actual_weight_g}g` : "—"}
                     </p>
                   </div>
 
+                  {/* Arrow */}
+                  <ArrowRight className="w-5 h-5 text-[#9E9C98] shrink-0" />
+
                   {/* Volumetric Weight */}
-                  <div className="px-8 border-r border-[#E8E6E1]">
-                    <p className="text-lg font-bold text-[#6B6860] uppercase tracking-widest mb-3">
-                      Volumetric Weight
-                    </p>
+                  <div className="flex-1 bg-white border border-[#E8E6E1] rounded-xl p-5 text-center">
+                    <p className="text-lg font-bold text-[#6B6860] uppercase tracking-widest mb-3">Volumetric Weight</p>
                     <p className="text-4xl font-black tracking-tighter text-[#1A1916]">
                       {hasVol ? `${report.volumetric_weight_g}g` : "—"}
                     </p>
@@ -1372,11 +1371,12 @@ function SourcingIntel({
                     )}
                   </div>
 
-                  {/* Billable Weight */}
-                  <div className="pl-8">
-                    <p className="text-lg font-bold text-[#6B6860] uppercase tracking-widest mb-3 text-[#16A34A]">
-                      Billable Weight
-                    </p>
+                  {/* Arrow */}
+                  <ArrowRight className="w-5 h-5 text-[#9E9C98] shrink-0" />
+
+                  {/* Billable Weight — green highlight */}
+                  <div className="flex-1 bg-[#DCFCE7] border border-[#BBF7D0] rounded-xl p-5 text-center">
+                    <p className="text-lg font-bold text-[#6B6860] uppercase tracking-widest mb-3 text-[#16A34A]">Billable Weight</p>
                     <p className="text-4xl font-black tracking-tighter text-[#16A34A]">
                       {hasBillable ? `${report.billable_weight_g}g` : "—"}
                     </p>
@@ -1394,9 +1394,7 @@ function SourcingIntel({
               {/* ── Shipping Tier ─────────────────────────── */}
               {report.shipping_tier?.trim() && (
                 <div className="mb-10">
-                  <p className="text-xl font-bold text-[#1A1916] mb-4">
-                    Shipping Tier
-                  </p>
+                  <p className="text-xl font-bold text-[#1A1916] mb-4">Shipping Tier</p>
                   <p className="text-lg text-[#1A1916] leading-relaxed">
                     {describeShippingTier(report.shipping_tier).description}
                   </p>
@@ -1405,35 +1403,31 @@ function SourcingIntel({
 
               {/* ── Hazmat & Compliance ───────────────────── */}
               <div className="border-t border-[#E8E6E1] pt-8 mt-4">
-                <p className="text-xl font-bold text-[#1A1916] mb-6">
-                  Hazmat &amp; Compliance
-                </p>
+                <p className="text-xl font-bold text-[#1A1916] mb-6">Hazmat &amp; Compliance</p>
 
-                {/* HazmatBadges — 4열 그리드 */}
+                {/* HazmatBadges — 4열 그리드, 큰 아이콘 */}
                 <div className="grid grid-cols-4 gap-4 mb-6">
                   <HazmatBadges status={report.hazmat_status as unknown} />
                 </div>
 
                 {report.key_risk_ingredient?.trim() && (
                   <div className="flex items-start gap-2 mt-4">
-                    <AlertTriangle className="w-4 h-4 text-[#D97706] shrink-0 mt-0.5" />
+                    <AlertTriangle className="w-5 h-5 text-[#D97706] shrink-0 mt-0.5" />
                     <p className="text-sm text-[#DC2626] leading-relaxed font-medium">
                       Risk Ingredient: {report.key_risk_ingredient}
                     </p>
                   </div>
                 )}
 
-                {/* Certifications — Trending Signal Pill 스타일 */}
+                {/* Certifications — Luxury Pills */}
                 {certs.length > 0 && (
                   <div className="mt-8">
-                    <p className="text-xl font-bold text-[#1A1916] mb-4">
-                      Certifications Required
-                    </p>
-                    <div className="flex flex-wrap gap-3 w-full">
+                    <p className="text-xl font-bold text-[#1A1916] mb-4">Certifications Required</p>
+                    <div className="flex flex-wrap gap-3">
                       {certs.map((cert) => (
                         <span
                           key={cert}
-                          className="flex-1 min-w-max text-center bg-white border border-[#E8E6E1] text-[#1A1916] rounded-full px-4 py-2 text-sm font-bold hover:bg-[#F1F0ED] transition-colors cursor-default"
+                          className="bg-white border border-[#E8E6E1] text-[#1A1916] rounded-full px-5 py-2 text-sm font-bold hover:bg-[#F1F0ED] transition-colors cursor-default"
                         >
                           {cert}
                         </span>
@@ -1449,23 +1443,15 @@ function SourcingIntel({
 
                   {report.composition_info?.trim() && (
                     <div>
-                      <p className="text-xl font-bold text-[#1A1916] mb-4">
-                        Ingredients
-                      </p>
-                      <div className="text-lg text-[#1A1916] leading-relaxed">
-                        <ExpandableText text={report.composition_info} label="Ingredients" />
-                      </div>
+                      <p className="text-xl font-bold text-[#1A1916] mb-4">Ingredients</p>
+                      <ExpandableText text={report.composition_info} label="Ingredients" />
                     </div>
                   )}
 
                   {report.spec_summary?.trim() && (
                     <div>
-                      <p className="text-xl font-bold text-[#1A1916] mb-4">
-                        Specifications
-                      </p>
-                      <div className="text-lg text-[#1A1916] leading-relaxed">
-                        <ExpandableText text={report.spec_summary} label="Specifications" />
-                      </div>
+                      <p className="text-xl font-bold text-[#1A1916] mb-4">Specifications</p>
+                      <ExpandableText text={report.spec_summary} label="Specifications" />
                     </div>
                   )}
                 </div>
