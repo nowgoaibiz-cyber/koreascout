@@ -48,19 +48,33 @@ export function HazmatBadges({ status }: HazmatBadgesProps) {
   const parsed = parseHazmatStatus(status);
   if (!parsed || typeof parsed !== "object") return null;
 
-  return (
-    <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-      {ITEMS.map((item) => {
-        const value = Boolean(parsed[item.key]);
-        const base = "inline-flex items-center justify-center gap-1 rounded-lg px-3 py-2 text-xs font-medium border";
+  const badges = ITEMS.map((item) => {
+    const active = Boolean(parsed[item.key]);
+    return {
+      label: item.label,
+      icon: item.icon,
+      active,
+      activeClass: active ? item.trueClass : item.falseClass,
+    };
+  });
 
-        return (
-          <span key={item.key} className={`${base} ${value ? item.trueClass : item.falseClass}`}>
-            <span aria-hidden>{item.icon}</span>
-            <span>{item.label}</span>
+  return (
+    <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 w-full">
+      {badges.map((badge) => (
+        <div
+          key={badge.label}
+          className={`flex items-center justify-center gap-2 p-3 rounded-xl border min-w-0 ${
+            badge.active ? badge.activeClass : "bg-[#F8F7F4] border-[#E8E6E1]"
+          }`}
+        >
+          <span className="w-5 h-5 shrink-0 flex items-center justify-center" aria-hidden>
+            {badge.icon}
           </span>
-        );
-      })}
+          <span className="text-xs font-extrabold uppercase tracking-tight truncate min-w-0">
+            {badge.label}
+          </span>
+        </div>
+      ))}
     </div>
   );
 }

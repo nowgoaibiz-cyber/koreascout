@@ -1405,8 +1405,8 @@ function SourcingIntel({
               <div className="border-t border-[#E8E6E1] pt-8 mt-4">
                 <p className="text-xl font-bold text-[#1A1916] mb-6">Hazmat &amp; Compliance</p>
 
-                {/* HazmatBadges — 4열 그리드, 큰 아이콘 */}
-                <div className="grid grid-cols-4 gap-4 mb-6">
+                {/* HazmatBadges */}
+                <div className="w-full mb-6">
                   <HazmatBadges status={report.hazmat_status as unknown} />
                 </div>
 
