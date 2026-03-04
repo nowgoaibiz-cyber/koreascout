@@ -7,10 +7,21 @@ function escapeRegex(s: string): string {
   return s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
 
-export function BrokerEmailDraft({ report }: { report: ScoutFinalReportsRow }) {
+export function BrokerEmailDraft({
+  report,
+  onOpenChange,
+}: {
+  report: ScoutFinalReportsRow;
+  onOpenChange?: (open: boolean) => void;
+}) {
   const [open, setOpen] = useState(false);
   const [destination, setDestination] = useState("");
   const [copied, setCopied] = useState(false);
+
+  const handleToggle = (next: boolean) => {
+    setOpen(next);
+    onOpenChange?.(next);
+  };
 
   const dest = destination.trim() || "your destination country";
 
@@ -117,7 +128,7 @@ export function BrokerEmailDraft({ report }: { report: ScoutFinalReportsRow }) {
   return (
     <div>
       <button
-        onClick={() => setOpen(!open)}
+        onClick={() => handleToggle(!open)}
         className="w-full text-left p-4 rounded-xl bg-[#DCFCE7] border border-[#BBF7D0] hover:bg-[#DCFCE7] transition-colors flex flex-col items-start"
       >
         <div className="flex w-full justify-between items-center">

@@ -13,6 +13,7 @@ import { HazmatBadges } from "@/components/HazmatBadges";
 import { ContactCard, ContactPill } from "@/components/ContactCard";
 import { ExpandableText } from "@/components/ExpandableText";
 import { BrokerEmailDraft } from "@/components/BrokerEmailDraft";
+import { GroupBBrokerSection } from "@/components/GroupBBrokerSection";
 import { Badge, Button, KeywordPill } from "@/components/ui";
 import { AlertTriangle, ArrowRight, Award, CheckCircle, Film, ImageIcon, LayoutTemplate, Lock, TrendingUp, XCircle } from "lucide-react";
 import type { ScoutFinalReportsRow } from "@/types/database";
@@ -1332,49 +1333,7 @@ function SourcingIntel({
         </div>
 
         {/* ── GROUP B: HS CODE + BROKER EMAIL ─────────── */}
-        <div className="bg-[#F8F7F4] rounded-2xl p-10">
-          <p className="text-xl font-bold text-[#1A1916] mb-8">
-            HS Code &amp; Broker Weapon
-          </p>
-
-          {canSeeAlpha ? (
-            <div className="grid grid-cols-2">
-              <div className="pr-10 border-r border-[#E8E6E1]">
-                <p className="text-sm font-bold text-[#6B6860] tracking-widest mb-4">HS Code</p>
-                {report.hs_code?.trim() ? (
-                  <>
-                    <div className="flex items-center gap-3 mb-3">
-                      <p className="text-4xl font-extrabold font-mono text-[#1A1916] tracking-tight">
-                        {formatHsCode(report.hs_code) || report.hs_code}
-                      </p>
-                      <CopyButton value={formatHsCode(report.hs_code) || report.hs_code || ""} />
-                    </div>
-                    {report.hs_description?.trim() && (
-                      <p className="text-lg text-[#1A1916] leading-relaxed">{report.hs_description}</p>
-                    )}
-                  </>
-                ) : (
-                  <p className="text-sm text-[#9E9C98] italic">No HS code available.</p>
-                )}
-              </div>
-              <div className="pl-10">
-                <p className="text-sm font-bold text-[#6B6860] tracking-widest mb-4">Broker Email Draft</p>
-                {report.hs_code?.trim() ? (
-                  <BrokerEmailDraft report={report} />
-                ) : (
-                  <p className="text-sm text-[#9E9C98] italic">
-                    Available once HS code is confirmed.
-                  </p>
-                )}
-              </div>
-            </div>
-          ) : (
-            <div className="grid grid-cols-2 gap-6">
-              <div className="h-24 rounded-xl bg-[#F2F1EE]" />
-              <div className="h-24 rounded-xl bg-[#F2F1EE]" />
-            </div>
-          )}
-        </div>
+        <GroupBBrokerSection report={report} canSeeAlpha={canSeeAlpha} />
 
         {/* ── GROUP C: LOGISTICS DASHBOARD ────────────── */}
         <div className="bg-[#F8F7F4] rounded-2xl p-10">
