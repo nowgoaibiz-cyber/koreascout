@@ -1189,7 +1189,7 @@ function SocialProofTrendIntelligence({
           </p>
 
           {canSeeAlpha ? (
-            <div className="space-y-12">
+            <div className="space-y-16">
               {steps.map((step, i) => (
                 <div key={i} className="relative flex gap-6">
 
@@ -1203,7 +1203,7 @@ function SocialProofTrendIntelligence({
                   </span>
 
                   {/* Green accent bar */}
-                  <div className="w-1 bg-[#16A34A] rounded-full shrink-0 self-stretch" />
+                  <div className="w-1 h-10 bg-[#16A34A] rounded-full shrink-0 mt-1" />
 
                   {/* Content */}
                   <div className="flex-1">

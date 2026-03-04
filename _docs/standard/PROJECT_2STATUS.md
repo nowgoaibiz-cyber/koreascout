@@ -1,7 +1,7 @@
 # K-Product Scout — 프로젝트 현황
 
 > **대상:** Gemini, Claude 등 AI 팀원 공유용  
-> **최종 갱신:** 2026년 2월 28일  
+> **최종 갱신:** 2026-03-04  
 > **목적:** 현재 프로젝트 상태를 정확히 파악하기 위한 단일 문서
 
 ---
@@ -240,9 +240,19 @@ K-ProductScout/
 
 ---
 
-## 8b. Current Focus
+## 8b. Section Status (Product Detail Page)
 
-**Overhauling Section 4 (Social Proof & Trend Intelligence) UI** to integrate newly mined evidence data, fix stringified JSON parsing for donut charts (e.g. `platform_scores`), and display the 5-step sourcing strategy (`sourcing_tip`). See handoff report for UI/UX agent (Claude) for field mapping and parsing issues.
+| 섹션 | 상태 | 비고 |
+|------|------|------|
+| **Section 4** (Social Proof & Trend Intelligence) | **DONE** | 럭셔리 타이포·카드·Gap Index Hero·Trending Signals·Scout Strategy 최종 적용. Design Constitution 반영 완료. |
+| **Section 5** (Export & Logistics Intel) | **READY FOR OVERHAUL** | Constitution 확정 후 오버홀 대기. `_docs/standard/10_LUXURY_UI_AUDIT.md` 선행 참조. |
+
+---
+
+## 8c. Current Focus
+
+**Section 5 (Export & Logistics) 오버홀 준비 완료.**  
+Design Constitution(`10_LUXURY_UI_AUDIT.md`) 저장됨. Section 5 작업 시작 전 해당 문서 및 `.cursorrules` Design System 준수.
 
 ---
 
@@ -267,6 +277,17 @@ K-ProductScout/
 - **.env.local.example:** `SUPABASE_SERVICE_ROLE_KEY`, `LEMONSQUEEZY_*`, `LEMONSQUEEZY_VARIANT_ID_STANDARD` / `_ALPHA` 플레이스홀더 및 주석 추가.
 - **Checkout 링크 보안:** Standard/Alpha CTA에 `target="_blank"` 및 `rel="noopener noreferrer"` 적용.
 - **profiles 업데이트 필드:** 웹훅에서 `tier`, `ls_subscription_id`, `tier_updated_at`만 갱신. `ls_customer_id`는 현재 웹훅 로직에서 미설정(필요 시 추후 추가).
+
+---
+
+---
+
+## 11. [2026-03-04] Governance — Design Constitution
+
+- **Completed:** Section 4 럭셔리 UI 확정 기준으로 `_docs/standard/10_LUXURY_UI_AUDIT.md` (Absolute Typography & Card Rules) 작성. Main Header / Sub-Label / Body(200자 ternary) / Card Container / Hero Number 규칙 명시.
+- **Completed:** Section 4 → **DONE**, Section 5 → **READY FOR OVERHAUL** 반영.
+- **Pending:** Section 5 (Export & Logistics Intel) 오버홀 — Constitution 선행 참조 후 진행.
+- **Blockers:** 없음.
 
 ---
 
