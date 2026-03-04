@@ -1,7 +1,7 @@
 # K-Product Scout — DB 현황
 
 > **대상:** Gemini, Claude 등 AI 팀원 공유용  
-> **최종 갱신:** 2026년 2월 27일  
+> **최종 갱신:** 2026-03-05  
 > **참고:** 행 수·샘플 데이터는 Supabase SQL Editor에서 아래 쿼리를 실행한 뒤 채워 넣을 수 있음.
 
 ---
@@ -274,4 +274,27 @@ SELECT schemaname, relname, n_live_tup FROM pg_stat_user_tables WHERE schemaname
 
 ---
 
-이 문서는 `01_CORE_SPEC.md` §7, `PROJECT_2STATUS.md`와 함께 사용하면 DB 현재 상태와 스펙 차이를 빠르게 맞출 수 있습니다.
+## 9. Phase 2 데이터 매핑 및 자동화 현황 (2026-03-05)
+
+### 9-1. 현재 매핑 (Report Page)
+
+| 항목 | 상태 | 비고 |
+|------|------|------|
+| **실시간 환율** | ✅ 적용 | Report 페이지에서 Frankfurter API (`USD→KRW`) 실시간 조회. Fallback 1430 KRW/USD. |
+| **가격·Disclaimer·ISO** | ✅ 로직 지원 | Dual-hero KRW\|USD, Disclaimer(Ex. Rate, Daily fixed 09:00 KST), 현재 변수/로직으로 UI 요소 지원. |
+
+### 9-2. DB 무결성 (신규 UI 요소)
+
+- **Disclaimer / 환율 문구:** 프론트 변수(rate, date) 및 API 응답으로 처리. DB 스키마 변경 없음.
+- **ISO 코드·태그:** `scout_final_reports` 기존 컬럼(`hs_code`, `seo_keywords`, `rising_keywords`, `viral_hashtags` 등)으로 13px 태그·메타 표시 지원. 현재 로직/변수로 충족.
+
+### 9-3. 자동화 상태
+
+| 항목 | 상태 | 비고 |
+|------|------|------|
+| **Make.com → Supabase 파이프라인** | ✅ 완료 | 외부 소스 → Make.com → `scout_final_reports` 적재. |
+| **Make.com 1-click 리포트 생성** | ⏳ **PENDING** | Phase 2 대기열. "원클릭 리포트 생성" 연동은 Phase 2에서 진행. |
+
+---
+
+이 문서는 `01_CORE_SPEC.md` §7, `PROJECT_2STATUS.md`, `_docs/standard/10_LUXURY_UI_AUDIT.md`(v2.0)와 함께 사용하면 DB 현재 상태와 스펙 차이를 빠르게 맞출 수 있습니다.

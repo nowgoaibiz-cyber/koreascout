@@ -1,7 +1,7 @@
 # K-Product Scout — 프로젝트 현황
 
 > **대상:** Gemini, Claude 등 AI 팀원 공유용  
-> **최종 갱신:** 2026-03-04  
+> **최종 갱신:** 2026-03-05  
 > **목적:** 현재 프로젝트 상태를 정확히 파악하기 위한 단일 문서
 
 ---
@@ -245,14 +245,20 @@ K-ProductScout/
 | 섹션 | 상태 | 비고 |
 |------|------|------|
 | **Section 4** (Social Proof & Trend Intelligence) | **DONE** | 럭셔리 타이포·카드·Gap Index Hero·Trending Signals·Scout Strategy 최종 적용. Design Constitution 반영 완료. |
-| **Section 5** (Export & Logistics Intel) | **READY FOR OVERHAUL** | Constitution 확정 후 오버홀 대기. `_docs/standard/10_LUXURY_UI_AUDIT.md` 선행 참조. |
+| **Section 5** (Export & Logistics Intel) | **DONE** | Phase 16-A 완료. Dual-hero 가격, 실시간 환율, Cream 푸터, 13px 태그, 로지스틱스 가시성 강화 등 100% Luxury UI 적용. |
 
 ---
 
-## 8c. Current Focus
+## 8c. Current Focus — Phase 2 진입
 
-**Section 5 (Export & Logistics) 오버홀 준비 완료.**  
-Design Constitution(`10_LUXURY_UI_AUDIT.md`) 저장됨. Section 5 작업 시작 전 해당 문서 및 `.cursorrules` Design System 준수.
+**Phase 1 (Report Completion) 종료. Phase 2 준비.**
+
+- **현재 마일스톤:** Phase 16-A (Report Pixel Polish & Constitution Ratification) **COMPLETED**.
+- **Git:** 새 저장소 `koreascout`로 마이그레이션 완료. Push 및 동기화 완료.
+- **리포트 상태:** 100% Luxury UI 적용 — Dual-hero 가격, 동적 환율, Cream 푸터, 13px 태그, 강화된 로지스틱스 가시성.
+- **다음:** Pricing Page 개발 (Stitch MCP 사용 Sandbox 테스트).
+
+**UI 작업 단일 소스:** 이후 모든 UI 작업은 `_docs/standard/10_LUXURY_UI_AUDIT.md` (v2.0)을 **단일 기준 문서**로 참조. 위반 시 revert.
 
 ---
 
@@ -282,11 +288,12 @@ Design Constitution(`10_LUXURY_UI_AUDIT.md`) 저장됨. Section 5 작업 시작 
 
 ---
 
-## 11. [2026-03-04] Governance — Design Constitution
+## 11. [2026-03-05] Governance — Design Constitution (Phase 16-A Ratified)
 
-- **Completed:** Section 4 럭셔리 UI 확정 기준으로 `_docs/standard/10_LUXURY_UI_AUDIT.md` (Absolute Typography & Card Rules) 작성. Main Header / Sub-Label / Body(200자 ternary) / Card Container / Hero Number 규칙 명시.
-- **Completed:** Section 4 → **DONE**, Section 5 → **READY FOR OVERHAUL** 반영.
-- **Pending:** Section 5 (Export & Logistics Intel) 오버홀 — Constitution 선행 참조 후 진행.
+- **Completed:** Section 4 럭셔리 UI 확정 기준으로 `_docs/standard/10_LUXURY_UI_AUDIT.md` (v2.0) 작성. Main Header / Sub-Label / Body(200자 ternary) / Card Container / Hero Number 규칙 명시.
+- **Completed:** Section 4 → **DONE**, Section 5 → **DONE** (Phase 16-A Report Pixel Polish 완료).
+- **Reference:** 이후 모든 UI 작업은 **`_docs/standard/10_LUXURY_UI_AUDIT.md` (v2.0)** 를 단일 소스로 사용. 홈/프라이싱/리포트 등 페이지 타입별 Decision Matrix 및 Zero Tolerance 적용.
+- **Next:** Pricing Page 개발 (Stitch MCP Sandbox). Make.com 1-click 리포트 생성은 Phase 2 PENDING.
 - **Blockers:** 없음.
 
 ---
