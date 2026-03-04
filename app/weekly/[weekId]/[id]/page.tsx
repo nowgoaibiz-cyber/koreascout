@@ -1253,269 +1253,297 @@ function SourcingIntel({
 }) {
   const canSeeAlpha = tier === "alpha" || isTeaser;
 
+  const allSteps = parseSourcingStrategy(report.sourcing_tip);
+  const logisticsSteps = allSteps.slice(3, 5);
+
+  const hasActual = report.actual_weight_g != null;
+  const hasVol = report.volumetric_weight_g != null;
+  const hasBillable = report.billable_weight_g != null;
+  const hasWeight = hasActual || hasVol || hasBillable;
+
+  const certs = report.required_certificates?.trim()
+    ? report.required_certificates.split(",").map((c) => c.trim()).filter(Boolean)
+    : [];
+
+  const exportConfig = (() => {
+    const s = report.export_status;
+    if (s === "Green") return { icon: "✓", label: "Ready for Export", color: "text-[#16A34A]", bg: "bg-[#DCFCE7]", border: "border-[#BBF7D0]" };
+    if (s === "Yellow") return { icon: "⚠", label: "Conditional Export", color: "text-[#D97706]", bg: "bg-[#FEF3C7]", border: "border-[#FDE68A]" };
+    return { icon: "✗", label: "Export Restricted", color: "text-[#DC2626]", bg: "bg-[#FEE2E2]", border: "border-[#FECACA]" };
+  })();
+
   return (
-    <section id="section-5" className="scroll-mt-[160px] bg-white rounded-2xl border border-[#E8E6E1] p-6 shadow-[0_1px_3px_0_rgb(26_25_22/0.06)] relative">
-      <h2 className="text-3xl font-bold text-[#1A1916] mb-4 tracking-tight">Export & Logistics Intel</h2>
+    <section
+      id="section-5"
+      className="scroll-mt-[160px] bg-white rounded-2xl border border-[#E8E6E1] p-8 shadow-[0_1px_3px_0_rgb(26_25_22/0.06)] relative"
+    >
+      <h2 className="text-3xl font-bold text-[#1A1916] tracking-tight mb-12">
+        Export &amp; Logistics Intel
+      </h2>
 
-      {/* Block 1: Export Readiness */}
-      <div className="mb-6">
-        <p className="text-xs font-semibold text-[#9E9C98] uppercase tracking-widest mb-2">Export Readiness</p>
-        {canSeeAlpha ? (
-          <div className="p-4 rounded-xl border border-[#E8E6E1] bg-[#F8F7F4]">
-            <div className="flex items-center gap-3">
-              {report.export_status === "Green" ? (
-                <CheckCircle className="w-5 h-5 text-[#16A34A] shrink-0" />
-              ) : report.export_status === "Yellow" ? (
-                <AlertTriangle className="w-5 h-5 text-[#D97706] shrink-0" />
-              ) : (
-                <XCircle className="w-5 h-5 text-[#DC2626] shrink-0" />
-              )}
-              <div className={`rounded-lg border px-3 py-2 flex-1 ${
-                report.export_status === "Green"
-                  ? "bg-[#DCFCE7] border-[#BBF7D0]"
-                  : report.export_status === "Yellow"
-                    ? "bg-[#FEF3C7] border-[#FDE68A]"
-                    : "bg-[#FEE2E2] border-[#FECACA]"
-              }`}>
-                <p className={`text-sm font-semibold ${
-                  report.export_status === "Green"
-                    ? "text-[#16A34A]"
-                    : report.export_status === "Yellow"
-                      ? "text-[#D97706]"
-                      : "text-[#DC2626]"
-                }`}>
-                  {report.export_status === "Green"
-                    ? "Ready to Export"
-                    : report.export_status === "Yellow"
-                      ? "Check Regulations"
-                      : "Export Restricted"}
-                </p>
-                {report.status_reason?.trim() && (
-                  <p className="text-sm text-[#6B6860] leading-relaxed mt-1">{report.status_reason}</p>
-                )}
-              </div>
-            </div>
-          </div>
-        ) : (
-          <div className="h-16 w-full rounded-xl bg-[#F2F1EE]" />
-        )}
-      </div>
+      <div className="space-y-6">
 
-      {/* Block 2: HS Code & Classification */}
-      <div className="mb-6">
-        <p className="text-xs font-semibold text-[#9E9C98] uppercase tracking-widest mb-2">HS Code & Classification</p>
-        {canSeeAlpha ? (
-          <div className="p-4 rounded-xl border border-[#E8E6E1] bg-[#F8F7F4]">
-            {report.hs_code?.trim() ? (
-              <>
-                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-3">
-                  <code className="text-4xl font-mono font-bold text-[#1A1916] tracking-tight">
-                    {formatHsCode(report.hs_code) || report.hs_code}
-                  </code>
-                  <CopyButton value={report.hs_code} variant="primary" />
-                </div>
-                {report.hs_description?.trim() && (
-                  <p className="text-sm text-[#6B6860] leading-relaxed mb-3">{report.hs_description}</p>
-                )}
-                <p className="text-xs text-[#9E9C98] italic leading-relaxed">
-                  Compiled from Korean sources by AI. Verify with a licensed customs broker before export.
-                </p>
-              </>
-            ) : (
-              <div>
-                <p className="text-sm text-[#6B6860]">HS Code not available</p>
-                <p className="text-xs text-[#9E9C98] mt-1">
-                  AI could not determine a classification. Consult your customs broker directly.
-                </p>
-              </div>
-            )}
-          </div>
-        ) : (
-          <div className="h-20 w-full rounded-xl bg-[#F2F1EE]" />
-        )}
-      </div>
+        {/* ── GROUP A: EXPORT READINESS ───────────────── */}
+        <div className="bg-[#F8F7F4] rounded-2xl p-10">
+          <p className="text-xl font-bold text-[#1A1916] mb-8">
+            Export Readiness
+          </p>
 
-      {/* Block 3: Broker Email Draft */}
-      {canSeeAlpha && report.hs_code?.trim() && (
-        <div className="mb-6 p-4 rounded-xl border border-[#E8E6E1] bg-[#F8F7F4]">
-          <BrokerEmailDraft report={report} />
-        </div>
-      )}
-      {!canSeeAlpha && (
-        <div className="mb-6 p-4 rounded-xl border border-[#E8E6E1] bg-[#F8F7F4]">
-          <p className="text-xs text-[#9E9C98] italic">Broker Email Draft — available on Alpha Plan</p>
-        </div>
-      )}
-
-      {/* Block 4: Weight & Shipping */}
-      <div className="mb-6">
-        <p className="text-xs font-semibold text-[#9E9C98] uppercase tracking-widest mb-2">Weight & Shipping</p>
-        {canSeeAlpha ? (
-          <div>
-            {(() => {
-              const hasActual = report.actual_weight_g != null;
-              const hasVol = report.volumetric_weight_g != null;
-              const hasBillable = report.billable_weight_g != null;
-              if (!hasActual && !hasVol && !hasBillable) return null;
-
-              return (
-                <div className="flex flex-col sm:flex-row items-center gap-4 mb-3">
-                  {hasActual && (
-                    <div className="flex-1 min-w-0 p-4 rounded-xl border border-[#E8E6E1] bg-[#F8F7F4] text-center">
-                      <p className="text-xs text-[#9E9C98] uppercase tracking-widest mb-1">Actual Weight</p>
-                      <p className="text-2xl font-mono font-semibold text-[#1A1916]">{report.actual_weight_g}g</p>
-                    </div>
-                  )}
-                  {hasActual && hasVol && (
-                    <ArrowRight className="w-4 h-4 text-[#9E9C98] shrink-0" />
-                  )}
-                  {hasVol && (
-                    <div className="flex-1 min-w-0 p-4 rounded-xl border border-[#E8E6E1] bg-[#F8F7F4] text-center">
-                      <p className="text-xs text-[#9E9C98] uppercase tracking-widest mb-1">Volumetric Weight</p>
-                      <p className="text-2xl font-mono font-semibold text-[#1A1916]">{report.volumetric_weight_g}g</p>
-                    </div>
-                  )}
-                  {hasBillable && (hasActual || hasVol) && (
-                    <ArrowRight className="w-4 h-4 text-[#9E9C98] shrink-0" />
-                  )}
-                  {hasBillable && (
-                    <div className="flex-1 min-w-0 p-4 rounded-xl border border-[#BBF7D0] bg-[#DCFCE7] text-center">
-                      <p className="text-xs text-[#9E9C98] uppercase tracking-widest mb-1">Billable Weight</p>
-                      <p className="text-2xl font-mono font-semibold text-[#16A34A]">{report.billable_weight_g}g</p>
-                    </div>
-                  )}
-                </div>
-              );
-            })()}
-            <div className="flex flex-wrap items-center gap-4 text-sm text-[#6B6860] leading-relaxed">
-              {report.dimensions_cm?.trim() && <span>{report.dimensions_cm}</span>}
-              {report.shipping_tier?.trim() && (() => {
-                const { description } = describeShippingTier(report.shipping_tier);
-                return (
-                  <span><Badge variant="default">{description || report.shipping_tier}</Badge></span>
-                );
-              })()}
-            </div>
-            {report.actual_weight_g != null &&
-              report.volumetric_weight_g != null &&
-              report.billable_weight_g != null && (
-                <p className="text-xs text-[#9E9C98] mt-2">
-                  {report.volumetric_weight_g > report.actual_weight_g
-                    ? "Volumetric weight exceeds actual — carriers will charge based on volumetric."
-                    : "Actual weight is used as the billing basis."}
-                </p>
-              )}
-          </div>
-        ) : (
-          <div className="h-24 w-full rounded-xl bg-[#F2F1EE]" />
-        )}
-      </div>
-
-      {/* Block 5: Hazmat & Compliance */}
-      <div className="mb-6">
-        <p className="text-xs font-semibold text-[#9E9C98] uppercase tracking-widest mb-2">Hazmat & Compliance</p>
-        {canSeeAlpha ? (
-          <div className="p-4 rounded-xl border border-[#E8E6E1] bg-[#F8F7F4] space-y-3">
-            <HazmatBadges status={report.hazmat_status as unknown} />
-            {report.key_risk_ingredient?.trim() && (
-              <p className="text-sm text-[#3D3B36] leading-relaxed">
-                <Badge variant="warning" className="mr-1.5">Risk Ingredient</Badge>
-                {report.key_risk_ingredient}
-              </p>
-            )}
-            {report.required_certificates?.trim() && (
-              <div>
-                <p className="text-xs text-[#9E9C98] mb-2">Certifications Required:</p>
-                <div className="flex flex-wrap gap-2">
-                  {report.required_certificates.split(",").map((cert, i) => (
-                    <Badge key={i} variant="info">{cert.trim()}</Badge>
-                  ))}
-                </div>
-              </div>
-            )}
-          </div>
-        ) : (
-          <div className="h-20 w-full rounded-xl bg-[#F2F1EE]" />
-        )}
-      </div>
-
-      {/* Block 6: Product Specs */}
-      {(report.composition_info?.trim() || report.spec_summary?.trim()) && (
-        <div className="mb-6">
-          <p className="text-xs font-semibold text-[#9E9C98] uppercase tracking-widest mb-2">Product Specs</p>
-          {report.composition_info?.trim() && (
-            <p className="text-xs text-[#9E9C98] italic mt-0 mb-2">
-              *Ingredients may be truncated. Always verify full INCI list via the provided product image link.
-            </p>
-          )}
           {canSeeAlpha ? (
-            <div className="p-4 rounded-xl border border-[#E8E6E1] bg-[#F8F7F4]">
-              {report.composition_info?.trim() && (
-                <ExpandableText text={report.composition_info} label="Ingredients" />
-              )}
-              {report.spec_summary?.trim() && (
-                <ExpandableText text={report.spec_summary} label="Specifications" />
+            <div className={`rounded-xl border ${exportConfig.border} ${exportConfig.bg} px-8 py-6`}>
+              <div className="flex items-center gap-4 mb-4">
+                <span className={`text-4xl font-black ${exportConfig.color}`}>
+                  {exportConfig.icon}
+                </span>
+                <p className={`text-2xl font-extrabold ${exportConfig.color}`}>
+                  {exportConfig.label}
+                </p>
+              </div>
+              {report.status_reason?.trim() && (
+                <p className="text-lg text-[#1A1916] leading-relaxed mt-2">
+                  {report.status_reason}
+                </p>
               )}
             </div>
           ) : (
             <div className="h-20 w-full rounded-xl bg-[#F2F1EE]" />
           )}
         </div>
-      )}
 
-      {/* Block 7: Shipping Notes */}
-      {(() => {
-        const notes = report.shipping_notes?.trim();
-        if (!notes || /tier/i.test(notes)) return null;
-        return (
-          <div className="mb-6">
-            <p className="text-xs font-semibold text-[#9E9C98] uppercase tracking-widest mb-2">Shipping Notes</p>
-            {canSeeAlpha ? (
-              <p className="text-sm text-[#3D3B36] leading-relaxed">{report.shipping_notes}</p>
-            ) : (
-              <div className="h-12 w-full rounded-xl bg-[#F2F1EE]" />
-            )}
-          </div>
-        );
-      })()}
+        {/* ── GROUP B: HS CODE + BROKER EMAIL ─────────── */}
+        <div className="bg-[#F8F7F4] rounded-2xl p-10">
+          <p className="text-xl font-bold text-[#1A1916] mb-8">
+            HS Code &amp; Broker Weapon
+          </p>
 
-      {/* Block 8: Compliance & Logistics Strategy (Steps 4-5) */}
-      {(() => {
-        const allSteps = parseSourcingStrategy(report.sourcing_tip);
-        const logisticsSteps = allSteps.slice(3, 5);
-        if (logisticsSteps.length === 0) return null;
-
-        return (
-          <div className="mb-6">
-            <p className="text-xs font-semibold text-[#9E9C98] uppercase tracking-widest mb-2">
-              Compliance & Logistics Strategy
-            </p>
-            {canSeeAlpha ? (
-              <div className="space-y-3">
-                {logisticsSteps.map((step, i) => (
-                  <div key={i} className="bg-white rounded-lg border border-[#E8E6E1] p-4">
-                    <Badge variant="success" className="mb-2">Step {i + 4}</Badge>
-                    <p className="text-sm font-semibold text-[#1A1916] mb-1">{step.label}</p>
-                    <p className="text-sm text-[#6B6860] leading-relaxed whitespace-pre-line">{step.content}</p>
-                  </div>
-                ))}
+          {canSeeAlpha ? (
+            <div className="grid grid-cols-2 gap-8">
+              <div className="pr-10 border-r border-[#E8E6E1]">
+                <p className="text-sm font-bold text-[#6B6860] tracking-widest mb-4">
+                  HS Code
+                </p>
+                {report.hs_code?.trim() ? (
+                  <>
+                    <div className="flex items-center gap-3 mb-3">
+                      <p className="text-4xl font-extrabold font-mono text-[#1A1916] tracking-tight">
+                        {formatHsCode(report.hs_code) || report.hs_code}
+                      </p>
+                      <CopyButton value={formatHsCode(report.hs_code) || report.hs_code || ""} variant="primary" />
+                    </div>
+                    {report.hs_description?.trim() && (
+                      <p className="text-lg text-[#1A1916] leading-relaxed">
+                        {report.hs_description}
+                      </p>
+                    )}
+                  </>
+                ) : (
+                  <p className="text-sm text-[#9E9C98] italic">No HS code available.</p>
+                )}
               </div>
-            ) : (
-              <div className="h-24 w-full rounded-xl bg-[#F2F1EE]" />
-            )}
-          </div>
-        );
-      })()}
 
-      {/* Alpha Lock Overlay — prominent CTA for Standard users */}
+              <div className="pl-10">
+                <p className="text-sm font-bold text-[#6B6860] tracking-widest mb-4">
+                  Broker Email Draft
+                </p>
+                {report.hs_code?.trim() ? (
+                  <BrokerEmailDraft report={report} />
+                ) : (
+                  <p className="text-sm text-[#9E9C98] italic">
+                    Available once HS code is confirmed.
+                  </p>
+                )}
+              </div>
+            </div>
+          ) : (
+            <div className="grid grid-cols-2 gap-6">
+              <div className="h-24 rounded-xl bg-[#F2F1EE]" />
+              <div className="h-24 rounded-xl bg-[#F2F1EE]" />
+            </div>
+          )}
+        </div>
+
+        {/* ── GROUP C: LOGISTICS DASHBOARD ────────────── */}
+        <div className="bg-[#F8F7F4] rounded-2xl p-10">
+          <p className="text-xl font-bold text-[#1A1916] mb-8">
+            Logistics Dashboard
+          </p>
+
+          {canSeeAlpha ? (
+            <>
+              {hasWeight && (
+                <div className="grid grid-cols-3 mb-10">
+                  <div className="pr-8 border-r border-[#E8E6E1]">
+                    <p className="text-sm font-bold text-[#6B6860] tracking-widest mb-3">Actual Weight</p>
+                    <p className="text-3xl font-extrabold text-[#1A1916] tracking-tight">
+                      {hasActual ? `${report.actual_weight_g}g` : "—"}
+                    </p>
+                  </div>
+                  <div className="px-8 border-r border-[#E8E6E1]">
+                    <p className="text-sm font-bold text-[#6B6860] tracking-widest mb-3">Volumetric Weight</p>
+                    <p className="text-3xl font-extrabold text-[#1A1916] tracking-tight">
+                      {hasVol ? `${report.volumetric_weight_g}g` : "—"}
+                    </p>
+                    {report.dimensions_cm?.trim() && (
+                      <p className="text-xs text-[#9E9C98] mt-2">
+                        {report.dimensions_cm}
+                      </p>
+                    )}
+                  </div>
+                  <div className="pl-8">
+                    <p className="text-sm font-bold text-[#6B6860] tracking-widest mb-3 text-[#16A34A]">Billable Weight</p>
+                    <p className="text-3xl font-extrabold text-[#16A34A] tracking-tight">
+                      {hasBillable ? `${report.billable_weight_g}g` : "—"}
+                    </p>
+                    {hasVol && hasActual && (
+                      <p className="text-xs text-[#16A34A]/70 mt-2">
+                        {report.volumetric_weight_g! > report.actual_weight_g!
+                          ? "Volumetric applies"
+                          : "Dead weight applies"}
+                      </p>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {report.shipping_tier?.trim() && (
+                <div className="mb-6">
+                  <p className="text-sm font-bold text-[#6B6860] tracking-widest mb-2">Shipping Tier</p>
+                  <p className="text-lg text-[#1A1916] leading-relaxed">
+                    {describeShippingTier(report.shipping_tier).description}
+                  </p>
+                </div>
+              )}
+
+              <div className="border-t border-[#E8E6E1] pt-8 mt-4">
+                <p className="text-sm font-bold text-[#6B6860] tracking-widest mb-4">Hazmat &amp; Compliance</p>
+                <HazmatBadges status={report.hazmat_status as unknown} />
+
+                {report.key_risk_ingredient?.trim() && (
+                  <div className="mt-4 flex items-start gap-2">
+                    <AlertTriangle className="w-4 h-4 text-[#D97706] shrink-0 mt-0.5" />
+                    <p className="text-sm text-[#DC2626] leading-relaxed">
+                      Risk Ingredient: {report.key_risk_ingredient}
+                    </p>
+                  </div>
+                )}
+
+                {certs.length > 0 && (
+                  <div className="mt-4">
+                    <p className="text-xs text-[#9E9C98] uppercase tracking-widest mb-2">
+                      Certifications Required
+                    </p>
+                    <div className="flex flex-wrap gap-2">
+                      {certs.map((cert) => (
+                        <span
+                          key={cert}
+                          className="text-xs font-medium bg-white border border-[#E8E6E1] text-[#3D3B36] rounded-full px-3 py-1"
+                        >
+                          {cert}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {(report.composition_info?.trim() || report.spec_summary?.trim()) && (
+                <div className="border-t border-[#E8E6E1] pt-8 mt-4">
+                  {report.composition_info?.trim() && (
+                    <div className="mb-6">
+                      <p className="text-sm font-bold text-[#6B6860] tracking-widest mb-3">Ingredients</p>
+                      <ExpandableText text={report.composition_info} label="Ingredients" />
+                    </div>
+                  )}
+                  {report.spec_summary?.trim() && (
+                    <div>
+                      <p className="text-sm font-bold text-[#6B6860] tracking-widest mb-3">Specifications</p>
+                      <ExpandableText text={report.spec_summary} label="Specifications" />
+                    </div>
+                  )}
+                </div>
+              )}
+            </>
+          ) : (
+            <div className="space-y-4">
+              <div className="h-16 w-full rounded-xl bg-[#F2F1EE]" />
+              <div className="h-24 w-full rounded-xl bg-[#F2F1EE]" />
+              <div className="h-20 w-full rounded-xl bg-[#F2F1EE]" />
+            </div>
+          )}
+        </div>
+
+        {/* ── GROUP D: COMPLIANCE STRATEGY ────────────── */}
+        {(() => {
+          const notes = report.shipping_notes?.trim();
+          const hasNotes = notes && !/tier/i.test(notes);
+          if (logisticsSteps.length === 0 && !hasNotes) return null;
+
+          return (
+            <div className="bg-[#F8F7F4] rounded-2xl p-10">
+              <p className="text-xl font-bold text-[#1A1916] mb-10">
+                Compliance &amp; Logistics Strategy
+              </p>
+
+              {canSeeAlpha ? (
+                <>
+                  {logisticsSteps.length > 0 && (
+                    <div className="space-y-16 mb-10">
+                      {logisticsSteps.map((step, i) => (
+                        <div key={i} className="relative flex gap-6">
+                          <span
+                            className="absolute -top-4 -left-2 text-[80px] font-black leading-none select-none pointer-events-none opacity-[0.03]"
+                            style={{ color: "#1A1916" }}
+                            aria-hidden="true"
+                          >
+                            {String(i + 4).padStart(2, "0")}
+                          </span>
+                          <div className="w-1 h-10 bg-[#16A34A] rounded-full shrink-0 mt-1" />
+                          <div className="flex-1">
+                            <p className="text-xs font-semibold text-[#9E9C98] uppercase tracking-widest mb-2">
+                              Step {i + 4}
+                            </p>
+                            <p className="text-base font-extrabold text-[#1A1916] mb-3">
+                              {step.label}
+                            </p>
+                            <p className="text-lg text-[#1A1916] leading-relaxed whitespace-pre-line">
+                              {step.content}
+                            </p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
+                  {hasNotes && (
+                    <div className="border-t border-dashed border-[#E8E6E1] pt-8">
+                      <p className="text-sm font-bold text-[#6B6860] tracking-widest mb-3">Shipping Notes</p>
+                      <p className="text-sm italic text-[#6B6860] leading-relaxed">
+                        {notes}
+                      </p>
+                    </div>
+                  )}
+                </>
+              ) : (
+                <div className="space-y-4">
+                  <div className="h-24 w-full rounded-xl bg-[#F2F1EE]" />
+                  <div className="h-16 w-full rounded-xl bg-[#F2F1EE]" />
+                </div>
+              )}
+            </div>
+          );
+        })()}
+
+      </div>
+
+      {/* ── ALPHA LOCK OVERLAY (절대 건드리지 않음) ──── */}
       {!canSeeAlpha && (
         <div className="absolute inset-0 bg-gradient-to-t from-white via-white/80 to-transparent flex flex-col items-center justify-end pb-6 gap-3 rounded-2xl">
           <Lock className="w-5 h-5 text-[#9E9C98]" />
-          <p className="text-sm font-semibold text-[#3D3B36] text-center px-4">
-            HS codes, weight specs, hazmat checks, broker email templates, compliance strategy & more.
+          <p className="text-sm text-[#6B6860] text-center max-w-xs">
+            Unlock full logistics intelligence with Alpha.
           </p>
           <a href="/pricing">
-            <Button variant="primary" size="sm">Go Alpha $29/mo →</Button>
+            <Button variant="secondary" size="sm">Go Alpha $29/mo →</Button>
           </a>
         </div>
       )}
