@@ -73,7 +73,7 @@ export function HazmatBadges({ status }: HazmatBadgesProps) {
           {badge.label === "Powder" && <Sparkles className="w-3.5 h-3.5 text-slate-400 shrink-0" aria-hidden />}
           {badge.label === "Battery" && <BatteryCharging className="w-3.5 h-3.5 text-green-500 shrink-0" aria-hidden />}
           {badge.label === "Aerosol" && <Wind className="w-3.5 h-3.5 text-purple-400 shrink-0" aria-hidden />}
-          <span className="text-[10px] font-black uppercase tracking-[0.25em] text-[#1A1916] truncate min-w-0">
+          <span className="text-[13px] font-black uppercase tracking-[0.25em] text-[#1A1916] truncate min-w-0">
             {badge.label}
           </span>
         </div>

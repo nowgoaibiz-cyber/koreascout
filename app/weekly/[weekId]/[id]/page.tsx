@@ -279,25 +279,24 @@ function ProductIdentity({
 
             {/* TIER 1: Retail Price — Hero */}
             {report.kr_price != null && (
-              <div className="mb-1">
+              <div className="mb-2">
                 <p className="text-xs font-bold text-[#9E9C98] uppercase tracking-[0.2em] mb-2">
                   Retail Price (KR Market)
                 </p>
                 <div className="flex items-baseline">
                   <span className="text-4xl md:text-5xl font-black text-[#1A1916] leading-none tracking-tighter">
-                    ₩{Number(report.kr_price).toLocaleString()}
+                    KRW {Number(report.kr_price).toLocaleString()}
                   </span>
-                  {report.kr_price_usd != null && (
-                    <>
-                      <span className="text-[#E8E6E1] mx-6 font-thin text-4xl md:text-5xl leading-none">
-                        /
-                      </span>
-                      <span className="text-4xl md:text-5xl font-black text-[#1A1916] leading-none tracking-tighter">
-                        ~${report.kr_price_usd}
-                      </span>
-                    </>
-                  )}
+                  <span className="text-4xl md:text-5xl font-thin text-[#E8E6E1] mx-8 leading-none">
+                    /
+                  </span>
+                  <span className="text-4xl md:text-5xl font-black text-[#1A1916] leading-none tracking-tighter">
+                    USD {(Number(report.kr_price) / 1430).toFixed(2)}
+                  </span>
                 </div>
+                <p className="text-[10px] text-[#9E9C98] font-semibold mt-2">
+                  Ex. Rate: 1,430 KRW/USD (Fixed at Mar 05, 09:00 KST)
+                </p>
               </div>
             )}
 
@@ -1426,7 +1425,7 @@ function SourcingIntel({
                       {hasVol ? `${report.volumetric_weight_g}g` : "—"}
                     </p>
                     {report.dimensions_cm?.trim() && (
-                      <span className="inline-block mt-2 bg-[#F2F1EE] text-[#9E9C98] rounded px-2 py-0.5 text-[10px] font-medium">
+                      <span className="inline-block mt-2 bg-[#F2F1EE] text-[#9E9C98] rounded px-2 py-0.5 text-xs font-medium">
                         {report.dimensions_cm}
                       </span>
                     )}
@@ -2265,8 +2264,8 @@ export default async function ProductDetailPage({
           </div>
         )}
 
-        {/* Section 8: Navigation (all tiers) — dark footer anchor */}
-        <section className="rounded-2xl border border-[#3D3B36] bg-[#1A1916] p-6">
+        {/* Section 8: Navigation (all tiers) — cream footer anchor */}
+        <section className="rounded-2xl border border-[#E8E6E1] bg-[#F8F7F4] p-6">
           <div className="flex items-center justify-between gap-4 mb-6">
             {prevId ? (
               <Link
@@ -2292,12 +2291,12 @@ export default async function ProductDetailPage({
           <p className="mb-6">
             <Link
               href={`/weekly/${weekId}`}
-              className="text-[#F8F7F4] hover:text-[#16A34A] font-medium text-sm inline-flex items-center gap-2 transition-colors"
+              className="text-[#1A1916] hover:text-[#16A34A] font-medium text-sm inline-flex items-center gap-2 transition-colors"
             >
               Back to {weekLabel} Product List
             </Link>
           </p>
-          <div className="rounded-lg border border-[#3D3B36] bg-[#3D3B36]/30 px-4 py-3 text-center">
+          <div className="rounded-lg border border-[#E8E6E1] bg-[#F2F1EE] px-4 py-3 text-center">
             {tier === "free" && (
               <Link
                 href="/pricing"
