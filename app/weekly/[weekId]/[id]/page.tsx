@@ -1091,16 +1091,16 @@ function SocialProofTrendIntelligence({
 
       {/* ── BLOCK 4: TRENDING SIGNALS ────────────────── */}
       {hasAnyTrending && (
-        <div className="mb-24">
+        <div className="bg-[#F8F7F4] rounded-2xl p-10 mb-12">
 
-          {/* Main Header — REF A */}
+          {/* Header — REF A */}
           <p className="text-xl font-bold text-[#1A1916] mb-10">
             Trending Signals
           </p>
 
-          {/* Rising Keywords (KR) — all tiers */}
+          {/* Rising Keywords — all tiers */}
           {risingKw.length > 0 && (
-            <div className="mb-10">
+            <div className="mb-8">
               <p className="text-sm font-bold text-[#6B6860] tracking-widest mb-4">
                 Rising Keywords (KR)
               </p>
@@ -1108,7 +1108,7 @@ function SocialProofTrendIntelligence({
                 {risingKw.map((kw) => (
                   <span
                     key={kw}
-                    className="flex-1 min-w-max text-center bg-[#DCFCE7] text-[#16A34A] rounded-full px-6 py-3 font-bold hover:bg-[#BBF7D0] transition-colors cursor-default text-lg"
+                    className="flex-1 min-w-max text-center bg-[#DCFCE7] text-[#16A34A] rounded-full px-6 py-3 text-sm font-medium hover:bg-[#BBF7D0] transition-colors cursor-default"
                   >
                     ↗ {kw}
                   </span>
@@ -1119,7 +1119,7 @@ function SocialProofTrendIntelligence({
 
           {/* Global SEO Keywords — Alpha only */}
           {seoKw.length > 0 && (
-            <div className="mb-10">
+            <div className="mb-8">
               <p className="text-sm font-bold text-[#6B6860] tracking-widest mb-4">
                 Global SEO Keywords
               </p>
@@ -1128,21 +1128,21 @@ function SocialProofTrendIntelligence({
                   {seoKw.map((kw) => (
                     <span
                       key={kw}
-                      className="flex-1 min-w-max text-center bg-white border border-[#E8E6E1] text-[#3D3B36] rounded-full px-6 py-3 hover:bg-[#F1F0ED] transition-colors cursor-default text-lg"
+                      className="flex-1 min-w-max text-center bg-white border border-[#E8E6E1] text-[#3D3B36] rounded-full px-6 py-3 text-sm font-medium hover:bg-[#F1F0ED] transition-colors cursor-default"
                     >
                       {kw}
                     </span>
                   ))}
                 </div>
               ) : (
-                <div className="h-12 w-full rounded-full bg-[#F2F1EE]" />
+                <div className="h-12 w-full rounded-full bg-[#E8E6E1]/50" />
               )}
             </div>
           )}
 
           {/* Viral Hashtags — Alpha only */}
           {viralHt.length > 0 && (
-            <div className="mb-10">
+            <div className="mb-8">
               <p className="text-sm font-bold text-[#6B6860] tracking-widest mb-4">
                 Viral Hashtags
               </p>
@@ -1151,21 +1151,21 @@ function SocialProofTrendIntelligence({
                   {viralHt.map((ht) => (
                     <span
                       key={ht}
-                      className="flex-1 min-w-max text-center bg-white border border-[#E8E6E1] text-[#3D3B36] rounded-full px-6 py-3 hover:bg-[#F1F0ED] transition-colors cursor-default text-lg"
+                      className="flex-1 min-w-max text-center bg-white border border-[#E8E6E1] text-[#3D3B36] rounded-full px-6 py-3 text-sm font-medium hover:bg-[#F1F0ED] transition-colors cursor-default"
                     >
                       #{ht.startsWith("#") ? ht.slice(1) : ht}
                     </span>
                   ))}
                 </div>
               ) : (
-                <div className="h-12 w-full rounded-full bg-[#F2F1EE]" />
+                <div className="h-12 w-full rounded-full bg-[#E8E6E1]/50" />
               )}
             </div>
           )}
 
-          {/* Alpha Lock CTA — non-Alpha only */}
+          {/* Alpha Lock CTA */}
           {!canSeeAlpha && (seoKw.length > 0 || viralHt.length > 0) && (
-            <div className="mt-6 flex flex-col items-center justify-center py-8 gap-3 rounded-xl border border-[#E8E6E1] bg-[#F8F7F4] px-4">
+            <div className="mt-6 flex flex-col items-center justify-center py-8 gap-3 rounded-xl border border-[#E8E6E1] bg-white px-4">
               <Lock className="w-4 h-4 text-[#9E9C98]" />
               <p className="text-sm text-[#6B6860] text-center">
                 SEO keywords &amp; viral hashtags are available on Alpha.
@@ -1181,8 +1181,10 @@ function SocialProofTrendIntelligence({
 
       {/* ── BLOCK 5: SCOUT STRATEGY REPORT ───────────── */}
       {steps.length > 0 && (
-        <div>
-          <p className="text-[10px] tracking-[0.2em] text-[#9E9C98] uppercase mb-12">
+        <div className="bg-[#F8F7F4] rounded-2xl p-10 mb-12">
+
+          {/* Header — REF A */}
+          <p className="text-xl font-bold text-[#1A1916] mb-10">
             Scout Strategy Report
           </p>
 
@@ -1190,24 +1192,22 @@ function SocialProofTrendIntelligence({
             <div className="space-y-10">
               {steps.map((step, i) => (
                 <div key={i} className="relative">
-                  {/* Bloomberg-style background number */}
+                  {/* Bloomberg background number */}
                   <span
-                    className="absolute -top-4 -left-2 text-[80px] font-black text-[#F2F1EE] leading-none select-none pointer-events-none"
+                    className="absolute -top-4 -left-2 text-[80px] font-black text-[#E8E6E1] leading-none select-none pointer-events-none"
                     aria-hidden="true"
                   >
                     {String(i + 1).padStart(2, "0")}
                   </span>
-                  {/* Content over background number */}
+                  {/* Content */}
                   <div className="relative pl-2">
-                    <div className="flex items-center gap-2 mb-2">
-                      <span className="text-xs font-bold text-[#9E9C98] uppercase tracking-widest">
-                        Step {i + 1}
-                      </span>
-                    </div>
-                    <p className="text-lg font-bold text-[#1A1916] mb-2">
+                    <p className="text-xs font-semibold text-[#9E9C98] uppercase tracking-widest mb-2">
+                      Step {i + 1}
+                    </p>
+                    <p className="text-base font-bold text-[#1A1916] mb-2">
                       {step.label}
                     </p>
-                    <p className="text-base text-[#3D3B36] leading-relaxed whitespace-pre-line">
+                    <p className="text-lg text-[#1A1916] leading-relaxed whitespace-pre-line">
                       {step.content}
                     </p>
                   </div>
@@ -1216,8 +1216,8 @@ function SocialProofTrendIntelligence({
             </div>
           ) : (
             <div className="space-y-4">
-              <div className="h-32 w-full rounded-xl bg-[#F2F1EE]" />
-              <div className="flex flex-col items-center justify-center py-8 gap-3 rounded-xl border border-[#E8E6E1] bg-[#F8F7F4] px-4">
+              <div className="h-32 w-full rounded-xl bg-[#E8E6E1]/50" />
+              <div className="flex flex-col items-center justify-center py-8 gap-3 rounded-xl border border-[#E8E6E1] bg-white px-4">
                 <Lock className="w-4 h-4 text-[#9E9C98]" />
                 <p className="text-sm text-[#6B6860] text-center">
                   Full entry strategy is available on Alpha.
@@ -1228,6 +1228,7 @@ function SocialProofTrendIntelligence({
               </div>
             </div>
           )}
+
         </div>
       )}
     </section>
