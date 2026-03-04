@@ -801,94 +801,132 @@ function MarketIntelligence({
 
         {/* ── TIER 3: THE DATA & INTEL ───────────────────── */}
         {(hasSearchGrowth || winningFeature || painPoint) && (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="bg-[#F8F7F4] rounded-3xl p-12">
+            <div className="grid grid-cols-2 gap-x-24 mt-6">
 
-            {/* 좌: Search & Growth — 내부 박스 없음 */}
+            {/* LEFT: Search & Growth */}
             {hasSearchGrowth && (
-              <div className="bg-[#F8F7F4] rounded-xl border border-[#E8E6E1] p-6">
-                <p className="text-[10px] tracking-[0.2em] text-[#9E9C98] uppercase mb-8">
+              <div>
+                <h3 className="text-xl font-bold text-[#1A1916] mb-12">
                   Search &amp; Growth
-                </p>
-                <div className="space-y-8">
-                  {searchVolume && (
-                    <div>
-                      <p className="text-[10px] tracking-[0.2em] text-[#9E9C98] uppercase mb-2">
-                        Search Volume
-                      </p>
-                      <p className="text-3xl font-extrabold text-[#1A1916] tracking-tight">
-                        {searchVolume}
-                      </p>
-                    </div>
-                  )}
-                  {momGrowth && (
-                    <div>
-                      <p className="text-[10px] tracking-[0.2em] text-[#9E9C98] uppercase mb-2">
-                        MoM Growth
-                      </p>
-                      <p className={`text-3xl font-extrabold tracking-tight ${
-                        isPositiveGrowth(momGrowth) ? "text-[#16A34A]" : "text-[#DC2626]"
+                </h3>
+
+                {/* Search Volume */}
+                {searchVolume && (
+                  <div className="mb-16">
+                    <p className="text-sm font-bold text-[#6B6860] tracking-widest mb-4">
+                      SEARCH VOLUME
+                    </p>
+                    <p className="text-4xl font-extrabold text-[#1A1916]">
+                      {searchVolume}
+                    </p>
+                  </div>
+                )}
+
+                {/* MoM Growth — Defensive Typography */}
+                {momGrowth && (
+                  <div className="mb-16">
+                    <p className="text-sm font-bold text-[#6B6860] tracking-widest mb-4">
+                      MoM GROWTH
+                    </p>
+                    {momGrowth.length <= 10 ? (
+                      <p className={`text-4xl font-extrabold ${
+                        isPositiveGrowth(momGrowth)
+                          ? "text-[#16A34A]"
+                          : "text-[#DC2626]"
                       }`}>
                         {momGrowth}{" "}
-                        <span className="text-2xl">
+                        <span className="text-3xl">
                           {isPositiveGrowth(momGrowth) ? "↑" : "↓"}
                         </span>
                       </p>
-                    </div>
-                  )}
-                  {wowRate && wowRate !== "N/A" && (
-                    <div>
-                      <p className="text-[10px] tracking-[0.2em] text-[#9E9C98] uppercase mb-2">
-                        WoW Growth
+                    ) : (
+                      <p className={`text-lg font-medium leading-relaxed ${
+                        isPositiveGrowth(momGrowth)
+                          ? "text-[#16A34A]"
+                          : "text-[#DC2626]"
+                      }`}>
+                        {momGrowth}
                       </p>
-                      <p className={`text-3xl font-extrabold tracking-tight ${
-                        isPositiveGrowth(wowRate) ? "text-[#16A34A]" : "text-[#DC2626]"
+                    )}
+                  </div>
+                )}
+
+                {/* WoW Growth — Defensive Typography + Conditional Render */}
+                {wowRate && wowRate !== "N/A" && (
+                  <div className="mb-16">
+                    <p className="text-sm font-bold text-[#6B6860] tracking-widest mb-4">
+                      WoW GROWTH
+                    </p>
+                    {wowRate.length <= 10 ? (
+                      <p className={`text-4xl font-extrabold ${
+                        isPositiveGrowth(wowRate)
+                          ? "text-[#16A34A]"
+                          : "text-[#DC2626]"
                       }`}>
                         {wowRate}{" "}
-                        <span className="text-2xl">
+                        <span className="text-3xl">
                           {isPositiveGrowth(wowRate) ? "↑" : "↓"}
                         </span>
                       </p>
-                    </div>
-                  )}
-                </div>
+                    ) : (
+                      <p className={`text-lg font-medium leading-relaxed ${
+                        isPositiveGrowth(wowRate)
+                          ? "text-[#16A34A]"
+                          : "text-[#DC2626]"
+                      }`}>
+                        {wowRate}
+                      </p>
+                    )}
+                  </div>
+                )}
               </div>
             )}
 
-            {/* 우: Analyst Brief — 내부 박스 없음, 좌측 그린 선만 */}
+            {/* RIGHT: Analyst Brief */}
             {(winningFeature || painPoint) && (
-              <div className="bg-[#F8F7F4] rounded-xl border border-[#E8E6E1] p-6 border-l-4 border-l-[#16A34A]">
-                <p className="text-[10px] tracking-[0.2em] text-[#9E9C98] uppercase mb-8">
+              <div>
+                <h3 className="text-xl font-bold text-[#1A1916] mb-12">
                   Analyst Brief
-                </p>
-                <div className="space-y-6">
+                </h3>
+
+                <div className="border-l-4 border-[#16A34A] pl-8 py-2">
+
                   {winningFeature && (
                     <div>
-                      <p className="text-[10px] tracking-[0.2em] text-[#16A34A] uppercase mb-3">
+                      <p className="text-sm font-bold text-[#6B6860] uppercase tracking-widest mb-4">
                         Competitive Edge
                       </p>
-                      <p className="text-sm text-[#3D3B36] leading-[1.8]">
+                      <p className="text-lg text-[#1A1916] leading-relaxed mb-16">
                         {winningFeature}
                       </p>
                     </div>
                   )}
 
-                  {winningFeature && painPoint && (
-                    <div className="border-t border-dashed border-[#E8E6E1]" />
-                  )}
-
                   {painPoint && (
                     <div>
-                      <p className="text-[10px] tracking-[0.2em] text-[#9E9C98] uppercase mb-3">
+                      <p className="text-sm font-bold text-[#6B6860] uppercase tracking-widest mb-4 mt-8">
                         Risk Factor
                       </p>
-                      <p className="text-sm text-[#3D3B36] leading-[1.8]">
+                      <p className="text-lg text-[#1A1916] leading-relaxed mb-16">
                         {painPoint}
                       </p>
                     </div>
                   )}
+
                 </div>
               </div>
             )}
+
+            </div>
+
+            {/* Authority blurb */}
+            <div className="border-t border-[#E8E6E1] pt-6 mt-8" />
+            <p className="text-sm italic text-[#6B6860] text-center w-full mt-2">
+              Powered by KoreaScout&apos;s proprietary Gap Index engine, synthesizing 50+ cross-border signals across 12 demand variables.
+              <br />
+              Your sourcing decisions are backed by live market calculations, not a hunch.
+            </p>
           </div>
         )}
 
