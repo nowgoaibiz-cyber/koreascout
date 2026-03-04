@@ -1848,7 +1848,7 @@ function SupplierContact({
             </div>
 
             {(report.moq?.trim() || report.lead_time?.trim()) && (
-              <div className="flex gap-12 mt-10">
+              <div className="flex gap-32 mt-10">
                 {report.moq?.trim() && (
                   <div>
                     <p className="text-xs font-bold text-[#9E9C98] uppercase tracking-[0.2em] mb-3">MOQ</p>
