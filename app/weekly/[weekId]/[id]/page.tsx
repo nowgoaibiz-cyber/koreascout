@@ -970,7 +970,7 @@ function SocialProofTrendIntelligence({
   return (
     <section
       id="section-4"
-      className="scroll-mt-[160px] bg-white rounded-2xl border border-[#E8E6E1] p-8 shadow-[0_1px_3px_0_rgb(26_25_22/0.06)]"
+      className="scroll-mt-[160px] bg-[#F8F7F4] rounded-3xl p-16 md:p-20"
     >
       <h2 className="text-3xl font-bold text-[#1A1916] tracking-tight mb-12">
         Social Proof &amp; Trend Intelligence
@@ -978,19 +978,14 @@ function SocialProofTrendIntelligence({
 
       {/* ── BLOCK 1: SOCIAL BUZZ ─────────────────────── */}
       {report.buzz_summary?.trim() && (
-        <div className="mb-24">
-          <p className="text-[10px] tracking-[0.2em] text-[#9E9C98] uppercase mb-6">
-            Social Buzz
+        <div className="mb-32">
+          <span className="block text-6xl font-serif text-[#16A34A] leading-none mb-6">
+            &ldquo;
+          </span>
+          <p className="text-3xl italic font-medium text-[#1A1916] leading-tight max-w-4xl">
+            {report.buzz_summary}
           </p>
-          <div className="max-w-3xl">
-            <span className="block text-6xl text-[#16A34A] font-serif leading-none mb-2">
-              &ldquo;
-            </span>
-            <p className="text-xl italic text-[#3D3B36] leading-relaxed">
-              {report.buzz_summary}
-            </p>
-          </div>
-          <p className="text-xs text-[#9E9C98] tracking-widest uppercase mt-6">
+          <p className="text-[10px] tracking-[0.4em] uppercase text-[#9E9C98] mt-8">
             KoreaScout Intelligence Engine
           </p>
         </div>
