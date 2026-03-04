@@ -195,22 +195,21 @@ function ProductIdentity({
   tier,
   isTeaser,
 }: {
-  report: ScoutFinalReportsRow;
-  tier: "free" | "standard" | "alpha";
-  isTeaser: boolean;
+  report: ScoutFinalReportsRow
+  tier: "free" | "standard" | "alpha"
+  isTeaser: boolean
 }) {
-  const canSeeAlpha = tier === "alpha" || isTeaser;
+  const canSeeAlpha = tier === "alpha" || isTeaser
 
   const exportBadge = (() => {
-    const s = report.export_status?.trim();
-    const lower = s?.toLowerCase() ?? "";
-    const display = EXPORT_STATUS_DISPLAY[lower];
-    const label = display?.label ?? (s ? `Export: ${s}` : "");
-    if (!s || !label) return null;
-    if (lower === "green") return { label, color: "bg-[#DCFCE7] text-[#16A34A] border-[#BBF7D0]" };
-    if (lower === "yellow") return { label, color: "bg-[#FEF3C7] text-[#D97706] border-[#FDE68A]" };
-    return { label, color: "bg-[#FEE2E2] text-[#DC2626] border-[#FECACA]" };
-  })();
+    const s = report.export_status
+    const key = s?.toLowerCase() ?? ""
+    const label = (EXPORT_STATUS_DISPLAY[key]?.label ?? s) as string
+    if (!s || !label) return null
+    if (s === "Green" || key === "green")  return { label, color: "bg-[#DCFCE7] text-[#16A34A] border-[#BBF7D0]" }
+    if (s === "Yellow" || key === "yellow") return { label, color: "bg-[#FEF3C7] text-[#D97706] border-[#FDE68A]" }
+    return { label, color: "bg-[#FEE2E2] text-[#DC2626] border-[#FECACA]" }
+  })()
 
   return (
     <section
@@ -221,7 +220,10 @@ function ProductIdentity({
         Product Identity
       </h2>
 
+      {/* ── ROW 1: Image + Info ─────────────────────── */}
       <div className="flex flex-col md:flex-row gap-10">
+
+        {/* Left — Product Image */}
         <div className="relative w-full md:w-80 shrink-0 overflow-hidden rounded-2xl bg-[#F8F7F4] aspect-[3/4]">
           {report.image_url ? (
             <Image
@@ -229,7 +231,6 @@ function ProductIdentity({
               alt={report.translated_name || report.product_name || "Product"}
               fill
               className="object-cover"
-              sizes="(max-width: 768px) 100vw, 320px"
             />
           ) : (
             <div className="absolute inset-0 flex items-center justify-center">
@@ -238,7 +239,10 @@ function ProductIdentity({
           )}
         </div>
 
+        {/* Right — Product Info */}
         <div className="flex-1 min-w-0 flex flex-col justify-center">
+
+          {/* Badges */}
           <div className="flex flex-wrap items-center gap-2 mb-6">
             {report.category?.trim() && (
               <span className="inline-flex items-center px-3 py-1.5 bg-[#F8F7F4] border border-[#E8E6E1] text-xs font-bold text-[#1A1916] rounded-md uppercase tracking-wide">
@@ -252,61 +256,64 @@ function ProductIdentity({
             )}
           </div>
 
-          <h3 className="text-4xl md:text-5xl font-black text-[#1A1916] leading-tight mb-2">
+          {/* English Title */}
+          <h3 className="text-3xl font-bold text-[#1A1916] leading-tight mb-2">
             {report.translated_name || report.product_name}
           </h3>
 
+          {/* Korean Title */}
           {report.product_name && report.translated_name && (
             <p className="text-lg font-medium text-[#6B6860] mb-8">
               {report.product_name}
             </p>
           )}
 
+          {/* Pricing Block */}
           <div className="mt-10">
-            {report.kr_price != null && report.kr_price !== "" && (
-              <p className="text-2xl text-[#9E9C98] line-through mb-1">
-                ₩{Number(report.kr_price).toLocaleString()}
-                {report.kr_price_usd != null && (
-                  <span className="text-xl ml-2">
-                    (~${report.kr_price_usd})
-                  </span>
-                )}
+
+            {/* TIER 1: Retail Price — Hero */}
+            {report.kr_price != null && (
+              <div className="mb-1">
+                <p className="text-xs font-bold text-[#9E9C98] uppercase tracking-[0.2em] mb-2">
+                  Retail Price (KR Market)
+                </p>
+                <p className="text-2xl md:text-3xl font-bold text-[#1A1916]">
+                  ₩{Number(report.kr_price).toLocaleString()}
+                  {report.kr_price_usd != null && (
+                    <span className="text-lg text-[#6B6860] font-medium ml-2">
+                      (~${report.kr_price_usd})
+                    </span>
+                  )}
+                </p>
+              </div>
+            )}
+
+            {/* TIER 2: Est. Wholesale — Demoted */}
+            {report.estimated_cost_usd != null && (
+              <p className="text-sm font-medium text-[#9E9C98] mt-2">
+                Est. Wholesale: ~${report.estimated_cost_usd}
+                <span className="text-[#D97706] text-xs ml-1">
+                  ⚠ Estimated
+                </span>
               </p>
             )}
 
-            {report.estimated_cost_usd != null && (
-              <div>
-                <p className="text-xs font-bold text-[#9E9C98] uppercase tracking-[0.2em] mb-2">
-                  Est. Wholesale
-                </p>
-                <div className="flex items-center gap-2">
-                  <p className="text-5xl font-black text-[#16A34A] leading-none tracking-tighter">
-                    ~${report.estimated_cost_usd}
-                  </p>
-                  <AlertTriangle className="w-4 h-4 text-[#D97706] shrink-0 self-end mb-1" />
-                  <span className="text-sm text-[#6B6860] self-end mb-1">
-                    Estimated
-                  </span>
-                </div>
-              </div>
-            )}
-          </div>
+            {/* TIER 3: Alpha CTA */}
+            <a
+              href="#section-6"
+              className="inline-flex items-center gap-2 mt-4 bg-[#F8F7F4] border border-[#E8E6E1] px-3 py-2 rounded-md hover:border-[#16A34A] transition-colors cursor-pointer group"
+            >
+              <Lock className="w-3.5 h-3.5 text-[#9E9C98] group-hover:text-[#16A34A] transition-colors shrink-0" />
+              <span className="text-xs font-bold text-[#6B6860] group-hover:text-[#16A34A] transition-colors">
+                Alpha members get verified supplier quotes
+              </span>
+            </a>
 
-          {!canSeeAlpha && (
-            <p className="text-sm text-[#6B6860] mt-6">
-              <Lock className="w-3.5 h-3.5 inline mr-1 text-[#9E9C98]" />
-              Verified supplier pricing available for{" "}
-              <a
-                href="#section-6"
-                className="text-[#16A34A] font-semibold hover:text-[#15803D] underline underline-offset-2"
-              >
-                Alpha members →
-              </a>
-            </p>
-          )}
+          </div>
         </div>
       </div>
 
+      {/* ── ROW 2: Full-width Why It's Trending ─────── */}
       {report.viability_reason?.trim() && (
         <div className="mt-8 bg-[#F8F7F4] rounded-xl border border-[#E8E6E1] border-l-4 border-l-[#16A34A] p-6">
           <p className="text-sm font-semibold text-[#16A34A] uppercase tracking-widest mb-2">
@@ -317,8 +324,9 @@ function ProductIdentity({
           </p>
         </div>
       )}
+
     </section>
-  );
+  )
 }
 
 function competitionVariant(level: string): "success" | "warning" | "danger" | "default" {
