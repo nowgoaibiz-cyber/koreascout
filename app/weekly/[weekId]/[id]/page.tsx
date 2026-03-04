@@ -697,7 +697,7 @@ function MarketIntelligence({
                     </span>
                   </p>
                   <ScrollToIdButton
-                    sectionId="section-6"
+                    sectionId="global-market-proof"
                     className="text-base font-bold text-[#16A34A] hover:underline transition-colors block mt-[0.6cm]"
                   >
                     Analyze Pricing Sources &amp; Entry Points ↓
@@ -1825,7 +1825,10 @@ function SupplierContact({
             )}
 
             {globalProofTags.length > 0 && (
-              <div className="border-t border-[#E8E6E1] pt-8 mt-8">
+              <div
+                id="global-market-proof"
+                className="border-t border-[#E8E6E1] pt-8 mt-8 scroll-mt-[160px]"
+              >
 
                 <p className="text-xs font-bold text-[#9E9C98] uppercase tracking-[0.2em] mb-6">
                   Global Market Proof
