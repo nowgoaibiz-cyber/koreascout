@@ -968,6 +968,9 @@ function SocialProofTrendIntelligence({
       {/* ── BLOCK 1: SOCIAL BUZZ ─────────────────────── */}
       {report.buzz_summary?.trim() && (
         <div className="bg-[#F8F7F4] rounded-2xl p-10 mb-12">
+          <p className="text-xs font-semibold text-[#9E9C98] uppercase tracking-widest mb-4">
+            Social Buzz
+          </p>
           <span className="block text-6xl font-serif text-[#16A34A] leading-none mb-6">
             &ldquo;
           </span>
