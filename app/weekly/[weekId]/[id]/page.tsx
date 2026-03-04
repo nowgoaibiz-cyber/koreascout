@@ -190,93 +190,133 @@ const EXPORT_STATUS_DISPLAY: Record<string, { variant: "success" | "warning" | "
   red: { variant: "danger", label: "Export Restricted" },
 };
 
-function ProductIdentity({ report }: { report: ScoutFinalReportsRow }) {
-  const exportStatus = report.export_status?.toLowerCase() ?? "";
-  const exportDisplay = EXPORT_STATUS_DISPLAY[exportStatus];
-  const exportLabelFallback = exportStatus ? `Export: ${report.export_status}` : "";
+function ProductIdentity({
+  report,
+  tier,
+  isTeaser,
+}: {
+  report: ScoutFinalReportsRow;
+  tier: "free" | "standard" | "alpha";
+  isTeaser: boolean;
+}) {
+  const canSeeAlpha = tier === "alpha" || isTeaser;
+
+  const exportBadge = (() => {
+    const s = report.export_status?.trim();
+    const lower = s?.toLowerCase() ?? "";
+    const display = EXPORT_STATUS_DISPLAY[lower];
+    const label = display?.label ?? (s ? `Export: ${s}` : "");
+    if (!s || !label) return null;
+    if (lower === "green") return { label, color: "bg-[#DCFCE7] text-[#16A34A] border-[#BBF7D0]" };
+    if (lower === "yellow") return { label, color: "bg-[#FEF3C7] text-[#D97706] border-[#FDE68A]" };
+    return { label, color: "bg-[#FEE2E2] text-[#DC2626] border-[#FECACA]" };
+  })();
 
   return (
-    <section id="section-1" className="scroll-mt-[160px] bg-white rounded-2xl border border-[#E8E6E1] p-6 shadow-[0_1px_3px_0_rgb(26_25_22/0.06)]">
-      <h2 className="text-3xl font-bold text-[#1A1916] mb-4 tracking-tight">Product Identity</h2>
-      <div className="flex flex-col md:flex-row gap-6">
-        <div className="relative w-full md:w-72 shrink-0 overflow-hidden rounded-xl bg-[#F8F7F4] aspect-[3/4]">
+    <section
+      id="section-1"
+      className="scroll-mt-[160px] bg-white rounded-2xl border border-[#E8E6E1] p-8 shadow-[0_1px_3px_0_rgb(26_25_22/0.06)]"
+    >
+      <h2 className="text-3xl font-bold text-[#1A1916] tracking-tight mb-8">
+        Product Identity
+      </h2>
+
+      <div className="flex flex-col md:flex-row gap-10">
+        <div className="relative w-full md:w-80 shrink-0 overflow-hidden rounded-2xl bg-[#F8F7F4] aspect-[3/4]">
           {report.image_url ? (
-            <div className="relative aspect-[3/4] w-full">
-              <Image
-                src={report.image_url}
-                alt={report.translated_name || report.product_name}
-                fill
-                className="object-contain p-2"
-                sizes="(max-width: 640px) 100vw, 288px"
-              />
-            </div>
+            <Image
+              src={report.image_url}
+              alt={report.translated_name || report.product_name || "Product"}
+              fill
+              className="object-cover"
+              sizes="(max-width: 768px) 100vw, 320px"
+            />
           ) : (
-            <div className="aspect-[3/4] w-full flex items-center justify-center text-[#9E9C98] text-base">No image</div>
+            <div className="absolute inset-0 flex items-center justify-center">
+              <p className="text-sm text-[#9E9C98]">No image</p>
+            </div>
           )}
         </div>
-        <div className="min-w-0 flex-1">
-          <h3 className="text-2xl font-bold text-[#1A1916] leading-tight">
+
+        <div className="flex-1 min-w-0 flex flex-col justify-center">
+          <div className="flex flex-wrap items-center gap-2 mb-6">
+            {report.category?.trim() && (
+              <span className="inline-flex items-center px-3 py-1.5 bg-[#F8F7F4] border border-[#E8E6E1] text-xs font-bold text-[#1A1916] rounded-md uppercase tracking-wide">
+                {report.category}
+              </span>
+            )}
+            {exportBadge && (
+              <span className={`inline-flex items-center px-3 py-1.5 border text-xs font-bold rounded-md uppercase tracking-wide ${exportBadge.color}`}>
+                {exportBadge.label}
+              </span>
+            )}
+          </div>
+
+          <h3 className="text-4xl md:text-5xl font-black text-[#1A1916] leading-tight mb-2">
             {report.translated_name || report.product_name}
           </h3>
-          <p className="text-lg text-[#6B6860] leading-relaxed mt-1">{report.product_name}</p>
-          <div className="mt-4 flex flex-col gap-2">
-            <div className="flex items-center gap-2">
-              <span className="text-sm font-semibold text-[#9E9C98]">Category:</span>
-              <Badge variant="default" className="text-lg font-bold text-[#1A1916]">{report.category}</Badge>
-            </div>
-            {exportStatus && (exportDisplay || exportLabelFallback) && (
-              <div className="flex items-center gap-2">
-                <span className="text-sm font-semibold text-[#9E9C98]">Export Status:</span>
-                {exportDisplay ? (
-                  <Badge variant={exportDisplay.variant} className="text-lg font-bold text-[#1A1916]">{exportDisplay.label}</Badge>
-                ) : (
-                  <Badge variant="default" className="text-lg font-bold text-[#1A1916]">{exportLabelFallback}</Badge>
+
+          {report.product_name && report.translated_name && (
+            <p className="text-lg font-medium text-[#6B6860] mb-8">
+              {report.product_name}
+            </p>
+          )}
+
+          <div className="mt-10">
+            {report.kr_price != null && report.kr_price !== "" && (
+              <p className="text-2xl text-[#9E9C98] line-through mb-1">
+                ₩{Number(report.kr_price).toLocaleString()}
+                {report.kr_price_usd != null && (
+                  <span className="text-xl ml-2">
+                    (~${report.kr_price_usd})
+                  </span>
                 )}
+              </p>
+            )}
+
+            {report.estimated_cost_usd != null && (
+              <div>
+                <p className="text-xs font-bold text-[#9E9C98] uppercase tracking-[0.2em] mb-2">
+                  Est. Wholesale
+                </p>
+                <div className="flex items-center gap-2">
+                  <p className="text-5xl font-black text-[#16A34A] leading-none tracking-tighter">
+                    ~${report.estimated_cost_usd}
+                  </p>
+                  <AlertTriangle className="w-4 h-4 text-[#D97706] shrink-0 self-end mb-1" />
+                  <span className="text-sm text-[#6B6860] self-end mb-1">
+                    Estimated
+                  </span>
+                </div>
               </div>
             )}
           </div>
-          {report.kr_price && (
-            <div className="mt-3">
-              <div className="flex flex-wrap items-baseline gap-x-2 gap-y-1">
-                <span className="text-2xl font-mono font-bold text-[#1A1916]">
-                  ₩{Number(report.kr_price).toLocaleString()}
-                  {report.kr_price_usd && (
-                    <span className="text-2xl font-mono font-bold text-[#6B6860]"> (~${report.kr_price_usd})</span>
-                  )}
-                </span>
-                {report.estimated_cost_usd && (
-                  <>
-                    <span className="text-xl font-mono font-bold text-[#9E9C98]">/</span>
-                    <span className="text-base font-bold text-[#9E9C98] uppercase tracking-wide">Est. Wholesale</span>
-                    <span className="text-2xl font-mono font-extrabold text-[#16A34A]">~${report.estimated_cost_usd}</span>
-                    <span className="inline-flex items-center gap-1 text-base text-[#6B6860]">
-                      <AlertTriangle className="w-4 h-4 text-[#D97706] shrink-0" />
-                      Estimated
-                    </span>
-                  </>
-                )}
-              </div>
-              {report.estimated_cost_usd && (
-                <p className="mt-2 text-base text-[#6B6860] leading-relaxed inline-flex flex-wrap items-center gap-1.5">
-                  <Lock className="w-4 h-4 text-[#9E9C98] shrink-0" />
-                  Alpha members{" "}
-                  <a href="#section-6" className="text-[#16A34A] font-bold underline cursor-pointer hover:text-[#15803D] transition-colors">
-                    get verified supplier quotes
-                  </a>
-                </p>
-              )}
-            </div>
-          )}
-          {report.viability_reason && (
-            <div className="mt-5 min-h-fit h-auto bg-[#F8F7F4] rounded-xl border-l-4 border-l-[#16A34A] border border-[#E8E6E1] p-6">
-              <p className="text-sm font-semibold text-[#16A34A] uppercase tracking-widest mb-2">Why It&apos;s Trending</p>
-              <p className="text-base text-[#3D3B36] leading-relaxed">
-                {report.viability_reason}
-              </p>
-            </div>
+
+          {!canSeeAlpha && (
+            <p className="text-sm text-[#6B6860] mt-6">
+              <Lock className="w-3.5 h-3.5 inline mr-1 text-[#9E9C98]" />
+              Verified supplier pricing available for{" "}
+              <a
+                href="#section-6"
+                className="text-[#16A34A] font-semibold hover:text-[#15803D] underline underline-offset-2"
+              >
+                Alpha members →
+              </a>
+            </p>
           )}
         </div>
       </div>
+
+      {report.viability_reason?.trim() && (
+        <div className="mt-8 bg-[#F8F7F4] rounded-xl border border-[#E8E6E1] border-l-4 border-l-[#16A34A] p-6">
+          <p className="text-sm font-semibold text-[#16A34A] uppercase tracking-widest mb-2">
+            Why It&apos;s Trending
+          </p>
+          <p className="text-base text-[#3D3B36] leading-relaxed">
+            {report.viability_reason}
+          </p>
+        </div>
+      )}
     </section>
   );
 }
@@ -2137,7 +2177,7 @@ export default async function ProductDetailPage({
         )}
 
         {/* Section 1–2: All tiers */}
-        <ProductIdentity report={report as ScoutFinalReportsRow} />
+        <ProductIdentity report={report as ScoutFinalReportsRow} tier={tier as "free" | "standard" | "alpha"} isTeaser={isTeaser} />
         <TrendSignalDashboard report={report as ScoutFinalReportsRow} />
 
         {/* Section 3–4: Standard+ or locked */}
