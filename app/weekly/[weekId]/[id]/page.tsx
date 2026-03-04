@@ -1044,35 +1044,48 @@ function SocialProofTrendIntelligence({
 
       {/* ── BLOCK 3: GAP INDEX HERO ───────────────────── */}
       {report.gap_index != null && (
-        <div className="mt-20 mb-20 text-center">
-          <p className="text-[10px] tracking-[0.3em] text-[#9E9C98] uppercase mb-4">
+        <div className="mt-32 mb-32 text-center">
+
+          {/* Label — REF A 클래스 적용 */}
+          <p className="text-xl font-bold text-[#1A1916] mb-6">
             Gap Index
           </p>
+
+          {/* Hero Number — 140px */}
           <p
             className="font-black text-[#16A34A] leading-none tracking-tighter"
-            style={{ fontSize: "120px" }}
+            style={{ fontSize: "140px" }}
           >
             {report.gap_index}
           </p>
+
+          {/* Status Badge — REF B 폰트 사이즈 적용 */}
           {report.gap_status && (
-            <div className="mt-3 mb-6">
-              <Badge
-                variant={
-                  report.gap_status === "Blue Ocean" ||
-                  report.gap_status === "Emerging"
-                    ? "success"
-                    : "warning"
-                }
+            <div className="mt-4 mb-6 flex justify-center">
+              <span
+                className={`
+                  inline-flex items-center px-3 py-1 rounded-full font-semibold
+                  text-sm
+                  ${
+                    report.gap_status === "Blue Ocean" ||
+                    report.gap_status === "Emerging"
+                      ? "bg-[#DCFCE7] text-[#16A34A]"
+                      : "bg-[#FEF3C7] text-[#D97706]"
+                  }
+                `}
               >
                 {report.gap_status}
-              </Badge>
+              </span>
             </div>
           )}
+
+          {/* Opportunity Reasoning */}
           {report.opportunity_reasoning?.trim() && (
-            <p className="text-base italic text-[#6B6860] max-w-lg mx-auto leading-relaxed">
+            <p className="text-base italic text-[#6B6860] max-w-lg mx-auto leading-relaxed mt-4">
               {report.opportunity_reasoning}
             </p>
           )}
+
         </div>
       )}
 
