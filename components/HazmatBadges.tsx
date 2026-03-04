@@ -1,3 +1,5 @@
+import { Droplets, Sparkles, BatteryCharging, Wind } from "lucide-react";
+
 type HazmatStatus = {
   contains_liquid?: boolean;
   contains_powder?: boolean;
@@ -63,14 +65,15 @@ export function HazmatBadges({ status }: HazmatBadgesProps) {
       {badges.map((badge) => (
         <div
           key={badge.label}
-          className={`flex items-center justify-center gap-2 p-3 rounded-xl border min-w-0 ${
+          className={`flex items-center justify-center gap-3 p-3 rounded-xl border min-w-0 ${
             badge.active ? badge.activeClass : "bg-[#F8F7F4] border-[#E8E6E1]"
           }`}
         >
-          <span className="w-5 h-5 shrink-0 flex items-center justify-center" aria-hidden>
-            {badge.icon}
-          </span>
-          <span className="text-xs font-extrabold uppercase tracking-normal truncate min-w-0">
+          {badge.label === "Liquid" && <Droplets className="w-3.5 h-3.5 text-blue-500 shrink-0" aria-hidden />}
+          {badge.label === "Powder" && <Sparkles className="w-3.5 h-3.5 text-slate-400 shrink-0" aria-hidden />}
+          {badge.label === "Battery" && <BatteryCharging className="w-3.5 h-3.5 text-green-500 shrink-0" aria-hidden />}
+          {badge.label === "Aerosol" && <Wind className="w-3.5 h-3.5 text-purple-400 shrink-0" aria-hidden />}
+          <span className="text-[10px] font-black uppercase tracking-[0.25em] text-[#1A1916] truncate min-w-0">
             {badge.label}
           </span>
         </div>

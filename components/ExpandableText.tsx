@@ -14,8 +14,7 @@ export function ExpandableText({ text, label }: { text: string; label: string })
   }, [text, expanded]);
 
   return (
-    <div className="mb-3">
-      <p className="text-xs text-[#9E9C98] mb-1">{label}</p>
+    <div className="mb-3" aria-label={label}>
       <div className="relative">
         <p
           ref={ref}
