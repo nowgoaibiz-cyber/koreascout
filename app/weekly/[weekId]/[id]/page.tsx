@@ -240,7 +240,7 @@ function ProductIdentity({
         </div>
 
         {/* Right — Product Info */}
-        <div className="flex-1 min-w-0 flex flex-col justify-center">
+        <div className="flex-1 min-w-0 flex flex-col justify-center overflow-hidden @container">
 
           {/* Badges */}
           <div className="flex flex-wrap items-center gap-2 mb-6">
@@ -257,7 +257,13 @@ function ProductIdentity({
           </div>
 
           {/* English Title */}
-          <h3 className="text-3xl font-bold text-[#1A1916] leading-tight break-words overflow-hidden max-w-md mb-2">
+          <h3
+            className="font-bold text-[#1A1916] leading-tight break-words mb-2"
+            style={{
+              fontSize: "clamp(1.5rem, 4cqw, 2.25rem)",
+              textWrap: "balance",
+            } as React.CSSProperties}
+          >
             {report.translated_name || report.product_name}
           </h3>
 
