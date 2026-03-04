@@ -597,11 +597,13 @@ function MarketIntelligence({
           <div className="bg-[#F8F7F4] rounded-xl border border-[#E8E6E1] p-6">
 
             {/* 도파민 헤더 */}
-            <div className="mb-8">
-              <p className="text-3xl font-extrabold text-[#16A34A] tracking-tight">
-                🔥 UP TO {profitMultiplier}× MARGIN POTENTIAL
-              </p>
-              <p className="text-base italic text-[#6B6860] mt-2">
+            <div className="mb-12">
+              <div className="bg-green-50 rounded-xl px-4 py-2 inline-flex items-center mb-3">
+                <p className="text-3xl font-extrabold text-[#16A34A] tracking-tight">
+                  🔥 UP TO {profitMultiplier}× MARGIN POTENTIAL
+                </p>
+              </div>
+              <p className="text-base italic text-[#6B6860]">
                 *Projected margin based on estimated KR wholesale cost and global market analysis.
               </p>
             </div>
