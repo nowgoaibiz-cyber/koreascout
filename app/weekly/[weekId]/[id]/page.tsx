@@ -257,7 +257,7 @@ function ProductIdentity({
           </div>
 
           {/* English Title */}
-          <h3 className="text-3xl font-bold text-[#1A1916] leading-tight mb-2">
+          <h3 className="text-3xl font-bold text-[#1A1916] leading-tight break-words overflow-hidden mb-2">
             {report.translated_name || report.product_name}
           </h3>
 
