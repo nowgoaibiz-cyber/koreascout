@@ -284,13 +284,13 @@ function ProductIdentity({
                   Retail Price (KR Market)
                 </p>
                 <div className="flex items-baseline">
-                  <span className="text-4xl md:text-5xl font-black text-[#1A1916] leading-none tracking-tighter">
+                  <span className="text-2xl md:text-3xl font-black text-[#1A1916] leading-none tracking-tighter">
                     KRW {Number(report.kr_price).toLocaleString()}
                   </span>
-                  <span className="text-4xl md:text-5xl font-thin text-[#E8E6E1] mx-8 leading-none">
+                  <span className="text-2xl md:text-3xl font-thin text-[#E8E6E1] mx-8 leading-none">
                     /
                   </span>
-                  <span className="text-4xl md:text-5xl font-black text-[#1A1916] leading-none tracking-tighter">
+                  <span className="text-2xl md:text-3xl font-black text-[#1A1916] leading-none tracking-tighter">
                     USD {(Number(report.kr_price) / 1430).toFixed(2)}
                   </span>
                 </div>
@@ -2214,7 +2214,7 @@ export default async function ProductDetailPage({
       <div className="flex-1 pl-[18rem]">
         <div className="max-w-6xl mx-auto px-6 sm:px-8 pt-10 pb-[60vh]">
           <div className="space-y-6 mt-10">
-        <Link href={`/weekly/${weekId}`} className="text-sm font-medium text-[#9E9C98] hover:text-[#1A1916] inline-block">← Back to week</Link>
+        <Link href={`/weekly/${weekId}`} className="text-sm font-medium text-[#6B6860] hover:text-[#1A1916] transition-colors inline-block">← Back to week</Link>
 
         {isTeaser && (
           <div className="rounded-lg bg-[#DCFCE7] border border-[#BBF7D0] px-4 py-2 text-sm text-[#16A34A]">

@@ -1010,32 +1010,32 @@ export default function Home() {
 
         {/* Footer */}
         <footer className="py-8 px-4 sm:px-12 border-t border-[#E8E6E1] bg-[#F8F7F4] flex flex-col sm:flex-row items-center justify-between gap-4 flex-wrap">
-          <span className="text-sm text-[#6B6860] text-center sm:text-left">
+          <span className="text-sm font-medium text-[#6B6860] text-center sm:text-left">
             © 2026 KoreaScout. All rights reserved. · Digital product ·
             Instant delivery.
           </span>
           <div className="flex gap-6">
             <a
               href="#"
-              className="text-sm text-[#1A1916] hover:text-[#16A34A] transition-colors"
+              className="text-sm font-medium text-[#1A1916] hover:text-[#16A34A] transition-colors"
             >
               Privacy
             </a>
             <a
               href="#"
-              className="text-sm text-[#1A1916] hover:text-[#16A34A] transition-colors"
+              className="text-sm font-medium text-[#1A1916] hover:text-[#16A34A] transition-colors"
             >
               Terms
             </a>
             <a
               href="#"
-              className="text-sm text-[#1A1916] hover:text-[#16A34A] transition-colors"
+              className="text-sm font-medium text-[#1A1916] hover:text-[#16A34A] transition-colors"
             >
               Sample Report
             </a>
             <a
               href="#"
-              className="text-sm text-[#1A1916] hover:text-[#16A34A] transition-colors"
+              className="text-sm font-medium text-[#1A1916] hover:text-[#16A34A] transition-colors"
             >
               Contact
             </a>
