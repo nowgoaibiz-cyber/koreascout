@@ -1189,28 +1189,35 @@ function SocialProofTrendIntelligence({
           </p>
 
           {canSeeAlpha ? (
-            <div className="space-y-10">
+            <div className="space-y-12">
               {steps.map((step, i) => (
-                <div key={i} className="relative">
-                  {/* Bloomberg background number */}
+                <div key={i} className="relative flex gap-6">
+
+                  {/* Ghost background number */}
                   <span
-                    className="absolute -top-4 -left-2 text-[80px] font-black text-[#E8E6E1] leading-none select-none pointer-events-none"
+                    className="absolute -top-4 -left-2 text-[80px] font-black leading-none select-none pointer-events-none opacity-[0.03]"
+                    style={{ color: "#1A1916" }}
                     aria-hidden="true"
                   >
                     {String(i + 1).padStart(2, "0")}
                   </span>
+
+                  {/* Green accent bar */}
+                  <div className="w-1 bg-[#16A34A] rounded-full shrink-0 self-stretch" />
+
                   {/* Content */}
-                  <div className="relative pl-2">
+                  <div className="flex-1">
                     <p className="text-xs font-semibold text-[#9E9C98] uppercase tracking-widest mb-2">
                       Step {i + 1}
                     </p>
-                    <p className="text-base font-bold text-[#1A1916] mb-2">
+                    <p className="text-base font-extrabold text-[#1A1916] mb-3">
                       {step.label}
                     </p>
-                    <p className="text-lg text-[#1A1916] leading-relaxed whitespace-pre-line">
+                    <p className="text-sm text-[#3D3B36] leading-relaxed whitespace-pre-line">
                       {step.content}
                     </p>
                   </div>
+
                 </div>
               ))}
             </div>
