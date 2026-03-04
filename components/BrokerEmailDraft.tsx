@@ -155,7 +155,7 @@ export function BrokerEmailDraft({
           <pre className="text-sm font-medium text-[#1A1916] leading-relaxed whitespace-pre-wrap font-sans max-h-64 overflow-y-auto mb-3 p-3 bg-[#F2F1EE] rounded-lg">
             {parts.map((segment, i) =>
               i % 2 === 1 ? (
-                <mark key={i} className="bg-amber-400/40 text-amber-200 font-bold rounded px-0.5">
+                <mark key={i} className="bg-amber-400/40 text-[#1A1916] font-bold rounded px-0.5">
                   {segment}
                 </mark>
               ) : (
