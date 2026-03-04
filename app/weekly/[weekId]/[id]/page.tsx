@@ -597,9 +597,9 @@ function MarketIntelligence({
           <div className="bg-[#F8F7F4] rounded-xl border border-[#E8E6E1] p-6 mb-6">
 
             {/* Badge + Disclaimer */}
-            <div className="mb-12">
+            <div style={{ marginBottom: "1.2cm" }}>
               <div className="bg-green-50 border border-green-200 rounded-xl px-4 py-2 inline-flex items-center mb-2">
-                <p className="text-2xl font-extrabold text-[#16A34A] tracking-tight">
+                <p className="text-3xl font-extrabold text-[#16A34A] tracking-tight">
                   🔥 UP TO {profitMultiplier}× MARGIN POTENTIAL
                 </p>
               </div>
@@ -608,23 +608,29 @@ function MarketIntelligence({
               </p>
             </div>
 
-            {/* Split columns — divider only, no boxes */}
+            {/* Split columns */}
             <div className="grid grid-cols-2">
 
               {/* Left: EST. WHOLESALE */}
               <div className="pr-8 border-r border-[#E8E6E1]">
-                <p className="text-lg font-bold text-[#6B6860] uppercase tracking-widest mb-2">
+                <p
+                  className="text-lg font-bold text-[#6B6860] uppercase tracking-widest"
+                  style={{ marginTop: "0.8cm" }}
+                >
                   Est. Wholesale
                 </p>
-                <p className="text-5xl font-extrabold text-[#1A1916] tracking-tighter">
+                <p
+                  className="text-5xl font-extrabold text-[#1A1916] tracking-tighter"
+                  style={{ marginTop: "0.4cm" }}
+                >
                   {estimatedCost ? `~$${estimatedCost}` : "—"}
                 </p>
                 <p className="text-xs text-[#9E9C98] mt-2">
                   Est. KR Wholesale
                 </p>
 
-                {/* CTA — mt-6 breathing room */}
-                <div className="mt-6">
+                {/* CTA */}
+                <div style={{ marginTop: "0.6cm" }}>
                   {isAlpha ? (
                     <ScrollToIdButton
                       sectionId="section-6"
@@ -648,10 +654,16 @@ function MarketIntelligence({
 
               {/* Right: GLOBAL VALUATION */}
               <div className="pl-8">
-                <p className="text-lg font-bold text-[#6B6860] uppercase tracking-widest mb-2">
+                <p
+                  className="text-lg font-bold text-[#6B6860] uppercase tracking-widest"
+                  style={{ marginTop: "0.8cm" }}
+                >
                   Global Valuation
                 </p>
-                <p className="text-5xl font-extrabold text-[#16A34A] tracking-tighter">
+                <p
+                  className="text-5xl font-extrabold text-[#16A34A] tracking-tighter"
+                  style={{ marginTop: "0.4cm" }}
+                >
                   {globalValuationDisplay}
                 </p>
                 <p className="text-xs text-[#16A34A]/60 mt-2">
