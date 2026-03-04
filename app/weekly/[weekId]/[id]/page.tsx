@@ -946,185 +946,273 @@ function SocialProofTrendIntelligence({
 }) {
   const canSeeAlpha = tier === "alpha" || isTeaser;
 
-  return (
-    <section id="section-4" className="scroll-mt-[160px] bg-white rounded-2xl border border-[#E8E6E1] p-6 shadow-[0_1px_3px_0_rgb(26_25_22/0.06)]">
-      <h2 className="text-3xl font-bold text-[#1A1916] mb-4 tracking-tight">Social Proof & Trend Intelligence</h2>
+  // ── Trending Signals ────────────────────────────────
+  const risingKw = normalizeToArray(report.rising_keywords);
+  const seoKw = normalizeToArray(report.seo_keywords);
+  const viralHt = normalizeToArray(report.viral_hashtags);
+  const hasAnyTrending = risingKw.length > 0 || seoKw.length > 0 || viralHt.length > 0;
 
-      {/* Block 1 — Social Buzz */}
+  // ── Strategy Steps 1–3 ──────────────────────────────
+  const allSteps = parseSourcingStrategy(report.sourcing_tip);
+  const steps = allSteps.slice(0, 3);
+
+  // ── Evidence font scaling ────────────────────────────
+  const krEvidenceClass =
+    (report.kr_evidence?.length ?? 0) > 200
+      ? "text-sm text-[#3D3B36] leading-relaxed mt-4"
+      : "text-base text-[#3D3B36] leading-relaxed mt-4";
+
+  const globalEvidenceClass =
+    (report.global_evidence?.length ?? 0) > 200
+      ? "text-sm text-[#3D3B36] leading-relaxed mt-4"
+      : "text-base text-[#3D3B36] leading-relaxed mt-4";
+
+  return (
+    <section
+      id="section-4"
+      className="scroll-mt-[160px] bg-white rounded-2xl border border-[#E8E6E1] p-8 shadow-[0_1px_3px_0_rgb(26_25_22/0.06)]"
+    >
+      <h2 className="text-3xl font-bold text-[#1A1916] tracking-tight mb-12">
+        Social Proof &amp; Trend Intelligence
+      </h2>
+
+      {/* ── BLOCK 1: SOCIAL BUZZ ─────────────────────── */}
       {report.buzz_summary?.trim() && (
-        <div className="bg-[#F8F7F4] rounded-xl border-l-4 border-l-[#16A34A] border border-[#E8E6E1] p-4">
-          <p className="text-xs font-semibold text-[#16A34A] uppercase tracking-widest mb-2">Social Buzz</p>
-          <p className="text-sm text-[#3D3B36] leading-relaxed italic">
-            &quot;{report.buzz_summary}&quot;
+        <div className="mb-24">
+          <p className="text-[10px] tracking-[0.2em] text-[#9E9C98] uppercase mb-6">
+            Social Buzz
+          </p>
+          <div className="max-w-3xl">
+            <span className="block text-6xl text-[#16A34A] font-serif leading-none mb-2">
+              &ldquo;
+            </span>
+            <p className="text-xl italic text-[#3D3B36] leading-relaxed">
+              {report.buzz_summary}
+            </p>
+          </div>
+          <p className="text-xs text-[#9E9C98] tracking-widest uppercase mt-6">
+            KoreaScout Intelligence Engine
           </p>
         </div>
       )}
 
-      {/* Block 2 — Market Gap Analysis */}
-      <div className="mt-6">
-        <p className="text-xs font-semibold text-[#9E9C98] uppercase tracking-widest mb-3">Market Gap Analysis</p>
+      {/* ── BLOCK 2: MARKET GAP ANALYSIS ─────────────── */}
+      {(report.kr_local_score != null || report.global_trend_score != null) && (
+        <div className="mb-24">
+          <p className="text-[10px] tracking-[0.2em] text-[#9E9C98] uppercase mb-10">
+            Market Gap Analysis
+          </p>
 
-        <div className="grid grid-cols-2 gap-4">
-          <div className="p-4 rounded-xl border border-[#E8E6E1] bg-[#F8F7F4]">
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-xs text-[#6B6860]">🇰🇷 Korean Traction</span>
-              <span className="text-2xl font-mono font-bold text-[#16A34A]">{report.kr_local_score ?? "—"}</span>
+          <div className="grid grid-cols-2">
+            {/* KR Traction */}
+            <div className="pr-12 border-r border-[#E8E6E1]">
+              <p className="text-[10px] tracking-[0.2em] text-[#9E9C98] uppercase mb-4">
+                Korean Traction
+              </p>
+              <p className="text-7xl font-extrabold text-[#16A34A] tracking-tighter leading-none">
+                {report.kr_local_score ?? "—"}
+              </p>
+              {/* Ultra-thin progress */}
+              <div className="w-full h-1 rounded-full bg-[#E8E6E1] overflow-hidden mt-4 mb-6">
+                <div
+                  className="h-full rounded-full bg-[#16A34A] transition-all"
+                  style={{ width: `${Math.min(report.kr_local_score || 0, 100)}%` }}
+                />
+              </div>
+              {report.kr_evidence?.trim() && (
+                <p className={krEvidenceClass}>
+                  {report.kr_evidence}
+                </p>
+              )}
+              {report.kr_source_used?.trim() && (
+                <p className="text-xs text-[#9E9C98] mt-3">
+                  Source: {report.kr_source_used}
+                </p>
+              )}
             </div>
-            <div className="w-full h-2 rounded-full bg-[#E8E6E1] overflow-hidden">
-              <div
-                className="h-full rounded-full bg-[#16A34A] transition-all"
-                style={{ width: `${Math.min(report.kr_local_score || 0, 100)}%` }}
-              />
-            </div>
-            {report.kr_evidence?.trim() && (
-              <p className="mt-2 text-xs text-[#6B6860] leading-relaxed">{report.kr_evidence}</p>
-            )}
-            {report.kr_source_used?.trim() && (
-              <p className="mt-1 text-xs text-[#9E9C98]">Source: {report.kr_source_used}</p>
-            )}
-          </div>
 
-          <div className="p-4 rounded-xl border border-[#E8E6E1] bg-[#F8F7F4]">
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-xs text-[#6B6860]">🌍 Global Presence</span>
-              <span className="text-2xl font-mono font-bold text-[#2563EB]">{report.global_trend_score ?? "—"}</span>
+            {/* Global Presence */}
+            <div className="pl-12">
+              <p className="text-[10px] tracking-[0.2em] text-[#9E9C98] uppercase mb-4">
+                Global Presence
+              </p>
+              <p className="text-7xl font-extrabold text-[#2563EB] tracking-tighter leading-none">
+                {report.global_trend_score ?? "—"}
+              </p>
+              {/* Ultra-thin progress */}
+              <div className="w-full h-1 rounded-full bg-[#E8E6E1] overflow-hidden mt-4 mb-6">
+                <div
+                  className="h-full rounded-full bg-[#2563EB] transition-all"
+                  style={{ width: `${Math.min(report.global_trend_score || 0, 100)}%` }}
+                />
+              </div>
+              {report.global_evidence?.trim() && (
+                <p className={globalEvidenceClass}>
+                  {report.global_evidence}
+                </p>
+              )}
             </div>
-            <div className="w-full h-2 rounded-full bg-[#E8E6E1] overflow-hidden">
-              <div
-                className="h-full rounded-full bg-[#2563EB] transition-all"
-                style={{ width: `${Math.min(report.global_trend_score || 0, 100)}%` }}
-              />
-            </div>
-            {report.global_evidence?.trim() && (
-              <p className="mt-2 text-xs text-[#6B6860] leading-relaxed">{report.global_evidence}</p>
-            )}
           </div>
         </div>
+      )}
 
-        <div className="mt-4 p-4 rounded-xl border border-[#BBF7D0] bg-[#DCFCE7] text-center">
-          <p className="text-xs text-[#9E9C98] mb-1">Gap Index</p>
-          <p className="text-3xl font-mono font-bold text-[#16A34A]">{report.gap_index ?? "—"}</p>
+      {/* ── BLOCK 3: GAP INDEX HERO ───────────────────── */}
+      {report.gap_index != null && (
+        <div className="mt-20 mb-20 text-center">
+          <p className="text-[10px] tracking-[0.3em] text-[#9E9C98] uppercase mb-4">
+            Gap Index
+          </p>
+          <p
+            className="font-black text-[#16A34A] leading-none tracking-tighter"
+            style={{ fontSize: "120px" }}
+          >
+            {report.gap_index}
+          </p>
           {report.gap_status && (
-            <Badge variant={report.gap_status === "Blue Ocean" || report.gap_status === "Emerging" ? "success" : "warning"} className="mt-2">
-              {report.gap_status}
-            </Badge>
+            <div className="mt-3 mb-6">
+              <Badge
+                variant={
+                  report.gap_status === "Blue Ocean" ||
+                  report.gap_status === "Emerging"
+                    ? "success"
+                    : "warning"
+                }
+              >
+                {report.gap_status}
+              </Badge>
+            </div>
           )}
           {report.opportunity_reasoning?.trim() && (
-            <p className="mt-3 text-sm text-[#3D3B36] leading-relaxed max-w-xl mx-auto">
+            <p className="text-base italic text-[#6B6860] max-w-lg mx-auto leading-relaxed">
               {report.opportunity_reasoning}
             </p>
           )}
         </div>
-      </div>
+      )}
 
-      {/* Block 3 — Trending Signals */}
-      {(() => {
-        const risingKw = normalizeToArray(report.rising_keywords);
-        const seoKw = normalizeToArray(report.seo_keywords);
-        const viralHt = normalizeToArray(report.viral_hashtags);
-        const hasAnyTrending =
-          risingKw.length > 0 ||
-          seoKw.length > 0 ||
-          viralHt.length > 0;
-        if (!hasAnyTrending) return null;
+      {/* ── BLOCK 4: TRENDING SIGNALS ────────────────── */}
+      {hasAnyTrending && (
+        <div className="mb-24">
+          <p className="text-[10px] tracking-[0.2em] text-[#9E9C98] uppercase mb-10">
+            Trending Signals
+          </p>
 
-        return (
-          <div className="mt-6">
-            <p className="text-xs font-semibold text-[#9E9C98] uppercase tracking-widest mb-3">Trending Signals</p>
-
-            {risingKw.length > 0 && (
-              <div className="mb-4">
-                <p className="text-xs text-[#6B6860] mb-2">Rising Keywords (KR)</p>
-                <div className="flex flex-wrap gap-2">
-                  {risingKw.map((kw, i) => (
-                    <KeywordPill key={i} variant="trending" keyword={kw} />
-                  ))}
-                </div>
-              </div>
-            )}
-
-            <div className="relative">
-              {seoKw.length > 0 && (
-                <div className="mb-4">
-                  <p className="text-xs text-[#6B6860] mb-2">Global SEO Keywords</p>
-                  {canSeeAlpha ? (
-                    <div className="flex flex-wrap gap-2">
-                      {seoKw.map((kw, i) => (
-                        <KeywordPill key={i} variant="default" keyword={kw} />
-                      ))}
-                    </div>
-                  ) : (
-                    <div className="h-10 w-full rounded-lg bg-[#F2F1EE]" />
-                  )}
-                </div>
-              )}
-
-              {viralHt.length > 0 && (
-                <div className="mb-4">
-                  <p className="text-xs text-[#6B6860] mb-2">Viral Hashtags</p>
-                  {canSeeAlpha ? (
-                    <div className="flex flex-wrap gap-2">
-                      {viralHt.map((tag, i) => (
-                        <KeywordPill key={i} variant="default" keyword={tag} />
-                      ))}
-                    </div>
-                  ) : (
-                    <div className="h-10 w-full rounded-lg bg-[#F2F1EE]" />
-                  )}
-                </div>
-              )}
-
-              {!canSeeAlpha && (seoKw.length > 0 || viralHt.length > 0) && (
-                <div className="mt-4 flex flex-col items-center justify-center pb-6 gap-3 rounded-xl border border-[#E8E6E1] bg-[#F8F7F4] px-4 py-4">
-                  <Lock className="w-5 h-5 text-[#9E9C98]" />
-                  <p className="text-sm font-semibold text-[#3D3B36]">Unlock Global SEO Targets & Viral Hashtags</p>
-                  <a href="/pricing">
-                    <Button variant="primary" size="sm">Go Alpha $29/mo →</Button>
-                  </a>
-                </div>
-              )}
-            </div>
-          </div>
-        );
-      })()}
-
-      {/* Block 5 — Scout Strategy Report */}
-      {(() => {
-        const allSteps = parseSourcingStrategy(report.sourcing_tip);
-        const steps = allSteps.slice(0, 3); // Only Marketing, Pricing, B2B
-        if (steps.length === 0) return null;
-
-        return (
-          <div className="mt-6">
-            <p className="text-xs font-semibold text-[#9E9C98] uppercase tracking-widest mb-3">Scout Strategy Report</p>
-
-            {canSeeAlpha ? (
-              <div className="bg-[#F8F7F4] rounded-xl border border-[#E8E6E1] p-4 space-y-3">
-                {steps.map((step, i) => (
-                  <div key={i} className="bg-white rounded-lg border border-[#E8E6E1] p-4">
-                    <Badge variant="success" className="mb-2">Step {i + 1}</Badge>
-                    <p className="text-sm font-semibold text-[#1A1916] mb-1">{step.label}</p>
-                    <p className="text-sm text-[#6B6860] leading-relaxed whitespace-pre-line">{step.content}</p>
-                  </div>
+          {/* Rising Keywords — all tiers */}
+          {risingKw.length > 0 && (
+            <div className="mb-8">
+              <p className="text-[10px] tracking-[0.2em] text-[#9E9C98] uppercase mb-3">
+                Rising Keywords (KR)
+              </p>
+              <div className="flex flex-wrap gap-2">
+                {risingKw.map((kw) => (
+                  <KeywordPill key={kw} variant="trending" keyword={kw} />
                 ))}
               </div>
-            ) : (
-              <>
-                <div className="h-32 w-full rounded-xl bg-[#F2F1EE]" />
-                <div className="mt-4 flex flex-col items-center justify-center gap-3 rounded-xl border border-[#E8E6E1] bg-[#F8F7F4] px-4 py-4">
-                  <Lock className="w-5 h-5 text-[#9E9C98]" />
-                  <p className="text-sm font-semibold text-[#3D3B36] text-center px-4">
-                    Premium Strategy Report — Unlock the complete 5-Step B2B Sourcing & Marketing Strategy.
-                  </p>
-                  <a href="/pricing">
-                    <Button variant="primary" size="sm">Go Alpha $29/mo →</Button>
-                  </a>
+            </div>
+          )}
+
+          {/* Global SEO Keywords — Alpha only */}
+          {seoKw.length > 0 && (
+            <div className="mb-8">
+              <p className="text-[10px] tracking-[0.2em] text-[#9E9C98] uppercase mb-3">
+                Global SEO Keywords
+              </p>
+              {canSeeAlpha ? (
+                <div className="flex flex-wrap gap-2">
+                  {seoKw.map((kw) => (
+                    <KeywordPill key={kw} variant="default" keyword={kw} />
+                  ))}
                 </div>
-              </>
-            )}
-          </div>
-        );
-      })()}
+              ) : (
+                <div className="h-10 w-full rounded-lg bg-[#F2F1EE]" />
+              )}
+            </div>
+          )}
+
+          {/* Viral Hashtags — Alpha only */}
+          {viralHt.length > 0 && (
+            <div className="mb-8">
+              <p className="text-[10px] tracking-[0.2em] text-[#9E9C98] uppercase mb-3">
+                Viral Hashtags
+              </p>
+              {canSeeAlpha ? (
+                <div className="flex flex-wrap gap-2">
+                  {viralHt.map((ht) => (
+                    <KeywordPill key={ht} variant="default" keyword={ht} />
+                  ))}
+                </div>
+              ) : (
+                <div className="h-10 w-full rounded-lg bg-[#F2F1EE]" />
+              )}
+            </div>
+          )}
+
+          {/* Lock CTA — Non-Alpha only */}
+          {!canSeeAlpha && (seoKw.length > 0 || viralHt.length > 0) && (
+            <div className="mt-6 flex flex-col items-center justify-center py-8 gap-3 rounded-xl border border-[#E8E6E1] bg-[#F8F7F4] px-4">
+              <Lock className="w-4 h-4 text-[#9E9C98]" />
+              <p className="text-sm text-[#6B6860] text-center">
+                SEO keywords &amp; viral hashtags are available on Alpha.
+              </p>
+              <a href="/pricing">
+                <Button variant="secondary" size="sm">Go Alpha $29/mo →</Button>
+              </a>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* ── BLOCK 5: SCOUT STRATEGY REPORT ───────────── */}
+      {steps.length > 0 && (
+        <div>
+          <p className="text-[10px] tracking-[0.2em] text-[#9E9C98] uppercase mb-12">
+            Scout Strategy Report
+          </p>
+
+          {canSeeAlpha ? (
+            <div className="space-y-10">
+              {steps.map((step, i) => (
+                <div key={i} className="relative">
+                  {/* Bloomberg-style background number */}
+                  <span
+                    className="absolute -top-4 -left-2 text-[80px] font-black text-[#F2F1EE] leading-none select-none pointer-events-none"
+                    aria-hidden="true"
+                  >
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
+                  {/* Content over background number */}
+                  <div className="relative pl-2">
+                    <div className="flex items-center gap-2 mb-2">
+                      <span className="text-xs font-bold text-[#9E9C98] uppercase tracking-widest">
+                        Step {i + 1}
+                      </span>
+                    </div>
+                    <p className="text-lg font-bold text-[#1A1916] mb-2">
+                      {step.label}
+                    </p>
+                    <p className="text-base text-[#3D3B36] leading-relaxed whitespace-pre-line">
+                      {step.content}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="space-y-4">
+              <div className="h-32 w-full rounded-xl bg-[#F2F1EE]" />
+              <div className="flex flex-col items-center justify-center py-8 gap-3 rounded-xl border border-[#E8E6E1] bg-[#F8F7F4] px-4">
+                <Lock className="w-4 h-4 text-[#9E9C98]" />
+                <p className="text-sm text-[#6B6860] text-center">
+                  Full entry strategy is available on Alpha.
+                </p>
+                <a href="/pricing">
+                  <Button variant="secondary" size="sm">Go Alpha $29/mo →</Button>
+                </a>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
     </section>
   );
 }
