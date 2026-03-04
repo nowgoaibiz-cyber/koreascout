@@ -15,7 +15,7 @@ import { ExpandableText } from "@/components/ExpandableText";
 import { BrokerEmailDraft } from "@/components/BrokerEmailDraft";
 import { GroupBBrokerSection } from "@/components/GroupBBrokerSection";
 import { Badge, Button, KeywordPill } from "@/components/ui";
-import { AlertTriangle, ArrowRight, Award, CheckCircle, Download, ExternalLink, Film, FolderOpen, ImageIcon, LayoutTemplate, Lock, Mail, Play, TrendingUp, XCircle } from "lucide-react";
+import { AlertTriangle, ArrowRight, Award, CheckCircle, Download, ExternalLink, Film, FolderOpen, Globe, ImageIcon, LayoutTemplate, Lock, Mail, Phone, Play, ShoppingBag, TrendingUp, XCircle } from "lucide-react";
 import type { ScoutFinalReportsRow } from "@/types/database";
 
 /** Format 6-digit HS code as 3304.99 */
@@ -1646,12 +1646,6 @@ function SupplierContact({
       ? parseFloat(String(verifiedCostUsd))
       : NaN;
   const hasVerifiedPrice = !Number.isNaN(costNum);
-  const globalPricesLinks = parseGlobalPrices(
-    typeof report.global_prices === "string"
-      ? report.global_prices
-      : (report.global_prices as Record<string, { url?: string; platform?: string }> | null) ?? null
-  );
-  const hasGlobalPrices = globalPricesLinks && Object.keys(globalPricesLinks).length > 0;
 
   const viralUrl = report.viral_video_url?.trim() || null;
   const videoUrl = report.video_url?.trim() || null;
@@ -1678,9 +1672,13 @@ function SupplierContact({
     { id: "australia", name: "AU" },
     { id: "india", name: "IN" },
   ];
-  const globalProofTags = regionsList
-    .map((r) => ({ region: r.name, url: rawPrices[r.id]?.url }))
-    .filter((t): t is { region: string; url: string } => typeof t.url === "string" && t.url.startsWith("http"));
+  const globalProofTags: Array<{ region: string; url: string; platform?: string }> = regionsList
+    .map((r) => ({
+      region: r.name,
+      url: rawPrices[r.id]?.url,
+      platform: rawPrices[r.id]?.platform?.trim() || undefined,
+    }))
+    .filter((t): t is { region: string; url: string; platform: string | undefined } => typeof t.url === "string" && t.url.startsWith("http"));
 
   const assetCards = [
     viralUrl && {
@@ -1691,7 +1689,7 @@ function SupplierContact({
       href: viralUrl,
       ctaText: "Watch Original",
       isPrimary: true,
-      icon: <Play className="w-16 h-16 text-[#1A1916]" />,
+      icon: <Play className="w-32 h-32 text-[#1A1916]" />,
       hoverIcon: <Play className="w-5 h-5 text-[#1A1916]" />,
     },
     videoUrl && {
@@ -1702,7 +1700,7 @@ function SupplierContact({
       href: videoUrl,
       ctaText: "Watch & Download",
       isPrimary: false,
-      icon: <Film className="w-16 h-16 text-[#1A1916]" />,
+      icon: <Film className="w-32 h-32 text-[#1A1916]" />,
       hoverIcon: <Download className="w-5 h-5 text-[#1A1916]" />,
     },
     aiDetailUrl && {
@@ -1713,7 +1711,7 @@ function SupplierContact({
       href: aiDetailUrl,
       ctaText: "Open Page",
       isPrimary: false,
-      icon: <LayoutTemplate className="w-16 h-16 text-[#1A1916]" />,
+      icon: <LayoutTemplate className="w-32 h-32 text-[#1A1916]" />,
       hoverIcon: <ExternalLink className="w-5 h-5 text-[#1A1916]" />,
     },
     marketingUrl && {
@@ -1724,7 +1722,7 @@ function SupplierContact({
       href: marketingUrl,
       ctaText: "Access Assets",
       isPrimary: false,
-      icon: <ImageIcon className="w-16 h-16 text-[#1A1916]" />,
+      icon: <ImageIcon className="w-32 h-32 text-[#1A1916]" />,
       hoverIcon: <ArrowRight className="w-5 h-5 text-[#1A1916]" />,
     },
     aiImageUrl && {
@@ -1735,7 +1733,7 @@ function SupplierContact({
       href: aiImageUrl,
       ctaText: "Open / Download",
       isPrimary: false,
-      icon: <ImageIcon className="w-16 h-16 text-[#1A1916]" />,
+      icon: <ImageIcon className="w-32 h-32 text-[#1A1916]" />,
       hoverIcon: <Download className="w-5 h-5 text-[#1A1916]" />,
     },
   ].filter(Boolean) as Array<{
@@ -1767,7 +1765,7 @@ function SupplierContact({
             </p>
           </div>
 
-          {/* BLOCK A: Financial Briefing */}
+          {/* BLOCK A: Financials & Trade Terms */}
           <div className="bg-[#F8F7F4] rounded-2xl p-10 mb-6 mt-6">
             <p className={refA}>Financial Briefing</p>
             <div className="grid grid-cols-2">
@@ -1781,9 +1779,16 @@ function SupplierContact({
                     >
                       ${costNum.toFixed(2)}
                     </p>
-                    <p className="text-xs italic text-[#9E9C98] mt-3">
-                      Verified Supplier Price
-                    </p>
+                    {report.verified_at && (
+                      <p className="text-xs italic text-[#9E9C98] mt-3">
+                        Verified by KoreaScout on{" "}
+                        {new Date(report.verified_at).toLocaleDateString("en-US", {
+                          year: "numeric",
+                          month: "long",
+                          day: "numeric",
+                        })}
+                      </p>
+                    )}
                   </>
                 ) : verifiedCostUsd != null && verifiedCostUsd !== "" && isUndisclosed ? (
                   <p className="text-sm italic text-[#6B6860]">
@@ -1793,7 +1798,7 @@ function SupplierContact({
                   <p className="text-sm italic text-[#9E9C98]">Not available</p>
                 )}
               </div>
-              <div className="pl-10 flex flex-col justify-center gap-8">
+              <div className="pl-10 space-y-8">
                 {report.moq?.trim() && (
                   <div>
                     <p className={refB}>MOQ</p>
@@ -1810,99 +1815,105 @@ function SupplierContact({
                     </p>
                   </div>
                 )}
+                {(report.sample_policy?.trim() || report.export_cert_note?.trim()) && (
+                  <div className="border-t border-[#E8E6E1] pt-6 space-y-4">
+                    {report.sample_policy?.trim() && (
+                      <div>
+                        <p className="text-[10px] font-bold text-[#9E9C98] uppercase tracking-[0.3em] mb-1">
+                          Sample Policy
+                        </p>
+                        <p className="text-sm font-semibold text-[#1A1916] leading-relaxed">
+                          {report.sample_policy}
+                        </p>
+                      </div>
+                    )}
+                    {report.export_cert_note?.trim() && (
+                      <div>
+                        <p className="text-[10px] font-bold text-[#9E9C98] uppercase tracking-[0.3em] mb-1">
+                          Compliance Note
+                        </p>
+                        <p className="text-sm font-semibold text-[#1A1916] leading-relaxed">
+                          {report.export_cert_note}
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
             </div>
           </div>
 
-          {/* BLOCK B: Scout Lab */}
+          {/* BLOCK B: Supplier & Brand Intel */}
           <div className="bg-[#F8F7F4] rounded-2xl p-10 mb-6">
-            <p className={refA}>Scout Lab</p>
-            {(verifiedCostUsd != null && verifiedCostUsd !== "") && (
-              <div className="inline-flex items-center gap-3 bg-[#DCFCE7] border border-[#BBF7D0] rounded-xl px-6 py-4 mb-8">
-                <CheckCircle className="w-6 h-6 text-[#16A34A] shrink-0" />
-                <div>
-                  <p className="text-sm font-black tracking-widest text-[#16A34A] uppercase">
-                    Scout Verified
-                  </p>
-                  {report.verified_at && (
-                    <p className="text-xs text-[#16A34A]/70 mt-0.5">
-                      Verified by KoreaScout on{" "}
-                      {new Date(report.verified_at).toLocaleDateString("en-US", {
-                        year: "numeric",
-                        month: "long",
-                        day: "numeric",
-                      })}
-                    </p>
-                  )}
+            <p className={refA}>Supplier &amp; Brand Intel</p>
+            {report.m_name?.trim() && (
+              <div className="mb-8">
+                <p className="text-[10px] font-bold text-[#9E9C98] uppercase tracking-[0.3em] mb-2">
+                  Manufacturer / Brand
+                </p>
+                <p className="text-2xl font-black text-[#1A1916]">
+                  {report.m_name}
+                </p>
+              </div>
+            )}
+            {(() => {
+              const contacts = [
+                report.contact_email?.trim() && {
+                  id: "email",
+                  icon: <Mail className="w-5 h-5 text-[#9E9C98] group-hover:text-[#16A34A] shrink-0 transition-colors" />,
+                  label: report.contact_email.trim(),
+                  href: `mailto:${report.contact_email.trim()}`,
+                  external: false as const,
+                },
+                report.contact_phone?.trim() && {
+                  id: "phone",
+                  icon: <Phone className="w-5 h-5 text-[#9E9C98] group-hover:text-[#16A34A] shrink-0 transition-colors" />,
+                  label: report.contact_phone.trim(),
+                  href: `tel:${report.contact_phone.trim()}`,
+                  external: false as const,
+                },
+                report.m_homepage?.trim() && {
+                  id: "website",
+                  icon: <Globe className="w-5 h-5 text-[#9E9C98] group-hover:text-[#16A34A] shrink-0 transition-colors" />,
+                  label: "Website",
+                  href: report.m_homepage.trim(),
+                  external: true as const,
+                },
+                report.wholesale_link?.trim() && {
+                  id: "wholesale",
+                  icon: <ShoppingBag className="w-5 h-5 text-[#9E9C98] group-hover:text-[#16A34A] shrink-0 transition-colors" />,
+                  label: "Wholesale Portal",
+                  href: report.wholesale_link.trim(),
+                  external: true as const,
+                },
+              ].filter(Boolean) as Array<{ id: string; icon: React.ReactNode; label: string; href: string; external: boolean }>;
+
+              if (contacts.length === 0) return null;
+
+              return (
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
+                  {contacts.map((contact, i) => (
+                    <a
+                      key={contact.id}
+                      href={contact.href}
+                      target={contact.external ? "_blank" : undefined}
+                      rel={contact.external ? "noopener noreferrer" : undefined}
+                      className={`
+                        flex items-center gap-4 bg-white border border-[#E8E6E1]
+                        rounded-xl px-5 py-4
+                        hover:border-[#16A34A] transition-colors group
+                        ${contacts.length === 3 && i === 2 ? "col-span-1 sm:col-span-2" : ""}
+                      `}
+                    >
+                      {contact.icon}
+                      <span className="text-sm font-bold text-[#1A1916] truncate">
+                        {contact.label}
+                      </span>
+                    </a>
+                  ))}
                 </div>
-              </div>
-            )}
-            {(report.m_name?.trim() || report.corporate_scale?.trim()) && (
-              <div className="mb-6">
-                {report.m_name?.trim() && (
-                  <h3 className="text-xl font-bold text-[#1A1916] mb-2">{report.m_name.trim()}</h3>
-                )}
-                {report.corporate_scale?.trim() && (
-                  <Badge variant="default">{report.corporate_scale.trim()}</Badge>
-                )}
-              </div>
-            )}
-            <div className="space-y-3 mb-8">
-              {report.contact_email?.trim() && (
-                <a
-                  href={`mailto:${report.contact_email.trim()}`}
-                  className="flex items-center gap-4 bg-white border border-[#E8E6E1] rounded-xl px-5 py-4 hover:border-[#16A34A] transition-colors group"
-                >
-                  <Mail className="w-5 h-5 text-[#9E9C98] group-hover:text-[#16A34A] shrink-0 transition-colors" />
-                  <span className="text-sm font-bold text-[#1A1916] truncate">
-                    {report.contact_email.trim()}
-                  </span>
-                </a>
-              )}
-              {report.contact_phone?.trim() && (
-                <div className="flex items-center gap-4 bg-white border border-[#E8E6E1] rounded-xl px-5 py-4">
-                  <span className="text-sm font-bold text-[#1A1916] truncate">
-                    {report.contact_phone.trim()}
-                  </span>
-                </div>
-              )}
-              {report.m_homepage?.trim() && (
-                <a
-                  href={report.m_homepage.trim()}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-4 bg-white border border-[#E8E6E1] rounded-xl px-5 py-4 hover:border-[#16A34A] transition-colors group"
-                >
-                  <ExternalLink className="w-5 h-5 text-[#9E9C98] group-hover:text-[#16A34A] shrink-0 transition-colors" />
-                  <span className="text-sm font-bold text-[#1A1916] truncate">
-                    Website
-                  </span>
-                </a>
-              )}
-              {report.wholesale_link?.trim() && (
-                <a
-                  href={report.wholesale_link.trim()}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-4 bg-white border border-[#E8E6E1] rounded-xl px-5 py-4 hover:border-[#16A34A] transition-colors group"
-                >
-                  <ExternalLink className="w-5 h-5 text-[#9E9C98] group-hover:text-[#16A34A] shrink-0 transition-colors" />
-                  <span className="text-sm font-bold text-[#1A1916] truncate">
-                    Wholesale Portal
-                  </span>
-                </a>
-              )}
-            </div>
-            {report.sample_policy?.trim() && (
-              <div className="mb-4">
-                <Badge variant="info">{report.sample_policy.trim()}</Badge>
-              </div>
-            )}
-            {report.export_cert_note?.trim() && (
-              <div className="mb-6">
-                <Badge variant="warning">{report.export_cert_note.trim()}</Badge>
-              </div>
-            )}
+              );
+            })()}
             {globalProofTags.length > 0 && (
               <div>
                 <p className={refB}>Global Market Proof</p>
@@ -1913,9 +1924,16 @@ function SupplierContact({
                       href={tag.url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="bg-white border border-[#E8E6E1] rounded-lg px-4 py-2 text-sm font-bold text-[#1A1916] hover:border-[#16A34A] hover:text-[#16A34A] transition-colors"
+                      className="flex items-center gap-2 bg-white border border-[#E8E6E1] rounded-lg px-4 py-3 hover:border-[#16A34A] transition-colors"
                     >
-                      {tag.region}
+                      <span className="font-black text-[#1A1916] text-sm">
+                        {tag.region}
+                      </span>
+                      {tag.platform && (
+                        <span className="text-sm text-[#6B6860]">
+                          {tag.platform}
+                        </span>
+                      )}
                     </a>
                   ))}
                 </div>
@@ -1934,15 +1952,17 @@ function SupplierContact({
                     className="bg-white rounded-2xl border border-[#E8E6E1] overflow-hidden group hover:border-[#16A34A] transition-all duration-300 hover:shadow-[0_4px_20px_0_rgb(22_163_74/0.1)]"
                   >
                     <div className="aspect-video bg-[#F8F7F4] relative flex items-center justify-center overflow-hidden">
-                      <div className="w-16 h-16 opacity-10 text-[#1A1916] flex items-center justify-center">
-                        {card.icon}
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <div className="w-32 h-32 text-[#1A1916] opacity-5 flex items-center justify-center">
+                          {card.icon}
+                        </div>
                       </div>
                       {card.platform && (
-                        <span className="absolute top-3 left-3 bg-black/70 text-white text-[10px] font-bold rounded px-2 py-1 uppercase tracking-wide">
+                        <span className="absolute top-3 left-3 bg-black/70 text-white text-[10px] font-bold rounded px-2 py-1 uppercase tracking-wide z-10">
                           {card.platform}
                         </span>
                       )}
-                      <div className="absolute inset-0 bg-[#16A34A]/5 opacity-0 group-hover:opacity-100 transition-all duration-300 flex items-center justify-center">
+                      <div className="absolute inset-0 bg-[#16A34A]/5 opacity-0 group-hover:opacity-100 transition-all duration-300 flex items-center justify-center z-10">
                         <div className="w-12 h-12 bg-white/90 rounded-full flex items-center justify-center shadow-lg">
                           {card.hoverIcon}
                         </div>
@@ -1970,7 +1990,7 @@ function SupplierContact({
                         `}
                       >
                         {card.ctaText}
-                        <ArrowRight className="w-4 h-4" />
+                        <ArrowRight className="w-4 h-4 shrink-0" />
                       </a>
                     </div>
                   </div>
