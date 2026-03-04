@@ -1765,40 +1765,42 @@ function SupplierContact({
             </p>
           </div>
 
-          {/* BLOCK A: Financials & Trade Terms */}
+          {/* BLOCK A: Financials & Trade Terms — Single Stack */}
           <div className="bg-[#F8F7F4] rounded-2xl p-10 mb-6 mt-6">
             <p className={refA}>Financial Briefing</p>
-            <div className="grid grid-cols-2">
-              <div className="pr-10 border-r border-[#E8E6E1]">
-                <p className={refB}>Cost Per Unit</p>
-                {hasVerifiedPrice && !isUndisclosed ? (
-                  <>
-                    <p
-                      className="font-black tracking-tighter text-[#1A1916] leading-none"
-                      style={{ fontSize: "80px" }}
-                    >
-                      ${costNum.toFixed(2)}
-                    </p>
-                    {report.verified_at && (
-                      <p className="text-xs italic text-[#9E9C98] mt-3">
-                        Verified by KoreaScout on{" "}
-                        {new Date(report.verified_at).toLocaleDateString("en-US", {
-                          year: "numeric",
-                          month: "long",
-                          day: "numeric",
-                        })}
-                      </p>
-                    )}
-                  </>
-                ) : verifiedCostUsd != null && verifiedCostUsd !== "" && isUndisclosed ? (
-                  <p className="text-sm italic text-[#6B6860]">
-                    Pricing verified and on file. Contact the manufacturer directly or use the broker email in Section 5.
+
+            <div className="mb-10">
+              <p className={refB}>Cost Per Unit</p>
+              {hasVerifiedPrice && !isUndisclosed ? (
+                <>
+                  <p
+                    className="font-black tracking-tighter text-[#1A1916] leading-none"
+                    style={{ fontSize: "80px" }}
+                  >
+                    ${costNum.toFixed(2)}
                   </p>
-                ) : (
-                  <p className="text-sm italic text-[#9E9C98]">Not available</p>
-                )}
-              </div>
-              <div className="pl-10 space-y-8">
+                  {report.verified_at && (
+                    <p className="text-xs italic text-[#9E9C98] mt-3">
+                      Verified by KoreaScout on{" "}
+                      {new Date(report.verified_at).toLocaleDateString("en-US", {
+                        year: "numeric",
+                        month: "long",
+                        day: "numeric",
+                      })}
+                    </p>
+                  )}
+                </>
+              ) : verifiedCostUsd != null && verifiedCostUsd !== "" && isUndisclosed ? (
+                <p className="text-sm italic text-[#6B6860]">
+                  Pricing verified and on file. Contact the manufacturer directly or use the broker email in Section 5.
+                </p>
+              ) : (
+                <p className="text-sm italic text-[#9E9C98]">Not available</p>
+              )}
+            </div>
+
+            {(report.moq?.trim() || report.lead_time?.trim()) && (
+              <div className="flex gap-12 mt-10">
                 {report.moq?.trim() && (
                   <div>
                     <p className={refB}>MOQ</p>
@@ -1809,79 +1811,55 @@ function SupplierContact({
                 )}
                 {report.lead_time?.trim() && (
                   <div>
-                    <p className={refB}>Lead Time</p>
+                    <p className={refB}>Est. Production Lead Time</p>
                     <p className="text-4xl font-black tracking-tighter text-[#1A1916]">
                       {report.lead_time}
                     </p>
                   </div>
                 )}
-                {(report.sample_policy?.trim() || report.export_cert_note?.trim()) && (
-                  <div className="border-t border-[#E8E6E1] pt-6 space-y-4">
-                    {report.sample_policy?.trim() && (
-                      <div>
-                        <p className="text-[10px] font-bold text-[#9E9C98] uppercase tracking-[0.3em] mb-1">
-                          Sample Policy
-                        </p>
-                        <p className="text-sm font-semibold text-[#1A1916] leading-relaxed">
-                          {report.sample_policy}
-                        </p>
-                      </div>
-                    )}
-                    {report.export_cert_note?.trim() && (
-                      <div>
-                        <p className="text-[10px] font-bold text-[#9E9C98] uppercase tracking-[0.3em] mb-1">
-                          Compliance Note
-                        </p>
-                        <p className="text-sm font-semibold text-[#1A1916] leading-relaxed">
-                          {report.export_cert_note}
-                        </p>
-                      </div>
-                    )}
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
-
-          {/* BLOCK B: Supplier & Brand Intel */}
-          <div className="bg-[#F8F7F4] rounded-2xl p-10 mb-6">
-            <p className={refA}>Supplier &amp; Brand Intel</p>
-            {report.m_name?.trim() && (
-              <div className="mb-8">
-                <p className="text-[10px] font-bold text-[#9E9C98] uppercase tracking-[0.3em] mb-2">
-                  Manufacturer / Brand
-                </p>
-                <p className="text-2xl font-black text-[#1A1916]">
-                  {report.m_name}
-                </p>
               </div>
             )}
+          </div>
+
+          {/* BLOCK B: Supplier & Brand Intel — Giant Scale */}
+          <div className="bg-[#F8F7F4] rounded-2xl p-10 mb-6">
+            <p className={refA}>Supplier &amp; Brand Intel</p>
+
+            {report.m_name?.trim() && (
+              <p
+                className="font-black text-[#1A1916] leading-none tracking-tighter break-words mb-12"
+                style={{ fontSize: "clamp(40px, 6vw, 80px)" }}
+              >
+                {report.m_name}
+              </p>
+            )}
+
             {(() => {
               const contacts = [
                 report.contact_email?.trim() && {
                   id: "email",
-                  icon: <Mail className="w-5 h-5 text-[#9E9C98] group-hover:text-[#16A34A] shrink-0 transition-colors" />,
+                  icon: <Mail className="w-8 h-8 text-[#9E9C98] group-hover:text-[#16A34A] shrink-0 transition-colors" />,
                   label: report.contact_email.trim(),
                   href: `mailto:${report.contact_email.trim()}`,
                   external: false as const,
                 },
                 report.contact_phone?.trim() && {
                   id: "phone",
-                  icon: <Phone className="w-5 h-5 text-[#9E9C98] group-hover:text-[#16A34A] shrink-0 transition-colors" />,
+                  icon: <Phone className="w-8 h-8 text-[#9E9C98] group-hover:text-[#16A34A] shrink-0 transition-colors" />,
                   label: report.contact_phone.trim(),
                   href: `tel:${report.contact_phone.trim()}`,
                   external: false as const,
                 },
                 report.m_homepage?.trim() && {
                   id: "website",
-                  icon: <Globe className="w-5 h-5 text-[#9E9C98] group-hover:text-[#16A34A] shrink-0 transition-colors" />,
+                  icon: <Globe className="w-8 h-8 text-[#9E9C98] group-hover:text-[#16A34A] shrink-0 transition-colors" />,
                   label: "Website",
                   href: report.m_homepage.trim(),
                   external: true as const,
                 },
                 report.wholesale_link?.trim() && {
                   id: "wholesale",
-                  icon: <ShoppingBag className="w-5 h-5 text-[#9E9C98] group-hover:text-[#16A34A] shrink-0 transition-colors" />,
+                  icon: <ShoppingBag className="w-8 h-8 text-[#9E9C98] group-hover:text-[#16A34A] shrink-0 transition-colors" />,
                   label: "Wholesale Portal",
                   href: report.wholesale_link.trim(),
                   external: true as const,
@@ -1891,7 +1869,7 @@ function SupplierContact({
               if (contacts.length === 0) return null;
 
               return (
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-10">
                   {contacts.map((contact, i) => (
                     <a
                       key={contact.id}
@@ -1899,14 +1877,14 @@ function SupplierContact({
                       target={contact.external ? "_blank" : undefined}
                       rel={contact.external ? "noopener noreferrer" : undefined}
                       className={`
-                        flex items-center gap-4 bg-white border border-[#E8E6E1]
-                        rounded-xl px-5 py-4
+                        flex items-center gap-5 bg-white
+                        border-2 border-[#E8E6E1] rounded-2xl p-8
                         hover:border-[#16A34A] transition-colors group
                         ${contacts.length === 3 && i === 2 ? "col-span-1 sm:col-span-2" : ""}
                       `}
                     >
                       {contact.icon}
-                      <span className="text-sm font-bold text-[#1A1916] truncate">
+                      <span className="text-xl font-bold text-[#1A1916] truncate">
                         {contact.label}
                       </span>
                     </a>
@@ -1914,8 +1892,34 @@ function SupplierContact({
                 </div>
               );
             })()}
+
+            {(report.sample_policy?.trim() || report.export_cert_note?.trim()) && (
+              <div className="border-t border-[#E8E6E1] pt-8 space-y-5">
+                {report.sample_policy?.trim() && (
+                  <div>
+                    <p className="text-[10px] font-bold text-[#9E9C98] uppercase tracking-[0.3em] mb-1">
+                      Sample Policy
+                    </p>
+                    <p className="text-sm font-semibold text-[#1A1916] leading-relaxed">
+                      {report.sample_policy}
+                    </p>
+                  </div>
+                )}
+                {report.export_cert_note?.trim() && (
+                  <div>
+                    <p className="text-[10px] font-bold text-[#9E9C98] uppercase tracking-[0.3em] mb-1">
+                      Compliance Note
+                    </p>
+                    <p className="text-sm font-semibold text-[#1A1916] leading-relaxed">
+                      {report.export_cert_note}
+                    </p>
+                  </div>
+                )}
+              </div>
+            )}
+
             {globalProofTags.length > 0 && (
-              <div>
+              <div className="border-t border-[#E8E6E1] pt-8 mt-8">
                 <p className={refB}>Global Market Proof</p>
                 <div className="flex flex-wrap gap-3">
                   {globalProofTags.map((tag) => (
