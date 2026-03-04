@@ -15,7 +15,7 @@ import { ExpandableText } from "@/components/ExpandableText";
 import { BrokerEmailDraft } from "@/components/BrokerEmailDraft";
 import { GroupBBrokerSection } from "@/components/GroupBBrokerSection";
 import { Badge, Button, KeywordPill } from "@/components/ui";
-import { AlertTriangle, ArrowRight, Award, CheckCircle, Download, ExternalLink, Film, FolderOpen, Globe, ImageIcon, LayoutTemplate, Lock, Mail, Phone, Play, ShoppingBag, TrendingUp, XCircle } from "lucide-react";
+import { AlertTriangle, ArrowRight, ArrowUpRight, Award, CheckCircle, Download, ExternalLink, Film, FolderOpen, Globe, ImageIcon, LayoutTemplate, Lock, Mail, Phone, Play, ShoppingBag, TrendingUp, XCircle } from "lucide-react";
 import type { ScoutFinalReportsRow } from "@/types/database";
 
 /** Format 6-digit HS code as 3304.99 */
@@ -1826,10 +1826,7 @@ function SupplierContact({
             <p className={refA}>Supplier &amp; Brand Intel</p>
 
             {report.m_name?.trim() && (
-              <p
-                className="font-black text-[#1A1916] leading-none tracking-tighter break-words mb-12"
-                style={{ fontSize: "clamp(40px, 6vw, 80px)" }}
-              >
+              <p className="text-5xl font-black text-[#1A1916] leading-none tracking-tighter break-words mb-8">
                 {report.m_name}
               </p>
             )}
@@ -1897,20 +1894,20 @@ function SupplierContact({
               <div className="border-t border-[#E8E6E1] pt-8 space-y-5">
                 {report.sample_policy?.trim() && (
                   <div>
-                    <p className="text-[10px] font-bold text-[#9E9C98] uppercase tracking-[0.3em] mb-1">
+                    <p className="text-[10px] font-bold text-[#9E9C98] uppercase tracking-[0.3em] mb-2">
                       Sample Policy
                     </p>
-                    <p className="text-sm font-semibold text-[#1A1916] leading-relaxed">
+                    <p className="text-2xl font-black text-[#1A1916] leading-tight">
                       {report.sample_policy}
                     </p>
                   </div>
                 )}
                 {report.export_cert_note?.trim() && (
                   <div>
-                    <p className="text-[10px] font-bold text-[#9E9C98] uppercase tracking-[0.3em] mb-1">
+                    <p className="text-[10px] font-bold text-[#9E9C98] uppercase tracking-[0.3em] mb-2">
                       Compliance Note
                     </p>
-                    <p className="text-sm font-semibold text-[#1A1916] leading-relaxed">
+                    <p className="text-2xl font-black text-[#1A1916] leading-tight">
                       {report.export_cert_note}
                     </p>
                   </div>
@@ -1920,27 +1917,81 @@ function SupplierContact({
 
             {globalProofTags.length > 0 && (
               <div className="border-t border-[#E8E6E1] pt-8 mt-8">
-                <p className={refB}>Global Market Proof</p>
-                <div className="flex flex-wrap gap-3">
-                  {globalProofTags.map((tag) => (
-                    <a
-                      key={tag.region}
-                      href={tag.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center gap-2 bg-white border border-[#E8E6E1] rounded-lg px-4 py-3 hover:border-[#16A34A] transition-colors"
-                    >
-                      <span className="font-black text-[#1A1916] text-sm">
-                        {tag.region}
+                <p className="text-[10px] font-bold text-[#9E9C98] uppercase tracking-[0.3em] mb-6">
+                  Global Market Proof
+                </p>
+
+                {globalProofTags.length === 1 && (
+                  <a
+                    href={globalProofTags[0].url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center justify-between w-full bg-[#F8F7F4] border border-[#E8E6E1] rounded-xl px-6 py-5 hover:border-[#1A1916] hover:shadow-[0_2px_8px_0_rgb(26_25_22/0.06)] transition-all group"
+                  >
+                    <div className="flex items-center gap-4">
+                      <span className="w-1.5 h-1.5 rounded-full bg-[#16A34A] shrink-0" />
+                      <span className="text-xs font-black text-[#9E9C98] uppercase tracking-[0.2em] w-10">
+                        {globalProofTags[0].region}
                       </span>
-                      {tag.platform && (
-                        <span className="text-sm text-[#6B6860]">
-                          {tag.platform}
+                      <span className="w-px h-4 bg-[#E8E6E1]" />
+                      <span className="text-sm font-semibold text-[#1A1916]">
+                        {globalProofTags[0].platform ?? "Link"}
+                      </span>
+                    </div>
+                    <ArrowUpRight className="w-4 h-4 text-[#9E9C98] group-hover:text-[#1A1916] transition-colors shrink-0" />
+                  </a>
+                )}
+
+                {globalProofTags.length >= 2 && globalProofTags.length <= 4 && (
+                  <div className="flex flex-wrap gap-3">
+                    {globalProofTags.map((tag) => (
+                      <a
+                        key={tag.region}
+                        href={tag.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-0 bg-[#F8F7F4] rounded-full border border-[#E8E6E1] overflow-hidden hover:border-[#1A1916] hover:shadow-[0_2px_8px_0_rgb(26_25_22/0.08)] transition-all group"
+                      >
+                        <span className="px-4 py-2.5 text-xs font-black text-[#1A1916] uppercase tracking-widest">
+                          {tag.region}
                         </span>
-                      )}
-                    </a>
-                  ))}
-                </div>
+                        <span className="w-px bg-[#E8E6E1] self-stretch" />
+                        <span className="px-4 py-2.5 text-xs font-semibold text-[#6B6860]">
+                          {tag.platform ?? "Link"}
+                        </span>
+                        <span className="pr-3 text-[#9E9C98] group-hover:text-[#1A1916] transition-colors">
+                          <ArrowUpRight className="w-3.5 h-3.5" />
+                        </span>
+                      </a>
+                    ))}
+                  </div>
+                )}
+
+                {globalProofTags.length >= 5 && (
+                  <div className="divide-y divide-[#E8E6E1] border border-[#E8E6E1] rounded-xl overflow-hidden">
+                    {globalProofTags.map((tag) => (
+                      <a
+                        key={tag.region}
+                        href={tag.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center justify-between px-5 py-3.5 bg-white hover:bg-[#F8F7F4] transition-colors group"
+                      >
+                        <div className="flex items-center gap-4">
+                          <span className="w-1.5 h-1.5 rounded-full bg-[#16A34A] shrink-0" />
+                          <span className="text-[10px] font-black text-[#9E9C98] uppercase tracking-[0.2em] w-10">
+                            {tag.region}
+                          </span>
+                          <span className="w-px h-3.5 bg-[#E8E6E1]" />
+                          <span className="text-sm font-semibold text-[#1A1916]">
+                            {tag.platform ?? "Link"}
+                          </span>
+                        </div>
+                        <ArrowUpRight className="w-3.5 h-3.5 text-[#9E9C98] group-hover:text-[#16A34A] transition-colors shrink-0" />
+                      </a>
+                    ))}
+                  </div>
+                )}
               </div>
             )}
           </div>
