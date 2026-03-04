@@ -1957,72 +1957,98 @@ function SupplierContact({
 
             {globalProofTags.length > 0 && (
               <div className="border-t border-[#E8E6E1] pt-8 mt-8">
+
                 <p className="text-xs font-bold text-[#9E9C98] uppercase tracking-[0.2em] mb-6">
                   Global Market Proof
                 </p>
 
-                {globalProofTags.length === 1 && (
-                  <a
-                    href={globalProofTags[0].url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-3 bg-white border border-[#E8E6E1] rounded-lg p-1.5 pr-4 hover:border-[#1A1916] hover:shadow-md transition-all group"
-                  >
-                    <span className="bg-[#1A1916] text-white px-3 py-1.5 rounded-md text-xs font-black uppercase tracking-widest shrink-0">
-                      {globalProofTags[0].region}
-                    </span>
-                    <span className="text-sm font-bold text-[#1A1916]">
-                      {globalProofTags[0].platform ?? "Link"}
-                    </span>
-                    <ArrowUpRight className="w-4 h-4 text-[#9E9C98] group-hover:text-[#1A1916] transition-colors shrink-0" />
-                  </a>
-                )}
+                {(() => {
+                  const n = globalProofTags.length
 
-                {globalProofTags.length >= 2 && globalProofTags.length <= 4 && (
-                  <div className="flex flex-wrap gap-3">
-                    {globalProofTags.map((tag) => (
-                      <a
-                        key={tag.region}
-                        href={tag.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center gap-3 bg-white border border-[#E8E6E1] rounded-lg p-1.5 pr-4 hover:border-[#1A1916] hover:shadow-md transition-all group"
-                      >
+                  const renderCard = (
+                    tag: { region: string; platform?: string; url: string },
+                    borderClass: string,
+                    paddingClass: string,
+                    colClass: string = ""
+                  ) => (
+                    <a
+                      key={tag.region}
+                      href={tag.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className={`
+                        flex items-center justify-between bg-white rounded-xl
+                        ${borderClass} ${paddingClass} ${colClass}
+                        transition-all cursor-pointer group
+                        hover:border-[#1A1916] hover:shadow-md
+                      `}
+                    >
+                      <div className="flex items-center gap-4 min-w-0">
                         <span className="bg-[#1A1916] text-white px-3 py-1.5 rounded-md text-xs font-black uppercase tracking-widest shrink-0">
                           {tag.region}
                         </span>
-                        <span className="text-sm font-bold text-[#1A1916]">
-                          {tag.platform ?? "Link"}
-                        </span>
-                        <ArrowUpRight className="w-4 h-4 text-[#9E9C98] group-hover:text-[#1A1916] transition-colors shrink-0" />
-                      </a>
-                    ))}
-                  </div>
-                )}
+                        {tag.platform && (
+                          <span className="text-sm md:text-base font-bold text-[#1A1916] truncate">
+                            {tag.platform}
+                          </span>
+                        )}
+                      </div>
+                      <ArrowUpRight className="w-5 h-5 text-[#9E9C98] group-hover:text-[#1A1916] transition-colors shrink-0 ml-3" />
+                    </a>
+                  )
 
-                {globalProofTags.length >= 5 && (
-                  <div className="divide-y divide-[#E8E6E1] border border-[#E8E6E1] rounded-xl overflow-hidden">
-                    {globalProofTags.map((tag) => (
-                      <a
-                        key={tag.region}
-                        href={tag.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="flex items-center justify-between px-4 py-3 bg-white hover:bg-[#F8F7F4] transition-colors group"
-                      >
-                        <div className="flex items-center gap-3">
-                          <span className="bg-[#1A1916] text-white px-2.5 py-1 rounded-md text-xs font-black uppercase tracking-widest shrink-0">
-                            {tag.region}
-                          </span>
-                          <span className="text-sm font-bold text-[#1A1916]">
-                            {tag.platform ?? "Link"}
-                          </span>
-                        </div>
-                        <ArrowUpRight className="w-3.5 h-3.5 text-[#9E9C98] group-hover:text-[#1A1916] transition-colors shrink-0" />
-                      </a>
-                    ))}
-                  </div>
-                )}
+                  if (n === 1) return (
+                    <div className="grid grid-cols-1">
+                      {renderCard(globalProofTags[0], "border-2 border-[#E8E6E1]", "p-6")}
+                    </div>
+                  )
+
+                  if (n === 2) return (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      {globalProofTags.map((tag) =>
+                        renderCard(tag, "border-2 border-[#E8E6E1]", "p-5")
+                      )}
+                    </div>
+                  )
+
+                  if (n === 3) return (
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                      {globalProofTags.map((tag) =>
+                        renderCard(tag, "border border-[#E8E6E1]", "p-4")
+                      )}
+                    </div>
+                  )
+
+                  if (n === 4) return (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      {globalProofTags.map((tag) =>
+                        renderCard(tag, "border border-[#E8E6E1]", "p-4")
+                      )}
+                    </div>
+                  )
+
+                  if (n === 5) return (
+                    <div className="grid grid-cols-6 gap-3">
+                      {globalProofTags.map((tag, i) =>
+                        renderCard(
+                          tag,
+                          "border border-[#E8E6E1]",
+                          "p-4",
+                          i < 2 ? "col-span-3" : "col-span-2"
+                        )
+                      )}
+                    </div>
+                  )
+
+                  return (
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                      {globalProofTags.map((tag) =>
+                        renderCard(tag, "border border-[#E8E6E1]", "p-4")
+                      )}
+                    </div>
+                  )
+                })()}
+
               </div>
             )}
           </div>
