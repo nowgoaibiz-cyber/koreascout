@@ -968,7 +968,7 @@ function SocialProofTrendIntelligence({
       {/* ── BLOCK 1: SOCIAL BUZZ ─────────────────────── */}
       {report.buzz_summary?.trim() && (
         <div className="bg-[#F8F7F4] rounded-2xl p-10 mb-12">
-          <p className="text-xs font-semibold text-[#9E9C98] uppercase tracking-widest mb-4">
+          <p className="text-xs font-semibold text-[#9E9C98] uppercase tracking-[0.2em] mb-4">
             Social Buzz
           </p>
           <span className="block text-6xl font-serif text-[#16A34A] leading-none mb-6">
@@ -986,7 +986,7 @@ function SocialProofTrendIntelligence({
       {/* ── BLOCK 2: MARKET GAP ANALYSIS ─────────────── */}
       {(report.kr_local_score != null || report.global_trend_score != null) && (
         <div className="bg-[#F8F7F4] rounded-2xl p-10 mb-12">
-          <p className="text-[10px] tracking-[0.2em] text-[#9E9C98] uppercase mb-10">
+          <p className="text-xs font-semibold text-[#9E9C98] uppercase tracking-[0.2em] mb-4">
             Market Gap Analysis
           </p>
 
@@ -994,7 +994,7 @@ function SocialProofTrendIntelligence({
 
             {/* KR Traction */}
             <div className="pr-12 border-r border-[#E8E6E1]">
-              <p className="text-[10px] tracking-[0.2em] text-[#9E9C98] uppercase mb-4">
+              <p className="text-[10px] font-bold text-[#9E9C98] uppercase tracking-[0.3em] mb-3">
                 Korean Traction
               </p>
               <p className="text-7xl font-extrabold text-[#16A34A] tracking-tighter leading-none">
@@ -1007,11 +1007,13 @@ function SocialProofTrendIntelligence({
                 />
               </div>
               {report.kr_evidence?.trim() && (
-                <p className={
-                  (report.kr_evidence?.length ?? 0) > 200
-                    ? "text-sm text-[#3D3B36] leading-relaxed"
-                    : "text-base text-[#3D3B36] leading-relaxed"
-                }>
+                <p
+                  className={
+                    (report.kr_evidence?.length ?? 0) > 200
+                      ? "text-sm text-[#3D3B36] leading-relaxed mt-5 opacity-90"
+                      : "text-base text-[#3D3B36] leading-relaxed mt-5 opacity-90"
+                  }
+                >
                   {report.kr_evidence}
                 </p>
               )}
@@ -1024,7 +1026,7 @@ function SocialProofTrendIntelligence({
 
             {/* Global Presence */}
             <div className="pl-12">
-              <p className="text-[10px] tracking-[0.2em] text-[#9E9C98] uppercase mb-4">
+              <p className="text-[10px] font-bold text-[#9E9C98] uppercase tracking-[0.3em] mb-3">
                 Global Presence
               </p>
               <p className="text-7xl font-extrabold text-[#2563EB] tracking-tighter leading-none">
@@ -1037,11 +1039,13 @@ function SocialProofTrendIntelligence({
                 />
               </div>
               {report.global_evidence?.trim() && (
-                <p className={
-                  (report.global_evidence?.length ?? 0) > 200
-                    ? "text-sm text-[#3D3B36] leading-relaxed"
-                    : "text-base text-[#3D3B36] leading-relaxed"
-                }>
+                <p
+                  className={
+                    (report.global_evidence?.length ?? 0) > 200
+                      ? "text-sm text-[#3D3B36] leading-relaxed mt-5 opacity-90"
+                      : "text-base text-[#3D3B36] leading-relaxed mt-5 opacity-90"
+                  }
+                >
                   {report.global_evidence}
                 </p>
               )}
