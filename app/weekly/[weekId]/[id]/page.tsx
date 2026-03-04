@@ -283,14 +283,21 @@ function ProductIdentity({
                 <p className="text-xs font-bold text-[#9E9C98] uppercase tracking-[0.2em] mb-2">
                   Retail Price (KR Market)
                 </p>
-                <p className="text-2xl md:text-3xl font-bold text-[#1A1916]">
-                  ₩{Number(report.kr_price).toLocaleString()}
+                <div className="flex items-baseline">
+                  <span className="text-4xl md:text-5xl font-black text-[#1A1916] leading-none tracking-tighter">
+                    ₩{Number(report.kr_price).toLocaleString()}
+                  </span>
                   {report.kr_price_usd != null && (
-                    <span className="text-lg text-[#6B6860] font-medium ml-2">
-                      (~${report.kr_price_usd})
-                    </span>
+                    <>
+                      <span className="text-[#E8E6E1] mx-6 font-thin text-4xl md:text-5xl leading-none">
+                        /
+                      </span>
+                      <span className="text-4xl md:text-5xl font-black text-[#1A1916] leading-none tracking-tighter">
+                        ~${report.kr_price_usd}
+                      </span>
+                    </>
                   )}
-                </p>
+                </div>
               </div>
             )}
 
