@@ -1803,7 +1803,7 @@ function SupplierContact({
               <div className="flex gap-12 mt-10">
                 {report.moq?.trim() && (
                   <div>
-                    <p className={refB}>MOQ</p>
+                    <p className="text-xs font-bold text-[#9E9C98] uppercase tracking-[0.2em] mb-3">MOQ</p>
                     <p className="text-4xl font-black tracking-tighter text-[#1A1916]">
                       {report.moq}
                     </p>
@@ -1811,7 +1811,7 @@ function SupplierContact({
                 )}
                 {report.lead_time?.trim() && (
                   <div>
-                    <p className={refB}>Est. Production Lead Time</p>
+                    <p className="text-xs font-bold text-[#9E9C98] uppercase tracking-[0.2em] mb-3">Est. Production Lead Time</p>
                     <p className="text-4xl font-black tracking-tighter text-[#1A1916]">
                       {report.lead_time}
                     </p>
@@ -1894,20 +1894,20 @@ function SupplierContact({
               <div className="border-t border-[#E8E6E1] pt-8 space-y-5">
                 {report.sample_policy?.trim() && (
                   <div>
-                    <p className="text-[10px] font-bold text-[#9E9C98] uppercase tracking-[0.3em] mb-2">
+                    <p className="text-xs font-bold text-[#9E9C98] uppercase tracking-[0.2em] mb-3">
                       Sample Policy
                     </p>
-                    <p className="text-2xl font-black text-[#1A1916] leading-tight">
+                    <p className="text-sm font-medium text-[#1A1916] leading-relaxed">
                       {report.sample_policy}
                     </p>
                   </div>
                 )}
                 {report.export_cert_note?.trim() && (
                   <div>
-                    <p className="text-[10px] font-bold text-[#9E9C98] uppercase tracking-[0.3em] mb-2">
+                    <p className="text-xs font-bold text-[#9E9C98] uppercase tracking-[0.2em] mb-3">
                       Compliance Note
                     </p>
-                    <p className="text-2xl font-black text-[#1A1916] leading-tight">
+                    <p className="text-sm font-medium text-[#1A1916] leading-relaxed">
                       {report.export_cert_note}
                     </p>
                   </div>
@@ -1917,7 +1917,7 @@ function SupplierContact({
 
             {globalProofTags.length > 0 && (
               <div className="border-t border-[#E8E6E1] pt-8 mt-8">
-                <p className="text-[10px] font-bold text-[#9E9C98] uppercase tracking-[0.3em] mb-6">
+                <p className="text-xs font-bold text-[#9E9C98] uppercase tracking-[0.2em] mb-6">
                   Global Market Proof
                 </p>
 
@@ -1926,18 +1926,14 @@ function SupplierContact({
                     href={globalProofTags[0].url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center justify-between w-full bg-[#F8F7F4] border border-[#E8E6E1] rounded-xl px-6 py-5 hover:border-[#1A1916] hover:shadow-[0_2px_8px_0_rgb(26_25_22/0.06)] transition-all group"
+                    className="inline-flex items-center gap-3 bg-white border border-[#E8E6E1] rounded-lg p-1.5 pr-4 hover:border-[#1A1916] hover:shadow-md transition-all group"
                   >
-                    <div className="flex items-center gap-4">
-                      <span className="w-1.5 h-1.5 rounded-full bg-[#16A34A] shrink-0" />
-                      <span className="text-xs font-black text-[#9E9C98] uppercase tracking-[0.2em] w-10">
-                        {globalProofTags[0].region}
-                      </span>
-                      <span className="w-px h-4 bg-[#E8E6E1]" />
-                      <span className="text-sm font-semibold text-[#1A1916]">
-                        {globalProofTags[0].platform ?? "Link"}
-                      </span>
-                    </div>
+                    <span className="bg-[#1A1916] text-white px-3 py-1.5 rounded-md text-xs font-black uppercase tracking-widest shrink-0">
+                      {globalProofTags[0].region}
+                    </span>
+                    <span className="text-sm font-bold text-[#1A1916]">
+                      {globalProofTags[0].platform ?? "Link"}
+                    </span>
                     <ArrowUpRight className="w-4 h-4 text-[#9E9C98] group-hover:text-[#1A1916] transition-colors shrink-0" />
                   </a>
                 )}
@@ -1950,18 +1946,15 @@ function SupplierContact({
                         href={tag.url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center gap-0 bg-[#F8F7F4] rounded-full border border-[#E8E6E1] overflow-hidden hover:border-[#1A1916] hover:shadow-[0_2px_8px_0_rgb(26_25_22/0.08)] transition-all group"
+                        className="inline-flex items-center gap-3 bg-white border border-[#E8E6E1] rounded-lg p-1.5 pr-4 hover:border-[#1A1916] hover:shadow-md transition-all group"
                       >
-                        <span className="px-4 py-2.5 text-xs font-black text-[#1A1916] uppercase tracking-widest">
+                        <span className="bg-[#1A1916] text-white px-3 py-1.5 rounded-md text-xs font-black uppercase tracking-widest shrink-0">
                           {tag.region}
                         </span>
-                        <span className="w-px bg-[#E8E6E1] self-stretch" />
-                        <span className="px-4 py-2.5 text-xs font-semibold text-[#6B6860]">
+                        <span className="text-sm font-bold text-[#1A1916]">
                           {tag.platform ?? "Link"}
                         </span>
-                        <span className="pr-3 text-[#9E9C98] group-hover:text-[#1A1916] transition-colors">
-                          <ArrowUpRight className="w-3.5 h-3.5" />
-                        </span>
+                        <ArrowUpRight className="w-4 h-4 text-[#9E9C98] group-hover:text-[#1A1916] transition-colors shrink-0" />
                       </a>
                     ))}
                   </div>
@@ -1975,19 +1968,17 @@ function SupplierContact({
                         href={tag.url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="flex items-center justify-between px-5 py-3.5 bg-white hover:bg-[#F8F7F4] transition-colors group"
+                        className="flex items-center justify-between px-4 py-3 bg-white hover:bg-[#F8F7F4] transition-colors group"
                       >
-                        <div className="flex items-center gap-4">
-                          <span className="w-1.5 h-1.5 rounded-full bg-[#16A34A] shrink-0" />
-                          <span className="text-[10px] font-black text-[#9E9C98] uppercase tracking-[0.2em] w-10">
+                        <div className="flex items-center gap-3">
+                          <span className="bg-[#1A1916] text-white px-2.5 py-1 rounded-md text-xs font-black uppercase tracking-widest shrink-0">
                             {tag.region}
                           </span>
-                          <span className="w-px h-3.5 bg-[#E8E6E1]" />
-                          <span className="text-sm font-semibold text-[#1A1916]">
+                          <span className="text-sm font-bold text-[#1A1916]">
                             {tag.platform ?? "Link"}
                           </span>
                         </div>
-                        <ArrowUpRight className="w-3.5 h-3.5 text-[#9E9C98] group-hover:text-[#16A34A] transition-colors shrink-0" />
+                        <ArrowUpRight className="w-3.5 h-3.5 text-[#9E9C98] group-hover:text-[#1A1916] transition-colors shrink-0" />
                       </a>
                     ))}
                   </div>
