@@ -15,7 +15,7 @@ import { ExpandableText } from "@/components/ExpandableText";
 import { BrokerEmailDraft } from "@/components/BrokerEmailDraft";
 import { GroupBBrokerSection } from "@/components/GroupBBrokerSection";
 import { Badge, Button, KeywordPill } from "@/components/ui";
-import { AlertTriangle, ArrowRight, Award, CheckCircle, Film, ImageIcon, LayoutTemplate, Lock, TrendingUp, XCircle } from "lucide-react";
+import { AlertTriangle, ArrowRight, Award, CheckCircle, Download, ExternalLink, Film, FolderOpen, ImageIcon, LayoutTemplate, Lock, Mail, Play, TrendingUp, XCircle } from "lucide-react";
 import type { ScoutFinalReportsRow } from "@/types/database";
 
 /** Format 6-digit HS code as 3304.99 */
@@ -1658,19 +1658,101 @@ function SupplierContact({
   const aiDetailUrl = getAiDetailUrl(report.ai_detail_page_links as string | unknown[] | Record<string, unknown> | null);
   const marketingUrl = report.marketing_assets_url?.trim() || null;
   const aiImageUrl = report.ai_image_url?.trim() || null;
-  const assetCount = [viralUrl, videoUrl, aiDetailUrl, marketingUrl, aiImageUrl].filter(Boolean).length;
-  const showExecutionGallery = assetCount > 0;
 
-  const gridCols =
-    assetCount === 1
-      ? "grid-cols-1 sm:grid-cols-1 lg:grid-cols-1"
-      : assetCount === 2
-        ? "grid-cols-1 sm:grid-cols-2 lg:grid-cols-2"
-        : assetCount === 3
-          ? "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3"
-          : assetCount === 4
-            ? "grid-cols-1 sm:grid-cols-2 lg:grid-cols-4"
-            : "grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5";
+  let rawPrices: Record<string, { url?: string; platform?: string }> = {};
+  try {
+    const raw = report.global_prices;
+    if (typeof raw === "string") {
+      const once = JSON.parse(raw);
+      rawPrices = typeof once === "string" ? JSON.parse(once) : (once as typeof rawPrices);
+    } else if (raw && typeof raw === "object") {
+      rawPrices = raw as typeof rawPrices;
+    }
+  } catch {
+    // ignore
+  }
+  const regionsList = [
+    { id: "us", name: "US" },
+    { id: "uk", name: "UK" },
+    { id: "sea", name: "SEA" },
+    { id: "australia", name: "AU" },
+    { id: "india", name: "IN" },
+  ];
+  const globalProofTags = regionsList
+    .map((r) => ({ region: r.name, url: rawPrices[r.id]?.url }))
+    .filter((t): t is { region: string; url: string } => typeof t.url === "string" && t.url.startsWith("http"));
+
+  const assetCards = [
+    viralUrl && {
+      id: "viral",
+      platform: "Viral" as const,
+      title: "Viral Reference",
+      description: "Korean TikTok/Reels success case. Study the hook.",
+      href: viralUrl,
+      ctaText: "Watch Original",
+      isPrimary: true,
+      icon: <Play className="w-16 h-16 text-[#1A1916]" />,
+      hoverIcon: <Play className="w-5 h-5 text-[#1A1916]" />,
+    },
+    videoUrl && {
+      id: "video",
+      platform: "Video" as const,
+      title: "Raw Ad Footage",
+      description: "Unedited footage ready for your market adaptation.",
+      href: videoUrl,
+      ctaText: "Watch & Download",
+      isPrimary: false,
+      icon: <Film className="w-16 h-16 text-[#1A1916]" />,
+      hoverIcon: <Download className="w-5 h-5 text-[#1A1916]" />,
+    },
+    aiDetailUrl && {
+      id: "ai-landing",
+      platform: "AI Page" as const,
+      title: "AI Landing Page",
+      description: "Opal-generated A/B product page drafts.",
+      href: aiDetailUrl,
+      ctaText: "Open Page",
+      isPrimary: false,
+      icon: <LayoutTemplate className="w-16 h-16 text-[#1A1916]" />,
+      hoverIcon: <ExternalLink className="w-5 h-5 text-[#1A1916]" />,
+    },
+    marketingUrl && {
+      id: "brand-asset",
+      platform: "Assets" as const,
+      title: "Brand Asset Kit",
+      description: "High-res model shots and product imagery from the manufacturer.",
+      href: marketingUrl,
+      ctaText: "Access Assets",
+      isPrimary: false,
+      icon: <ImageIcon className="w-16 h-16 text-[#1A1916]" />,
+      hoverIcon: <ArrowRight className="w-5 h-5 text-[#1A1916]" />,
+    },
+    aiImageUrl && {
+      id: "ai-image",
+      platform: "AI Image" as const,
+      title: "AI Product Image",
+      description: "AI-generated product image. Open or download.",
+      href: aiImageUrl,
+      ctaText: "Open / Download",
+      isPrimary: false,
+      icon: <ImageIcon className="w-16 h-16 text-[#1A1916]" />,
+      hoverIcon: <Download className="w-5 h-5 text-[#1A1916]" />,
+    },
+  ].filter(Boolean) as Array<{
+    id: string;
+    platform: string;
+    title: string;
+    description: string;
+    href: string;
+    ctaText: string;
+    isPrimary: boolean;
+    icon: React.ReactNode;
+    hoverIcon: React.ReactNode;
+  }>;
+
+  const refA = "text-xl font-bold text-[#1A1916] mb-10";
+  const refB = "text-sm font-bold text-[#6B6860] tracking-widest mb-4";
+  const refC = "text-base text-[#3D3B36] leading-relaxed opacity-90";
 
   return (
     <section className="bg-white rounded-2xl border border-[#E8E6E1] p-6 shadow-[0_1px_3px_0_rgb(26_25_22/0.06)]">
@@ -1685,333 +1767,216 @@ function SupplierContact({
             </p>
           </div>
 
-          <div className="flex flex-col md:flex-row gap-6 mt-6 items-stretch">
-            {/* Block 1 Left: Sourcing Economics */}
-            <div className="bg-[#F8F7F4] border border-[#E8E6E1] rounded-xl p-6 flex-1 flex flex-col gap-4 min-h-0">
-              {verifiedCostUsd != null && verifiedCostUsd !== "" && (
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#DCFCE7] border border-[#BBF7D0] w-fit">
-                  <span className="w-2 h-2 rounded-full bg-[#16A34A] animate-pulse" />
-                  <span className="text-xs font-semibold text-[#16A34A]">
-                    Scout Verified
-                  </span>
-                </div>
-              )}
-
-              {hasVerifiedPrice && !isUndisclosed && (
-                <>
-                  <p className="text-5xl font-mono font-bold text-[#16A34A]">
-                    ${costNum.toFixed(2)}
-                  </p>
-                  <p className="text-xs uppercase tracking-widest text-[#9E9C98]">
-                    COST PER UNIT
-                  </p>
-                  <div className="flex gap-6 flex-wrap">
-                    {report.moq?.trim() && (
-                      <div>
-                        <p className="text-2xl font-semibold font-mono tabular-nums text-[#1A1916]">
-                          {report.moq}
-                        </p>
-                        <p className="text-xs text-[#9E9C98]">MOQ</p>
-                      </div>
-                    )}
-                    {report.lead_time?.trim() && (
-                      <div>
-                        <p className="text-2xl font-semibold font-mono tabular-nums text-[#1A1916]">
-                          {report.lead_time}
-                        </p>
-                        <p className="text-xs text-[#9E9C98]">LEAD TIME</p>
-                      </div>
-                    )}
-                  </div>
-                  {formatVerifiedAt(report.verified_at) && (
-                    <p className="text-xs text-[#C4C2BE] italic">
-                      Verified by Scout on{" "}
-                      {formatVerifiedAt(report.verified_at)}
+          {/* BLOCK A: Financial Briefing */}
+          <div className="bg-[#F8F7F4] rounded-2xl p-10 mb-6 mt-6">
+            <p className={refA}>Financial Briefing</p>
+            <div className="grid grid-cols-2">
+              <div className="pr-10 border-r border-[#E8E6E1]">
+                <p className={refB}>Cost Per Unit</p>
+                {hasVerifiedPrice && !isUndisclosed ? (
+                  <>
+                    <p
+                      className="font-black tracking-tighter text-[#1A1916] leading-none"
+                      style={{ fontSize: "80px" }}
+                    >
+                      ${costNum.toFixed(2)}
                     </p>
-                  )}
-                  {report.sample_policy?.trim() && (
-                    <Badge variant="info">{report.sample_policy.trim()}</Badge>
-                  )}
-                  {report.export_cert_note?.trim() && (
-                    <Badge variant="warning">{report.export_cert_note.trim()}</Badge>
-                  )}
-                </>
-              )}
-
-              {verifiedCostUsd != null && verifiedCostUsd !== "" && isUndisclosed && (
-                <>
-                  <p className="text-sm text-[#6B6860] leading-relaxed italic">
-                    Pricing verified and on file. Contact the manufacturer
-                    directly or use the broker email in Section 5.
-                  </p>
-                  <div className="flex gap-6 flex-wrap">
-                    {report.moq?.trim() && (
-                      <div>
-                        <p className="text-2xl font-semibold font-mono tabular-nums text-[#1A1916]">
-                          {report.moq}
-                        </p>
-                        <p className="text-xs text-[#9E9C98]">MOQ</p>
-                      </div>
-                    )}
-                    {report.lead_time?.trim() && (
-                      <div>
-                        <p className="text-2xl font-semibold font-mono tabular-nums text-[#1A1916]">
-                          {report.lead_time}
-                        </p>
-                        <p className="text-xs text-[#9E9C98]">LEAD TIME</p>
-                      </div>
-                    )}
-                  </div>
-                </>
-              )}
-
-              {(!verifiedCostUsd || verifiedCostUsd === "") && (
-                <p className="text-sm text-[#9E9C98] leading-relaxed flex items-center gap-1">
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#9E9C98] animate-pulse" />
-                  Scout team is currently verifying pricing for this product.
-                </p>
-              )}
-            </div>
-
-            {/* Block 1 Right: Manufacturer Contact */}
-            <div className="bg-[#F8F7F4] border border-[#E8E6E1] rounded-xl p-6 flex-1 flex flex-col gap-4 min-h-0">
-              {report.m_name?.trim() && (
-                <h2 className="text-xl font-bold text-[#1A1916]">
-                  {report.m_name.trim()}
-                </h2>
-              )}
-              {report.corporate_scale?.trim() && (
-                <Badge variant="default">{report.corporate_scale.trim()}</Badge>
-              )}
-              {report.contact_email?.trim() && (
-                <ContactPill
-                  icon="📧"
-                  label={report.contact_email.trim()}
-                  value={report.contact_email.trim()}
-                  action="copy"
-                />
-              )}
-              {report.contact_phone?.trim() && (
-                <ContactPill
-                  icon="📞"
-                  label={report.contact_phone.trim()}
-                  value={report.contact_phone.trim()}
-                  action="copy"
-                />
-              )}
-              {report.m_homepage?.trim() && (
-                <ContactPill
-                  icon="🌐"
-                  label="Website"
-                  value={report.m_homepage.trim()}
-                  action="link"
-                />
-              )}
-              {report.wholesale_link?.trim() && (
-                <ContactPill
-                  icon="🛒"
-                  label="Wholesale Portal"
-                  value={report.wholesale_link.trim()}
-                  action="link"
-                />
-              )}
-
-              {(() => {
-                let rawPrices: Record<string, { url?: string; platform?: string }> = {};
-                try {
-                  const raw = report.global_prices;
-                  if (typeof raw === "string") {
-                    const once = JSON.parse(raw);
-                    rawPrices = typeof once === "string" ? JSON.parse(once) : (once as typeof rawPrices);
-                  } else if (raw && typeof raw === "object") {
-                    rawPrices = raw as typeof rawPrices;
-                  }
-                } catch {
-                  // ignore
-                }
-
-                const regions = [
-                  { id: "us", flag: "🇺🇸", name: "US" },
-                  { id: "uk", flag: "🇬🇧", name: "UK" },
-                  { id: "sea", flag: "🇸🇬", name: "SEA" },
-                  { id: "australia", flag: "🇦🇺", name: "AU" },
-                  { id: "india", flag: "🇮🇳", name: "IN" },
-                ];
-
-                if (!report.global_prices) return null;
-
-                return (
-                  <div className="mt-auto pt-3 border-t border-[#E8E6E1]">
-                    <p className="text-xs font-semibold text-[#9E9C98] uppercase tracking-widest mb-3 text-center">
-                      Global Market Proof
+                    <p className="text-xs italic text-[#9E9C98] mt-3">
+                      Verified Supplier Price
                     </p>
-                    <div className="grid grid-cols-2 gap-2">
-                      {regions.map((region, index) => {
-                        const data = rawPrices[region.id];
-                        const hasUrl = data?.url?.startsWith("http");
-                        const isLastOdd = index === regions.length - 1 && regions.length % 2 !== 0;
-                        const spanClass = isLastOdd ? " col-span-2 justify-self-center" : "";
-
-                        if (hasUrl) {
-                          return (
-                            <a
-                              key={region.id}
-                              href={data!.url}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-white border border-[#E8E6E1] text-xs text-[#3D3B36] hover:bg-[#DCFCE7] hover:text-[#16A34A] hover:border-[#BBF7D0] transition-all${spanClass}`}
-                            >
-                              {region.flag} {region.name}: {data?.platform || "Link"} ↗
-                            </a>
-                          );
-                        }
-
-                        return (
-                          <span
-                            key={region.id}
-                            className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-[#DBEAFE] border border-[#BFDBFE] text-xs text-[#2563EB] cursor-default${spanClass}`}
-                          >
-                            {region.flag} {region.name}: 🔵 Blue Ocean
-                          </span>
-                        );
-                      })}
-                    </div>
+                  </>
+                ) : verifiedCostUsd != null && verifiedCostUsd !== "" && isUndisclosed ? (
+                  <p className="text-sm italic text-[#6B6860]">
+                    Pricing verified and on file. Contact the manufacturer directly or use the broker email in Section 5.
+                  </p>
+                ) : (
+                  <p className="text-sm italic text-[#9E9C98]">Not available</p>
+                )}
+              </div>
+              <div className="pl-10 flex flex-col justify-center gap-8">
+                {report.moq?.trim() && (
+                  <div>
+                    <p className={refB}>MOQ</p>
+                    <p className="text-4xl font-black tracking-tighter text-[#1A1916]">
+                      {report.moq}
+                    </p>
                   </div>
-                );
-              })()}
+                )}
+                {report.lead_time?.trim() && (
+                  <div>
+                    <p className={refB}>Lead Time</p>
+                    <p className="text-4xl font-black tracking-tighter text-[#1A1916]">
+                      {report.lead_time}
+                    </p>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
 
-          {/* Block 2: Execution Gallery */}
-          {showExecutionGallery && (
-            <>
-              <div className="flex items-center justify-between mt-8">
-                <h3 className="text-sm font-semibold text-[#9E9C98] uppercase tracking-widest">
-                  Creative Assets
-                </h3>
-                <span className="text-xs text-[#16A34A]">
-                  {assetCount} assets ready to deploy
-                </span>
+          {/* BLOCK B: Scout Lab */}
+          <div className="bg-[#F8F7F4] rounded-2xl p-10 mb-6">
+            <p className={refA}>Scout Lab</p>
+            {(verifiedCostUsd != null && verifiedCostUsd !== "") && (
+              <div className="inline-flex items-center gap-3 bg-[#DCFCE7] border border-[#BBF7D0] rounded-xl px-6 py-4 mb-8">
+                <CheckCircle className="w-6 h-6 text-[#16A34A] shrink-0" />
+                <div>
+                  <p className="text-sm font-black tracking-widest text-[#16A34A] uppercase">
+                    Scout Verified
+                  </p>
+                  {report.verified_at && (
+                    <p className="text-xs text-[#16A34A]/70 mt-0.5">
+                      Verified by KoreaScout on{" "}
+                      {new Date(report.verified_at).toLocaleDateString("en-US", {
+                        year: "numeric",
+                        month: "long",
+                        day: "numeric",
+                      })}
+                    </p>
+                  )}
+                </div>
               </div>
-              <div className={`grid ${gridCols} gap-4 mt-4`}>
-                {viralUrl && (
-                  <div className="bg-[#F8F7F4] rounded-xl border border-[#E8E6E1] overflow-hidden flex flex-col hover:border-[#BBF7D0] transition-colors group">
-                    <div className="h-36 bg-gradient-to-br from-[#F2F1EE] to-[#E8E6E1] flex items-center justify-center">
-                      <TrendingUp className="w-10 h-10 text-[#6B6860] opacity-50 group-hover:opacity-100 transition-opacity" />
-                    </div>
-                    <div className="p-4 flex flex-col gap-2 flex-1">
-                      <p className="text-sm font-semibold text-[#1A1916]">
-                        Viral Reference
-                      </p>
-                      <p className="text-xs text-[#9E9C98]">
-                        Korean TikTok/Reels success case. Study the hook.
-                      </p>
-                      <a
-                        href={viralUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="mt-auto text-xs text-[#16A34A] hover:text-[#15803D] underline underline-offset-2"
-                      >
-                        Watch Original ↗
-                      </a>
-                    </div>
-                  </div>
+            )}
+            {(report.m_name?.trim() || report.corporate_scale?.trim()) && (
+              <div className="mb-6">
+                {report.m_name?.trim() && (
+                  <h3 className="text-xl font-bold text-[#1A1916] mb-2">{report.m_name.trim()}</h3>
                 )}
-                {videoUrl && (
-                  <div className="bg-[#F8F7F4] rounded-xl border border-[#E8E6E1] overflow-hidden flex flex-col hover:border-[#BBF7D0] transition-colors group">
-                    <div className="h-36 bg-gradient-to-br from-[#F2F1EE] to-[#E8E6E1] flex items-center justify-center">
-                      <Film className="w-10 h-10 text-[#6B6860] opacity-50 group-hover:opacity-100 transition-opacity" />
-                    </div>
-                    <div className="p-4 flex flex-col gap-2 flex-1">
-                      <p className="text-sm font-semibold text-[#1A1916]">
-                        Raw Ad Footage
-                      </p>
-                      <p className="text-xs text-[#9E9C98]">
-                        Unedited footage ready for your market adaptation.
-                      </p>
-                      <a
-                        href={videoUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="mt-auto text-xs text-[#16A34A] hover:text-[#15803D] underline underline-offset-2"
-                      >
-                        Watch & Download ↗
-                      </a>
-                    </div>
-                  </div>
-                )}
-                {aiDetailUrl && (
-                  <div className="bg-[#F8F7F4] rounded-xl border border-[#E8E6E1] overflow-hidden flex flex-col hover:border-[#BBF7D0] transition-colors group">
-                    <div className="h-36 bg-gradient-to-br from-[#F2F1EE] to-[#E8E6E1] flex items-center justify-center">
-                      <LayoutTemplate className="w-10 h-10 text-[#6B6860] opacity-50 group-hover:opacity-100 transition-opacity" />
-                    </div>
-                    <div className="p-4 flex flex-col gap-2 flex-1">
-                      <p className="text-sm font-semibold text-[#1A1916]">
-                        AI Landing Page
-                      </p>
-                      <p className="text-xs text-[#9E9C98]">
-                        Opal-generated A/B product page drafts.
-                      </p>
-                      <a
-                        href={aiDetailUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="mt-auto text-xs text-[#16A34A] hover:text-[#15803D] underline underline-offset-2"
-                      >
-                        Open Page ↗
-                      </a>
-                    </div>
-                  </div>
-                )}
-                {marketingUrl && (
-                  <div className="bg-[#F8F7F4] rounded-xl border border-[#E8E6E1] overflow-hidden flex flex-col hover:border-[#BBF7D0] transition-colors group">
-                    <div className="h-36 bg-gradient-to-br from-[#F2F1EE] to-[#E8E6E1] flex items-center justify-center">
-                      <ImageIcon className="w-10 h-10 text-[#6B6860] opacity-50 group-hover:opacity-100 transition-opacity" />
-                    </div>
-                    <div className="p-4 flex flex-col gap-2 flex-1">
-                      <p className="text-sm font-semibold text-[#1A1916]">
-                        Brand Asset Kit
-                      </p>
-                      <p className="text-xs text-[#9E9C98]">
-                        High-res model shots and product imagery from the
-                        manufacturer.
-                      </p>
-                      <a
-                        href={marketingUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="mt-auto text-xs text-[#16A34A] hover:text-[#15803D] underline underline-offset-2"
-                      >
-                        Access Assets ↗
-                      </a>
-                    </div>
-                  </div>
-                )}
-                {aiImageUrl && (
-                  <div className="bg-[#F8F7F4] rounded-xl border border-[#E8E6E1] overflow-hidden flex flex-col hover:border-[#BBF7D0] transition-colors group">
-                    <div className="h-36 bg-gradient-to-br from-[#F2F1EE] to-[#E8E6E1] flex items-center justify-center">
-                      <ImageIcon className="w-10 h-10 text-[#6B6860] opacity-50 group-hover:opacity-100 transition-opacity" />
-                    </div>
-                    <div className="p-4 flex flex-col gap-2 flex-1">
-                      <p className="text-sm font-semibold text-[#1A1916]">
-                        AI Product Image
-                      </p>
-                      <p className="text-xs text-[#9E9C98]">
-                        AI-generated product image. Open or download.
-                      </p>
-                      <a
-                        href={aiImageUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="mt-auto text-xs text-[#16A34A] hover:text-[#15803D] underline underline-offset-2"
-                      >
-                        Open / Download ↗
-                      </a>
-                    </div>
-                  </div>
+                {report.corporate_scale?.trim() && (
+                  <Badge variant="default">{report.corporate_scale.trim()}</Badge>
                 )}
               </div>
-            </>
+            )}
+            <div className="space-y-3 mb-8">
+              {report.contact_email?.trim() && (
+                <a
+                  href={`mailto:${report.contact_email.trim()}`}
+                  className="flex items-center gap-4 bg-white border border-[#E8E6E1] rounded-xl px-5 py-4 hover:border-[#16A34A] transition-colors group"
+                >
+                  <Mail className="w-5 h-5 text-[#9E9C98] group-hover:text-[#16A34A] shrink-0 transition-colors" />
+                  <span className="text-sm font-bold text-[#1A1916] truncate">
+                    {report.contact_email.trim()}
+                  </span>
+                </a>
+              )}
+              {report.contact_phone?.trim() && (
+                <div className="flex items-center gap-4 bg-white border border-[#E8E6E1] rounded-xl px-5 py-4">
+                  <span className="text-sm font-bold text-[#1A1916] truncate">
+                    {report.contact_phone.trim()}
+                  </span>
+                </div>
+              )}
+              {report.m_homepage?.trim() && (
+                <a
+                  href={report.m_homepage.trim()}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-4 bg-white border border-[#E8E6E1] rounded-xl px-5 py-4 hover:border-[#16A34A] transition-colors group"
+                >
+                  <ExternalLink className="w-5 h-5 text-[#9E9C98] group-hover:text-[#16A34A] shrink-0 transition-colors" />
+                  <span className="text-sm font-bold text-[#1A1916] truncate">
+                    Website
+                  </span>
+                </a>
+              )}
+              {report.wholesale_link?.trim() && (
+                <a
+                  href={report.wholesale_link.trim()}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-4 bg-white border border-[#E8E6E1] rounded-xl px-5 py-4 hover:border-[#16A34A] transition-colors group"
+                >
+                  <ExternalLink className="w-5 h-5 text-[#9E9C98] group-hover:text-[#16A34A] shrink-0 transition-colors" />
+                  <span className="text-sm font-bold text-[#1A1916] truncate">
+                    Wholesale Portal
+                  </span>
+                </a>
+              )}
+            </div>
+            {report.sample_policy?.trim() && (
+              <div className="mb-4">
+                <Badge variant="info">{report.sample_policy.trim()}</Badge>
+              </div>
+            )}
+            {report.export_cert_note?.trim() && (
+              <div className="mb-6">
+                <Badge variant="warning">{report.export_cert_note.trim()}</Badge>
+              </div>
+            )}
+            {globalProofTags.length > 0 && (
+              <div>
+                <p className={refB}>Global Market Proof</p>
+                <div className="flex flex-wrap gap-3">
+                  {globalProofTags.map((tag) => (
+                    <a
+                      key={tag.region}
+                      href={tag.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="bg-white border border-[#E8E6E1] rounded-lg px-4 py-2 text-sm font-bold text-[#1A1916] hover:border-[#16A34A] hover:text-[#16A34A] transition-colors"
+                    >
+                      {tag.region}
+                    </a>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* BLOCK C: Cinematic Asset Cards */}
+          {assetCards.length > 0 && (
+            <div className="bg-[#F8F7F4] rounded-2xl p-10">
+              <p className={refA}>Creative Assets</p>
+              <div className="grid grid-cols-2 gap-6">
+                {assetCards.map((card) => (
+                  <div
+                    key={card.id}
+                    className="bg-white rounded-2xl border border-[#E8E6E1] overflow-hidden group hover:border-[#16A34A] transition-all duration-300 hover:shadow-[0_4px_20px_0_rgb(22_163_74/0.1)]"
+                  >
+                    <div className="aspect-video bg-[#F8F7F4] relative flex items-center justify-center overflow-hidden">
+                      <div className="w-16 h-16 opacity-10 text-[#1A1916] flex items-center justify-center">
+                        {card.icon}
+                      </div>
+                      {card.platform && (
+                        <span className="absolute top-3 left-3 bg-black/70 text-white text-[10px] font-bold rounded px-2 py-1 uppercase tracking-wide">
+                          {card.platform}
+                        </span>
+                      )}
+                      <div className="absolute inset-0 bg-[#16A34A]/5 opacity-0 group-hover:opacity-100 transition-all duration-300 flex items-center justify-center">
+                        <div className="w-12 h-12 bg-white/90 rounded-full flex items-center justify-center shadow-lg">
+                          {card.hoverIcon}
+                        </div>
+                      </div>
+                    </div>
+                    <div className="p-6">
+                      <p className="text-xl font-bold text-[#1A1916] mb-2">
+                        {card.title}
+                      </p>
+                      <p className={`${refC} mb-6`}>
+                        {card.description}
+                      </p>
+                      <a
+                        href={card.href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className={`
+                          w-full flex items-center justify-center gap-2
+                          py-3 rounded-xl font-bold text-sm
+                          transition-colors duration-200
+                          ${card.isPrimary
+                            ? "bg-[#1A1916] text-white hover:bg-[#2D2B26]"
+                            : "bg-white border border-[#E8E6E1] text-[#1A1916] hover:border-[#1A1916]"
+                          }
+                        `}
+                      >
+                        {card.ctaText}
+                        <ArrowRight className="w-4 h-4" />
+                      </a>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
           )}
         </>
       )}
