@@ -717,7 +717,7 @@ function MarketIntelligence({
                   Global Market Availability
                 </h3>
                 <span className="text-sm text-[#6B6860] font-normal ml-3">
-                  6 global markets analyzed
+                  6 Strategic Markets for K-Products
                 </span>
               </div>
 
@@ -735,7 +735,7 @@ function MarketIntelligence({
                       className="border-l-4 border-[#16A34A] pl-8 py-6 min-h-[150px]"
                     >
                       {/* Country code + full name */}
-                      <p className="text-lg font-bold text-[#6B6860] uppercase tracking-widest">
+                      <p className="text-2xl font-extrabold text-[#6B6860] uppercase tracking-widest mb-3">
                         {market.code}
                         <span className="text-sm font-normal normal-case tracking-normal text-[#9E9C98] ml-2">
                           {market.label}
@@ -760,7 +760,7 @@ function MarketIntelligence({
                           <>
                             <div className="flex items-center gap-2 mb-1">
                               <div className="w-2 h-2 rounded-full bg-[#9E9C98]" />
-                              <p className="text-2xl font-extrabold text-[#1A1916] tracking-tight">
+                              <p className="text-xl font-extrabold text-[#1A1916]">
                                 {market.row!.priceDisplay}
                               </p>
                             </div>
@@ -790,7 +790,7 @@ function MarketIntelligence({
                     sectionId="section-6"
                     className="text-base font-bold text-[#16A34A] hover:underline transition-colors block mt-[0.6cm]"
                   >
-                    View source links &amp; supplier contact ↓
+                    Analyze Pricing Sources &amp; Entry Points ↓
                   </ScrollToIdButton>
                 </div>
               </div>
