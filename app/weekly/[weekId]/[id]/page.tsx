@@ -596,58 +596,58 @@ function MarketIntelligence({
         {hasProfitBlock && (
           <div className="bg-[#F8F7F4] rounded-xl border border-[#E8E6E1] p-6">
 
-            {/* 배지 */}
-            <div className="flex flex-col items-start gap-2 mb-6">
-              <span className="text-[#16A34A] bg-[#F0FDF4] border border-[#BBF7D0] rounded-full px-4 py-1 text-sm font-bold tracking-tight">
+            {/* 도파민 헤더 */}
+            <div className="mb-8">
+              <p className="text-3xl font-extrabold text-[#16A34A] tracking-tight">
                 🔥 UP TO {profitMultiplier}× MARGIN POTENTIAL
-              </span>
-              <p className="text-xs text-[#9E9C98] tracking-wide">
-                Estimated margin: KR wholesale vs global retail
+              </p>
+              <p className="text-base italic text-[#6B6860] mt-2">
+                *Projected margin based on estimated KR wholesale cost and global market analysis.
               </p>
             </div>
 
-            {/* 양분할 — 박스 없음, 구분선만 */}
+            {/* 양분할 — border-r 구분선만 */}
             <div className="grid grid-cols-2">
 
-              {/* 좌: Acquisition */}
+              {/* 좌: EST. WHOLESALE */}
               <div className="pr-8 border-r border-[#E8E6E1]">
-                <p className="text-[10px] tracking-[0.2em] text-[#9E9C98] uppercase mb-3">
-                  Acquisition Cost
+                <p className="text-lg font-bold text-[#6B6860] uppercase tracking-widest mb-2">
+                  Est. Wholesale
                 </p>
-                <p className="text-5xl font-extrabold text-[#1A1916] tracking-tight">
+                <p className="text-5xl font-extrabold text-[#1A1916] tracking-tighter">
                   {estimatedCost ? `~$${estimatedCost}` : "—"}
                 </p>
-                <p className="text-xs text-[#9E9C98] mt-2 mb-4">
+                <p className="text-xs text-[#9E9C98] mt-2 mb-6">
                   Est. KR Wholesale
                 </p>
 
-                {/* Killer Hook CTA */}
+                {/* Killer CTA */}
                 {isAlpha ? (
                   <ScrollToIdButton
                     sectionId="section-6"
-                    className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#16A34A] hover:text-[#15803D] transition-colors"
+                    className="text-base font-bold text-[#16A34A] hover:underline transition-colors"
                   >
                     ✓ View Verified Supplier Cost ↓
                   </ScrollToIdButton>
                 ) : (
                   <button
                     disabled
-                    className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#9E9C98] bg-white border border-[#E8E6E1] rounded-lg px-3 py-1.5 cursor-not-allowed"
+                    className="inline-flex items-center gap-2 text-base font-bold text-[#9E9C98] cursor-not-allowed"
                   >
                     🔒 View Verified Supplier Cost
-                    <span className="text-[10px] text-[#BBF7D0] bg-[#16A34A] rounded-full px-1.5 py-0.5 font-bold">
+                    <span className="text-[10px] font-bold text-white bg-[#16A34A] rounded-full px-2 py-0.5">
                       Alpha
                     </span>
                   </button>
                 )}
               </div>
 
-              {/* 우: Global Valuation */}
+              {/* 우: GLOBAL VALUATION */}
               <div className="pl-8">
-                <p className="text-[10px] tracking-[0.2em] text-[#16A34A] uppercase mb-3">
+                <p className="text-lg font-bold text-[#6B6860] uppercase tracking-widest mb-2">
                   Global Valuation
                 </p>
-                <p className="text-5xl font-extrabold text-[#16A34A] tracking-tight">
+                <p className="text-5xl font-extrabold text-[#16A34A] tracking-tighter">
                   {globalValuationDisplay}
                 </p>
                 <p className="text-xs text-[#16A34A]/60 mt-2">
