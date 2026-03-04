@@ -7,8 +7,6 @@ import { ClientLeftNav } from "@/components/layout/ClientLeftNav";
 import { LockedSection } from "@/components/LockedSection";
 import { DonutGauge } from "@/components/DonutGauge";
 import { StatusBadge } from "@/components/StatusBadge";
-import { PriceComparisonBar } from "@/components/PriceComparisonBar";
-import { ViralHashtagPills } from "@/components/ViralHashtagPills";
 import { ScrollToIdButton } from "@/components/ScrollToIdButton";
 import { CopyButton } from "@/components/CopyButton";
 import { HazmatBadges } from "@/components/HazmatBadges";
@@ -537,196 +535,247 @@ function MarketIntelligence({
   tier,
   isTeaser,
 }: {
-  report: ScoutFinalReportsRow;
-  tier: "free" | "standard" | "alpha";
-  isTeaser: boolean;
+  report: ScoutFinalReportsRow
+  tier: "free" | "standard" | "alpha"
+  isTeaser: boolean
 }) {
-  const gp = report.global_prices as { us?: { price?: string }; [k: string]: unknown } | null | undefined;
-  const legacyGp = report.global_price as Record<string, string> | null | undefined;
-  const usPrice =
-    (gp && typeof gp.us === "object" && gp.us?.price) ||
-    (legacyGp && (legacyGp.US ?? legacyGp.us));
-  const krPrice = report.kr_price?.trim() || null;
+  // ── 데이터 준비 ──────────────────────────────────────
+  const estimatedCost = report.estimated_cost_usd ?? null
+  const krPriceUsd    = report.kr_price_usd ?? null
+  const profitMultiplier = report.profit_multiplier ?? null
+  const hasProfitBlock = profitMultiplier || estimatedCost || krPriceUsd
 
-  const hasProfitBlock = (krPrice && usPrice) || report.profit_multiplier != null;
-  const hasSearchGrowth =
-    (report.search_volume && report.search_volume.trim()) ||
-    (report.mom_growth && report.mom_growth.trim()) ||
-    (report.wow_rate && report.wow_rate.trim());
-  const searchGrowthCardCount = [
-    report.search_volume?.trim(),
-    report.mom_growth?.trim(),
-    report.wow_rate?.trim() && report.wow_rate.trim() !== "N/A",
-  ].filter(Boolean).length;
-  const searchGrowthGridCols =
-    searchGrowthCardCount >= 3 ? "sm:grid-cols-3" : searchGrowthCardCount === 2 ? "sm:grid-cols-2" : "grid-cols-1";
+  const rows = parseGlobalPricesForGrid(report.global_prices, report.global_price as string | Record<string, unknown> | null | undefined)
+
+  const searchVolume = report.search_volume?.trim() || null
+  const momGrowth    = report.mom_growth?.trim()    || null
+  const wowRate      = report.wow_rate?.trim()      || null
+  const hasSearchGrowth = searchVolume || momGrowth || wowRate
+
+  const winningFeature = report.top_selling_point?.trim()  || null
+  const painPoint      = report.common_pain_point?.trim()  || null
 
   return (
-    <section id="section-3" className="scroll-mt-[160px] bg-white rounded-2xl border border-[#E8E6E1] p-6 shadow-[0_1px_3px_0_rgb(26_25_22/0.06)]">
-      <h2 className="text-3xl font-bold text-[#1A1916] mb-4 tracking-tight">Market Intelligence</h2>
+    <section
+      id="section-3"
+      className="scroll-mt-[160px] bg-white rounded-2xl border border-[#E8E6E1] p-6 shadow-[0_1px_3px_0_rgb(26_25_22/0.06)]"
+    >
+      {/* 섹션 타이틀 */}
+      <h2 className="text-3xl font-bold text-[#1A1916] tracking-tight mb-6">
+        Market Intelligence
+      </h2>
 
-      {hasProfitBlock && (
-        <>
-          <p className="text-xs font-medium text-[#9E9C98] uppercase tracking-widest mb-3">Profit Potential</p>
-          {(krPrice && usPrice) && (
-            <div className="mb-4">
-              <PriceComparisonBar krPrice={krPrice} usPrice={usPrice} />
-            </div>
-          )}
-          {report.profit_multiplier != null && String(report.profit_multiplier).trim() && (
-            <>
-              <p className="text-3xl font-mono font-bold text-[#16A34A] tabular-nums">
-                {report.profit_multiplier} Profit Multiplier
+      <div className="space-y-6">
+
+        {/* ── TIER 1: THE MONEY ───────────────────────── */}
+        {hasProfitBlock && (
+          <div className="bg-[#F8F7F4] rounded-xl border border-[#E8E6E1] p-6">
+            {/* 상단: 배지 + 서브텍스트 */}
+            <div className="flex flex-col items-start gap-2 mb-6">
+              <span className="text-[#16A34A] bg-[#F0FDF4] border border-[#BBF7D0] rounded-full px-4 py-1 text-sm font-bold tracking-tight">
+                🔥 UP TO {profitMultiplier}× MARGIN POTENTIAL
+              </span>
+              <p className="text-xs text-[#9E9C98] tracking-wide">
+                Estimated margin: KR wholesale vs global retail
               </p>
-              <p className="text-xs text-[#9E9C98] mt-1">*Estimated margin: KR wholesale vs global retail</p>
-            </>
-          )}
-        </>
-      )}
+            </div>
 
-      {/* Global Retail Evidence */}
-      {(report.global_price || report.global_prices || report.kr_price) && (
-        <div className="mt-4">
-          <p className="text-xs font-semibold text-[#9E9C98] uppercase tracking-widest mb-2">
-            Global Retail Evidence
-          </p>
-
-          {/* KR Price — 4-card grid */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mt-3">
-            {report.kr_price && (
-              <div className="p-4 rounded-xl border border-[#E8E6E1] bg-[#F8F7F4] text-center">
-                <p className="text-xs text-[#6B6860] mb-1">KR Retail</p>
-                <p className="text-lg font-mono font-semibold text-[#1A1916]">
-                  ₩
-                  {(() => {
-                    const n = Number(String(report.kr_price).replace(/,/g, ""));
-                    return !Number.isNaN(n) ? n.toLocaleString() : report.kr_price;
-                  })()}
+            {/* 양분할 */}
+            <div className="grid grid-cols-2 gap-4">
+              {/* 좌: Acquisition */}
+              <div className="bg-white rounded-xl border border-[#E8E6E1] px-6 py-5">
+                <p className="text-[10px] tracking-[0.2em] text-[#9E9C98] uppercase mb-3">
+                  Acquisition Cost
                 </p>
+                <p className="text-4xl font-extrabold text-[#1A1916] tracking-tight">
+                  {estimatedCost ? `~$${estimatedCost}` : "—"}
+                </p>
+                <p className="text-xs text-[#9E9C98] mt-2">Est. KR Wholesale</p>
               </div>
-            )}
-            {report.kr_price_usd != null && (
-              <div className="p-4 rounded-xl border border-[#E8E6E1] bg-[#F8F7F4] text-center">
-                <p className="text-xs text-[#6B6860] mb-1">USD</p>
-                <p className="text-lg font-mono font-semibold text-[#1A1916]">${report.kr_price_usd}</p>
-              </div>
-            )}
-            {report.estimated_cost_usd != null && (
-              <div className="p-4 rounded-xl border border-[#E8E6E1] bg-[#F8F7F4] text-center">
-                <p className="text-xs text-[#6B6860] mb-1">Est. Wholesale</p>
-                <p className="text-lg font-mono font-semibold text-[#D97706]">~${report.estimated_cost_usd}</p>
-              </div>
-            )}
-            <ScrollToIdButton
-              sectionId="section-6"
-              className="p-4 rounded-xl border border-[#BBF7D0] bg-[#DCFCE7] text-center hover:bg-[#BBF7D0]/50 transition-colors cursor-pointer w-full"
-            >
-              <p className="text-xs text-[#16A34A] mb-1">Verified Cost</p>
-              <p className="text-sm font-bold text-[#16A34A]">View ↓</p>
-            </ScrollToIdButton>
-          </div>
 
-          {/* Global retail prices — card grid */}
-          {(report.global_price || report.global_prices) && (() => {
-            const rows = parseGlobalPricesForGrid(report.global_prices, report.global_price as string | Record<string, unknown> | null | undefined);
-            if (rows.length === 0) return null;
-            const visibleCountClass = "grid-cols-2 sm:grid-cols-3 md:grid-cols-5";
-            return (
-              <div className="mt-4">
-                <p className="text-xs font-semibold text-[#9E9C98] uppercase tracking-widest mb-2">Global Retail Prices</p>
-                <div className={`grid gap-3 ${visibleCountClass}`}>
-                  {rows.map((row, i) =>
-                    row.isBlueOcean ? (
-                      <div key={`${row.label}-${i}`} className="p-4 rounded-xl border border-[#BFDBFE] bg-[#DBEAFE] text-center flex flex-col items-center justify-center gap-1">
-                        <p className="text-xs text-[#6B6860] mb-1">{row.flag} {row.label}</p>
-                        <Badge variant="info">🔵 Blue Ocean</Badge>
-                      </div>
-                    ) : (
-                      <div key={`${row.label}-${i}`} className="p-4 rounded-xl border border-[#E8E6E1] bg-[#F8F7F4] text-center">
-                        <p className="text-xs text-[#6B6860] mb-1">{row.flag} {row.label}</p>
-                        <p className="text-lg font-mono font-semibold text-[#1A1916]">{row.priceDisplay ?? "—"}</p>
-                        {row.platform && <p className="text-sm font-medium text-[#3D3B36]">{row.platform}</p>}
-                      </div>
-                    )
+              {/* 우: Valuation */}
+              <div className="bg-white rounded-xl border border-[#BBF7D0] px-6 py-5">
+                <p className="text-[10px] tracking-[0.2em] text-[#16A34A] uppercase mb-3">
+                  Global Valuation
+                </p>
+                <p className="text-4xl font-extrabold text-[#16A34A] tracking-tight">
+                  {krPriceUsd ? `~$${krPriceUsd}` : "—"}
+                </p>
+                <p className="text-xs text-[#16A34A]/60 mt-2">Avg. Global Retail</p>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* ── TIER 2: THE OPPORTUNITY ─────────────────── */}
+        {rows.length > 0 && (
+          <div className="bg-[#F8F7F4] rounded-xl border border-[#E8E6E1] p-6">
+            {/* 헤더 */}
+            <div className="flex items-center justify-between mb-6">
+              <p className="text-[10px] tracking-[0.2em] text-[#9E9C98] uppercase">
+                Global Market Availability
+              </p>
+              <p className="text-[10px] text-[#9E9C98]">
+                {rows.length} markets analyzed
+              </p>
+            </div>
+
+            {/* 5개국 그리드 */}
+            <div className="grid grid-cols-5 gap-3">
+              {rows.map((row) => (
+                <div
+                  key={row.label}
+                  className="bg-white rounded-xl border border-[#E8E6E1] px-3 py-4 text-center"
+                >
+                  <p className="text-xs font-bold text-[#6B6860] uppercase tracking-widest mb-3">
+                    {row.label}
+                  </p>
+                  {row.isBlueOcean ? (
+                    <>
+                      <div className="w-2 h-2 rounded-full bg-[#16A34A] mx-auto mb-2" />
+                      <p className="text-[10px] text-[#16A34A] font-semibold tracking-widest">
+                        UNTAPPED
+                      </p>
+                    </>
+                  ) : (
+                    <>
+                      <div className="w-2 h-2 rounded-full bg-[#9E9C98] mx-auto mb-2" />
+                      <p className="text-sm font-bold text-[#1A1916]">
+                        {row.priceDisplay}
+                      </p>
+                      {row.platform && (
+                        <p className="text-[10px] text-[#9E9C98] mt-1">
+                          {row.platform}
+                        </p>
+                      )}
+                    </>
                   )}
                 </div>
-                <p className="text-xs text-[#6B6860] mt-2">🔵 = No sellers found. First-mover opportunity. <span className="text-xs text-[#9E9C98]">(* Data may vary based on real-time market changes.)</span></p>
-                <ScrollToIdButton
-                  sectionId="section-6"
-                  className="mt-3 text-xs text-[#16A34A] hover:text-[#15803D] underline underline-offset-2 flex items-center gap-1 transition-colors"
-                >
-                  View source links & supplier contact ↓
-                </ScrollToIdButton>
-              </div>
-            );
-          })()}
-        </div>
-      )}
+              ))}
+            </div>
 
-      {hasSearchGrowth && (
-        <>
-          <p className="text-xs uppercase tracking-widest text-[#9E9C98] font-semibold mt-6 mb-3">Search & Growth</p>
-          <div className={`grid grid-cols-1 ${searchGrowthGridCols} gap-3`}>
-            {report.search_volume?.trim() && (
-              <div className="w-full rounded-xl border border-[#E8E6E1] bg-[#F8F7F4] p-4 text-center">
-                <p className="text-xs uppercase text-[#6B6860] font-semibold">Search Volume</p>
-                <p className="text-lg font-semibold font-mono tabular-nums text-[#1A1916] mt-1">{report.search_volume}</p>
-              </div>
-            )}
-            {report.mom_growth?.trim() && (
-              <div className="w-full rounded-xl border border-[#E8E6E1] bg-[#F8F7F4] p-4 text-center">
-                <p className="text-xs uppercase text-[#6B6860] font-semibold">MoM Growth</p>
-                <p className={`text-lg font-semibold font-mono tabular-nums mt-1 ${isPositiveGrowth(report.mom_growth) ? "text-[#16A34A]" : "text-[#DC2626]"}`}>
-                  {report.mom_growth.replace(" estimated", "")}
-                  {report.mom_growth.includes("estimated") && <span className="text-xs text-[#9E9C98]"> (est.)</span>}
-                  {" "}
-                  {isPositiveGrowth(report.mom_growth) ? "↑" : "↓"}
-                </p>
-              </div>
-            )}
-            {report.wow_rate?.trim() && report.wow_rate.trim() !== "N/A" && (
-              <div className="w-full rounded-xl border border-[#E8E6E1] bg-[#F8F7F4] p-4 text-center">
-                <p className="text-xs uppercase text-[#6B6860] font-semibold">WoW Growth</p>
-                <p className={`text-lg font-semibold font-mono tabular-nums mt-1 ${isPositiveGrowth(report.wow_rate) ? "text-[#16A34A]" : "text-[#DC2626]"}`}>
-                  {report.wow_rate} {isPositiveGrowth(report.wow_rate) ? "↑" : "↓"}
-                </p>
-              </div>
-            )}
-          </div>
-        </>
-      )}
-
-      <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-3">
-        {report.top_selling_point?.trim() && (
-          <div className="bg-[#DCFCE7] rounded-xl border border-[#BBF7D0] p-4">
-            <p className="text-xs font-semibold text-[#16A34A] uppercase tracking-widest mb-1 inline-flex items-center gap-1.5">
-              <TrendingUp className="w-4 h-4" />
-              Winning Feature
-            </p>
-            <p className="text-sm text-[#3D3B36] leading-relaxed">{report.top_selling_point}</p>
+            {/* 푸터 */}
+            <div className="mt-4 pt-4 border-t border-[#E8E6E1]">
+              <p className="text-xs text-[#9E9C98] text-center">
+                ● Untapped = No established sellers detected.{" "}
+                <span className="text-[#9E9C98]/60">
+                  * Data may vary based on real-time market changes.
+                </span>
+              </p>
+              <ScrollToIdButton
+                sectionId="section-6"
+                className="mt-2 text-xs text-[#16A34A] hover:text-[#15803D] underline underline-offset-2 block text-center transition-colors"
+              >
+                View source links &amp; supplier contact ↓
+              </ScrollToIdButton>
+            </div>
           </div>
         )}
-        {report.common_pain_point?.trim() && (
-          <div className="bg-[#FEE2E2] rounded-xl border border-[#FECACA] p-4">
-            <p className="text-xs font-semibold text-[#DC2626] uppercase tracking-widest mb-1 inline-flex items-center gap-1.5">
-              <AlertTriangle className="w-4 h-4" />
-              Consumer Pain Point
-            </p>
-            <p className="text-sm text-[#3D3B36] leading-relaxed">{report.common_pain_point}</p>
+
+        {/* ── TIER 3: THE DATA & INTEL ─────────────────── */}
+        {(hasSearchGrowth || winningFeature || painPoint) && (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+            {/* 좌: Search & Growth */}
+            {hasSearchGrowth && (
+              <div className="bg-[#F8F7F4] rounded-xl border border-[#E8E6E1] p-6">
+                <p className="text-[10px] tracking-[0.2em] text-[#9E9C98] uppercase mb-6">
+                  Search &amp; Growth
+                </p>
+
+                <div className="space-y-6">
+                  {searchVolume && (
+                    <div>
+                      <p className="text-[10px] tracking-[0.2em] text-[#9E9C98] uppercase mb-2">
+                        Search Volume
+                      </p>
+                      <p className="text-3xl font-extrabold text-[#1A1916] tracking-tight">
+                        {searchVolume}
+                      </p>
+                    </div>
+                  )}
+
+                  {momGrowth && (
+                    <div>
+                      <p className="text-[10px] tracking-[0.2em] text-[#9E9C98] uppercase mb-2">
+                        MoM Growth
+                      </p>
+                      <p className={`text-3xl font-extrabold tracking-tight ${
+                        isPositiveGrowth(momGrowth)
+                          ? "text-[#16A34A]"
+                          : "text-[#DC2626]"
+                      }`}>
+                        {momGrowth}{" "}
+                        <span className="text-2xl">
+                          {isPositiveGrowth(momGrowth) ? "↑" : "↓"}
+                        </span>
+                      </p>
+                    </div>
+                  )}
+
+                  {wowRate && wowRate !== "N/A" && (
+                    <div>
+                      <p className="text-[10px] tracking-[0.2em] text-[#9E9C98] uppercase mb-2">
+                        WoW Growth
+                      </p>
+                      <p className={`text-3xl font-extrabold tracking-tight ${
+                        isPositiveGrowth(wowRate)
+                          ? "text-[#16A34A]"
+                          : "text-[#DC2626]"
+                      }`}>
+                        {wowRate}{" "}
+                        <span className="text-2xl">
+                          {isPositiveGrowth(wowRate) ? "↑" : "↓"}
+                        </span>
+                      </p>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+
+            {/* 우: Analyst Brief */}
+            {(winningFeature || painPoint) && (
+              <div className="bg-[#F8F7F4] rounded-xl border border-[#E8E6E1] p-6 border-l-2 border-l-[#16A34A]">
+                <p className="text-[10px] tracking-[0.2em] text-[#9E9C98] uppercase mb-6">
+                  Analyst Brief
+                </p>
+
+                <div className="space-y-6">
+                  {winningFeature && (
+                    <div>
+                      <p className="text-[10px] tracking-[0.2em] text-[#16A34A] uppercase mb-3">
+                        Competitive Edge
+                      </p>
+                      <p className="text-sm text-[#3D3B36] leading-[1.8]">
+                        {winningFeature}
+                      </p>
+                    </div>
+                  )}
+
+                  {winningFeature && painPoint && (
+                    <div className="border-t border-dashed border-[#E8E6E1]" />
+                  )}
+
+                  {painPoint && (
+                    <div>
+                      <p className="text-[10px] tracking-[0.2em] text-[#9E9C98] uppercase mb-3">
+                        Risk Factor
+                      </p>
+                      <p className="text-sm text-[#3D3B36] leading-[1.8]">
+                        {painPoint}
+                      </p>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
           </div>
         )}
+
       </div>
-      {(() => {
-        const viralHashtags = normalizeToArray(report.viral_hashtags);
-        return viralHashtags.length > 0 ? (
-          <div className="mt-3 p-4 rounded-xl border border-[#E8E6E1] bg-[#F8F7F4]">
-            <p className="text-xs text-[#2563EB] font-semibold mb-2">Viral Hashtags</p>
-            <ViralHashtagPills tags={viralHashtags} />
-          </div>
-        ) : null;
-      })()}
     </section>
-  );
+  )
 }
 
 function SocialProofTrendIntelligence({
