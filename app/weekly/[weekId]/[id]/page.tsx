@@ -692,8 +692,6 @@ function MarketIntelligence({
 
         {/* ── TIER 2: THE OPPORTUNITY ────────────────────── */}
         {(() => {
-          // Safe 6-market mapping with fallbacks
-          // Reads from existing parseGlobalPricesForGrid rows by label
           const findRow = (label: string) =>
             rows.find((r) => r.label.toLowerCase() === label.toLowerCase())
 
@@ -702,19 +700,19 @@ function MarketIntelligence({
             label: string
             row: typeof rows[number] | null
           }[] = [
-            { code: "US", label: "North America", row: findRow("US") ?? null },
-            { code: "UK", label: "United Kingdom", row: findRow("UK") ?? null },
-            { code: "EU", label: "European Union", row: null },
-            { code: "JP", label: "Japan",          row: null },
-            { code: "SEA", label: "Southeast Asia", row: findRow("SEA") ?? null },
-            { code: "UAE", label: "Middle East",   row: null },
+            { code: "US",  label: "North America",   row: findRow("US")  ?? null },
+            { code: "UK",  label: "United Kingdom",  row: findRow("UK")  ?? null },
+            { code: "EU",  label: "European Union",  row: null },
+            { code: "JP",  label: "Japan",           row: null },
+            { code: "SEA", label: "Southeast Asia",  row: findRow("SEA") ?? null },
+            { code: "UAE", label: "Middle East",     row: null },
           ]
 
           return (
             <div className="bg-[#F8F7F4] rounded-xl border border-[#E8E6E1] p-6 mb-6">
 
               {/* Header */}
-              <div className="flex items-baseline mb-2">
+              <div className="flex items-baseline">
                 <h3 className="text-xl font-bold text-[#1A1916]">
                   Global Market Availability
                 </h3>
@@ -725,43 +723,53 @@ function MarketIntelligence({
 
               {/* 6-Grid */}
               <div
-                className="grid grid-cols-2 gap-x-12"
-                style={{ marginTop: "0.8cm", rowGap: "0.8cm" }}
+                className="grid grid-cols-2 gap-x-16"
+                style={{ marginTop: "1.2cm", rowGap: "1.2cm" }}
               >
                 {sixMarkets.map((market) => {
                   const isUntapped = !market.row || market.row.isBlueOcean
-                  return (
-                    <div key={market.code} className="flex items-start gap-4">
-                      {/* Status dot */}
-                      <div className="mt-1.5 shrink-0">
-                        <div className={`w-2.5 h-2.5 rounded-full ${
-                          isUntapped ? "bg-[#16A34A]" : "bg-[#9E9C98]"
-                        }`} />
-                      </div>
 
-                      {/* Content */}
-                      <div>
-                        <p className="text-lg font-bold text-[#6B6860] uppercase tracking-widest mb-1">
-                          {market.code}
-                          <span className="text-sm font-normal normal-case tracking-normal text-[#9E9C98] ml-2">
-                            {market.label}
-                          </span>
-                        </p>
+                  return (
+                    <div
+                      key={market.code}
+                      className="border-l-4 border-[#16A34A] pl-8 py-6 min-h-[150px]"
+                    >
+                      {/* Country code + full name */}
+                      <p className="text-lg font-bold text-[#6B6860] uppercase tracking-widest">
+                        {market.code}
+                        <span className="text-sm font-normal normal-case tracking-normal text-[#9E9C98] ml-2">
+                          {market.label}
+                        </span>
+                      </p>
+
+                      {/* Status — mt-[0.6cm] from label */}
+                      <div style={{ marginTop: "0.6cm" }}>
                         {isUntapped ? (
-                          <p className="text-sm font-semibold text-[#16A34A] tracking-widest">
-                            UNTAPPED
-                          </p>
-                        ) : (
-                          <div>
-                            <p className="text-sm font-bold text-[#1A1916]">
-                              {market.row!.priceDisplay}
+                          <>
+                            <div className="flex items-center gap-2 mb-1">
+                              <div className="w-2 h-2 rounded-full bg-[#16A34A]" />
+                              <p className="text-sm font-semibold text-[#16A34A] tracking-widest uppercase">
+                                Untapped
+                              </p>
+                            </div>
+                            <p className="text-xs italic text-[#9E9C98]">
+                              No established sellers detected.
                             </p>
+                          </>
+                        ) : (
+                          <>
+                            <div className="flex items-center gap-2 mb-1">
+                              <div className="w-2 h-2 rounded-full bg-[#9E9C98]" />
+                              <p className="text-2xl font-extrabold text-[#1A1916] tracking-tight">
+                                {market.row!.priceDisplay}
+                              </p>
+                            </div>
                             {market.row!.platform && (
-                              <p className="text-xs text-[#9E9C98] mt-0.5">
-                                {market.row!.platform}
+                              <p className="text-xs text-[#9E9C98] mt-1">
+                                via {market.row!.platform}
                               </p>
                             )}
-                          </div>
+                          </>
                         )}
                       </div>
                     </div>
@@ -769,21 +777,24 @@ function MarketIntelligence({
                 })}
               </div>
 
-              {/* Footer */}
-              <div className="mt-8 pt-4 border-t border-[#E8E6E1]">
-                <p className="text-base italic text-[#6B6860]">
-                  ● Untapped = No established sellers detected.
-                  {" "}<span className="text-sm">
-                    * Data may vary based on real-time market changes.
-                  </span>
-                </p>
-                <ScrollToIdButton
-                  sectionId="section-6"
-                  className="text-base font-bold text-[#16A34A] hover:underline transition-colors mt-6 block"
-                >
-                  View source links &amp; supplier contact ↓
-                </ScrollToIdButton>
+              {/* Footer — mt-[2.5cm] breathing room */}
+              <div style={{ marginTop: "2.5cm" }}>
+                <div className="border-t border-[#E8E6E1] pt-6">
+                  <p className="text-base italic text-[#6B6860]">
+                    ● Untapped = No established sellers detected.{" "}
+                    <span className="text-sm">
+                      * Data may vary based on real-time market changes.
+                    </span>
+                  </p>
+                  <ScrollToIdButton
+                    sectionId="section-6"
+                    className="text-base font-bold text-[#16A34A] hover:underline transition-colors block mt-[0.6cm]"
+                  >
+                    View source links &amp; supplier contact ↓
+                  </ScrollToIdButton>
+                </div>
               </div>
+
             </div>
           )
         })()}
