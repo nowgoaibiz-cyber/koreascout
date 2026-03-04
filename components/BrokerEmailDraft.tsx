@@ -152,7 +152,7 @@ export function BrokerEmailDraft({
               className="w-full bg-white border border-[#E8E6E1] rounded-lg px-4 py-3 text-base text-[#1A1916] placeholder:text-[#C4C2BE] focus:outline-none focus:border-[#16A34A]"
             />
           </div>
-          <pre className="text-xs text-[#9E9C98] whitespace-pre-wrap leading-relaxed max-h-64 overflow-y-auto mb-3 p-3 bg-[#F2F1EE] rounded-lg font-mono text-sm text-[#3D3B36]">
+          <pre className="text-sm font-medium text-[#1A1916] leading-relaxed whitespace-pre-wrap font-sans max-h-64 overflow-y-auto mb-3 p-3 bg-[#F2F1EE] rounded-lg">
             {parts.map((segment, i) =>
               i % 2 === 1 ? (
                 <mark key={i} className="bg-amber-400/40 text-amber-200 font-bold rounded px-0.5">
