@@ -1303,7 +1303,7 @@ function SourcingIntel({
                 {report.export_status !== "Green" && report.export_status !== "Yellow" && (
                   <XCircle className={`w-8 h-8 shrink-0 ${exportConfig.color}`} />
                 )}
-                <p className={`text-2xl font-black ${exportConfig.color}`}>
+                <p className={`text-2xl font-black tracking-tighter ${exportConfig.color}`}>
                   {exportConfig.label}
                 </p>
               </div>
@@ -1315,14 +1315,14 @@ function SourcingIntel({
                 </p>
               )}
 
-              {/* KoreaScout Pro-Tip */}
+              {/* Pro-Tip */}
               <p className="text-sm font-semibold italic text-[#3D3B36] mt-4 pt-4 border-t border-black/5">
                 {report.export_status === "Green" &&
-                  "Market dominance is within reach. High-velocity export recommended."}
+                  "Full clearance. Market dominance is within reach. Immediate high-velocity sourcing recommended."}
                 {report.export_status === "Yellow" &&
-                  "Strategic advantage found. Proceed with compliance-focused precision."}
+                  "Strategic entry point. Success depends on precise compliance handling. Navigate with care for smooth export."}
                 {report.export_status !== "Green" && report.export_status !== "Yellow" &&
-                  "Unlocking this barrier is your moated opportunity. Consult with our brokers below."}
+                  "A high-entry barrier is your competitive moat. Overcoming this hurdle ensures market exclusivity. Verify local compliance status."}
               </p>
 
             </div>
@@ -1338,34 +1338,27 @@ function SourcingIntel({
           </p>
 
           {canSeeAlpha ? (
-            <div className="grid grid-cols-2 gap-8">
+            <div className="grid grid-cols-2">
               <div className="pr-10 border-r border-[#E8E6E1]">
-                <p className="text-sm font-bold text-[#6B6860] tracking-widest mb-4">
-                  HS Code
-                </p>
+                <p className="text-sm font-bold text-[#6B6860] tracking-widest mb-4">HS Code</p>
                 {report.hs_code?.trim() ? (
                   <>
                     <div className="flex items-center gap-3 mb-3">
                       <p className="text-4xl font-extrabold font-mono text-[#1A1916] tracking-tight">
                         {formatHsCode(report.hs_code) || report.hs_code}
                       </p>
-                      <CopyButton value={formatHsCode(report.hs_code) || report.hs_code || ""} variant="primary" />
+                      <CopyButton value={formatHsCode(report.hs_code) || report.hs_code || ""} />
                     </div>
                     {report.hs_description?.trim() && (
-                      <p className="text-lg text-[#1A1916] leading-relaxed">
-                        {report.hs_description}
-                      </p>
+                      <p className="text-lg text-[#1A1916] leading-relaxed">{report.hs_description}</p>
                     )}
                   </>
                 ) : (
                   <p className="text-sm text-[#9E9C98] italic">No HS code available.</p>
                 )}
               </div>
-
               <div className="pl-10">
-                <p className="text-sm font-bold text-[#6B6860] tracking-widest mb-4">
-                  Broker Email Draft
-                </p>
+                <p className="text-sm font-bold text-[#6B6860] tracking-widest mb-4">Broker Email Draft</p>
                 {report.hs_code?.trim() ? (
                   <BrokerEmailDraft report={report} />
                 ) : (
