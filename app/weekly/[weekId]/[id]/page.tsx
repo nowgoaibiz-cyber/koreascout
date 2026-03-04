@@ -666,78 +666,127 @@ function MarketIntelligence({
                 >
                   {globalValuationDisplay}
                 </p>
-                <p className="text-xs text-[#16A34A]/60 mt-2">
-                  {globalValuationLabel}
-                </p>
+                {parsedPrices.length >= 1 ? (
+                  <div className="mt-2">
+                    <p className="text-sm font-semibold text-[#16A34A]/80">
+                      Verified Market Price
+                    </p>
+                    <p className="text-xs italic text-[#9E9C98] mt-0.5">
+                      Based on real-time commerce data.
+                    </p>
+                  </div>
+                ) : (
+                  <div className="mt-2">
+                    <p className="text-sm font-semibold text-[#16A34A]/80">
+                      Estimated Strategic Valuation
+                    </p>
+                    <p className="text-xs italic text-[#9E9C98] mt-0.5">
+                      Calculated via KoreaScout Margin Multiplier.
+                    </p>
+                  </div>
+                )}
               </div>
             </div>
           </div>
         )}
 
         {/* ── TIER 2: THE OPPORTUNITY ────────────────────── */}
-        {rows.length > 0 && (
-          <div className="bg-[#F8F7F4] rounded-xl border border-[#E8E6E1] p-6">
-            <div className="flex items-center justify-between mb-6">
-              <p className="text-[10px] tracking-[0.2em] text-[#9E9C98] uppercase">
-                Global Market Availability
-              </p>
-              <p className="text-[10px] text-[#9E9C98]">
-                {rows.length} markets analyzed
-              </p>
-            </div>
+        {(() => {
+          // Safe 6-market mapping with fallbacks
+          // Reads from existing parseGlobalPricesForGrid rows by label
+          const findRow = (label: string) =>
+            rows.find((r) => r.label.toLowerCase() === label.toLowerCase())
 
-            {/* 국가 그리드 — 개별 박스 없음 */}
-            <div className="grid grid-cols-5 gap-2">
-              {rows.map((row, idx) => (
-                <div
-                  key={row.label}
-                  className={`text-center py-4 ${
-                    idx < rows.length - 1 ? "border-r border-[#E8E6E1]" : ""
-                  }`}
-                >
-                  <p className="text-xs font-bold text-[#6B6860] uppercase tracking-widest mb-3">
-                    {row.label}
-                  </p>
-                  {row.isBlueOcean ? (
-                    <>
-                      <div className="w-2 h-2 rounded-full bg-[#16A34A] mx-auto mb-2" />
-                      <p className="text-[10px] text-[#16A34A] font-semibold tracking-widest">
-                        UNTAPPED
-                      </p>
-                    </>
-                  ) : (
-                    <>
-                      <div className="w-2 h-2 rounded-full bg-[#9E9C98] mx-auto mb-2" />
-                      <p className="text-sm font-bold text-[#1A1916]">
-                        {row.priceDisplay}
-                      </p>
-                      {row.platform && (
-                        <p className="text-[10px] text-[#9E9C98] mt-1">
-                          {row.platform}
-                        </p>
-                      )}
-                    </>
-                  )}
-                </div>
-              ))}
-            </div>
+          const sixMarkets: {
+            code: string
+            label: string
+            row: typeof rows[number] | null
+          }[] = [
+            { code: "US", label: "North America", row: findRow("US") ?? null },
+            { code: "UK", label: "United Kingdom", row: findRow("UK") ?? null },
+            { code: "EU", label: "European Union", row: null },
+            { code: "JP", label: "Japan",          row: null },
+            { code: "SEA", label: "Southeast Asia", row: findRow("SEA") ?? null },
+            { code: "UAE", label: "Middle East",   row: null },
+          ]
 
-            <div className="mt-4 pt-4 border-t border-[#E8E6E1]">
-              <p className="text-xs text-[#9E9C98] text-center">
-                ● Untapped = No established sellers detected.{" "}
-                <span className="text-[#9E9C98]/60">
-                  * Data may vary based on real-time market changes.
+          return (
+            <div className="bg-[#F8F7F4] rounded-xl border border-[#E8E6E1] p-6 mb-6">
+
+              {/* Header */}
+              <div className="flex items-baseline mb-2">
+                <h3 className="text-xl font-bold text-[#1A1916]">
+                  Global Market Availability
+                </h3>
+                <span className="text-sm text-[#6B6860] font-normal ml-3">
+                  6 global markets analyzed
                 </span>
-              </p>
-              <ScrollToIdButton
-                sectionId="section-6"
-                className="mt-2 text-xs text-[#16A34A] hover:text-[#15803D] underline underline-offset-2 block text-center transition-colors"
+              </div>
+
+              {/* 6-Grid */}
+              <div
+                className="grid grid-cols-2 gap-x-12"
+                style={{ marginTop: "0.8cm", rowGap: "0.8cm" }}
               >
-                View source links &amp; supplier contact ↓
-              </ScrollToIdButton>
+                {sixMarkets.map((market) => {
+                  const isUntapped = !market.row || market.row.isBlueOcean
+                  return (
+                    <div key={market.code} className="flex items-start gap-4">
+                      {/* Status dot */}
+                      <div className="mt-1.5 shrink-0">
+                        <div className={`w-2.5 h-2.5 rounded-full ${
+                          isUntapped ? "bg-[#16A34A]" : "bg-[#9E9C98]"
+                        }`} />
+                      </div>
+
+                      {/* Content */}
+                      <div>
+                        <p className="text-lg font-bold text-[#6B6860] uppercase tracking-widest mb-1">
+                          {market.code}
+                          <span className="text-sm font-normal normal-case tracking-normal text-[#9E9C98] ml-2">
+                            {market.label}
+                          </span>
+                        </p>
+                        {isUntapped ? (
+                          <p className="text-sm font-semibold text-[#16A34A] tracking-widest">
+                            UNTAPPED
+                          </p>
+                        ) : (
+                          <div>
+                            <p className="text-sm font-bold text-[#1A1916]">
+                              {market.row!.priceDisplay}
+                            </p>
+                            {market.row!.platform && (
+                              <p className="text-xs text-[#9E9C98] mt-0.5">
+                                {market.row!.platform}
+                              </p>
+                            )}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  )
+                })}
+              </div>
+
+              {/* Footer */}
+              <div className="mt-8 pt-4 border-t border-[#E8E6E1]">
+                <p className="text-base italic text-[#6B6860]">
+                  ● Untapped = No established sellers detected.
+                  {" "}<span className="text-sm">
+                    * Data may vary based on real-time market changes.
+                  </span>
+                </p>
+                <ScrollToIdButton
+                  sectionId="section-6"
+                  className="text-base font-bold text-[#16A34A] hover:underline transition-colors mt-6 block"
+                >
+                  View source links &amp; supplier contact ↓
+                </ScrollToIdButton>
+              </div>
             </div>
-          </div>
-        )}
+          )
+        })()}
 
         {/* ── TIER 3: THE DATA & INTEL ───────────────────── */}
         {(hasSearchGrowth || winningFeature || painPoint) && (
