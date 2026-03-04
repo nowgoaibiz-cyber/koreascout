@@ -2,7 +2,6 @@ import { createClient } from "@/lib/supabase/server";
 import { getAuthTier } from "@/lib/auth-server";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import Image from "next/image";
 import { ClientLeftNav } from "@/components/layout/ClientLeftNav";
 import { LockedSection } from "@/components/LockedSection";
 import { DonutGauge } from "@/components/DonutGauge";
@@ -14,6 +13,7 @@ import { ContactCard, ContactPill } from "@/components/ContactCard";
 import { ExpandableText } from "@/components/ExpandableText";
 import { BrokerEmailDraft } from "@/components/BrokerEmailDraft";
 import { GroupBBrokerSection } from "@/components/GroupBBrokerSection";
+import ProductIdentity from "@/components/ProductIdentity";
 import { Badge, Button, KeywordPill } from "@/components/ui";
 import { AlertTriangle, ArrowRight, ArrowUpRight, Award, CheckCircle, Download, ExternalLink, Film, FolderOpen, Globe, ImageIcon, LayoutTemplate, Lock, Mail, Phone, Play, ShoppingBag, TrendingUp, XCircle } from "lucide-react";
 import type { ScoutFinalReportsRow } from "@/types/database";
@@ -189,157 +189,6 @@ const EXPORT_STATUS_DISPLAY: Record<string, { variant: "success" | "warning" | "
   yellow: { variant: "warning", label: "Check Regulations" },
   red: { variant: "danger", label: "Export Restricted" },
 };
-
-function ProductIdentity({
-  report,
-  tier,
-  isTeaser,
-}: {
-  report: ScoutFinalReportsRow
-  tier: "free" | "standard" | "alpha"
-  isTeaser: boolean
-}) {
-  const canSeeAlpha = tier === "alpha" || isTeaser
-
-  const exportBadge = (() => {
-    const s = report.export_status
-    const key = s?.toLowerCase() ?? ""
-    const label = (EXPORT_STATUS_DISPLAY[key]?.label ?? s) as string
-    if (!s || !label) return null
-    if (s === "Green" || key === "green")  return { label, color: "bg-[#DCFCE7] text-[#16A34A] border-[#BBF7D0]" }
-    if (s === "Yellow" || key === "yellow") return { label, color: "bg-[#FEF3C7] text-[#D97706] border-[#FDE68A]" }
-    return { label, color: "bg-[#FEE2E2] text-[#DC2626] border-[#FECACA]" }
-  })()
-
-  return (
-    <section
-      id="section-1"
-      className="scroll-mt-[160px] bg-white rounded-2xl border border-[#E8E6E1] p-8 shadow-[0_1px_3px_0_rgb(26_25_22/0.06)]"
-    >
-      <h2 className="text-3xl font-bold text-[#1A1916] tracking-tight mb-8">
-        Product Identity
-      </h2>
-
-      {/* ── ROW 1: Image + Info ─────────────────────── */}
-      <div className="flex flex-col md:flex-row gap-10">
-
-        {/* Left — Product Image */}
-        <div className="relative w-full md:w-80 shrink-0 overflow-hidden rounded-2xl bg-[#F8F7F4] aspect-[3/4]">
-          {report.image_url ? (
-            <Image
-              src={report.image_url}
-              alt={report.translated_name || report.product_name || "Product"}
-              fill
-              className="object-cover"
-            />
-          ) : (
-            <div className="absolute inset-0 flex items-center justify-center">
-              <p className="text-sm text-[#9E9C98]">No image</p>
-            </div>
-          )}
-        </div>
-
-        {/* Right — Product Info */}
-        <div className="flex-1 min-w-0 flex flex-col justify-center overflow-hidden @container">
-
-          {/* Badges */}
-          <div className="flex flex-wrap items-center gap-2 mb-6">
-            {report.category?.trim() && (
-              <span className="inline-flex items-center px-3 py-1.5 bg-[#F8F7F4] border border-[#E8E6E1] text-xs font-bold text-[#1A1916] rounded-md uppercase tracking-wide">
-                {report.category}
-              </span>
-            )}
-            {exportBadge && (
-              <span className={`inline-flex items-center px-3 py-1.5 border text-xs font-bold rounded-md uppercase tracking-wide ${exportBadge.color}`}>
-                {exportBadge.label}
-              </span>
-            )}
-          </div>
-
-          {/* English Title */}
-          <h3
-            className="font-bold text-[#1A1916] leading-tight break-words mb-2"
-            style={{
-              fontSize: "clamp(1.5rem, 4cqw, 2.25rem)",
-              textWrap: "balance",
-            } as React.CSSProperties}
-          >
-            {report.translated_name || report.product_name}
-          </h3>
-
-          {/* Korean Title */}
-          {report.product_name && report.translated_name && (
-            <p className="text-lg font-medium text-[#6B6860] mb-8">
-              {report.product_name}
-            </p>
-          )}
-
-          {/* Pricing Block */}
-          <div className="mt-10">
-
-            {/* TIER 1: Retail Price — Hero */}
-            {report.kr_price != null && (
-              <div className="mb-2">
-                <p className="text-xs font-bold text-[#9E9C98] uppercase tracking-[0.2em] mb-2">
-                  Retail Price (KR Market)
-                </p>
-                <div className="flex items-baseline">
-                  <span className="text-2xl md:text-3xl font-black text-[#1A1916] leading-none tracking-tighter">
-                    KRW {Number(report.kr_price).toLocaleString()}
-                  </span>
-                  <span className="text-2xl md:text-3xl font-thin text-[#E8E6E1] mx-8 leading-none">
-                    /
-                  </span>
-                  <span className="text-2xl md:text-3xl font-black text-[#1A1916] leading-none tracking-tighter">
-                    USD {(Number(report.kr_price) / 1430).toFixed(2)}
-                  </span>
-                </div>
-                <p className="text-[10px] text-[#9E9C98] font-semibold mt-2">
-                  Ex. Rate: 1,430 KRW/USD (Fixed at Mar 05, 09:00 KST)
-                </p>
-              </div>
-            )}
-
-            {/* TIER 2: Est. Wholesale — Demoted */}
-            {report.estimated_cost_usd != null && (
-              <p className="text-sm font-medium text-[#9E9C98] mt-2">
-                Est. Wholesale: ~${report.estimated_cost_usd}
-                <span className="text-[#D97706] text-xs ml-1">
-                  ⚠ Estimated
-                </span>
-              </p>
-            )}
-
-            {/* TIER 3: Alpha CTA */}
-            <a
-              href="#section-6"
-              className="inline-flex items-center gap-2 mt-4 bg-[#F8F7F4] border border-[#E8E6E1] px-3 py-2 rounded-md hover:border-[#16A34A] transition-colors cursor-pointer group"
-            >
-              <Lock className="w-3.5 h-3.5 text-[#9E9C98] group-hover:text-[#16A34A] transition-colors shrink-0" />
-              <span className="text-xs font-bold text-[#6B6860] group-hover:text-[#16A34A] transition-colors">
-                Alpha members get verified supplier quotes
-              </span>
-            </a>
-
-          </div>
-        </div>
-      </div>
-
-      {/* ── ROW 2: Full-width Why It's Trending ─────── */}
-      {report.viability_reason?.trim() && (
-        <div className="mt-8 bg-[#F8F7F4] rounded-xl border border-[#E8E6E1] border-l-4 border-l-[#16A34A] p-6">
-          <p className="text-sm font-semibold text-[#16A34A] uppercase tracking-widest mb-2">
-            Why It&apos;s Trending
-          </p>
-          <p className="text-base text-[#3D3B36] leading-relaxed">
-            {report.viability_reason}
-          </p>
-        </div>
-      )}
-
-    </section>
-  )
-}
 
 function competitionVariant(level: string): "success" | "warning" | "danger" | "default" {
   const v = level.toLowerCase().trim();
@@ -2214,7 +2063,7 @@ export default async function ProductDetailPage({
       <div className="flex-1 pl-[18rem]">
         <div className="max-w-6xl mx-auto px-6 sm:px-8 pt-10 pb-[60vh]">
           <div className="space-y-6 mt-10">
-        <Link href={`/weekly/${weekId}`} className="text-sm font-medium text-[#6B6860] hover:text-[#1A1916] transition-colors inline-block">← Back to week</Link>
+        <Link href={`/weekly/${weekId}`} className="text-base font-medium text-[#6B6860] hover:text-[#1A1916] transition-colors inline-block">← Back to week</Link>
 
         {isTeaser && (
           <div className="rounded-lg bg-[#DCFCE7] border border-[#BBF7D0] px-4 py-2 text-sm text-[#16A34A]">
@@ -2223,7 +2072,7 @@ export default async function ProductDetailPage({
         )}
 
         {/* Section 1–2: All tiers */}
-        <ProductIdentity report={report as ScoutFinalReportsRow} tier={tier as "free" | "standard" | "alpha"} isTeaser={isTeaser} />
+        <ProductIdentity report={report as ScoutFinalReportsRow} tier={tier as "free" | "standard" | "alpha"} isTeaser={isTeaser} EXPORT_STATUS_DISPLAY={EXPORT_STATUS_DISPLAY} />
         <TrendSignalDashboard report={report as ScoutFinalReportsRow} />
 
         {/* Section 3–4: Standard+ or locked */}
