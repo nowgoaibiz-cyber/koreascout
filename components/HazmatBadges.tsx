@@ -70,7 +70,7 @@ export function HazmatBadges({ status }: HazmatBadgesProps) {
           <span className="w-5 h-5 shrink-0 flex items-center justify-center" aria-hidden>
             {badge.icon}
           </span>
-          <span className="text-xs font-extrabold uppercase tracking-tight truncate min-w-0">
+          <span className="text-xs font-extrabold uppercase tracking-normal truncate min-w-0">
             {badge.label}
           </span>
         </div>

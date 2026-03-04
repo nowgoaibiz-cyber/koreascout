@@ -1203,8 +1203,8 @@ function SocialProofTrendIntelligence({
                     {String(i + 1).padStart(2, "0")}
                   </span>
 
-                  {/* Green accent bar */}
-                  <div className="w-1 h-10 bg-[#16A34A] rounded-full shrink-0 mt-1" />
+                  {/* Long Green accent bar — full step height */}
+                  <div className="w-1 bg-[#16A34A] rounded-full shrink-0 self-stretch" />
 
                   {/* Content */}
                   <div className="flex-1">
@@ -1406,7 +1406,7 @@ function SourcingIntel({
                 <p className="text-xl font-bold text-[#1A1916] mb-6">Hazmat &amp; Compliance</p>
 
                 {/* HazmatBadges */}
-                <div className="w-full mb-6">
+                <div className="w-full mb-10">
                   <HazmatBadges status={report.hazmat_status as unknown} />
                 </div>
 
@@ -1491,7 +1491,8 @@ function SourcingIntel({
                           >
                             {String(i + 4).padStart(2, "0")}
                           </span>
-                          <div className="w-1 h-10 bg-[#16A34A] rounded-full shrink-0 mt-1" />
+                          {/* Long Green accent bar — full step height */}
+                          <div className="w-1 bg-[#16A34A] rounded-full shrink-0 self-stretch" />
                           <div className="flex-1">
                             <p className="text-xs font-semibold text-[#9E9C98] uppercase tracking-widest mb-2">
                               Step {i + 4}
