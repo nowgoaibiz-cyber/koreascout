@@ -539,21 +539,46 @@ function MarketIntelligence({
   tier: "free" | "standard" | "alpha"
   isTeaser: boolean
 }) {
-  // ── 데이터 준비 ──────────────────────────────────────
-  const estimatedCost = report.estimated_cost_usd ?? null
-  const krPriceUsd    = report.kr_price_usd ?? null
-  const profitMultiplier = report.profit_multiplier ?? null
-  const hasProfitBlock = profitMultiplier || estimatedCost || krPriceUsd
-
+  // ── 데이터 준비 ─────────────────────────────────────
+  const estimatedCost    = report.estimated_cost_usd ?? null
+  const profitMultiplier = report.profit_multiplier  ?? null
   const rows = parseGlobalPricesForGrid(report.global_prices, report.global_price as string | Record<string, unknown> | null | undefined)
 
-  const searchVolume = report.search_volume?.trim() || null
-  const momGrowth    = report.mom_growth?.trim()    || null
-  const wowRate      = report.wow_rate?.trim()      || null
+  // ── Global Valuation 3단계 계산 로직 ────────────────
+  const pricedRows = rows.filter((r) => !r.isBlueOcean && r.priceDisplay)
+  const parsedPrices = pricedRows
+    .map((r) => parseFloat(r.priceDisplay?.replace(/[^0-9.]/g, "") ?? ""))
+    .filter((n) => !isNaN(n) && n > 0)
+
+  let globalValuation: number | null = null
+  let globalValuationLabel = "Avg. Global Retail"
+
+  if (parsedPrices.length === 1) {
+    globalValuation = parsedPrices[0]
+    globalValuationLabel = "Avg. Global Retail"
+  } else if (parsedPrices.length >= 2) {
+    globalValuation = parsedPrices.reduce((a, b) => a + b, 0) / parsedPrices.length
+    globalValuationLabel = "Avg. Global Retail"
+  } else if (estimatedCost && profitMultiplier) {
+    globalValuation = estimatedCost * profitMultiplier
+    globalValuationLabel = "Estimated Retail Value"
+  }
+
+  const globalValuationDisplay = globalValuation
+    ? `~$${globalValuation.toFixed(2)}`
+    : "—"
+
+  const hasProfitBlock = profitMultiplier || estimatedCost || globalValuation
+
+  const searchVolume    = report.search_volume?.trim() || null
+  const momGrowth       = report.mom_growth?.trim()    || null
+  const wowRate         = report.wow_rate?.trim()      || null
   const hasSearchGrowth = searchVolume || momGrowth || wowRate
 
-  const winningFeature = report.top_selling_point?.trim()  || null
-  const painPoint      = report.common_pain_point?.trim()  || null
+  const winningFeature = report.top_selling_point?.trim() || null
+  const painPoint      = report.common_pain_point?.trim() || null
+
+  const isAlpha = tier === "alpha"
 
   return (
     <section
@@ -567,10 +592,11 @@ function MarketIntelligence({
 
       <div className="space-y-6">
 
-        {/* ── TIER 1: THE MONEY ───────────────────────── */}
+        {/* ── TIER 1: THE MONEY ──────────────────────────── */}
         {hasProfitBlock && (
           <div className="bg-[#F8F7F4] rounded-xl border border-[#E8E6E1] p-6">
-            {/* 상단: 배지 + 서브텍스트 */}
+
+            {/* 배지 */}
             <div className="flex flex-col items-start gap-2 mb-6">
               <span className="text-[#16A34A] bg-[#F0FDF4] border border-[#BBF7D0] rounded-full px-4 py-1 text-sm font-bold tracking-tight">
                 🔥 UP TO {profitMultiplier}× MARGIN POTENTIAL
@@ -580,37 +606,61 @@ function MarketIntelligence({
               </p>
             </div>
 
-            {/* 양분할 */}
-            <div className="grid grid-cols-2 gap-4">
+            {/* 양분할 — 박스 없음, 구분선만 */}
+            <div className="grid grid-cols-2">
+
               {/* 좌: Acquisition */}
-              <div className="bg-white rounded-xl border border-[#E8E6E1] px-6 py-5">
+              <div className="pr-8 border-r border-[#E8E6E1]">
                 <p className="text-[10px] tracking-[0.2em] text-[#9E9C98] uppercase mb-3">
                   Acquisition Cost
                 </p>
-                <p className="text-4xl font-extrabold text-[#1A1916] tracking-tight">
+                <p className="text-5xl font-extrabold text-[#1A1916] tracking-tight">
                   {estimatedCost ? `~$${estimatedCost}` : "—"}
                 </p>
-                <p className="text-xs text-[#9E9C98] mt-2">Est. KR Wholesale</p>
+                <p className="text-xs text-[#9E9C98] mt-2 mb-4">
+                  Est. KR Wholesale
+                </p>
+
+                {/* Killer Hook CTA */}
+                {isAlpha ? (
+                  <ScrollToIdButton
+                    sectionId="section-6"
+                    className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#16A34A] hover:text-[#15803D] transition-colors"
+                  >
+                    ✓ View Verified Supplier Cost ↓
+                  </ScrollToIdButton>
+                ) : (
+                  <button
+                    disabled
+                    className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#9E9C98] bg-white border border-[#E8E6E1] rounded-lg px-3 py-1.5 cursor-not-allowed"
+                  >
+                    🔒 View Verified Supplier Cost
+                    <span className="text-[10px] text-[#BBF7D0] bg-[#16A34A] rounded-full px-1.5 py-0.5 font-bold">
+                      Alpha
+                    </span>
+                  </button>
+                )}
               </div>
 
-              {/* 우: Valuation */}
-              <div className="bg-white rounded-xl border border-[#BBF7D0] px-6 py-5">
+              {/* 우: Global Valuation */}
+              <div className="pl-8">
                 <p className="text-[10px] tracking-[0.2em] text-[#16A34A] uppercase mb-3">
                   Global Valuation
                 </p>
-                <p className="text-4xl font-extrabold text-[#16A34A] tracking-tight">
-                  {krPriceUsd ? `~$${krPriceUsd}` : "—"}
+                <p className="text-5xl font-extrabold text-[#16A34A] tracking-tight">
+                  {globalValuationDisplay}
                 </p>
-                <p className="text-xs text-[#16A34A]/60 mt-2">Avg. Global Retail</p>
+                <p className="text-xs text-[#16A34A]/60 mt-2">
+                  {globalValuationLabel}
+                </p>
               </div>
             </div>
           </div>
         )}
 
-        {/* ── TIER 2: THE OPPORTUNITY ─────────────────── */}
+        {/* ── TIER 2: THE OPPORTUNITY ────────────────────── */}
         {rows.length > 0 && (
           <div className="bg-[#F8F7F4] rounded-xl border border-[#E8E6E1] p-6">
-            {/* 헤더 */}
             <div className="flex items-center justify-between mb-6">
               <p className="text-[10px] tracking-[0.2em] text-[#9E9C98] uppercase">
                 Global Market Availability
@@ -620,12 +670,14 @@ function MarketIntelligence({
               </p>
             </div>
 
-            {/* 5개국 그리드 */}
-            <div className="grid grid-cols-5 gap-3">
-              {rows.map((row) => (
+            {/* 국가 그리드 — 개별 박스 없음 */}
+            <div className="grid grid-cols-5 gap-2">
+              {rows.map((row, idx) => (
                 <div
                   key={row.label}
-                  className="bg-white rounded-xl border border-[#E8E6E1] px-3 py-4 text-center"
+                  className={`text-center py-4 ${
+                    idx < rows.length - 1 ? "border-r border-[#E8E6E1]" : ""
+                  }`}
                 >
                   <p className="text-xs font-bold text-[#6B6860] uppercase tracking-widest mb-3">
                     {row.label}
@@ -654,7 +706,6 @@ function MarketIntelligence({
               ))}
             </div>
 
-            {/* 푸터 */}
             <div className="mt-4 pt-4 border-t border-[#E8E6E1]">
               <p className="text-xs text-[#9E9C98] text-center">
                 ● Untapped = No established sellers detected.{" "}
@@ -672,18 +723,17 @@ function MarketIntelligence({
           </div>
         )}
 
-        {/* ── TIER 3: THE DATA & INTEL ─────────────────── */}
+        {/* ── TIER 3: THE DATA & INTEL ───────────────────── */}
         {(hasSearchGrowth || winningFeature || painPoint) && (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
-            {/* 좌: Search & Growth */}
+            {/* 좌: Search & Growth — 내부 박스 없음 */}
             {hasSearchGrowth && (
               <div className="bg-[#F8F7F4] rounded-xl border border-[#E8E6E1] p-6">
-                <p className="text-[10px] tracking-[0.2em] text-[#9E9C98] uppercase mb-6">
+                <p className="text-[10px] tracking-[0.2em] text-[#9E9C98] uppercase mb-8">
                   Search &amp; Growth
                 </p>
-
-                <div className="space-y-6">
+                <div className="space-y-8">
                   {searchVolume && (
                     <div>
                       <p className="text-[10px] tracking-[0.2em] text-[#9E9C98] uppercase mb-2">
@@ -694,16 +744,13 @@ function MarketIntelligence({
                       </p>
                     </div>
                   )}
-
                   {momGrowth && (
                     <div>
                       <p className="text-[10px] tracking-[0.2em] text-[#9E9C98] uppercase mb-2">
                         MoM Growth
                       </p>
                       <p className={`text-3xl font-extrabold tracking-tight ${
-                        isPositiveGrowth(momGrowth)
-                          ? "text-[#16A34A]"
-                          : "text-[#DC2626]"
+                        isPositiveGrowth(momGrowth) ? "text-[#16A34A]" : "text-[#DC2626]"
                       }`}>
                         {momGrowth}{" "}
                         <span className="text-2xl">
@@ -712,16 +759,13 @@ function MarketIntelligence({
                       </p>
                     </div>
                   )}
-
                   {wowRate && wowRate !== "N/A" && (
                     <div>
                       <p className="text-[10px] tracking-[0.2em] text-[#9E9C98] uppercase mb-2">
                         WoW Growth
                       </p>
                       <p className={`text-3xl font-extrabold tracking-tight ${
-                        isPositiveGrowth(wowRate)
-                          ? "text-[#16A34A]"
-                          : "text-[#DC2626]"
+                        isPositiveGrowth(wowRate) ? "text-[#16A34A]" : "text-[#DC2626]"
                       }`}>
                         {wowRate}{" "}
                         <span className="text-2xl">
@@ -734,13 +778,12 @@ function MarketIntelligence({
               </div>
             )}
 
-            {/* 우: Analyst Brief */}
+            {/* 우: Analyst Brief — 내부 박스 없음, 좌측 그린 선만 */}
             {(winningFeature || painPoint) && (
-              <div className="bg-[#F8F7F4] rounded-xl border border-[#E8E6E1] p-6 border-l-2 border-l-[#16A34A]">
-                <p className="text-[10px] tracking-[0.2em] text-[#9E9C98] uppercase mb-6">
+              <div className="bg-[#F8F7F4] rounded-xl border border-[#E8E6E1] p-6 border-l-4 border-l-[#16A34A]">
+                <p className="text-[10px] tracking-[0.2em] text-[#9E9C98] uppercase mb-8">
                   Analyst Brief
                 </p>
-
                 <div className="space-y-6">
                   {winningFeature && (
                     <div>
