@@ -17,7 +17,6 @@ type FeatureRow = {
   standard: string;
   alpha: string;
 };
-
 type FeatureGroup = {
   label: string;
   icon: string;
@@ -114,127 +113,95 @@ const FAQS = [
 export default function PricingPage() {
   return (
     <>
-      {/* SECTION 1: DARK HERO */}
+      {/* SECTION 1: ZERO-BUTTON DARK HERO */}
       <section className="bg-[#1A1916] py-24 px-6">
         <div className="max-w-4xl mx-auto text-center">
-          <p className="text-xs font-black uppercase tracking-[0.3em] text-[#16A34A] mb-6">
-            Korea Product Intelligence
+          <p className="text-[10px] font-black uppercase tracking-[0.35em] text-[#16A34A] mb-8">
+            The Global Standard for Korean Product Intelligence
           </p>
           <h1
-            className="font-black text-white leading-none tracking-tighter mb-6"
+            className="font-black text-white leading-none tracking-tighter mb-8"
             style={{
               fontSize: "clamp(2.5rem, 6vw, 5rem)",
               textWrap: "balance",
             } as React.CSSProperties}
           >
-            Most sellers guess.
+            Korea moves first.
             <br />
-            <span className="text-[#16A34A]">KoreaScout sellers know.</span>
+            <span className="text-[#16A34A]">We tell you what moves.</span>
           </h1>
-          <p className="text-xl text-white/60 font-medium leading-relaxed max-w-2xl mx-auto mb-10">
+          <p className="text-xl text-white/50 font-medium leading-relaxed max-w-2xl mx-auto">
             Weekly verified intelligence on Korea&apos;s fastest-moving products —
             before your competitors find them.
           </p>
-          <div className="flex flex-wrap items-center justify-center gap-4">
-            <a
-              href="/weekly"
-              className="px-8 py-4 bg-white text-[#1A1916] rounded-xl font-black text-base hover:bg-[#F8F7F4] transition-colors"
-            >
-              Start Free
-            </a>
-            <a
-              href="/weekly"
-              className="px-8 py-4 border border-white/30 text-white rounded-xl font-bold text-base hover:border-white/60 transition-colors"
-            >
-              View a Sample Report →
-            </a>
-          </div>
         </div>
       </section>
 
-      {/* SECTION 2: DAILY ANCHOR TICKER */}
-      <section className="bg-[#F8F7F4] border-b border-[#E8E6E1] py-5">
-        <div className="max-w-6xl mx-auto flex flex-wrap items-center justify-center gap-6 px-6">
-          {[
-            "Less than your morning coffee — $2.30/day",
-            "10+ verified Korean trend products every week",
-            "Full sourcing intelligence — $4.30/day",
-            "HS Codes · Verified Contacts · 4K Media",
-          ].map((item) => (
-            <span
-              key={item}
-              className="text-xs font-black uppercase tracking-[0.2em] text-[#9E9C98]"
-            >
-              {item}
-            </span>
-          ))}
-        </div>
-      </section>
-
-      {/* SECTION 3: 3-TIER PRICING CARDS */}
+      {/* SECTION 2: 3-TIER PRICING CARDS */}
       <section className="bg-white py-24 px-6">
         <div className="max-w-6xl mx-auto">
-          <p className="text-xs font-black uppercase tracking-[0.3em] text-[#9E9C98] text-center mb-16">
+          <p className="text-[10px] font-black uppercase tracking-[0.3em] text-[#9E9C98] text-center mb-16">
             Choose Your Intelligence Level
           </p>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-stretch">
-            {/* ── FREE CARD ── */}
+            {/* FREE */}
             <div className="bg-white border border-[#E8E6E1] rounded-2xl p-8 flex flex-col">
               <div className="flex-1">
-                <p className="text-xs font-black uppercase tracking-[0.3em] text-[#9E9C98] mb-6">
+                <p className="text-[10px] font-black uppercase tracking-[0.3em] text-[#9E9C98] mb-6">
                   Scout Free
                 </p>
-                <p className="text-4xl font-black text-[#1A1916] leading-none tracking-tighter mb-2">
+                <p className="text-5xl font-black text-[#1A1916] leading-none tracking-tighter">
                   $0
                 </p>
-                <p className="text-sm text-[#9E9C98] mb-8">Forever free</p>
+                <p className="text-[10px] font-black uppercase tracking-[0.3em] text-[#9E9C98] mt-2 mb-1">
+                  Forever Free
+                </p>
+                <div className="w-8 h-px bg-[#E8E6E1] my-4" />
+                <p className="text-sm text-[#9E9C98] font-medium mb-8">
+                  No credit card required
+                </p>
                 <p className="text-base font-medium text-[#6B6860] leading-relaxed mb-8">
                   See what KoreaScout finds.
                   Before you commit.
                 </p>
               </div>
-              <div className="space-y-3 mt-auto">
+              <div className="mt-auto">
                 <a
                   href="/signup"
                   className="block w-full text-center py-3 rounded-xl bg-[#1A1916] text-white text-sm font-black hover:bg-[#2D2B26] transition-colors"
                 >
-                  Get Started Free
+                  Unlock Free Intelligence
                 </a>
-                <a
-                  href="/weekly"
-                  className="block w-full text-center py-3 rounded-xl border border-[#E8E6E1] text-sm font-bold text-[#6B6860] hover:border-[#1A1916] hover:text-[#1A1916] transition-colors"
-                >
-                  View a Sample Report →
-                </a>
-                <p className="text-xs text-[#9E9C98] text-center pt-1">
+                <p className="text-xs text-[#9E9C98] text-center mt-3">
                   3 products/week · 14-day delayed access
                 </p>
               </div>
             </div>
 
-            {/* ── STANDARD CARD ── */}
+            {/* STANDARD */}
             <div className="bg-white border border-[#E8E6E1] rounded-2xl p-8 flex flex-col shadow-[0_4px_20px_0_rgb(26_25_22/0.08)]">
               <div className="flex-1">
-                <p className="text-xs font-black uppercase tracking-[0.3em] text-[#9E9C98] mb-6">
+                <p className="text-[10px] font-black uppercase tracking-[0.3em] text-[#9E9C98] mb-6">
                   Standard
                 </p>
-                <div className="mb-2">
-                  <span className="text-4xl font-black text-[#1A1916] leading-none tracking-tighter">
-                    $69
-                  </span>
-                  <span className="text-base text-[#9E9C98] font-medium ml-2">/ month</span>
-                </div>
-                <p className="text-xs font-bold text-[#16A34A] uppercase tracking-[0.2em] mb-8">
-                  $2.30 / day
+                <p className="text-5xl font-black text-[#1A1916] leading-none tracking-tighter">
+                  $2.30
+                </p>
+                <p className="text-[10px] font-black uppercase tracking-[0.3em] text-[#9E9C98] mt-2 mb-1">
+                  Daily Intelligence Fee
+                </p>
+                <div className="w-8 h-px bg-[#E8E6E1] my-4" />
+                <p className="text-sm text-[#9E9C98] font-medium mb-8">
+                  $69 / month
                 </p>
                 <p className="text-base font-medium text-[#6B6860] leading-relaxed mb-8">
-                  The market intelligence engine for
-                  serious global sellers. Know what
-                  Korea is trending — and exactly why
-                  it will sell in your market.
+                  The market intelligence engine
+                  for serious global sellers.
+                  Know what Korea is trending —
+                  and exactly why it will sell.
                 </p>
               </div>
-              <div className="mt-auto space-y-3">
+              <div className="mt-auto">
                 <a
                   href={STANDARD_CHECKOUT_URL}
                   target="_blank"
@@ -243,13 +210,13 @@ export default function PricingPage() {
                 >
                   Start Knowing — $69/mo
                 </a>
-                <p className="text-xs text-[#9E9C98] text-center">
+                <p className="text-xs text-[#9E9C98] text-center mt-3">
                   10+ products/week · Instant access
                 </p>
               </div>
             </div>
 
-            {/* ── ALPHA CARD ── */}
+            {/* ALPHA */}
             <div
               className="bg-[#F8F7F4] border border-[#E8E6E1] border-l-4 border-l-[#16A34A] rounded-2xl p-8 flex flex-col relative shadow-[0_4px_20px_0_rgb(22_163_74/0.1)]"
               style={{ transform: "scale(1.03)", transformOrigin: "center" }}
@@ -260,17 +227,18 @@ export default function PricingPage() {
                 </span>
               </div>
               <div className="flex-1">
-                <p className="text-xs font-black uppercase tracking-[0.3em] text-[#16A34A] mb-6">
+                <p className="text-[10px] font-black uppercase tracking-[0.3em] text-[#16A34A] mb-6">
                   Alpha
                 </p>
-                <div className="mb-2">
-                  <span className="text-4xl font-black text-[#1A1916] leading-none tracking-tighter">
-                    $129
-                  </span>
-                  <span className="text-base text-[#9E9C98] font-medium ml-2">/ month</span>
-                </div>
-                <p className="text-xs font-bold text-[#16A34A] uppercase tracking-[0.2em] mb-3">
-                  $4.30 / day
+                <p className="text-5xl font-black text-[#1A1916] leading-none tracking-tighter">
+                  $4.30
+                </p>
+                <p className="text-[10px] font-black uppercase tracking-[0.3em] text-[#16A34A] mt-2 mb-1">
+                  Daily Team Hiring Fee
+                </p>
+                <div className="w-8 h-px bg-[#E8E6E1] my-4" />
+                <p className="text-sm text-[#9E9C98] font-medium mb-3">
+                  $129 / month
                 </p>
                 <p className="text-xs font-bold text-[#16A34A] mb-8">
                   EXCLUSIVE: Limited to 3,000 Global Membership Spots
@@ -280,7 +248,7 @@ export default function PricingPage() {
                   Exactly what to pay.
                 </p>
               </div>
-              <div className="mt-auto space-y-3">
+              <div className="mt-auto">
                 <a
                   href={ALPHA_CHECKOUT_URL}
                   target="_blank"
@@ -289,7 +257,7 @@ export default function PricingPage() {
                 >
                   Go Alpha — $129/mo
                 </a>
-                <p className="text-xs text-[#9E9C98] text-center">
+                <p className="text-xs text-[#9E9C98] text-center mt-3">
                   10+ products/week · Full sourcing intel
                 </p>
               </div>
@@ -298,10 +266,10 @@ export default function PricingPage() {
         </div>
       </section>
 
-      {/* SECTION 4: FEATURE BREAKDOWN */}
+      {/* SECTION 3: FEATURE BREAKDOWN */}
       <section className="bg-[#F8F7F4] py-24 px-6">
         <div className="max-w-4xl mx-auto">
-          <p className="text-xs font-black uppercase tracking-[0.3em] text-[#9E9C98] text-center mb-16">
+          <p className="text-[10px] font-black uppercase tracking-[0.3em] text-[#9E9C98] text-center mb-16">
             What&apos;s Inside Every Report
           </p>
           {FEATURE_GROUPS.map((group) => (
@@ -311,7 +279,7 @@ export default function PricingPage() {
             >
               <div className="px-6 py-4 border-b border-[#E8E6E1] flex items-center gap-3">
                 <span className="text-lg">{group.icon}</span>
-                <p className="text-xs font-black uppercase tracking-[0.25em] text-[#1A1916]">
+                <p className="text-[10px] font-black uppercase tracking-[0.25em] text-[#1A1916]">
                   {group.label}
                 </p>
               </div>
@@ -352,7 +320,7 @@ export default function PricingPage() {
                     {row.standard}
                   </p>
                   <p
-                    className={`text-sm font-black text-center bg-[#F8F7F4] ${
+                    className={`text-sm font-black text-center ${
                       row.alpha === "✓" || row.alpha === "Full"
                         ? "text-[#16A34A]"
                         : "text-[#1A1916]"
@@ -367,7 +335,7 @@ export default function PricingPage() {
         </div>
       </section>
 
-      {/* SECTION 5: ROI PROOF BAR */}
+      {/* SECTION 4: ROI PROOF BAR */}
       <section className="bg-white border-y border-[#E8E6E1] py-16 px-6">
         <div className="max-w-4xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
           {STATS.map((stat) => (
@@ -383,10 +351,10 @@ export default function PricingPage() {
         </div>
       </section>
 
-      {/* SECTION 6: FAQ */}
+      {/* SECTION 5: FAQ */}
       <section className="bg-[#F8F7F4] py-24 px-6">
         <div className="max-w-2xl mx-auto">
-          <p className="text-xs font-black uppercase tracking-[0.3em] text-[#9E9C98] text-center mb-12">
+          <p className="text-[10px] font-black uppercase tracking-[0.3em] text-[#9E9C98] text-center mb-12">
             Frequently Asked
           </p>
           {FAQS.map((item) => (
@@ -406,9 +374,9 @@ export default function PricingPage() {
         </div>
       </section>
 
-      {/* SECTION 7: FINAL CTA */}
+      {/* SECTION 6: FINAL CTA */}
       <section className="bg-[#1A1916] py-32 px-6 text-center">
-        <p className="text-xs font-black uppercase tracking-[0.3em] text-[#16A34A] mb-6">
+        <p className="text-[10px] font-black uppercase tracking-[0.35em] text-[#16A34A] mb-6">
           Ready to Scout?
         </p>
         <h2
