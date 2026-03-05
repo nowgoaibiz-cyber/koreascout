@@ -1,187 +1,421 @@
-import Link from "next/link";
-import { Check, X, Sparkles } from "lucide-react";
 import type { Metadata } from "next";
+import { ChevronDown } from "lucide-react";
 
 export const metadata: Metadata = {
   title: "Pricing — KoreaScout",
   description: "Compare Free, Standard $9, and Alpha $29. Choose your intelligence level.",
 };
 
-type FeatureRow =
-  | { feature: string; free: boolean; standard: boolean; alpha: boolean }
-  | {
-      feature: string;
-      free: string;
-      standard: string;
-      alpha: string;
-    };
+const STANDARD_CHECKOUT_URL =
+  "https://k-productscout26.lemonsqueezy.com/checkout/buy/141f6710-c704-4ab3-b7c7-f30b2c587587";
+const ALPHA_CHECKOUT_URL =
+  "https://k-productscout26.lemonsqueezy.com/checkout/buy/41bb4d4b-b9d6-4a60-8e19-19287c35516d";
 
-const FEATURES: FeatureRow[] = [
-  { feature: "접근 시점", free: "14일 딜레이", standard: "즉시", alpha: "즉시" },
-  { feature: "주간 상품 수", free: "절반 (~5)", standard: "전체 (~10)", alpha: "전체 (~10)" },
-  { feature: "시장성 점수", free: true, standard: true, alpha: true },
-  { feature: "경쟁 강도", free: true, standard: true, alpha: true },
-  { feature: "블루오션", free: true, standard: true, alpha: true },
-  { feature: "수익률", free: false, standard: true, alpha: true },
-  { feature: "검색량", free: false, standard: true, alpha: true },
-  { feature: "성장률", free: false, standard: true, alpha: true },
-  { feature: "글로벌 가격", free: false, standard: true, alpha: true },
-  { feature: "SEO 키워드", free: false, standard: true, alpha: true },
-  { feature: "소비자 인사이트", free: false, standard: true, alpha: true },
-  { feature: "AI 이미지", free: false, standard: true, alpha: true },
-  { feature: "HS Code", free: false, standard: false, alpha: true },
-  { feature: "소싱팁", free: false, standard: false, alpha: true },
-  { feature: "MOQ/리드타임", free: false, standard: false, alpha: true },
-  { feature: "소싱처 연락처", free: false, standard: false, alpha: true },
-  { feature: "제조사 웹사이트", free: false, standard: false, alpha: true },
-  { feature: "마켓플레이스 링크", free: false, standard: false, alpha: true },
-  { feature: "4K 영상", free: false, standard: false, alpha: true },
-  { feature: "바이럴 숏폼 영상", free: false, standard: false, alpha: true },
+type FeatureRow = {
+  feature: string;
+  free: string;
+  standard: string;
+  alpha: string;
+};
+
+type FeatureGroup = {
+  label: string;
+  icon: string;
+  rows: FeatureRow[];
+};
+
+const FEATURE_GROUPS: FeatureGroup[] = [
+  {
+    label: "Market Intelligence",
+    icon: "📊",
+    rows: [
+      { feature: "Viability Score", free: "✓", standard: "✓", alpha: "✓" },
+      { feature: "Competition Level", free: "✓", standard: "✓", alpha: "✓" },
+      { feature: "Blue Ocean Indicator", free: "✓", standard: "✓", alpha: "✓" },
+      { feature: "Margin Potential", free: "—", standard: "✓", alpha: "✓" },
+      { feature: "Search Volume", free: "—", standard: "✓", alpha: "✓" },
+      { feature: "MoM / WoW Growth Rate", free: "—", standard: "✓", alpha: "✓" },
+      { feature: "Global Price Benchmark", free: "—", standard: "✓", alpha: "✓" },
+      { feature: "Analyst Brief", free: "—", standard: "✓", alpha: "✓" },
+    ],
+  },
+  {
+    label: "Global SEO & Search",
+    icon: "🌍",
+    rows: [
+      { feature: "Rising Korean Keywords", free: "—", standard: "✓", alpha: "✓" },
+      { feature: "Global SEO Keywords", free: "—", standard: "—", alpha: "✓" },
+      { feature: "Viral Hashtags", free: "—", standard: "—", alpha: "✓" },
+      { feature: "Social Buzz Summary", free: "—", standard: "✓", alpha: "✓" },
+    ],
+  },
+  {
+    label: "Sourcing & Logistics",
+    icon: "🏭",
+    rows: [
+      { feature: "5-Step Sourcing Strategy", free: "—", standard: "Partial", alpha: "Full" },
+      { feature: "HS Code + Description", free: "—", standard: "—", alpha: "✓" },
+      { feature: "Verified Wholesale Cost", free: "—", standard: "—", alpha: "✓" },
+      {
+        feature: "Supplier Contact (Email / Phone / Web)",
+        free: "—",
+        standard: "—",
+        alpha: "✓",
+      },
+      { feature: "MOQ & Lead Time", free: "—", standard: "—", alpha: "✓" },
+      { feature: "Hazmat & Compliance Badge", free: "—", standard: "—", alpha: "✓" },
+      {
+        feature: "Broker Email Draft (HS Code & Hazmat-ready)",
+        free: "—",
+        standard: "—",
+        alpha: "✓",
+      },
+      { feature: "Weight & Shipping Tier", free: "—", standard: "—", alpha: "✓" },
+    ],
+  },
+  {
+    label: "Premium Media",
+    icon: "🎬",
+    rows: [
+      { feature: "AI Product Image", free: "—", standard: "✓", alpha: "✓" },
+      { feature: "4K Product Video", free: "—", standard: "—", alpha: "✓" },
+      { feature: "Viral Short-form Video", free: "—", standard: "—", alpha: "✓" },
+      { feature: "AI Landing Page", free: "—", standard: "—", alpha: "✓" },
+      { feature: "Brand Marketing Assets", free: "—", standard: "—", alpha: "✓" },
+    ],
+  },
 ];
 
-function TierCell({
-  value,
-  isAlphaColumn = false,
-}: {
-  value: boolean | string;
-  isAlphaColumn?: boolean;
-}) {
-  const baseClass = "p-3 sm:p-4 text-center border-b border-[#E8E6E1]";
-  const alphaClass = "border-l border-[#3D3B36] bg-[#1A1916]";
-  const className = isAlphaColumn ? `${baseClass} ${alphaClass}` : baseClass;
+const STATS = [
+  { number: "10+", label: "Verified products\nevery week" },
+  { number: "12+", label: "Countries\ntrusting KoreaScout" },
+  { number: "$2.30", label: "Per day for full\nmarket intelligence" },
+  { number: "14 days", label: "Faster than\nfree tier access" },
+];
 
-  if (typeof value === "string") {
-    return (
-      <td className={className + (isAlphaColumn ? " text-sm text-[#F8F7F4]" : " text-sm text-[#3D3B36]")}>{value}</td>
-    );
-  }
-  return (
-    <td className={className}>
-      {value ? (
-        <Check className="w-5 h-5 text-[#16A34A] mx-auto" aria-hidden />
-      ) : (
-        <X className="w-5 h-5 text-red-400/80 mx-auto" aria-hidden />
-      )}
-    </td>
-  );
-}
+const FAQS = [
+  {
+    q: "How often are new products added?",
+    a: "Every Thursday. 10+ new Korean trend products drop weekly for Standard and Alpha members. Free users access the same products 14 days later.",
+  },
+  {
+    q: "What exactly is a 'Broker Email Draft'?",
+    a: "Alpha members receive a pre-written, HS Code and hazmat-compliant email template for each product — ready to send directly to customs brokers. No more guessing on compliance language.",
+  },
+  {
+    q: "Can I cancel anytime?",
+    a: "Yes. No contracts, no lock-in. Cancel from your account settings at any time.",
+  },
+  {
+    q: "Is the wholesale cost verified?",
+    a: "Alpha reports include a verified unit cost sourced directly from the manufacturer or authorized distributor — not an estimate. Where verification is pending, it is clearly marked.",
+  },
+];
 
 export default function PricingPage() {
   return (
-    <div className="min-h-screen bg-[#F8F7F4] pt-20">
-      <div className="max-w-7xl mx-auto px-6 sm:px-8 py-16 sm:py-20">
-        {/* Header */}
-        <div className="bg-white border-b border-[#E8E6E1] -mx-4 sm:-mx-6 px-4 sm:px-6 py-10 mb-12 sm:mb-16">
-          <div className="max-w-7xl mx-auto text-center">
-            <p className="text-xs uppercase tracking-widest text-[#9E9C98] font-semibold mb-3">
-              ✦ Pricing
-            </p>
-            <h1 className="text-3xl font-bold text-[#1A1916] mb-2">
-              Choose Your Intelligence Level
-            </h1>
-            <p className="text-base text-[#6B6860] max-w-xl mx-auto">
-              Compare features across Free, Standard, and Alpha. Upgrade anytime.
-            </p>
-          </div>
-        </div>
-
-        {/* Comparison table — horizontal scroll on small screens */}
-        <div className="rounded-2xl border border-[#E8E6E1] bg-white overflow-hidden shadow-[0_1px_3px_0_rgb(26_25_22/0.06)]">
-          <div className="overflow-x-auto">
-            <table className="w-full min-w-[640px] border-collapse">
-              <thead>
-                <tr className="border-b border-[#E8E6E1]">
-                  <th className="p-3 sm:p-4 text-left text-sm font-semibold text-[#1A1916] bg-[#F8F7F4] sticky left-0 z-10 min-w-[140px] sm:min-w-[160px]">
-                    Feature
-                  </th>
-                  <th className="p-3 sm:p-4 text-center text-sm font-semibold text-[#6B6860] bg-[#F8F7F4] min-w-[100px]">
-                    Free $0
-                  </th>
-                  <th className="p-3 sm:p-4 text-center text-sm font-semibold text-[#6B6860] bg-[#F8F7F4] min-w-[100px]">
-                    Standard $9
-                  </th>
-                  <th className="p-3 sm:p-4 text-center text-sm font-semibold text-[#F8F7F4] bg-[#1A1916] border-l border-[#3D3B36] min-w-[100px] relative">
-                    <span className="absolute -top-3 left-1/2 -translate-x-1/2 flex items-center gap-1 bg-[#16A34A] text-white text-xs font-semibold px-4 py-1 rounded-full whitespace-nowrap">
-                      <Sparkles className="w-3 h-3" aria-hidden /> MOST POPULAR
-                    </span>
-                    Alpha $29
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {FEATURES.map((row, i) => {
-                  const freeVal = "free" in row ? row.free : false;
-                  const standardVal = "standard" in row ? row.standard : false;
-                  const alphaVal = "alpha" in row ? row.alpha : false;
-                  return (
-                    <tr
-                      key={row.feature}
-                      className={i % 2 === 0 ? "bg-[#F8F7F4]" : ""}
-                    >
-                      <td className="p-3 sm:p-4 text-sm text-[#3D3B36] border-b border-[#E8E6E1] sticky left-0 z-10 bg-white min-w-[140px] sm:min-w-[160px]">
-                        {row.feature}
-                      </td>
-                      <TierCell value={freeVal} />
-                      <TierCell value={standardVal} />
-                      <TierCell value={alphaVal} isAlphaColumn />
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        {/* CTA row — cards on mobile, row on desktop */}
-        <div className="mt-8 sm:mt-12 grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6">
-          {/* Free */}
-          <div className="bg-white rounded-2xl border border-[#E8E6E1] p-8 shadow-[0_1px_3px_0_rgb(26_25_22/0.06)] text-center">
-            <p className="text-sm font-semibold text-[#3D3B36] mb-4">Free</p>
-            <Link
-              href="#"
-              className="block w-full py-3 rounded-lg border border-[#E8E6E1] text-[#6B6860] text-sm text-center hover:bg-[#F8F7F4] transition-colors"
+    <>
+      {/* SECTION 1: DARK HERO */}
+      <section className="bg-[#1A1916] py-32 px-6">
+        <div className="max-w-4xl mx-auto text-center">
+          <p className="text-xs font-black uppercase tracking-[0.3em] text-[#16A34A] mb-6">
+            Korea Product Intelligence
+          </p>
+          <h1
+            className="font-black text-white leading-none tracking-tighter mb-6"
+            style={{
+              fontSize: "clamp(2.5rem, 6vw, 5rem)",
+              textWrap: "balance",
+            } as React.CSSProperties}
+          >
+            Most sellers guess.
+            <br />
+            <span className="text-[#16A34A]">KoreaScout sellers know.</span>
+          </h1>
+          <p className="text-xl text-white/60 font-medium leading-relaxed max-w-2xl mx-auto mb-10">
+            Weekly verified intelligence on Korea&apos;s fastest-moving products —
+            before your competitors find them.
+          </p>
+          <div className="flex flex-wrap items-center justify-center gap-4">
+            <a
+              href="/weekly"
+              className="px-8 py-4 bg-white text-[#1A1916] rounded-xl font-black text-base hover:bg-[#F8F7F4] transition-colors"
             >
-              Continue Free
-            </Link>
+              Start Free
+            </a>
+            <a
+              href="/weekly"
+              className="px-8 py-4 border border-white/30 text-white rounded-xl font-bold text-base hover:border-white/60 transition-colors"
+            >
+              View a Sample Report →
+            </a>
           </div>
-          {/* Standard — recommended */}
-          <div className="bg-white rounded-2xl border-2 border-[#16A34A] p-8 relative shadow-[0_4px_6px_-1px_rgb(26_25_22/0.08)] text-center">
-            <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-[#16A34A] text-white text-xs font-semibold px-4 py-1 rounded-full">
-              Most Popular
+        </div>
+      </section>
+
+      {/* SECTION 2: DAILY ANCHOR TICKER */}
+      <section className="bg-[#F8F7F4] border-b border-[#E8E6E1] py-5">
+        <div className="max-w-6xl mx-auto flex flex-wrap items-center justify-center gap-6 px-6">
+          {[
+            "Less than your morning coffee — $2.30/day",
+            "10+ verified Korean trend products every week",
+            "Full sourcing intelligence — $4.30/day",
+            "HS Codes · Verified Contacts · 4K Media",
+          ].map((item) => (
+            <span
+              key={item}
+              className="text-xs font-black uppercase tracking-[0.2em] text-[#9E9C98]"
+            >
+              {item}
             </span>
-            <p className="text-sm font-semibold text-[#1A1916] mb-4">Standard — $9/mo</p>
-            <Link
-              href="https://k-productscout26.lemonsqueezy.com/checkout/buy/141f6710-c704-4ab3-b7c7-f30b2c587587"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="block w-full py-3 rounded-lg bg-[#16A34A] text-white font-semibold text-sm text-center hover:bg-[#15803D] transition-colors"
-            >
-              Start Standard — $9/mo →
-            </Link>
-          </div>
-          {/* Alpha — dark card */}
-          <div className="bg-[#1A1916] rounded-2xl border border-[#3D3B36] p-8 relative text-center">
-            <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-[#D97706] text-white text-xs font-semibold px-4 py-1 rounded-full">
-              Early Bird
-            </span>
-            <p className="text-sm font-semibold text-white mb-4">Alpha — $29/mo</p>
-            <Link
-              href="https://k-productscout26.lemonsqueezy.com/checkout/buy/41bb4d4b-b9d6-4a60-8e19-19287c35516d"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="block w-full py-3 rounded-lg bg-[#16A34A] text-white font-semibold text-sm text-center hover:bg-[#15803D] transition-colors"
-            >
-              Go Alpha — $29/mo →
-            </Link>
+          ))}
+        </div>
+      </section>
+
+      {/* SECTION 3: 3-TIER PRICING CARDS */}
+      <section className="bg-white py-24 px-6">
+        <div className="max-w-6xl mx-auto">
+          <p className="text-xs font-black uppercase tracking-[0.3em] text-[#9E9C98] text-center mb-16">
+            Choose Your Intelligence Level
+          </p>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-start">
+            {/* Free */}
+            <div className="bg-white border border-[#E8E6E1] rounded-2xl p-8">
+              <p className="text-xs font-black uppercase tracking-[0.3em] text-[#9E9C98] mb-6">
+                Scout Free
+              </p>
+              <p className="text-4xl font-black text-[#1A1916] leading-none tracking-tighter mb-2">
+                $0
+              </p>
+              <p className="text-sm text-[#9E9C98] mb-8">Forever free</p>
+              <p className="text-base font-medium text-[#6B6860] leading-relaxed mb-8">
+                See what KoreaScout finds. Before you commit.
+              </p>
+              <a
+                href="/signup"
+                className="block w-full text-center py-3 rounded-xl border border-[#E8E6E1] text-sm font-bold text-[#1A1916] hover:border-[#1A1916] transition-colors"
+              >
+                Get Started Free
+              </a>
+              <p className="text-xs text-[#9E9C98] text-center mt-3">
+                3 products/week · 14-day delayed access
+              </p>
+            </div>
+
+            {/* Standard */}
+            <div className="bg-white border border-[#E8E6E1] rounded-2xl p-8 shadow-[0_4px_20px_0_rgb(26_25_22/0.08)]">
+              <p className="text-xs font-black uppercase tracking-[0.3em] text-[#9E9C98] mb-6">
+                Standard
+              </p>
+              <div className="mb-2">
+                <span className="text-4xl font-black text-[#1A1916] leading-none tracking-tighter">
+                  $69
+                </span>
+                <span className="text-base text-[#9E9C98] font-medium ml-2">/ month</span>
+              </div>
+              <p className="text-xs font-bold text-[#16A34A] uppercase tracking-[0.2em] mb-4">
+                $2.30 / day
+              </p>
+              <p className="text-base font-medium text-[#6B6860] leading-relaxed mb-8">
+                Know what&apos;s trending. Know why it sells.
+              </p>
+              <a
+                href={STANDARD_CHECKOUT_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block w-full text-center py-3 rounded-xl border-2 border-[#1A1916] text-sm font-black text-[#1A1916] hover:bg-[#1A1916] hover:text-white transition-all"
+              >
+                Start Knowing — $69/mo
+              </a>
+              <p className="text-xs text-[#9E9C98] text-center mt-3">
+                10+ products/week · Instant access
+              </p>
+            </div>
+
+            {/* Alpha */}
+            <div className="bg-[#F8F7F4] border border-[#E8E6E1] border-l-4 border-l-[#16A34A] rounded-2xl p-8 relative shadow-[0_4px_20px_0_rgb(22_163_74/0.1)]">
+              <div className="absolute -top-3 left-1/2 -translate-x-1/2">
+                <span className="bg-[#16A34A] text-white text-[10px] font-black uppercase tracking-widest px-4 py-1.5 rounded-full whitespace-nowrap">
+                  Most Popular
+                </span>
+              </div>
+              <p className="text-xs font-black uppercase tracking-[0.3em] text-[#16A34A] mb-6">
+                Alpha
+              </p>
+              <div className="mb-2">
+                <span className="text-4xl font-black text-[#1A1916] leading-none tracking-tighter">
+                  $129
+                </span>
+                <span className="text-base text-[#9E9C98] font-medium ml-2">/ month</span>
+              </div>
+              <p className="text-xs font-bold text-[#16A34A] uppercase tracking-[0.2em] mb-4">
+                $4.30 / day
+              </p>
+              <p className="text-base font-medium text-[#6B6860] leading-relaxed mb-8">
+                Know exactly who to call. Exactly what to pay.
+              </p>
+              <a
+                href={ALPHA_CHECKOUT_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block w-full text-center py-3 rounded-xl bg-[#16A34A] text-white text-sm font-black hover:bg-[#15803D] transition-colors shadow-[0_4px_12px_0_rgb(22_163_74/0.3)]"
+              >
+                Go Alpha — $129/mo
+              </a>
+              <p className="text-xs text-[#9E9C98] text-center mt-3">
+                10+ products/week · Full sourcing intel
+              </p>
+            </div>
           </div>
         </div>
+      </section>
 
-        <p className="text-center text-xs mt-6 text-[#6B6860]">
-          <Link href="/" className="text-[#16A34A] hover:text-[#15803D]">
-            ← Back to home
-          </Link>
+      {/* SECTION 4: FEATURE BREAKDOWN */}
+      <section className="bg-[#F8F7F4] py-24 px-6">
+        <div className="max-w-4xl mx-auto">
+          <p className="text-xs font-black uppercase tracking-[0.3em] text-[#9E9C98] text-center mb-16">
+            What&apos;s Inside Every Report
+          </p>
+          {FEATURE_GROUPS.map((group) => (
+            <div
+              key={group.label}
+              className="mb-8 bg-white rounded-2xl border border-[#E8E6E1] overflow-hidden"
+            >
+              <div className="px-6 py-4 border-b border-[#E8E6E1] flex items-center gap-3">
+                <span className="text-lg">{group.icon}</span>
+                <p className="text-xs font-black uppercase tracking-[0.25em] text-[#1A1916]">
+                  {group.label}
+                </p>
+              </div>
+              <div className="grid grid-cols-4 px-6 py-3 bg-[#F8F7F4] border-b border-[#E8E6E1]">
+                <p className="text-[10px] font-black uppercase tracking-[0.2em] text-[#9E9C98]">
+                  Feature
+                </p>
+                <p className="text-[10px] font-black uppercase tracking-[0.2em] text-[#9E9C98] text-center">
+                  Free
+                </p>
+                <p className="text-[10px] font-black uppercase tracking-[0.2em] text-[#9E9C98] text-center">
+                  Standard
+                </p>
+                <p className="text-[10px] font-black uppercase tracking-[0.2em] text-[#16A34A] text-center border-t-2 border-[#16A34A] -mt-3 pt-3">
+                  Alpha
+                </p>
+              </div>
+              {group.rows.map((row, i) => (
+                <div
+                  key={row.feature}
+                  className={`grid grid-cols-4 px-6 py-4 items-center border-b border-[#E8E6E1] last:border-0 ${
+                    i % 2 === 0 ? "bg-white" : "bg-[#F8F7F4]/50"
+                  }`}
+                >
+                  <p className="text-sm font-medium text-[#1A1916] pr-4">{row.feature}</p>
+                  <p
+                    className={`text-sm font-bold text-center ${
+                      row.free === "✓" ? "text-[#16A34A]" : "text-[#9E9C98]"
+                    }`}
+                  >
+                    {row.free}
+                  </p>
+                  <p
+                    className={`text-sm font-bold text-center ${
+                      row.standard === "✓" ? "text-[#16A34A]" : "text-[#9E9C98]"
+                    }`}
+                  >
+                    {row.standard}
+                  </p>
+                  <p
+                    className={`text-sm font-black text-center bg-[#F8F7F4] ${
+                      row.alpha === "✓" || row.alpha === "Full"
+                        ? "text-[#16A34A]"
+                        : "text-[#1A1916]"
+                    }`}
+                  >
+                    {row.alpha}
+                  </p>
+                </div>
+              ))}
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* SECTION 5: ROI PROOF BAR */}
+      <section className="bg-white border-y border-[#E8E6E1] py-16 px-6">
+        <div className="max-w-4xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+          {STATS.map((stat) => (
+            <div key={stat.number}>
+              <p className="text-3xl font-black text-[#1A1916] tracking-tighter mb-2">
+                {stat.number}
+              </p>
+              <p className="text-xs font-medium text-[#9E9C98] leading-relaxed whitespace-pre-line">
+                {stat.label}
+              </p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* SECTION 6: FAQ */}
+      <section className="bg-[#F8F7F4] py-24 px-6">
+        <div className="max-w-2xl mx-auto">
+          <p className="text-xs font-black uppercase tracking-[0.3em] text-[#9E9C98] text-center mb-12">
+            Frequently Asked
+          </p>
+          {FAQS.map((item) => (
+            <details
+              key={item.q}
+              className="border-b border-[#E8E6E1] py-5 group"
+            >
+              <summary className="text-sm font-bold text-[#1A1916] cursor-pointer list-none flex items-center justify-between gap-4">
+                <span>{item.q}</span>
+                <ChevronDown className="w-4 h-4 text-[#9E9C98] shrink-0 group-open:rotate-180 transition-transform" />
+              </summary>
+              <p className="text-sm text-[#6B6860] leading-relaxed mt-4 font-medium">
+                {item.a}
+              </p>
+            </details>
+          ))}
+        </div>
+      </section>
+
+      {/* SECTION 7: FINAL CTA */}
+      <section className="bg-[#1A1916] py-32 px-6 text-center">
+        <p className="text-xs font-black uppercase tracking-[0.3em] text-[#16A34A] mb-6">
+          Ready to Scout?
         </p>
-      </div>
-    </div>
+        <h2
+          className="font-black text-white leading-none tracking-tighter mb-10"
+          style={{
+            fontSize: "clamp(2rem, 5vw, 4rem)",
+            textWrap: "balance",
+          } as React.CSSProperties}
+        >
+          Your competitors are sourcing from Korea.
+          <br />
+          <span className="text-[#16A34A]">Are you?</span>
+        </h2>
+        <div className="flex flex-wrap items-center justify-center gap-4 mb-6">
+          <a
+            href={ALPHA_CHECKOUT_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="px-10 py-4 bg-[#16A34A] text-white rounded-xl font-black text-base hover:bg-[#15803D] transition-colors shadow-[0_4px_20px_0_rgb(22_163_74/0.4)]"
+          >
+            Go Alpha — $129/mo
+          </a>
+          <a
+            href={STANDARD_CHECKOUT_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="px-10 py-4 border border-white/30 text-white rounded-xl font-bold text-base hover:border-white/60 transition-colors"
+          >
+            Start with Standard — $69/mo
+          </a>
+        </div>
+        <p className="text-xs text-white/30 font-medium">
+          No contracts · Cancel anytime · Instant access
+        </p>
+      </section>
+    </>
   );
 }
