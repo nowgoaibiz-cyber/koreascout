@@ -43,10 +43,10 @@ const FEATURE_GROUPS: FeatureGroup[] = [
     label: "Global SEO & Search",
     icon: "🌍",
     rows: [
+      { feature: "Social Buzz Summary", free: "—", standard: "✓", alpha: "✓" },
       { feature: "Rising Korean Keywords", free: "—", standard: "✓", alpha: "✓" },
       { feature: "Global SEO Keywords", free: "—", standard: "—", alpha: "✓" },
       { feature: "Viral Hashtags", free: "—", standard: "—", alpha: "✓" },
-      { feature: "Social Buzz Summary", free: "—", standard: "✓", alpha: "✓" },
     ],
   },
   {
@@ -77,7 +77,6 @@ const FEATURE_GROUPS: FeatureGroup[] = [
     label: "Premium Media",
     icon: "🎬",
     rows: [
-      { feature: "AI Product Image", free: "—", standard: "✓", alpha: "✓" },
       { feature: "4K Product Video", free: "—", standard: "—", alpha: "✓" },
       { feature: "Viral Short-form Video", free: "—", standard: "—", alpha: "✓" },
       { feature: "AI Landing Page", free: "—", standard: "—", alpha: "✓" },
@@ -116,7 +115,7 @@ export default function PricingPage() {
   return (
     <>
       {/* SECTION 1: DARK HERO */}
-      <section className="bg-[#1A1916] py-32 px-6">
+      <section className="bg-[#1A1916] py-24 px-6">
         <div className="max-w-4xl mx-auto text-center">
           <p className="text-xs font-black uppercase tracking-[0.3em] text-[#16A34A] mb-6">
             Korea Product Intelligence
@@ -178,93 +177,122 @@ export default function PricingPage() {
           <p className="text-xs font-black uppercase tracking-[0.3em] text-[#9E9C98] text-center mb-16">
             Choose Your Intelligence Level
           </p>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-start">
-            {/* Free */}
-            <div className="bg-white border border-[#E8E6E1] rounded-2xl p-8">
-              <p className="text-xs font-black uppercase tracking-[0.3em] text-[#9E9C98] mb-6">
-                Scout Free
-              </p>
-              <p className="text-4xl font-black text-[#1A1916] leading-none tracking-tighter mb-2">
-                $0
-              </p>
-              <p className="text-sm text-[#9E9C98] mb-8">Forever free</p>
-              <p className="text-base font-medium text-[#6B6860] leading-relaxed mb-8">
-                See what KoreaScout finds. Before you commit.
-              </p>
-              <a
-                href="/signup"
-                className="block w-full text-center py-3 rounded-xl border border-[#E8E6E1] text-sm font-bold text-[#1A1916] hover:border-[#1A1916] transition-colors"
-              >
-                Get Started Free
-              </a>
-              <p className="text-xs text-[#9E9C98] text-center mt-3">
-                3 products/week · 14-day delayed access
-              </p>
-            </div>
-
-            {/* Standard */}
-            <div className="bg-white border border-[#E8E6E1] rounded-2xl p-8 shadow-[0_4px_20px_0_rgb(26_25_22/0.08)]">
-              <p className="text-xs font-black uppercase tracking-[0.3em] text-[#9E9C98] mb-6">
-                Standard
-              </p>
-              <div className="mb-2">
-                <span className="text-4xl font-black text-[#1A1916] leading-none tracking-tighter">
-                  $69
-                </span>
-                <span className="text-base text-[#9E9C98] font-medium ml-2">/ month</span>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-stretch">
+            {/* ── FREE CARD ── */}
+            <div className="bg-white border border-[#E8E6E1] rounded-2xl p-8 flex flex-col">
+              <div className="flex-1">
+                <p className="text-xs font-black uppercase tracking-[0.3em] text-[#9E9C98] mb-6">
+                  Scout Free
+                </p>
+                <p className="text-4xl font-black text-[#1A1916] leading-none tracking-tighter mb-2">
+                  $0
+                </p>
+                <p className="text-sm text-[#9E9C98] mb-8">Forever free</p>
+                <p className="text-base font-medium text-[#6B6860] leading-relaxed mb-8">
+                  See what KoreaScout finds.
+                  Before you commit.
+                </p>
               </div>
-              <p className="text-xs font-bold text-[#16A34A] uppercase tracking-[0.2em] mb-4">
-                $2.30 / day
-              </p>
-              <p className="text-base font-medium text-[#6B6860] leading-relaxed mb-8">
-                Know what&apos;s trending. Know why it sells.
-              </p>
-              <a
-                href={STANDARD_CHECKOUT_URL}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="block w-full text-center py-3 rounded-xl border-2 border-[#1A1916] text-sm font-black text-[#1A1916] hover:bg-[#1A1916] hover:text-white transition-all"
-              >
-                Start Knowing — $69/mo
-              </a>
-              <p className="text-xs text-[#9E9C98] text-center mt-3">
-                10+ products/week · Instant access
-              </p>
+              <div className="space-y-3 mt-auto">
+                <a
+                  href="/signup"
+                  className="block w-full text-center py-3 rounded-xl bg-[#1A1916] text-white text-sm font-black hover:bg-[#2D2B26] transition-colors"
+                >
+                  Get Started Free
+                </a>
+                <a
+                  href="/weekly"
+                  className="block w-full text-center py-3 rounded-xl border border-[#E8E6E1] text-sm font-bold text-[#6B6860] hover:border-[#1A1916] hover:text-[#1A1916] transition-colors"
+                >
+                  View a Sample Report →
+                </a>
+                <p className="text-xs text-[#9E9C98] text-center pt-1">
+                  3 products/week · 14-day delayed access
+                </p>
+              </div>
             </div>
 
-            {/* Alpha */}
-            <div className="bg-[#F8F7F4] border border-[#E8E6E1] border-l-4 border-l-[#16A34A] rounded-2xl p-8 relative shadow-[0_4px_20px_0_rgb(22_163_74/0.1)]">
+            {/* ── STANDARD CARD ── */}
+            <div className="bg-white border border-[#E8E6E1] rounded-2xl p-8 flex flex-col shadow-[0_4px_20px_0_rgb(26_25_22/0.08)]">
+              <div className="flex-1">
+                <p className="text-xs font-black uppercase tracking-[0.3em] text-[#9E9C98] mb-6">
+                  Standard
+                </p>
+                <div className="mb-2">
+                  <span className="text-4xl font-black text-[#1A1916] leading-none tracking-tighter">
+                    $69
+                  </span>
+                  <span className="text-base text-[#9E9C98] font-medium ml-2">/ month</span>
+                </div>
+                <p className="text-xs font-bold text-[#16A34A] uppercase tracking-[0.2em] mb-8">
+                  $2.30 / day
+                </p>
+                <p className="text-base font-medium text-[#6B6860] leading-relaxed mb-8">
+                  The market intelligence engine for
+                  serious global sellers. Know what
+                  Korea is trending — and exactly why
+                  it will sell in your market.
+                </p>
+              </div>
+              <div className="mt-auto space-y-3">
+                <a
+                  href={STANDARD_CHECKOUT_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block w-full text-center py-3 rounded-xl border-2 border-[#1A1916] text-sm font-black text-[#1A1916] hover:bg-[#1A1916] hover:text-white transition-all"
+                >
+                  Start Knowing — $69/mo
+                </a>
+                <p className="text-xs text-[#9E9C98] text-center">
+                  10+ products/week · Instant access
+                </p>
+              </div>
+            </div>
+
+            {/* ── ALPHA CARD ── */}
+            <div
+              className="bg-[#F8F7F4] border border-[#E8E6E1] border-l-4 border-l-[#16A34A] rounded-2xl p-8 flex flex-col relative shadow-[0_4px_20px_0_rgb(22_163_74/0.1)]"
+              style={{ transform: "scale(1.03)", transformOrigin: "center" }}
+            >
               <div className="absolute -top-3 left-1/2 -translate-x-1/2">
                 <span className="bg-[#16A34A] text-white text-[10px] font-black uppercase tracking-widest px-4 py-1.5 rounded-full whitespace-nowrap">
                   Most Popular
                 </span>
               </div>
-              <p className="text-xs font-black uppercase tracking-[0.3em] text-[#16A34A] mb-6">
-                Alpha
-              </p>
-              <div className="mb-2">
-                <span className="text-4xl font-black text-[#1A1916] leading-none tracking-tighter">
-                  $129
-                </span>
-                <span className="text-base text-[#9E9C98] font-medium ml-2">/ month</span>
+              <div className="flex-1">
+                <p className="text-xs font-black uppercase tracking-[0.3em] text-[#16A34A] mb-6">
+                  Alpha
+                </p>
+                <div className="mb-2">
+                  <span className="text-4xl font-black text-[#1A1916] leading-none tracking-tighter">
+                    $129
+                  </span>
+                  <span className="text-base text-[#9E9C98] font-medium ml-2">/ month</span>
+                </div>
+                <p className="text-xs font-bold text-[#16A34A] uppercase tracking-[0.2em] mb-3">
+                  $4.30 / day
+                </p>
+                <p className="text-xs font-bold text-[#16A34A] mb-8">
+                  EXCLUSIVE: Limited to 3,000 Global Membership Spots
+                </p>
+                <p className="text-base font-medium text-[#6B6860] leading-relaxed mb-8">
+                  Know exactly who to call.
+                  Exactly what to pay.
+                </p>
               </div>
-              <p className="text-xs font-bold text-[#16A34A] uppercase tracking-[0.2em] mb-4">
-                $4.30 / day
-              </p>
-              <p className="text-base font-medium text-[#6B6860] leading-relaxed mb-8">
-                Know exactly who to call. Exactly what to pay.
-              </p>
-              <a
-                href={ALPHA_CHECKOUT_URL}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="block w-full text-center py-3 rounded-xl bg-[#16A34A] text-white text-sm font-black hover:bg-[#15803D] transition-colors shadow-[0_4px_12px_0_rgb(22_163_74/0.3)]"
-              >
-                Go Alpha — $129/mo
-              </a>
-              <p className="text-xs text-[#9E9C98] text-center mt-3">
-                10+ products/week · Full sourcing intel
-              </p>
+              <div className="mt-auto space-y-3">
+                <a
+                  href={ALPHA_CHECKOUT_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block w-full text-center py-3 rounded-xl bg-[#16A34A] text-white text-sm font-black hover:bg-[#15803D] transition-colors shadow-[0_4px_12px_0_rgb(22_163_74/0.3)]"
+                >
+                  Go Alpha — $129/mo
+                </a>
+                <p className="text-xs text-[#9E9C98] text-center">
+                  10+ products/week · Full sourcing intel
+                </p>
+              </div>
             </div>
           </div>
         </div>
