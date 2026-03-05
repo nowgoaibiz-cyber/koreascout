@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { ChevronDown } from "lucide-react";
 import { createServiceRoleClient } from "@/lib/supabase/admin";
 
 export const metadata: Metadata = {
@@ -35,94 +34,75 @@ type FeatureRow = {
 };
 type FeatureGroup = {
   label: string;
-  icon: string;
   rows: FeatureRow[];
 };
 
 const FEATURE_GROUPS: FeatureGroup[] = [
   {
+    label: "Product Identity",
+    rows: [
+      { feature: "Product Profile & Selective Tier Badges", free: "✓", standard: "✓", alpha: "✓" },
+      { feature: "Strategic Viability & Trend Insights", free: "✓", standard: "✓", alpha: "✓" },
+      { feature: "Real-time Retail Price & FX Tracker", free: "✓", standard: "✓", alpha: "✓" },
+    ],
+  },
+  {
+    label: "Trend Signal Dashboard",
+    rows: [
+      { feature: "Proprietary Market Score", free: "✓", standard: "✓", alpha: "✓" },
+      { feature: "Competition Level Indicator", free: "✓", standard: "✓", alpha: "✓" },
+      { feature: "Opportunity Status", free: "✓", standard: "✓", alpha: "✓" },
+      { feature: "Real-time Growth Momentum", free: "✓", standard: "✓", alpha: "✓" },
+      { feature: "Cross-Platform Vitality (TikTok, IG, YT)", free: "✓", standard: "✓", alpha: "✓" },
+    ],
+  },
+  {
     label: "Market Intelligence",
-    icon: "📊",
     rows: [
-      { feature: "Viability Score", free: "✓", standard: "✓", alpha: "✓" },
-      { feature: "Competition Level", free: "✓", standard: "✓", alpha: "✓" },
-      { feature: "Blue Ocean Indicator", free: "✓", standard: "✓", alpha: "✓" },
-      { feature: "Margin Potential", free: "—", standard: "✓", alpha: "✓" },
-      { feature: "Search Volume", free: "—", standard: "✓", alpha: "✓" },
-      { feature: "MoM / WoW Growth Rate", free: "—", standard: "✓", alpha: "✓" },
-      { feature: "Global Price Benchmark", free: "—", standard: "✓", alpha: "✓" },
-      { feature: "Analyst Brief", free: "—", standard: "✓", alpha: "✓" },
+      { feature: "Global Market Availability (6 Regions)", free: "—", standard: "✓", alpha: "✓" },
+      { feature: "Search Volume & Growth (MoM/WoW)", free: "—", standard: "✓", alpha: "✓" },
+      { feature: "Margin Potential Multiplier", free: "—", standard: "✓", alpha: "✓" },
+      { feature: "Strategic Valuation & Global Price Benchmarks", free: "—", standard: "✓", alpha: "✓" },
+      { feature: "Analyst Brief (Edge & Risk Factors)", free: "—", standard: "✓", alpha: "✓" },
     ],
   },
   {
-    label: "Global SEO & Search",
-    icon: "🌍",
+    label: "Social Proof & Trend Intelligence",
     rows: [
-      { feature: "Social Buzz Summary", free: "—", standard: "✓", alpha: "✓" },
-      { feature: "Rising Korean Keywords", free: "—", standard: "✓", alpha: "✓" },
-      { feature: "Global SEO Keywords", free: "—", standard: "—", alpha: "✓" },
-      { feature: "Viral Hashtags", free: "—", standard: "—", alpha: "✓" },
+      { feature: "Korea Gap Index™", free: "—", standard: "✓", alpha: "✓" },
+      { feature: "Social Buzz & Sentiment Analysis", free: "—", standard: "✓", alpha: "✓" },
+      { feature: "Rising Korean Keywords (KR)", free: "—", standard: "✓", alpha: "✓" },
+      { feature: "Global SEO Actionable Keywords", free: "—", standard: "—", alpha: "✓" },
+      { feature: "Viral Hashtag Strategy", free: "—", standard: "—", alpha: "✓" },
+      { feature: "Scout Strategy Report", free: "—", standard: "—", alpha: "✓" },
     ],
   },
   {
-    label: "Sourcing & Logistics",
-    icon: "🏭",
+    label: "Export & Logistics Intelligence",
     rows: [
-      { feature: "5-Step Sourcing Strategy", free: "—", standard: "Partial", alpha: "Full" },
-      { feature: "HS Code + Description", free: "—", standard: "—", alpha: "✓" },
-      { feature: "Verified Wholesale Cost", free: "—", standard: "—", alpha: "✓" },
-      {
-        feature: "Supplier Contact (Email / Phone / Web)",
-        free: "—",
-        standard: "—",
-        alpha: "✓",
-      },
-      { feature: "MOQ & Lead Time", free: "—", standard: "—", alpha: "✓" },
-      { feature: "Hazmat & Compliance Badge", free: "—", standard: "—", alpha: "✓" },
-      {
-        feature: "Broker Email Draft (HS Code & Hazmat-ready)",
-        free: "—",
-        standard: "—",
-        alpha: "✓",
-      },
-      { feature: "Weight & Shipping Tier", free: "—", standard: "—", alpha: "✓" },
+      { feature: "Export Readiness & Market Moat", free: "—", standard: "—", alpha: "✓" },
+      { feature: "Required Certifications (FDA, CPNP, etc.)", free: "—", standard: "—", alpha: "✓" },
+      { feature: "Hazmat Status & Full Ingredient List", free: "—", standard: "—", alpha: "✓" },
+      { feature: "Logistics Dashboard (Actual / Vol / Billable Weight)", free: "—", standard: "—", alpha: "✓" },
+      { feature: "Shipping Notes & Carrier Strategy", free: "—", standard: "—", alpha: "✓" },
+      { feature: "HS Code & Broker Email Draft", free: "—", standard: "—", alpha: "✓" },
+      { feature: "Step 4-5: Compliance & Logistics Strategy", free: "—", standard: "—", alpha: "✓" },
     ],
   },
   {
-    label: "Premium Media",
-    icon: "🎬",
+    label: "Launch & Execution Kit",
     rows: [
-      { feature: "4K Product Video", free: "—", standard: "—", alpha: "✓" },
-      { feature: "Viral Short-form Video", free: "—", standard: "—", alpha: "✓" },
-      { feature: "AI Landing Page", free: "—", standard: "—", alpha: "✓" },
-      { feature: "Brand Marketing Assets", free: "—", standard: "—", alpha: "✓" },
+      { feature: "Verified Cost Per Unit & MOQ", free: "—", standard: "—", alpha: "✓" },
+      { feature: "Est. Production Lead Time", free: "—", standard: "—", alpha: "✓" },
+      { feature: "Sample Policy & Distribution Rights", free: "—", standard: "—", alpha: "✓" },
+      { feature: "Supplier Contact (Email, Phone, Web)", free: "—", standard: "—", alpha: "✓" },
+      { feature: "Direct Wholesale Portal Link", free: "—", standard: "—", alpha: "✓" },
+      { feature: "Global Market Proof Links", free: "—", standard: "—", alpha: "✓" },
+      { feature: "Viral Hook Reference (Success Cases)", free: "—", standard: "—", alpha: "✓" },
+      { feature: "4K Raw Ad Footage (Unedited)", free: "—", standard: "—", alpha: "✓" },
+      { feature: "AI Landing Page Drafts", free: "—", standard: "—", alpha: "✓" },
+      { feature: "High-Res Brand Asset Kit", free: "—", standard: "—", alpha: "✓" },
     ],
-  },
-];
-
-const STATS = [
-  { number: "10+", label: "Verified products\nevery week" },
-  { number: "12+", label: "Countries\ntrusting KoreaScout" },
-  { number: "$2.30", label: "Per day for full\nmarket intelligence" },
-  { number: "14 days", label: "Faster than\nfree tier access" },
-];
-
-const FAQS = [
-  {
-    q: "How often are new products added?",
-    a: "Every Thursday. 10+ new Korean trend products drop weekly for Standard and Alpha members. Free users access the same products 14 days later.",
-  },
-  {
-    q: "What exactly is a 'Broker Email Draft'?",
-    a: "Alpha members receive a pre-written, HS Code and hazmat-compliant email template for each product — ready to send directly to customs brokers.",
-  },
-  {
-    q: "Can I cancel anytime?",
-    a: "Yes. No contracts, no lock-in. Cancel from your account settings at any time.",
-  },
-  {
-    q: "Is the wholesale cost verified?",
-    a: "Alpha reports include a verified unit cost sourced directly from the manufacturer or authorized distributor. Where verification is pending, it is clearly marked.",
   },
 ];
 
@@ -158,11 +138,14 @@ export default async function PricingPage() {
       </section>
 
       {/* S2: 3-TIER CARDS */}
-      <section className="bg-white py-24 px-6">
+      <section id="pricing-cards" className="bg-white py-24 px-6">
         <div className="max-w-6xl mx-auto">
           <h2
-            className="text-5xl md:text-6xl font-black text-[#1A1916] tracking-tighter text-center leading-none mb-16"
-            style={{ textWrap: "balance" } as React.CSSProperties}
+            className="font-black text-[#1A1916] leading-none tracking-tighter text-center mb-16"
+            style={{
+              fontSize: "clamp(2.5rem, 5vw, 4.5rem)",
+              textWrap: "balance",
+            } as React.CSSProperties}
           >
             Choose Your
             <br />
@@ -172,7 +155,7 @@ export default async function PricingPage() {
             {/* FREE */}
             <div className="bg-white border border-[#E8E6E1] rounded-2xl p-8 flex flex-col">
               <div className="flex-1">
-                <p className="text-3xl md:text-4xl font-black text-[#1A1916] tracking-tighter leading-none mb-6">
+                <p className="text-3xl md:text-4xl font-black text-[#1A1916] tracking-tighter leading-none mb-8">
                   Scout Free
                 </p>
                 <div className="mb-1">
@@ -185,8 +168,8 @@ export default async function PricingPage() {
                 </p>
                 <div className="w-8 h-px bg-[#E8E6E1] my-5" />
                 <div className="bg-[#F8F7F4] border border-[#E8E6E1] rounded-xl px-4 py-3 mb-6">
-                  <p className="text-xs font-black text-[#1A1916] leading-relaxed">
-                    🚀 INSTANT ACCESS: 3 products/week unlocked immediately.
+                  <p className="text-sm font-black text-[#1A1916] leading-relaxed">
+                    INSTANT ACCESS: 3 products/week unlocked immediately.
                   </p>
                 </div>
                 <p className="text-base font-medium text-[#6B6860] leading-relaxed">
@@ -210,7 +193,7 @@ export default async function PricingPage() {
             {/* STANDARD */}
             <div className="bg-white border border-[#E8E6E1] rounded-2xl p-8 flex flex-col shadow-[0_4px_20px_0_rgb(26_25_22/0.08)]">
               <div className="flex-1">
-                <p className="text-3xl md:text-4xl font-black text-[#1A1916] tracking-tighter leading-none mb-6">
+                <p className="text-3xl md:text-4xl font-black text-[#1A1916] tracking-tighter leading-none mb-8">
                   Standard
                 </p>
                 <div className="mb-1">
@@ -224,8 +207,8 @@ export default async function PricingPage() {
                 </p>
                 <div className="w-8 h-px bg-[#E8E6E1] my-5" />
                 <div className="bg-[#F8F7F4] border border-[#E8E6E1] rounded-xl px-4 py-3 mb-6">
-                  <p className="text-xs font-black text-[#1A1916] leading-relaxed">
-                    🚀 INSTANT ACCESS: 30+ Verified Products (Last 3 weeks of reports) unlocked immediately.
+                  <p className="text-sm font-black text-[#1A1916] leading-relaxed">
+                    INSTANT ACCESS: 30+ Verified Products (Last 3 weeks) unlocked immediately.
                   </p>
                 </div>
                 <p className="text-base font-medium text-[#6B6860] leading-relaxed">
@@ -252,24 +235,24 @@ export default async function PricingPage() {
 
             {/* ALPHA */}
             <div
-              className="bg-[#F8F7F4] border border-[#E8E6E1] border-l-4 border-l-[#16A34A] rounded-2xl p-8 flex flex-col relative shadow-[0_4px_20px_0_rgb(22_163_74/0.1)]"
+              className="bg-[#F8F7F4] border border-[#E8E6E1] border-l-4 border-l-[#16A34A] rounded-2xl p-8 flex flex-col shadow-[0_4px_20px_0_rgb(22_163_74/0.1)]"
               style={{ transform: "scale(1.03)", transformOrigin: "center" }}
             >
-              <div className="mb-6">
-                {isMembershipFull ? (
-                  <span className="inline-flex items-center bg-[#1A1916] text-white text-base font-black px-4 py-2 rounded-full">
-                    Membership Full — Waiting List Only
-                  </span>
-                ) : (
-                  <span className="inline-flex items-center bg-[#16A34A] text-white text-base font-black px-4 py-2 rounded-full">
-                    {alphaCount.toLocaleString()} / {ALPHA_MAX_SPOTS.toLocaleString()} Membership Spots
-                  </span>
-                )}
-              </div>
               <div className="flex-1">
-                <p className="text-3xl md:text-4xl font-black text-[#16A34A] tracking-tighter leading-none mb-6">
-                  Alpha
-                </p>
+                <div className="flex items-center justify-between mb-8">
+                  <p className="text-3xl md:text-4xl font-black text-[#16A34A] tracking-tighter leading-none">
+                    Alpha
+                  </p>
+                  <div className="flex items-center gap-2 px-3 py-1.5 bg-[#16A34A]/10 border border-[#16A34A]/20 rounded-full">
+                    <span className="relative flex h-2.5 w-2.5 shrink-0">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#16A34A] opacity-75" />
+                      <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#16A34A] shadow-[0_0_8px_1px_rgba(22,163,74,0.8)]" />
+                    </span>
+                    <span className="text-xs md:text-sm font-black text-[#16A34A] tracking-widest uppercase">
+                      {alphaCount.toLocaleString()} / 3,000
+                    </span>
+                  </div>
+                </div>
                 <div className="mb-1">
                   <span className="text-5xl font-black text-[#1A1916] leading-none tracking-tighter">
                     $129
@@ -289,8 +272,8 @@ export default async function PricingPage() {
                   </p>
                 )}
                 <div className="bg-white border border-[#16A34A] rounded-xl px-4 py-3 mb-6">
-                  <p className="text-xs font-black text-[#1A1916] leading-relaxed">
-                    🚀 INSTANT ACCESS: 30+ Verified Products (Last 3 weeks of reports) unlocked immediately.
+                  <p className="text-sm font-black text-[#1A1916] leading-relaxed">
+                    INSTANT ACCESS: 30+ Verified Products (Last 3 weeks) unlocked immediately.
                   </p>
                 </div>
                 <p className="text-base font-medium text-[#6B6860] leading-relaxed">
@@ -327,38 +310,39 @@ export default async function PricingPage() {
 
       {/* S3: ALPHA MOAT */}
       <section className="bg-[#1A1916] py-20 px-6">
-        <div className="max-w-3xl mx-auto">
-          <div className="border border-white/10 rounded-2xl p-10">
-            <p className="text-[10px] font-black uppercase tracking-[0.35em] text-[#16A34A] mb-6">
-              Institutional Policy
-            </p>
-            <h3
-              className="font-black text-white leading-tight tracking-tighter mb-6"
-              style={{ fontSize: "clamp(1.75rem, 4vw, 2.75rem)" }}
-            >
-              Why only 3,000 members?
-            </h3>
-            <p className="text-lg text-white/60 font-medium leading-relaxed">
-              Information loses its edge when everyone has it. To protect your
-              market margin and ensure exclusivity, Alpha access is strictly
-              capped at {ALPHA_MAX_SPOTS.toLocaleString()} global sellers.
-              <br /><br />
-              We don&apos;t just find trends —
-              <span className="text-white font-semibold"> we protect your opportunity.</span>
-            </p>
-            {!isMembershipFull && (
-              <div className="mt-8 flex items-center gap-3">
-                <div className="w-2 h-2 rounded-full bg-[#16A34A] shrink-0" />
-                <p className="text-sm font-bold text-[#16A34A]">
-                  {remainingSpots.toLocaleString()} of {ALPHA_MAX_SPOTS.toLocaleString()} spots remaining
-                </p>
-              </div>
-            )}
-          </div>
+        <div className="max-w-3xl mx-auto border border-white/10 rounded-2xl p-10">
+          <p className="text-[10px] font-black uppercase tracking-[0.35em] text-[#16A34A] mb-6">
+            Institutional Policy
+          </p>
+          <h3
+            className="font-black text-white leading-tight tracking-tighter mb-6"
+            style={{ fontSize: "clamp(1.75rem, 4vw, 2.75rem)" }}
+          >
+            Why only 3,000 members?
+          </h3>
+          <p className="text-lg text-white/60 font-medium leading-relaxed">
+            With over 50 million global sellers competing for the same demand, trend saturation is a certainty. Information loses its edge when everyone has it.
+            <br /><br />
+            By capping Alpha at exactly 3,000 spots—representing the top 0.006% of the global market—we mathematically minimize competition and protect your exclusive profit margins. We provide the verified intelligence. The execution is yours.
+            <br /><br />
+            We don&apos;t just find trends —{" "}
+            <span className="text-white font-semibold">we protect your opportunity.</span>
+          </p>
+          {!isMembershipFull && (
+            <div className="mt-8 flex items-center gap-3">
+              <span className="relative flex h-3 w-3 shrink-0">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#16A34A] opacity-75" />
+                <span className="relative inline-flex rounded-full h-3 w-3 bg-[#16A34A] shadow-[0_0_10px_2px_rgba(22,163,74,0.9)]" />
+              </span>
+              <p className="text-xl md:text-2xl font-black text-[#16A34A]">
+                {remainingSpots.toLocaleString()} of {ALPHA_MAX_SPOTS.toLocaleString()} spots remaining
+              </p>
+            </div>
+          )}
         </div>
       </section>
 
-      {/* S4: FEATURE BREAKDOWN */}
+      {/* S4: FEATURE BREAKDOWN (no emoji, text-base rows) */}
       <section className="bg-[#F8F7F4] py-24 px-6">
         <div className="max-w-4xl mx-auto">
           <p className="text-[10px] font-black uppercase tracking-[0.3em] text-[#9E9C98] text-center mb-16">
@@ -369,23 +353,22 @@ export default async function PricingPage() {
               key={group.label}
               className="mb-8 bg-white rounded-2xl border border-[#E8E6E1] overflow-hidden"
             >
-              <div className="px-6 py-4 border-b border-[#E8E6E1] flex items-center gap-3">
-                <span className="text-lg">{group.icon}</span>
-                <p className="text-[10px] font-black uppercase tracking-[0.25em] text-[#1A1916]">
+              <div className="px-6 py-5 border-b border-[#E8E6E1]">
+                <p className="text-sm font-black uppercase tracking-[0.25em] text-[#1A1916]">
                   {group.label}
                 </p>
               </div>
               <div className="grid grid-cols-4 px-6 py-3 bg-[#F8F7F4] border-b border-[#E8E6E1]">
-                <p className="text-[10px] font-black uppercase tracking-[0.2em] text-[#9E9C98]">
+                <p className="text-xs font-black uppercase tracking-[0.2em] text-[#9E9C98]">
                   Feature
                 </p>
-                <p className="text-[10px] font-black uppercase tracking-[0.2em] text-[#9E9C98] text-center">
+                <p className="text-xs font-black uppercase tracking-[0.2em] text-[#9E9C98] text-center">
                   Free
                 </p>
-                <p className="text-[10px] font-black uppercase tracking-[0.2em] text-[#9E9C98] text-center">
+                <p className="text-xs font-black uppercase tracking-[0.2em] text-[#9E9C98] text-center">
                   Standard
                 </p>
-                <p className="text-[10px] font-black uppercase tracking-[0.2em] text-[#16A34A] text-center border-t-2 border-[#16A34A] -mt-3 pt-3">
+                <p className="text-xs font-black uppercase tracking-[0.2em] text-[#16A34A] text-center border-t-2 border-[#16A34A] -mt-3 pt-3">
                   Alpha
                 </p>
               </div>
@@ -396,23 +379,25 @@ export default async function PricingPage() {
                     i % 2 === 0 ? "bg-white" : "bg-[#F8F7F4]/50"
                   }`}
                 >
-                  <p className="text-sm font-medium text-[#1A1916] pr-4">{row.feature}</p>
+                  <p className="text-base font-medium text-[#1A1916] pr-4 leading-snug">
+                    {row.feature}
+                  </p>
                   <p
-                    className={`text-sm font-bold text-center ${
+                    className={`text-base font-bold text-center ${
                       row.free === "✓" ? "text-[#16A34A]" : "text-[#9E9C98]"
                     }`}
                   >
                     {row.free}
                   </p>
                   <p
-                    className={`text-sm font-bold text-center ${
+                    className={`text-base font-bold text-center ${
                       row.standard === "✓" ? "text-[#16A34A]" : "text-[#9E9C98]"
                     }`}
                   >
                     {row.standard}
                   </p>
                   <p
-                    className={`text-sm font-black text-center ${
+                    className={`text-base font-black text-center ${
                       row.alpha === "✓" || row.alpha === "Full"
                         ? "text-[#16A34A]"
                         : "text-[#1A1916]"
@@ -424,76 +409,76 @@ export default async function PricingPage() {
               ))}
             </div>
           ))}
-        </div>
-      </section>
-
-      {/* S5: ROI PROOF BAR */}
-      <section className="bg-white border-y border-[#E8E6E1] py-16 px-6">
-        <div className="max-w-4xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
-          {STATS.map((stat) => (
-            <div key={stat.number}>
-              <p className="text-3xl font-black text-[#1A1916] tracking-tighter mb-2">
-                {stat.number}
-              </p>
-              <p className="text-xs font-medium text-[#9E9C98] leading-relaxed whitespace-pre-line">
-                {stat.label}
-              </p>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* S6: FAQ */}
-      <section className="bg-[#F8F7F4] py-24 px-6">
-        <div className="max-w-2xl mx-auto">
-          <p className="text-[10px] font-black uppercase tracking-[0.3em] text-[#9E9C98] text-center mb-12">
-            Frequently Asked
+          <p className="text-[11px] md:text-xs text-[#8A8884] mt-6 italic text-center max-w-3xl mx-auto leading-relaxed">
+            * Note: Certain supplier information in the Alpha tier may be redacted or undisclosed depending on strict manufacturer confidentiality policies.
           </p>
-          {FAQS.map((item) => (
-            <details key={item.q} className="border-b border-[#E8E6E1] py-5 group">
-              <summary className="text-sm font-bold text-[#1A1916] cursor-pointer list-none flex items-center justify-between gap-4">
-                <span>{item.q}</span>
-                <ChevronDown className="w-4 h-4 text-[#9E9C98] shrink-0 group-open:rotate-180 transition-transform" />
-              </summary>
-              <p className="text-sm text-[#6B6860] leading-relaxed mt-4 font-medium">
-                {item.a}
-              </p>
-            </details>
-          ))}
         </div>
       </section>
 
-      {/* S7: FINAL CTA */}
+      {/* S6: FINAL FOMO HOOK (FAQ 제거) */}
       <section className="bg-[#1A1916] py-32 px-6 text-center">
-        <p className="text-[10px] font-black uppercase tracking-[0.35em] text-[#16A34A] mb-6">
-          Ready to Scout?
+        <p className="text-[10px] font-black uppercase tracking-[0.35em] text-[#16A34A] mb-8">
+          The Clock Is Running
         </p>
         <h2
           className="font-black text-white leading-none tracking-tighter mb-10"
           style={{
-            fontSize: "clamp(2rem, 5vw, 4rem)",
+            fontSize: "clamp(2rem, 5vw, 4.5rem)",
             textWrap: "balance",
           } as React.CSSProperties}
         >
-          Your competitors are sourcing from Korea.
+          The market moves while you hesitate.
           <br />
-          <span className="text-[#16A34A]">Are you?</span>
+          <span className="text-[#16A34A]">
+            Secure your intelligence before
+            <br />
+            the 3,000 spots are gone.
+          </span>
         </h2>
-        <div className="flex flex-wrap items-center justify-center gap-4 mb-6">
+        {!isMembershipFull && (
+          <div className="flex items-center justify-center gap-2 mb-10">
+            <span className="relative flex h-3 w-3 shrink-0">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#16A34A] opacity-75" />
+              <span className="relative inline-flex rounded-full h-3 w-3 bg-[#16A34A] shadow-[0_0_10px_2px_rgba(22,163,74,0.9)]" />
+            </span>
+            <p className="text-base font-black text-[#16A34A]">
+              {remainingSpots.toLocaleString()} of {ALPHA_MAX_SPOTS.toLocaleString()} Alpha spots remaining
+            </p>
+          </div>
+        )}
+        <div className="flex flex-col items-center gap-4 max-w-2xl mx-auto mb-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
+            <a
+              href={STANDARD_CHECKOUT_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-full text-center py-4 border border-white/30 text-white rounded-xl font-bold text-base hover:border-white/60 transition-colors"
+            >
+              Start with Standard — $69/mo
+            </a>
+            {isMembershipFull ? (
+              <a
+                href="/waitlist"
+                className="w-full text-center py-4 bg-[#1A1916] text-white rounded-xl font-black text-base hover:bg-[#2D2B26] transition-colors"
+              >
+                Join Alpha Waiting List
+              </a>
+            ) : (
+              <a
+                href={ALPHA_CHECKOUT_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-full text-center py-4 bg-[#16A34A] text-white rounded-xl font-black text-base hover:bg-[#15803D] shadow-[0_4px_20px_0_rgb(22_163_74/0.4)] transition-colors"
+              >
+                Go Alpha — $129/mo
+              </a>
+            )}
+          </div>
           <a
-            href={isMembershipFull ? "/waitlist" : ALPHA_CHECKOUT_URL}
-            {...(isMembershipFull ? {} : { target: "_blank", rel: "noopener noreferrer" })}
-            className="px-10 py-4 bg-[#16A34A] text-white rounded-xl font-black text-base hover:bg-[#15803D] transition-colors shadow-[0_4px_20px_0_rgb(22_163_74/0.4)]"
+            href="#pricing-cards"
+            className="w-full text-center py-4 bg-white text-[#1A1916] rounded-xl font-black text-lg hover:bg-[#F8F7F4] transition-colors"
           >
-            {isMembershipFull ? "Join Alpha Waiting List" : "Go Alpha — $129/mo"}
-          </a>
-          <a
-            href={STANDARD_CHECKOUT_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="px-10 py-4 border border-white/30 text-white rounded-xl font-bold text-base hover:border-white/60 transition-colors"
-          >
-            Start with Standard — $69/mo
+            Get Exclusive Access Now
           </a>
         </div>
         <p className="text-xs text-white/30 font-medium">
