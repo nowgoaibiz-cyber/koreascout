@@ -114,7 +114,7 @@ const FAQS = [
   },
   {
     q: "What exactly is a 'Broker Email Draft'?",
-    a: "Alpha members receive a pre-written, HS Code and hazmat-compliant email template for each product — ready to send directly to customs brokers. No more guessing on compliance language.",
+    a: "Alpha members receive a pre-written, HS Code and hazmat-compliant email template for each product — ready to send directly to customs brokers.",
   },
   {
     q: "Can I cancel anytime?",
@@ -122,7 +122,7 @@ const FAQS = [
   },
   {
     q: "Is the wholesale cost verified?",
-    a: "Alpha reports include a verified unit cost sourced directly from the manufacturer or authorized distributor — not an estimate. Where verification is pending, it is clearly marked.",
+    a: "Alpha reports include a verified unit cost sourced directly from the manufacturer or authorized distributor. Where verification is pending, it is clearly marked.",
   },
 ];
 
@@ -133,7 +133,7 @@ export default async function PricingPage() {
 
   return (
     <>
-      {/* SECTION 1: DARK HERO */}
+      {/* S1: DARK HERO */}
       <section className="bg-[#1A1916] py-24 px-6">
         <div className="max-w-4xl mx-auto text-center">
           <p className="text-[10px] font-black uppercase tracking-[0.35em] text-[#16A34A] mb-8">
@@ -157,32 +157,44 @@ export default async function PricingPage() {
         </div>
       </section>
 
-      {/* SECTION 2: 3-TIER CARDS */}
+      {/* S2: 3-TIER CARDS */}
       <section className="bg-white py-24 px-6">
         <div className="max-w-6xl mx-auto">
-          <p className="text-[10px] font-black uppercase tracking-[0.3em] text-[#9E9C98] text-center mb-16">
-            Choose Your Intelligence Level
-          </p>
+          <h2
+            className="text-5xl md:text-6xl font-black text-[#1A1916] tracking-tighter text-center leading-none mb-16"
+            style={{ textWrap: "balance" } as React.CSSProperties}
+          >
+            Choose Your
+            <br />
+            Intelligence Level
+          </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-stretch">
             {/* FREE */}
             <div className="bg-white border border-[#E8E6E1] rounded-2xl p-8 flex flex-col">
               <div className="flex-1">
-                <p className="text-[10px] font-black uppercase tracking-[0.3em] text-[#9E9C98] mb-6">
+                <p className="text-3xl md:text-4xl font-black text-[#1A1916] tracking-tighter leading-none mb-6">
                   Scout Free
                 </p>
-                <div className="mb-2">
+                <div className="mb-1">
                   <span className="text-5xl font-black text-[#1A1916] leading-none tracking-tighter">
                     $0
                   </span>
                 </div>
-                <p className="text-sm text-[#9E9C98] font-medium mb-1">Forever free</p>
+                <p className="text-xs font-bold text-[#9E9C98] uppercase tracking-[0.2em] mb-1">
+                  Forever Free
+                </p>
                 <div className="w-8 h-px bg-[#E8E6E1] my-5" />
-                <p className="text-base font-medium text-[#6B6860] leading-relaxed mb-8">
+                <div className="bg-[#F8F7F4] border border-[#E8E6E1] rounded-xl px-4 py-3 mb-6">
+                  <p className="text-xs font-black text-[#1A1916] leading-relaxed">
+                    🚀 INSTANT ACCESS: 3 products/week unlocked immediately.
+                  </p>
+                </div>
+                <p className="text-base font-medium text-[#6B6860] leading-relaxed">
                   See what KoreaScout finds.
                   Before you commit.
                 </p>
               </div>
-              <div className="mt-auto">
+              <div className="mt-8">
                 <a
                   href="/signup"
                   className="block w-full text-center py-3 rounded-xl border-2 border-[#1A1916] text-sm font-black text-[#1A1916] hover:bg-[#1A1916] hover:text-white transition-all"
@@ -198,10 +210,10 @@ export default async function PricingPage() {
             {/* STANDARD */}
             <div className="bg-white border border-[#E8E6E1] rounded-2xl p-8 flex flex-col shadow-[0_4px_20px_0_rgb(26_25_22/0.08)]">
               <div className="flex-1">
-                <p className="text-[10px] font-black uppercase tracking-[0.3em] text-[#9E9C98] mb-6">
+                <p className="text-3xl md:text-4xl font-black text-[#1A1916] tracking-tighter leading-none mb-6">
                   Standard
                 </p>
-                <div className="mb-2">
+                <div className="mb-1">
                   <span className="text-5xl font-black text-[#1A1916] leading-none tracking-tighter">
                     $69
                   </span>
@@ -211,14 +223,19 @@ export default async function PricingPage() {
                   Approx. $2.30 / day
                 </p>
                 <div className="w-8 h-px bg-[#E8E6E1] my-5" />
-                <p className="text-base font-medium text-[#6B6860] leading-relaxed mb-8">
+                <div className="bg-[#F8F7F4] border border-[#E8E6E1] rounded-xl px-4 py-3 mb-6">
+                  <p className="text-xs font-black text-[#1A1916] leading-relaxed">
+                    🚀 INSTANT ACCESS: 30+ Verified Products (Last 3 weeks of reports) unlocked immediately.
+                  </p>
+                </div>
+                <p className="text-base font-medium text-[#6B6860] leading-relaxed">
                   The market intelligence engine
                   for serious global sellers.
                   Know what Korea is trending —
                   and exactly why it will sell.
                 </p>
               </div>
-              <div className="mt-auto">
+              <div className="mt-8">
                 <a
                   href={STANDARD_CHECKOUT_URL}
                   target="_blank"
@@ -238,22 +255,22 @@ export default async function PricingPage() {
               className="bg-[#F8F7F4] border border-[#E8E6E1] border-l-4 border-l-[#16A34A] rounded-2xl p-8 flex flex-col relative shadow-[0_4px_20px_0_rgb(22_163_74/0.1)]"
               style={{ transform: "scale(1.03)", transformOrigin: "center" }}
             >
-              <div className="absolute -top-3 left-1/2 -translate-x-1/2">
+              <div className="mb-6">
                 {isMembershipFull ? (
-                  <span className="bg-[#1A1916] text-white text-[10px] font-black uppercase tracking-widest px-4 py-1.5 rounded-full whitespace-nowrap">
+                  <span className="inline-flex items-center bg-[#1A1916] text-white text-base font-black px-4 py-2 rounded-full">
                     Membership Full — Waiting List Only
                   </span>
                 ) : (
-                  <span className="bg-[#16A34A] text-white text-[10px] font-black uppercase tracking-widest px-4 py-1.5 rounded-full whitespace-nowrap">
+                  <span className="inline-flex items-center bg-[#16A34A] text-white text-base font-black px-4 py-2 rounded-full">
                     {alphaCount.toLocaleString()} / {ALPHA_MAX_SPOTS.toLocaleString()} Membership Spots
                   </span>
                 )}
               </div>
               <div className="flex-1">
-                <p className="text-[10px] font-black uppercase tracking-[0.3em] text-[#16A34A] mb-6">
+                <p className="text-3xl md:text-4xl font-black text-[#16A34A] tracking-tighter leading-none mb-6">
                   Alpha
                 </p>
-                <div className="mb-2">
+                <div className="mb-1">
                   <span className="text-5xl font-black text-[#1A1916] leading-none tracking-tighter">
                     $129
                   </span>
@@ -263,20 +280,25 @@ export default async function PricingPage() {
                   Approx. $4.30 / day
                 </p>
                 <div className="w-8 h-px bg-[#E8E6E1] my-5" />
-                <p className="text-xs font-bold text-[#16A34A] mb-8">
-                  EXCLUSIVE: Limited to {ALPHA_MAX_SPOTS.toLocaleString()} Global Membership Spots
-                  {!isMembershipFull && (
+                {!isMembershipFull && (
+                  <p className="text-xs font-bold text-[#16A34A] mb-4">
+                    EXCLUSIVE: Limited to {ALPHA_MAX_SPOTS.toLocaleString()} Global Membership Spots
                     <span className="text-[#9E9C98] font-medium ml-1">
                       ({remainingSpots.toLocaleString()} remaining)
                     </span>
-                  )}
-                </p>
-                <p className="text-base font-medium text-[#6B6860] leading-relaxed mb-8">
+                  </p>
+                )}
+                <div className="bg-white border border-[#16A34A] rounded-xl px-4 py-3 mb-6">
+                  <p className="text-xs font-black text-[#1A1916] leading-relaxed">
+                    🚀 INSTANT ACCESS: 30+ Verified Products (Last 3 weeks of reports) unlocked immediately.
+                  </p>
+                </div>
+                <p className="text-base font-medium text-[#6B6860] leading-relaxed">
                   Know exactly who to call.
                   Exactly what to pay.
                 </p>
               </div>
-              <div className="mt-auto">
+              <div className="mt-8">
                 {isMembershipFull ? (
                   <a
                     href="/waitlist"
@@ -303,7 +325,40 @@ export default async function PricingPage() {
         </div>
       </section>
 
-      {/* SECTION 3: FEATURE BREAKDOWN */}
+      {/* S3: ALPHA MOAT */}
+      <section className="bg-[#1A1916] py-20 px-6">
+        <div className="max-w-3xl mx-auto">
+          <div className="border border-white/10 rounded-2xl p-10">
+            <p className="text-[10px] font-black uppercase tracking-[0.35em] text-[#16A34A] mb-6">
+              Institutional Policy
+            </p>
+            <h3
+              className="font-black text-white leading-tight tracking-tighter mb-6"
+              style={{ fontSize: "clamp(1.75rem, 4vw, 2.75rem)" }}
+            >
+              Why only 3,000 members?
+            </h3>
+            <p className="text-lg text-white/60 font-medium leading-relaxed">
+              Information loses its edge when everyone has it. To protect your
+              market margin and ensure exclusivity, Alpha access is strictly
+              capped at {ALPHA_MAX_SPOTS.toLocaleString()} global sellers.
+              <br /><br />
+              We don&apos;t just find trends —
+              <span className="text-white font-semibold"> we protect your opportunity.</span>
+            </p>
+            {!isMembershipFull && (
+              <div className="mt-8 flex items-center gap-3">
+                <div className="w-2 h-2 rounded-full bg-[#16A34A] shrink-0" />
+                <p className="text-sm font-bold text-[#16A34A]">
+                  {remainingSpots.toLocaleString()} of {ALPHA_MAX_SPOTS.toLocaleString()} spots remaining
+                </p>
+              </div>
+            )}
+          </div>
+        </div>
+      </section>
+
+      {/* S4: FEATURE BREAKDOWN */}
       <section className="bg-[#F8F7F4] py-24 px-6">
         <div className="max-w-4xl mx-auto">
           <p className="text-[10px] font-black uppercase tracking-[0.3em] text-[#9E9C98] text-center mb-16">
@@ -372,7 +427,7 @@ export default async function PricingPage() {
         </div>
       </section>
 
-      {/* SECTION 4: ROI PROOF BAR */}
+      {/* S5: ROI PROOF BAR */}
       <section className="bg-white border-y border-[#E8E6E1] py-16 px-6">
         <div className="max-w-4xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
           {STATS.map((stat) => (
@@ -388,7 +443,7 @@ export default async function PricingPage() {
         </div>
       </section>
 
-      {/* SECTION 5: FAQ */}
+      {/* S6: FAQ */}
       <section className="bg-[#F8F7F4] py-24 px-6">
         <div className="max-w-2xl mx-auto">
           <p className="text-[10px] font-black uppercase tracking-[0.3em] text-[#9E9C98] text-center mb-12">
@@ -408,7 +463,7 @@ export default async function PricingPage() {
         </div>
       </section>
 
-      {/* SECTION 6: FINAL CTA */}
+      {/* S7: FINAL CTA */}
       <section className="bg-[#1A1916] py-32 px-6 text-center">
         <p className="text-[10px] font-black uppercase tracking-[0.35em] text-[#16A34A] mb-6">
           Ready to Scout?
@@ -427,9 +482,7 @@ export default async function PricingPage() {
         <div className="flex flex-wrap items-center justify-center gap-4 mb-6">
           <a
             href={isMembershipFull ? "/waitlist" : ALPHA_CHECKOUT_URL}
-            {...(isMembershipFull
-              ? {}
-              : { target: "_blank", rel: "noopener noreferrer" })}
+            {...(isMembershipFull ? {} : { target: "_blank", rel: "noopener noreferrer" })}
             className="px-10 py-4 bg-[#16A34A] text-white rounded-xl font-black text-base hover:bg-[#15803D] transition-colors shadow-[0_4px_20px_0_rgb(22_163_74/0.4)]"
           >
             {isMembershipFull ? "Join Alpha Waiting List" : "Go Alpha — $129/mo"}
