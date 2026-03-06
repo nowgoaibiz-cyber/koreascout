@@ -29,10 +29,18 @@ function GoogleLogo({ className }: { className?: string }) {
   );
 }
 
-export function GoogleSignInButton({ className }: { className?: string }) {
+type GoogleSignInButtonProps = {
+  className?: string;
+  /** Redirect path after successful OAuth (e.g. from ?next=). Defaults to "/". */
+  next?: string;
+};
+
+export function GoogleSignInButton({ className, next }: GoogleSignInButtonProps) {
   async function handleGoogleSignIn() {
     const supabase = createClient();
-    const redirectTo = typeof window !== "undefined" ? `${window.location.origin}/auth/callback` : "";
+    const origin = typeof window !== "undefined" ? window.location.origin : "";
+    const nextPath = next ?? "/";
+    const redirectTo = `${origin}/auth/callback?next=${encodeURIComponent(nextPath)}`;
     const { error } = await supabase.auth.signInWithOAuth({
       provider: "google",
       options: { redirectTo },

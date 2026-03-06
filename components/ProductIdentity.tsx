@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import { Lock } from "lucide-react";
+import { FavoriteButton } from "@/components/FavoriteButton";
 import type { ScoutFinalReportsRow } from "@/types/database";
 
 const FALLBACK_RATE = 1430;
@@ -21,11 +22,19 @@ export default function ProductIdentity({
   tier,
   isTeaser,
   EXPORT_STATUS_DISPLAY,
+  reportId,
+  weekId,
+  isFavorited,
+  isSample,
 }: {
   report: ScoutFinalReportsRow;
   tier: "free" | "standard" | "alpha";
   isTeaser: boolean;
   EXPORT_STATUS_DISPLAY: ExportStatusDisplay;
+  reportId?: string;
+  weekId?: string;
+  isFavorited?: boolean;
+  isSample?: boolean;
 }) {
   const canSeeAlpha = tier === "alpha" || isTeaser;
   const [exchangeRate, setExchangeRate] = useState<number>(FALLBACK_RATE);
@@ -89,7 +98,7 @@ export default function ProductIdentity({
           {report.image_url ? (
             <Image
               src={report.image_url}
-              alt={report.translated_name || report.product_name || "Product"}
+              alt={report.product_name || report.translated_name || "Product"}
               fill
               className="object-cover"
             />
@@ -98,35 +107,55 @@ export default function ProductIdentity({
               <p className="text-sm text-[#9E9C98]">No image</p>
             </div>
           )}
+          {isSample && (
+            <div className="absolute inset-0 z-10 flex items-center justify-center bg-black/10 pointer-events-none">
+              <div className="rotate-[-35deg] border-2 border-white/40 px-6 py-2 rounded-lg backdrop-blur-sm">
+                <span className="text-white/70 font-black text-2xl tracking-widest uppercase drop-shadow-md">
+                  KoreaScout Sample
+                </span>
+              </div>
+            </div>
+          )}
         </div>
 
-        <div className="flex-1 min-w-0 flex flex-col justify-center overflow-hidden @container">
-          <div className="flex flex-wrap items-center gap-2 mb-6">
-            {report.category?.trim() && (
-              <span className="inline-flex items-center px-3 py-1.5 bg-[#F8F7F4] border border-[#E8E6E1] text-xs font-bold text-[#1A1916] rounded-md uppercase tracking-wide">
-                {report.category}
-              </span>
-            )}
-            {exportBadge && (
-              <span className={`inline-flex items-center px-3 py-1.5 border text-xs font-bold rounded-md uppercase tracking-wide ${exportBadge.color}`}>
-                {exportBadge.label}
-              </span>
+        <div className="flex-1 min-w-0 flex flex-col justify-center overflow-hidden @container relative">
+          <div className="flex flex-wrap items-center justify-between gap-2 mb-6">
+            <div className="flex flex-wrap items-center gap-2">
+              {report.category?.trim() && (
+                <span className="inline-flex items-center px-3 py-1.5 bg-[#F8F7F4] border border-[#E8E6E1] text-xs font-bold text-[#1A1916] rounded-md uppercase tracking-wide">
+                  {report.category}
+                </span>
+              )}
+              {exportBadge && (
+                <span className={`inline-flex items-center px-3 py-1.5 border text-xs font-bold rounded-md uppercase tracking-wide ${exportBadge.color}`}>
+                  {exportBadge.label}
+                </span>
+              )}
+            </div>
+            {reportId != null && weekId != null && (
+              <FavoriteButton
+                reportId={reportId}
+                weekId={weekId}
+                isFavorited={isFavorited ?? false}
+                className={`shrink-0 ${isFavorited ? "fill-[#16A34A] text-[#16A34A]" : "text-gray-300 hover:text-[#16A34A]"}`}
+                iconClassName="w-8 h-8"
+              />
             )}
           </div>
 
-          <h3
+          <h1
             className="font-bold text-[#1A1916] leading-tight break-words mb-2"
             style={{
               fontSize: "clamp(1.5rem, 4cqw, 2.25rem)",
               textWrap: "balance",
             } as React.CSSProperties}
           >
-            {report.translated_name || report.product_name}
-          </h3>
+            {report.product_name || report.translated_name}
+          </h1>
 
-          {report.product_name && report.translated_name && (
+          {report.translated_name && (
             <p className="text-lg font-medium text-[#6B6860] line-clamp-2 mb-6">
-              {report.product_name}
+              {report.translated_name}
             </p>
           )}
 

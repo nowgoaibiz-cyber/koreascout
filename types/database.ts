@@ -161,12 +161,19 @@ export interface ScoutFinalReportsRow {
   edit_history?: Json | null;
 }
 
+export interface UserFavoritesRow {
+  user_id: string;
+  report_id: string;
+  created_at: string;
+}
+
 export interface Database {
   public: {
     Tables: {
       profiles: { Row: ProfilesRow; Insert: Omit<ProfilesRow, "created_at"> & { created_at?: string }; Update: Partial<ProfilesRow> };
       weeks: { Row: WeeksRow; Insert: Omit<WeeksRow, "product_count"> & { product_count?: number }; Update: Partial<WeeksRow> };
       scout_final_reports: { Row: ScoutFinalReportsRow; Insert: Omit<ScoutFinalReportsRow, "id" | "created_at"> & { id?: string; created_at?: string }; Update: Partial<ScoutFinalReportsRow> };
+      user_favorites: { Row: UserFavoritesRow; Insert: Omit<UserFavoritesRow, "created_at"> & { created_at?: string }; Update: Partial<UserFavoritesRow> };
     };
   };
 }

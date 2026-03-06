@@ -1,0 +1,362 @@
+"use client";
+
+import { Button } from "@/components/ui";
+import { ArrowRight, ArrowUpRight, Download, ExternalLink, Film, Globe, ImageIcon, LayoutTemplate, Mail, Phone, Play, ShoppingBag } from "lucide-react";
+import type { ScoutFinalReportsRow } from "@/types/database";
+import { getAiDetailUrl } from "./utils";
+
+export function SupplierContact({
+  report,
+  tier,
+  isTeaser,
+}: {
+  report: ScoutFinalReportsRow;
+  tier: "free" | "standard" | "alpha";
+  isTeaser: boolean;
+}) {
+  const canSeeAlpha = tier === "alpha" || isTeaser;
+  const hasSupplierFields =
+    (report.m_name && report.m_name.trim()) ||
+    (report.corporate_scale && report.corporate_scale.trim()) ||
+    (report.contact_email && report.contact_email.trim()) ||
+    (report.contact_phone && report.contact_phone.trim()) ||
+    (report.m_homepage && report.m_homepage.trim()) ||
+    (report.naver_link && report.naver_link.trim()) ||
+    (report.wholesale_link && report.wholesale_link?.trim()) ||
+    (report.sourcing_tip && report.sourcing_tip.trim());
+
+  if (!hasSupplierFields && !canSeeAlpha) return null;
+
+  const verifiedCostUsd = report.verified_cost_usd ?? null;
+  const verifiedCostNote = report.verified_cost_note?.trim()?.toLowerCase() ?? null;
+  const isUndisclosed = verifiedCostNote === "undisclosed";
+  const costNum =
+    verifiedCostUsd != null && verifiedCostUsd !== ""
+      ? parseFloat(String(verifiedCostUsd))
+      : NaN;
+  const hasVerifiedPrice = !Number.isNaN(costNum);
+
+  const viralUrl = report.viral_video_url?.trim() || null;
+  const videoUrl = report.video_url?.trim() || null;
+  const aiDetailUrl = getAiDetailUrl(report.ai_detail_page_links as string | unknown[] | Record<string, unknown> | null);
+  const marketingUrl = report.marketing_assets_url?.trim() || null;
+  const aiImageUrl = report.ai_image_url?.trim() || null;
+
+  let rawPrices: Record<string, { url?: string; platform?: string }> = {};
+  try {
+    const raw = report.global_prices;
+    if (typeof raw === "string") {
+      const once = JSON.parse(raw);
+      rawPrices = typeof once === "string" ? JSON.parse(once) : (once as typeof rawPrices);
+    } else if (raw && typeof raw === "object") {
+      rawPrices = raw as typeof rawPrices;
+    }
+  } catch {
+    // ignore
+  }
+  const regionsList = [
+    { id: "us", name: "US" },
+    { id: "uk", name: "UK" },
+    { id: "sea", name: "SEA" },
+    { id: "australia", name: "AU" },
+    { id: "india", name: "IN" },
+  ];
+  const globalProofTags: Array<{ region: string; url: string; platform?: string }> = regionsList
+    .map((r) => ({
+      region: r.name,
+      url: rawPrices[r.id]?.url,
+      platform: rawPrices[r.id]?.platform?.trim() || undefined,
+    }))
+    .filter((t): t is { region: string; url: string; platform: string | undefined } => typeof t.url === "string" && t.url.startsWith("http"));
+
+  const assetCards = [
+    viralUrl && {
+      id: "viral",
+      platform: "Viral" as const,
+      title: "Viral Reference",
+      description: "Korean TikTok/Reels success case. Study the hook.",
+      href: viralUrl,
+      ctaText: "Watch Original",
+      isPrimary: true,
+      icon: <Play className="w-32 h-32 text-[#1A1916]" />,
+      hoverIcon: <Play className="w-5 h-5 text-[#1A1916]" />,
+    },
+    videoUrl && {
+      id: "video",
+      platform: "Video" as const,
+      title: "Raw Ad Footage",
+      description: "Unedited footage ready for your market adaptation.",
+      href: videoUrl,
+      ctaText: "Watch & Download",
+      isPrimary: false,
+      icon: <Film className="w-32 h-32 text-[#1A1916]" />,
+      hoverIcon: <Download className="w-5 h-5 text-[#1A1916]" />,
+    },
+    aiDetailUrl && {
+      id: "ai-landing",
+      platform: "AI Page" as const,
+      title: "AI Landing Page",
+      description: "Opal-generated A/B product page drafts.",
+      href: aiDetailUrl,
+      ctaText: "Open Page",
+      isPrimary: false,
+      icon: <LayoutTemplate className="w-32 h-32 text-[#1A1916]" />,
+      hoverIcon: <ExternalLink className="w-5 h-5 text-[#1A1916]" />,
+    },
+    marketingUrl && {
+      id: "brand-asset",
+      platform: "Assets" as const,
+      title: "Brand Asset Kit",
+      description: "High-res model shots and product imagery from the manufacturer.",
+      href: marketingUrl,
+      ctaText: "Access Assets",
+      isPrimary: false,
+      icon: <ImageIcon className="w-32 h-32 text-[#1A1916]" />,
+      hoverIcon: <ArrowRight className="w-5 h-5 text-[#1A1916]" />,
+    },
+    aiImageUrl && {
+      id: "ai-image",
+      platform: "AI Image" as const,
+      title: "AI Product Image",
+      description: "AI-generated product image. Open or download.",
+      href: aiImageUrl,
+      ctaText: "Open / Download",
+      isPrimary: false,
+      icon: <ImageIcon className="w-32 h-32 text-[#1A1916]" />,
+      hoverIcon: <Download className="w-5 h-5 text-[#1A1916]" />,
+    },
+  ].filter(Boolean) as Array<{
+    id: string;
+    platform: string;
+    title: string;
+    description: string;
+    href: string;
+    ctaText: string;
+    isPrimary: boolean;
+    icon: React.ReactNode;
+    hoverIcon: React.ReactNode;
+  }>;
+
+  const refA = "text-xl font-bold text-[#1A1916] mb-10";
+  const refB = "text-sm font-bold text-[#6B6860] tracking-widest mb-4";
+  const refC = "text-base text-[#3D3B36] leading-relaxed opacity-90";
+
+  return (
+    <section className="bg-white rounded-2xl border border-[#E8E6E1] p-6 shadow-[0_1px_3px_0_rgb(26_25_22/0.06)]">
+      {canSeeAlpha && (
+        <>
+          <div>
+            <h2 className="text-3xl font-bold text-[#1A1916] mb-4 tracking-tight">Launch & Execution Kit</h2>
+            <p className="text-sm text-[#6B6860] leading-relaxed mt-1">
+              From product discovery to live campaign — everything you need.
+            </p>
+          </div>
+
+          <div className="bg-[#F8F7F4] rounded-2xl p-10 mb-6 mt-6">
+            <p className={refA}>Financial Briefing</p>
+            <div className="mb-10">
+              <p className={refB}>Cost Per Unit</p>
+              {hasVerifiedPrice && !isUndisclosed ? (
+                <>
+                  <p className="font-black tracking-tighter text-[#1A1916] leading-none" style={{ fontSize: "80px" }}>
+                    ${costNum.toFixed(2)}
+                  </p>
+                  {report.verified_at && (
+                    <p className="text-xs italic text-[#9E9C98] mt-3">
+                      Verified by KoreaScout on{" "}
+                      {new Date(report.verified_at).toLocaleDateString("en-US", {
+                        year: "numeric",
+                        month: "long",
+                        day: "numeric",
+                      })}
+                    </p>
+                  )}
+                </>
+              ) : verifiedCostUsd != null && verifiedCostUsd !== "" && isUndisclosed ? (
+                <p className="text-sm italic text-[#6B6860]">
+                  Pricing verified and on file. Contact the manufacturer directly or use the broker email in Section 5.
+                </p>
+              ) : (
+                <p className="text-sm italic text-[#9E9C98]">Not available</p>
+              )}
+            </div>
+            {(report.moq?.trim() || report.lead_time?.trim()) && (
+              <div className="flex gap-32 mt-10">
+                {report.moq?.trim() && (
+                  <div>
+                    <p className="text-xs font-bold text-[#9E9C98] uppercase tracking-[0.2em] mb-3">MOQ</p>
+                    <p className="text-4xl font-black tracking-tighter text-[#1A1916]">{report.moq}</p>
+                  </div>
+                )}
+                {report.lead_time?.trim() && (
+                  <div>
+                    <p className="text-xs font-bold text-[#9E9C98] uppercase tracking-[0.2em] mb-3">Est. Production Lead Time</p>
+                    <p className="text-4xl font-black tracking-tighter text-[#1A1916]">{report.lead_time}</p>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+
+          <div className="bg-[#F8F7F4] rounded-2xl p-10 mb-6">
+            <p className={refA}>Supplier &amp; Brand Intel</p>
+            {report.m_name?.trim() && (
+              <p className="text-5xl font-black text-[#1A1916] leading-none tracking-tighter break-words mb-8">
+                {report.m_name}
+              </p>
+            )}
+            {(() => {
+              const contacts = [
+                report.contact_email?.trim() && {
+                  id: "email",
+                  icon: <Mail className="w-8 h-8 text-[#9E9C98] group-hover:text-[#16A34A] shrink-0 transition-colors" />,
+                  label: report.contact_email!.trim(),
+                  href: `mailto:${report.contact_email!.trim()}`,
+                  external: false as const,
+                },
+                report.contact_phone?.trim() && {
+                  id: "phone",
+                  icon: <Phone className="w-8 h-8 text-[#9E9C98] group-hover:text-[#16A34A] shrink-0 transition-colors" />,
+                  label: report.contact_phone!.trim(),
+                  href: `tel:${report.contact_phone!.trim()}`,
+                  external: false as const,
+                },
+                report.m_homepage?.trim() && {
+                  id: "website",
+                  icon: <Globe className="w-8 h-8 text-[#9E9C98] group-hover:text-[#16A34A] shrink-0 transition-colors" />,
+                  label: "Website",
+                  href: report.m_homepage!.trim(),
+                  external: true as const,
+                },
+                report.wholesale_link?.trim() && {
+                  id: "wholesale",
+                  icon: <ShoppingBag className="w-8 h-8 text-[#9E9C98] group-hover:text-[#16A34A] shrink-0 transition-colors" />,
+                  label: "Wholesale Portal",
+                  href: report.wholesale_link!.trim(),
+                  external: true as const,
+                },
+              ].filter(Boolean) as Array<{ id: string; icon: React.ReactNode; label: string; href: string; external: boolean }>;
+
+              if (contacts.length === 0) return null;
+              return (
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-10">
+                  {contacts.map((contact, i) => (
+                    <a
+                      key={contact.id}
+                      href={contact.href}
+                      target={contact.external ? "_blank" : undefined}
+                      rel={contact.external ? "noopener noreferrer" : undefined}
+                      className={`flex items-center gap-5 bg-white border-2 border-[#E8E6E1] rounded-2xl p-8 hover:border-[#16A34A] transition-colors group ${contacts.length === 3 && i === 2 ? "col-span-1 sm:col-span-2" : ""}`}
+                    >
+                      {contact.icon}
+                      <span className="text-xl font-bold text-[#1A1916] truncate">{contact.label}</span>
+                    </a>
+                  ))}
+                </div>
+              );
+            })()}
+            {(report.sample_policy?.trim() || report.export_cert_note?.trim()) && (
+              <div className="border-t border-[#E8E6E1] pt-8 space-y-5">
+                {report.sample_policy?.trim() && (
+                  <div>
+                    <p className="text-xs font-bold text-[#9E9C98] uppercase tracking-[0.2em] mb-3">Sample Policy</p>
+                    <p className="text-sm font-medium text-[#1A1916] leading-relaxed">{report.sample_policy}</p>
+                  </div>
+                )}
+                {report.export_cert_note?.trim() && (
+                  <div>
+                    <p className="text-xs font-bold text-[#9E9C98] uppercase tracking-[0.2em] mb-3">Compliance Note</p>
+                    <p className="text-sm font-medium text-[#1A1916] leading-relaxed">{report.export_cert_note}</p>
+                  </div>
+                )}
+              </div>
+            )}
+            {globalProofTags.length > 0 && (
+              <div id="global-market-proof" className="border-t border-[#E8E6E1] pt-8 mt-8 scroll-mt-[160px]">
+                <p className="text-xs font-bold text-[#9E9C98] uppercase tracking-[0.2em] mb-6">Global Market Proof</p>
+                {(() => {
+                  const n = globalProofTags.length;
+                  const renderCard = (
+                    tag: { region: string; platform?: string; url: string },
+                    borderClass: string,
+                    paddingClass: string,
+                    colClass: string = ""
+                  ) => (
+                    <a
+                      key={tag.region}
+                      href={tag.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className={`flex items-center justify-between bg-white rounded-xl ${borderClass} ${paddingClass} ${colClass} transition-all cursor-pointer group hover:border-[#1A1916] hover:shadow-md`}
+                    >
+                      <div className="flex items-center gap-4 min-w-0">
+                        <span className="bg-[#1A1916] text-white px-3 py-1.5 rounded-md text-xs font-black uppercase tracking-widest shrink-0">
+                          {tag.region}
+                        </span>
+                        {tag.platform && (
+                          <span className="text-sm md:text-base font-bold text-[#1A1916] truncate">{tag.platform}</span>
+                        )}
+                      </div>
+                      <ArrowUpRight className="w-5 h-5 text-[#9E9C98] group-hover:text-[#1A1916] transition-colors shrink-0 ml-3" />
+                    </a>
+                  );
+                  if (n === 1) return <div className="grid grid-cols-1">{renderCard(globalProofTags[0], "border-2 border-[#E8E6E1]", "p-6")}</div>;
+                  if (n === 2) return <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">{globalProofTags.map((tag) => renderCard(tag, "border-2 border-[#E8E6E1]", "p-5"))}</div>;
+                  if (n === 3) return <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">{globalProofTags.map((tag) => renderCard(tag, "border border-[#E8E6E1]", "p-4"))}</div>;
+                  if (n === 4) return <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">{globalProofTags.map((tag) => renderCard(tag, "border border-[#E8E6E1]", "p-4"))}</div>;
+                  if (n === 5) return <div className="grid grid-cols-6 gap-3">{globalProofTags.map((tag, i) => renderCard(tag, "border border-[#E8E6E1]", "p-4", i < 2 ? "col-span-3" : "col-span-2"))}</div>;
+                  return <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">{globalProofTags.map((tag) => renderCard(tag, "border border-[#E8E6E1]", "p-4"))}</div>;
+                })()}
+              </div>
+            )}
+          </div>
+
+          {assetCards.length > 0 && (
+            <div className="bg-[#F8F7F4] rounded-2xl p-10">
+              <p className={refA}>Creative Assets</p>
+              <div className="grid grid-cols-2 gap-6">
+                {assetCards.map((card) => (
+                  <div
+                    key={card.id}
+                    className="bg-white rounded-2xl border border-[#E8E6E1] overflow-hidden group hover:border-[#16A34A] transition-all duration-300 hover:shadow-[0_4px_20px_0_rgb(22_163_74/0.1)]"
+                  >
+                    <div className="aspect-video bg-[#F8F7F4] relative flex items-center justify-center overflow-hidden">
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <div className="w-32 h-32 text-[#1A1916] opacity-5 flex items-center justify-center">{card.icon}</div>
+                      </div>
+                      {card.platform && (
+                        <span className="absolute top-3 left-3 bg-black/70 text-white text-[10px] font-bold rounded px-2 py-1 uppercase tracking-wide z-10">
+                          {card.platform}
+                        </span>
+                      )}
+                      <div className="absolute inset-0 bg-[#16A34A]/5 opacity-0 group-hover:opacity-100 transition-all duration-300 flex items-center justify-center z-10">
+                        <div className="w-12 h-12 bg-white/90 rounded-full flex items-center justify-center shadow-lg">
+                          {card.hoverIcon}
+                        </div>
+                      </div>
+                    </div>
+                    <div className="p-6">
+                      <p className="text-xl font-bold text-[#1A1916] mb-2">{card.title}</p>
+                      <p className={`${refC} mb-6`}>{card.description}</p>
+                      <a
+                        href={card.href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className={`w-full flex items-center justify-center gap-2 py-3 rounded-xl font-bold text-sm transition-colors duration-200 ${
+                          card.isPrimary ? "bg-[#1A1916] text-white hover:bg-[#2D2B26]" : "bg-white border border-[#E8E6E1] text-[#1A1916] hover:border-[#1A1916]"
+                        }`}
+                      >
+                        {card.ctaText}
+                        <ArrowRight className="w-4 h-4 shrink-0" />
+                      </a>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </>
+      )}
+    </section>
+  );
+}

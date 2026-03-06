@@ -86,7 +86,7 @@ const FEATURE_GROUPS: FeatureGroup[] = [
       { feature: "Logistics Dashboard (Actual / Vol / Billable Weight)", free: "—", standard: "—", alpha: "✓" },
       { feature: "Shipping Notes & Carrier Strategy", free: "—", standard: "—", alpha: "✓" },
       { feature: "HS Code & Broker Email Draft", free: "—", standard: "—", alpha: "✓" },
-      { feature: "Step 4-5: Compliance & Logistics Strategy", free: "—", standard: "—", alpha: "✓" },
+      { feature: "Compliance & Logistics Strategy", free: "—", standard: "—", alpha: "✓" },
     ],
   },
   {
@@ -116,20 +116,15 @@ export default async function PricingPage() {
       {/* S1: DARK HERO */}
       <section className="bg-[#1A1916] py-24 px-6">
         <div className="max-w-4xl mx-auto text-center">
-          <p className="text-[10px] font-black uppercase tracking-[0.35em] text-[#16A34A] mb-8">
-            The Global Standard for Korean Product Intelligence
-          </p>
-          <h1
-            className="font-black text-white leading-none tracking-tighter mb-8"
-            style={{
-              fontSize: "clamp(2.5rem, 6vw, 5rem)",
-              textWrap: "balance",
-            } as React.CSSProperties}
-          >
-            Korea moves first.
-            <br />
-            <span className="text-[#16A34A]">We tell you what moves.</span>
-          </h1>
+          <div className="flex flex-col items-center text-center w-full mb-12">
+            <p className="text-xs font-bold tracking-[0.3em] uppercase text-[#16A34A] mb-6">
+              THE GLOBAL STANDARD FOR KOREAN PRODUCT INTELLIGENCE
+            </p>
+            <h1 className="text-4xl md:text-6xl lg:text-7xl font-black tracking-tighter leading-[1.1] flex flex-col items-center">
+              <span className="text-[#F8F7F4] block whitespace-nowrap">The Price of Knowing Early.</span>
+              <span className="text-[#16A34A] block whitespace-nowrap">The Cost of Finding Out Late.</span>
+            </h1>
+          </div>
           <p className="text-xl text-white/50 font-medium leading-relaxed max-w-2xl mx-auto">
             Weekly verified intelligence on Korea&apos;s fastest-moving products —
             before your competitors find them.
@@ -140,21 +135,13 @@ export default async function PricingPage() {
       {/* S2: 3-TIER CARDS */}
       <section id="pricing-cards" className="bg-white py-24 px-6">
         <div className="max-w-6xl mx-auto">
-          <h2
-            className="font-black text-[#1A1916] leading-none tracking-tighter text-center mb-16"
-            style={{
-              fontSize: "clamp(2.5rem, 5vw, 4.5rem)",
-              textWrap: "balance",
-            } as React.CSSProperties}
-          >
-            Choose Your
-            <br />
-            Intelligence Level
+          <h2 className="font-black text-[#1A1916] tracking-tighter uppercase text-center mb-16 text-xl whitespace-nowrap">
+            Choose Your Intelligence Level
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-stretch">
             {/* FREE */}
-            <div className="bg-white border border-[#E8E6E1] rounded-2xl p-8 flex flex-col">
-              <div className="flex-1">
+            <div className="bg-white border border-[#E8E6E1] rounded-2xl flex flex-col h-full p-8 md:p-12">
+              <div className="min-h-[100px]">
                 <p className="text-3xl md:text-4xl font-black text-[#1A1916] tracking-tighter leading-none mb-8">
                   Scout Free
                 </p>
@@ -166,18 +153,21 @@ export default async function PricingPage() {
                 <p className="text-xs font-bold text-[#9E9C98] uppercase tracking-[0.2em] mb-1">
                   Forever Free
                 </p>
-                <div className="w-8 h-px bg-[#E8E6E1] my-5" />
-                <div className="bg-[#F8F7F4] border border-[#E8E6E1] rounded-xl px-4 py-3 mb-6">
-                  <p className="text-sm font-black text-[#1A1916] leading-relaxed">
-                    INSTANT ACCESS: 3 products/week unlocked immediately.
-                  </p>
-                </div>
+              </div>
+              <div className="w-8 h-px bg-[#E8E6E1] my-5" />
+              <div className="bg-[#F8F7F4] border border-[#E8E6E1] rounded-xl px-4 py-3 min-h-[120px] flex items-center">
+                <p className="text-sm text-[#1A1916] leading-relaxed">
+                  <span className="font-black uppercase">INSTANT ACCESS:</span>{" "}
+                  <span className="font-medium">3 products/week unlocked immediately.</span>
+                </p>
+              </div>
+              <div className="flex-grow my-8">
                 <p className="text-base font-medium text-[#6B6860] leading-relaxed">
                   See what KoreaScout finds.
                   Before you commit.
                 </p>
               </div>
-              <div className="mt-8">
+              <div className="mt-auto">
                 <a
                   href="/signup"
                   className="block w-full text-center py-3 rounded-xl border-2 border-[#1A1916] text-sm font-black text-[#1A1916] hover:bg-[#1A1916] hover:text-white transition-all"
@@ -191,8 +181,8 @@ export default async function PricingPage() {
             </div>
 
             {/* STANDARD */}
-            <div className="bg-white border border-[#E8E6E1] rounded-2xl p-8 flex flex-col shadow-[0_4px_20px_0_rgb(26_25_22/0.08)]">
-              <div className="flex-1">
+            <div className="bg-white border border-[#E8E6E1] rounded-2xl flex flex-col h-full p-8 md:p-12 shadow-[0_4px_20px_0_rgb(26_25_22/0.08)]">
+              <div className="min-h-[100px]">
                 <p className="text-3xl md:text-4xl font-black text-[#1A1916] tracking-tighter leading-none mb-8">
                   Standard
                 </p>
@@ -205,12 +195,15 @@ export default async function PricingPage() {
                 <p className="text-xs font-bold text-[#9E9C98] mb-1">
                   Approx. $2.30 / day
                 </p>
-                <div className="w-8 h-px bg-[#E8E6E1] my-5" />
-                <div className="bg-[#F8F7F4] border border-[#E8E6E1] rounded-xl px-4 py-3 mb-6">
-                  <p className="text-sm font-black text-[#1A1916] leading-relaxed">
-                    INSTANT ACCESS: 30+ Verified Products (Last 3 weeks) unlocked immediately.
-                  </p>
-                </div>
+              </div>
+              <div className="w-8 h-px bg-[#E8E6E1] my-5" />
+              <div className="bg-[#F8F7F4] border border-[#E8E6E1] rounded-xl px-4 py-3 min-h-[120px] flex items-center">
+                <p className="text-sm text-[#1A1916] leading-relaxed">
+                  <span className="font-black uppercase">INSTANT ACCESS:</span>{" "}
+                  <span className="font-medium">30+ Verified Products (Last 3 weeks) unlocked immediately.</span>
+                </p>
+              </div>
+              <div className="flex-grow my-8">
                 <p className="text-base font-medium text-[#6B6860] leading-relaxed">
                   The market intelligence engine
                   for serious global sellers.
@@ -218,7 +211,7 @@ export default async function PricingPage() {
                   and exactly why it will sell.
                 </p>
               </div>
-              <div className="mt-8">
+              <div className="mt-auto">
                 <a
                   href={STANDARD_CHECKOUT_URL}
                   target="_blank"
@@ -235,10 +228,10 @@ export default async function PricingPage() {
 
             {/* ALPHA */}
             <div
-              className="bg-[#F8F7F4] border border-[#E8E6E1] border-l-4 border-l-[#16A34A] rounded-2xl p-8 flex flex-col shadow-[0_4px_20px_0_rgb(22_163_74/0.1)]"
+              className="bg-[#F8F7F4] border border-[#E8E6E1] border-l-4 border-l-[#16A34A] rounded-2xl flex flex-col h-full p-8 md:p-12 shadow-[0_4px_20px_0_rgb(22_163_74/0.1)]"
               style={{ transform: "scale(1.03)", transformOrigin: "center" }}
             >
-              <div className="flex-1">
+              <div className="min-h-[100px]">
                 <div className="flex items-center justify-between mb-8">
                   <p className="text-3xl md:text-4xl font-black text-[#16A34A] tracking-tighter leading-none">
                     Alpha
@@ -262,26 +255,26 @@ export default async function PricingPage() {
                 <p className="text-xs font-bold text-[#16A34A] mb-1">
                   Approx. $4.30 / day
                 </p>
-                <div className="w-8 h-px bg-[#E8E6E1] my-5" />
-                {!isMembershipFull && (
-                  <p className="text-xs font-bold text-[#16A34A] mb-4">
-                    EXCLUSIVE: Limited to {ALPHA_MAX_SPOTS.toLocaleString()} Global Membership Spots
-                    <span className="text-[#9E9C98] font-medium ml-1">
-                      ({remainingSpots.toLocaleString()} remaining)
-                    </span>
-                  </p>
-                )}
-                <div className="bg-white border border-[#16A34A] rounded-xl px-4 py-3 mb-6">
-                  <p className="text-sm font-black text-[#1A1916] leading-relaxed">
-                    INSTANT ACCESS: 30+ Verified Products (Last 3 weeks) unlocked immediately.
-                  </p>
-                </div>
+              </div>
+              <div className="w-8 h-px bg-[#E8E6E1] my-5" />
+              <div className="bg-white border border-[#16A34A] rounded-xl px-4 py-3 min-h-[120px] flex items-center">
+                <p className="text-sm text-[#1A1916] leading-relaxed">
+                  <span className="font-black uppercase">FULL-SPECTRUM ACCESS:</span>{" "}
+                  <span className="font-medium">30+ Premium Assets (Last 3 Weeks) Unlocked Immediately, Plus Direct HQ Contacts.</span>
+                </p>
+              </div>
+              <div className="flex-grow my-8">
                 <p className="text-base font-medium text-[#6B6860] leading-relaxed">
                   Know exactly who to call.
                   Exactly what to pay.
                 </p>
+                {!isMembershipFull && (
+                  <p className="mt-4 text-xs font-bold text-[#16A34A]">
+                    EXCLUSIVE: Limited to {ALPHA_MAX_SPOTS.toLocaleString()} Global Membership Spots ({remainingSpots.toLocaleString()} remaining)
+                  </p>
+                )}
               </div>
-              <div className="mt-8">
+              <div className="mt-auto">
                 {isMembershipFull ? (
                   <a
                     href="/waitlist"
@@ -345,9 +338,9 @@ export default async function PricingPage() {
       {/* S4: FEATURE BREAKDOWN (no emoji, text-base rows) */}
       <section className="bg-[#F8F7F4] py-24 px-6">
         <div className="max-w-4xl mx-auto">
-          <p className="text-[10px] font-black uppercase tracking-[0.3em] text-[#9E9C98] text-center mb-16">
+          <h2 className="font-black text-[#1A1916] tracking-tighter uppercase text-center mb-16 text-xl whitespace-nowrap">
             What&apos;s Inside Every Report
-          </p>
+          </h2>
           {FEATURE_GROUPS.map((group) => (
             <div
               key={group.label}
@@ -417,24 +410,21 @@ export default async function PricingPage() {
 
       {/* S6: FINAL FOMO HOOK (FAQ 제거) */}
       <section className="bg-[#1A1916] py-32 px-6 text-center">
-        <p className="text-[10px] font-black uppercase tracking-[0.35em] text-[#16A34A] mb-8">
-          The Clock Is Running
-        </p>
-        <h2
-          className="font-black text-white leading-none tracking-tighter mb-10"
-          style={{
-            fontSize: "clamp(2rem, 5vw, 4.5rem)",
-            textWrap: "balance",
-          } as React.CSSProperties}
-        >
-          The market moves while you hesitate.
-          <br />
-          <span className="text-[#16A34A]">
-            Secure your intelligence before
-            <br />
-            the 3,000 spots are gone.
-          </span>
-        </h2>
+        <div className="mt-6 mb-20 text-center flex flex-col items-center">
+          <p className="text-xs font-bold tracking-[0.3em] uppercase text-[#16A34A] mb-6">
+            THE CLOCK IS RUNNING
+          </p>
+          <div className="max-w-5xl mx-auto flex flex-col gap-6">
+            <p className="text-lg md:text-2xl text-gray-400 font-medium leading-relaxed">
+              You just saw the complete blueprint. From trend signals<br className="hidden md:block" />
+              to direct supplier contacts—
+            </p>
+            <h2 className="text-4xl md:text-5xl lg:text-6xl font-black tracking-tighter leading-[1.1] flex flex-col items-center">
+              <span className="text-[#F8F7F4] block">Unlock the entire intelligence pipeline.</span>
+              <span className="text-[#16A34A] block mt-1 md:mt-2">For under $4.50 a day.</span>
+            </h2>
+          </div>
+        </div>
         {!isMembershipFull && (
           <div className="flex items-center justify-center gap-2 mb-10">
             <span className="relative flex h-3 w-3 shrink-0">
@@ -474,12 +464,6 @@ export default async function PricingPage() {
               </a>
             )}
           </div>
-          <a
-            href="#pricing-cards"
-            className="w-full text-center py-4 bg-white text-[#1A1916] rounded-xl font-black text-lg hover:bg-[#F8F7F4] transition-colors"
-          >
-            Get Exclusive Access Now
-          </a>
         </div>
         <p className="text-xs text-white/30 font-medium">
           No contracts · Cancel anytime · Instant access

@@ -3,6 +3,7 @@ import type { Tier } from "@/types/database";
 
 export interface AuthResult {
   userId: string | null;
+  userEmail: string | null;
   tier: Tier;
   subscriptionStartAt: string | null;
 }
@@ -18,7 +19,7 @@ export async function getAuthTier(): Promise<AuthResult> {
     data: { user },
   } = await supabase.auth.getUser();
   if (!user) {
-    return { userId: null, tier: "free", subscriptionStartAt: null };
+    return { userId: null, userEmail: null, tier: "free", subscriptionStartAt: null };
   }
   const { data: profile } = await supabase
     .from("profiles")
@@ -28,6 +29,7 @@ export async function getAuthTier(): Promise<AuthResult> {
   const tier = (profile?.tier as Tier) ?? "free";
   return {
     userId: user.id,
+    userEmail: user.email ?? null,
     tier,
     subscriptionStartAt: profile?.subscription_start_at ?? null,
   };

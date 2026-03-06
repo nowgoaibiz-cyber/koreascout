@@ -1,6 +1,6 @@
 import Link from "next/link";
-import Image from "next/image";
 import { createClient } from "@/lib/supabase/server";
+import { Logo } from "@/components/Logo";
 import { HeaderNavClient } from "./HeaderNavClient";
 
 export async function Header() {
@@ -13,14 +13,7 @@ export async function Header() {
         href="/"
         className="flex items-center shrink-0 h-10 w-auto bg-transparent [background:transparent] [background-color:transparent!important] [background-image:none!important]"
       >
-        <Image
-          src="/images/KoreaScout_LOGO_V3.png"
-          alt="KoreaScout Logo"
-          width={320}
-          height={80}
-          priority
-          className="h-full w-auto object-contain"
-        />
+        <Logo className="h-full w-auto object-contain" />
       </Link>
       <HeaderNavClient user={user} />
     </header>
