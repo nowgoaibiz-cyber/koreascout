@@ -150,7 +150,7 @@ export default async function ProductListPage({
             {products.map((p) => {
               const categoryTags = (p.category ?? "")
                 .split(/[>/]/)
-                .map((s) => s.trim())
+                .map((s: string) => s.trim())
                 .filter(Boolean);
               return (
                 <li key={p.id}>
@@ -195,7 +195,7 @@ export default async function ProductListPage({
                       </div>
                       {categoryTags.length > 0 && (
                         <div className="flex flex-wrap gap-2 mt-2">
-                          {categoryTags.map((tag, i) => (
+                          {categoryTags.map((tag: string, i: number) => (
                             <span
                               key={i}
                               className="bg-gray-50 border border-gray-100 text-gray-600 text-[11px] px-2 py-0.5 rounded-md font-medium"

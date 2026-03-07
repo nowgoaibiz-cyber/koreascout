@@ -1,21 +1,9 @@
-import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
-import { Logo } from "@/components/Logo";
-import { HeaderNavClient } from "./HeaderNavClient";
+import { HeaderShellClient } from "./HeaderShellClient";
 
 export async function Header() {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
 
-  return (
-    <header className="fixed top-0 left-0 w-full z-50 h-[72px] flex items-center justify-between px-6 pt-4 pb-1 border-b border-[#E8E6E1] bg-[#F8F7F4]">
-      <Link
-        href="/"
-        className="flex items-center shrink-0 h-10 w-auto bg-transparent [background:transparent] [background-color:transparent!important] [background-image:none!important]"
-      >
-        <Logo className="h-full w-auto object-contain" />
-      </Link>
-      <HeaderNavClient user={user} />
-    </header>
-  );
+  return <HeaderShellClient user={user} />;
 }

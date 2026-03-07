@@ -1,10 +1,12 @@
 import Image from "next/image";
+import type { CSSProperties } from "react";
 
 type LogoProps = {
   className?: string;
+  style?: CSSProperties;
 };
 
-export function Logo({ className }: LogoProps) {
+export function Logo({ className, style }: LogoProps) {
   return (
     <Image
       src="/images/KoreaScout_LOGO_V3.png"
@@ -13,6 +15,7 @@ export function Logo({ className }: LogoProps) {
       height={80}
       priority
       className={className}
+      style={style}
     />
   );
 }
