@@ -1,9 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
-import SplashScreen from "./SplashScreen";
+import { useRouter } from "next/navigation";
+import GrandEntrance from "./GrandEntrance";
 
 export default function HeroCTA() {
   const router = useRouter();
@@ -15,17 +15,14 @@ export default function HeroCTA() {
     if (loading) return;
     setLoading(true);
     try {
-      const {
-        data: { session },
-      } = await supabase.auth.getSession();
-
+      const { data: { session } } = await supabase.auth.getSession();
       if (session) {
         setShowEntrance(true);
       } else {
         await supabase.auth.signInWithOAuth({
           provider: "google",
           options: {
-            redirectTo: `${window.location.origin}/auth/callback?next=/sample-report`,
+            redirectTo: `${window.location.origin}/auth/callback`,
           },
         });
       }
@@ -37,22 +34,56 @@ export default function HeroCTA() {
   return (
     <>
       {showEntrance && (
-        <SplashScreen onComplete={() => router.push("/sample-report")} />
+        <GrandEntrance onComplete={() => router.push("/sample-report")} />
       )}
 
-      <div className="flex w-full flex-col items-center justify-center gap-6 md:w-auto md:flex-row md:gap-8">
+      <div className="flex flex-col md:flex-row items-stretch md:items-center gap-3 w-full md:w-auto max-w-sm md:max-w-none mx-auto">
+        {/* PRIMARY CTA — Request Access: #16A34A, same box as secondary */}
         <button
+          type="button"
           onClick={handleAccess}
           disabled={loading}
-          type="button"
-          className="inline-flex w-full items-center justify-center rounded-xl bg-[#16A34A] px-8 py-4 text-base font-bold text-white transition-all duration-200 shadow-[0_0_0_0_rgba(22,163,74,0.4)] hover:shadow-[0_0_30px_8px_rgba(22,163,74,0.5)] hover:bg-[#15803D] disabled:cursor-wait disabled:opacity-90 md:w-auto"
+          className="w-full md:w-48 h-14 min-w-[12rem] rounded-xl flex items-center justify-center gap-2 font-black text-[15px] tracking-wide text-white border border-transparent transition-all duration-200 outline-none disabled:cursor-wait"
+          style={{
+            background: "#16A34A",
+          }}
+          onMouseEnter={(e) => {
+            if (!loading) {
+              e.currentTarget.style.background = "#15803D";
+              e.currentTarget.style.boxShadow = "0 0 40px rgba(22,163,74,0.25)";
+            }
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.background = "#16A34A";
+            e.currentTarget.style.boxShadow = "none";
+          }}
         >
-          {loading ? "Authenticating..." : "Request Access"}
+          {loading ? (
+            <span>Authenticating...</span>
+          ) : (
+            <>
+              <span>Request Access</span>
+              <span>→</span>
+            </>
+          )}
         </button>
 
+        {/* SECONDARY CTA — View Sample Report: transparent, border #F8F7F4/30, same box */}
         <a
           href="/sample-report"
-          className="inline-flex w-full items-center justify-center rounded-xl border border-white/20 bg-transparent px-8 py-4 text-base font-bold text-white no-underline transition-all duration-200 hover:bg-white/10 md:w-auto"
+          className="w-full md:w-48 h-14 min-w-[12rem] rounded-xl flex items-center justify-center gap-2 font-bold text-[15px] tracking-wide text-white/70 no-underline border transition-all duration-200 box-border"
+          style={{
+            background: "transparent",
+            borderColor: "rgba(248,247,244,0.3)",
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.borderColor = "rgba(248,247,244,0.5)";
+            e.currentTarget.style.color = "rgba(255,255,255,0.95)";
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.borderColor = "rgba(248,247,244,0.3)";
+            e.currentTarget.style.color = "rgba(255,255,255,0.7)";
+          }}
         >
           View Sample Report
         </a>
@@ -60,4 +91,3 @@ export default function HeroCTA() {
     </>
   );
 }
-

@@ -1,3 +1,4 @@
+// Server Component — "use client" 없음
 import { createClient } from "@/lib/supabase/server";
 
 const FALLBACK = [
@@ -12,9 +13,7 @@ async function getTickerData() {
     const supabase = await createClient();
     const { data, error } = await supabase
       .from("scout_final_reports")
-      .select(
-        "translated_name, product_name, market_viability, gap_index, profit_multiplier"
-      )
+      .select("translated_name, product_name, market_viability, gap_index, profit_multiplier")
       .eq("status", "published")
       .order("published_at", { ascending: false })
       .limit(6);
@@ -34,9 +33,7 @@ export default async function IntelligenceTicker() {
           d.translated_name ?? d.product_name ?? "—",
           d.market_viability != null ? `TREND ${d.market_viability}` : null,
           d.gap_index != null ? `GAP ${Math.round(d.gap_index as number)}` : null,
-          d.profit_multiplier != null
-            ? `MARGIN ${d.profit_multiplier}×`
-            : null,
+          d.profit_multiplier != null ? `MARGIN ${d.profit_multiplier}×` : null,
         ]
           .filter(Boolean)
           .join(" · ")
@@ -102,4 +99,3 @@ export default async function IntelligenceTicker() {
     </div>
   );
 }
-

@@ -30,10 +30,10 @@ export default function RootLayout({
   return (
     <html lang="en" className="scroll-smooth">
       <body
-        className={`${plusJakartaSans.variable} ${jetbrainsMono.variable} font-sans antialiased`}
+        className={`${plusJakartaSans.variable} ${jetbrainsMono.variable} font-sans antialiased bg-[#0A0908]`}
       >
         <Header />
-        <main className="pt-24">{children}</main>
+        <main>{children}</main>
       </body>
     </html>
   );
