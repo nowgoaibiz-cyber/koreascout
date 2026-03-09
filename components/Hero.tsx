@@ -19,8 +19,8 @@ export default function Hero() {
 
   return (
     <section
-      className="relative w-full h-screen min-h-[640px] flex flex-col items-center justify-center overflow-hidden bg-[#0A0908]"
-      style={{ marginTop: 0, paddingTop: 0 }}
+      className="relative w-full h-screen min-h-[640px] flex flex-col items-center justify-end overflow-hidden bg-[#0A0908]"
+      style={{ marginTop: 0, paddingTop: 0, width: "100%", maxWidth: "100vw" }}
     >
       {/* Video BG — z-0, starts at viewport top */}
       <div className="absolute inset-0" style={{ zIndex: 0 }}>
@@ -56,22 +56,38 @@ export default function Hero() {
 
       {/* Center content — Pre-headline + Headline + Buttons — z-20 */}
       <div
-        className="relative text-center px-6 max-w-5xl mx-auto flex flex-col items-center justify-center"
-        style={{ zIndex: 20 }}
+        className="relative text-center px-6 max-w-7xl mx-auto flex flex-col items-center justify-center"
+        style={{ zIndex: 20, paddingBottom: "clamp(60px, 10vh, 120px)" }}
       >
         <p
-          className="text-[10px] md:text-xs font-bold uppercase tracking-[0.2em] mb-4"
-          style={{ color: "rgba(248,247,244,0.6)" }}
+          className="font-bold uppercase mb-4"
+          style={{
+            fontSize: "clamp(9px, 2vw, 11px)",
+            letterSpacing: "0.2em",
+            textAlign: "center",
+            whiteSpace: "normal",
+            overflowWrap: "break-word",
+            padding: "0 16px",
+            color: "rgba(255,255,255,0.4)",
+          }}
         >
           Weekly Korean product intelligence for global sellers.
         </p>
         <h1
-          className="font-black tracking-tighter leading-[1.15] text-[#FFFFFF] text-4xl md:text-[clamp(2.5rem,5.5vw,4.5rem)]"
-          style={{ margin: 0 }}
+          className="font-black text-[#FFFFFF]"
+          style={{
+            margin: 0,
+            fontSize: "clamp(1.8rem, 4.5vw, 4rem)",
+            fontWeight: 900,
+            letterSpacing: "-0.04em",
+            textAlign: "center",
+            lineHeight: 1.1,
+            padding: "0 20px",
+          }}
         >
-          <span className="whitespace-nowrap">See what&apos;s selling in Korea today.</span>
+          See what&apos;s selling in Korea today.
           <br />
-          <span className="whitespace-nowrap">Sell it globally tomorrow.</span>
+          Sell it globally tomorrow.
         </h1>
 
         <div className="mt-20 flex flex-col items-center justify-center">

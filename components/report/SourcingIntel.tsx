@@ -4,6 +4,7 @@ import { GroupBBrokerSection } from "@/components/GroupBBrokerSection";
 import { HazmatBadges } from "@/components/HazmatBadges";
 import { ExpandableText } from "@/components/ExpandableText";
 import { Button } from "@/components/ui";
+import { PRICING } from "@/src/config/pricing";
 import { AlertTriangle, ArrowRight, CheckCircle, Lock, XCircle } from "lucide-react";
 import type { ScoutFinalReportsRow } from "@/types/database";
 import { describeShippingTier, parseSourcingStrategy } from "./utils";
@@ -244,7 +245,7 @@ export function SourcingIntel({
             Unlock full logistics intelligence with Alpha.
           </p>
           <a href="/pricing">
-            <Button variant="secondary" size="sm">Go Alpha $29/mo →</Button>
+            <Button variant="secondary" size="sm">Go Alpha {PRICING.CURRENCY}{PRICING.ALPHA.monthly}/mo →</Button>
           </a>
         </div>
       )}

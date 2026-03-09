@@ -2,6 +2,7 @@ import { createClient } from "@/lib/supabase/server";
 import { getAuthTier } from "@/lib/auth-server";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { PRICING } from "@/src/config/pricing";
 import { ClientLeftNav } from "@/components/layout/ClientLeftNav";
 import { LockedSection } from "@/components/LockedSection";
 import ProductIdentity from "@/components/ProductIdentity";
@@ -183,12 +184,12 @@ export default async function ProductDetailPage({
               <div className="rounded-lg border border-[#E8E6E1] bg-[#F2F1EE] px-4 py-3 text-center">
                 {tier === "free" && (
                   <Link href="/pricing" className="text-sm font-medium text-[#16A34A] hover:text-[#15803D] underline transition-colors">
-                    Unlock Full Market Intelligence — Start at $9/mo →
+                    Unlock Full Market Intelligence — Start at {PRICING.CURRENCY}{PRICING.STANDARD.monthly}/mo →
                   </Link>
                 )}
                 {tier === "standard" && (
                   <Link href="/pricing" className="text-sm font-medium text-[#16A34A] hover:text-[#15803D] underline transition-colors">
-                    Go Alpha — Get Supplier Contacts for $29/mo →
+                    Go Alpha — Get Supplier Contacts for {PRICING.CURRENCY}{PRICING.ALPHA.monthly}/mo →
                   </Link>
                 )}
                 {tier === "alpha" && <p className="text-sm font-medium text-[#16A34A]">You have full access</p>}

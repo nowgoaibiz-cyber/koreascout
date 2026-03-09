@@ -1,267 +1,114 @@
-"use client";
+const PILLS = [
+  { label: "TikTok", top: "0px", left: "0px", rot: "-1.2deg", delay: "0s", dur: "3.8s" },
+  { label: "Instagram", top: "4px", left: "68px", rot: "1deg", delay: "0.5s", dur: "4s" },
+  { label: "YouTube", top: "44px", left: "76px", rot: "-0.5deg", delay: "1s", dur: "4.2s" },
+  { label: "Olive Young", top: "52px", left: "0px", rot: "0.8deg", delay: "0.3s", dur: "3.6s" },
+  { label: "Daiso", top: "108px", left: "88px", rot: "-0.4deg", delay: "0.8s", dur: "4.1s" },
+  { label: "B2B Product Data", top: "112px", left: "0px", rot: "0.6deg", delay: "1.3s", dur: "3.9s" },
+] as const;
 
-import { useRef } from "react";
-import { motion, useInView } from "framer-motion";
-import { ShieldCheck, X, Check, ArrowRight } from "lucide-react";
+const NOISE_ITEMS = ["Hazmat / Battery", "HS Code Blocked", "Gap Index < 2.0×"] as const;
 
-const SOURCES = ["TikTok", "Olive Young", "Hwahae", "Reddit", "Instagram"];
-const REJECTED = [
-  { label: "Hazmat Detected", suffix: "REJECTED" },
-  { label: "HS Code Block", suffix: "REJECTED" },
-  { label: "Zero Margin", suffix: "REJECTED" },
-];
-const APPROVED = [
-  "Factory Direct Line",
-  "MoCRA / CPNP Checked",
-];
+const NOISE_LINES = ["Zero-margin trends purged", "Global market gaps detected"] as const;
 
-const stagger = {
-  hidden: { opacity: 0 },
-  visible: (i: number) => ({
-    opacity: 1,
-    transition: { delay: i * 0.2, duration: 0.5 },
-  }),
-};
+const KOREA_HQ_ROWS = [
+  { main: "Factory Direct Line", sub: "— Human-verified" },
+  { main: "Exact MOQ & Unit Cost", sub: "— EXW price locked" },
+  { main: "MoCRA / CPNP", sub: "— Compliance pre-cleared" },
+] as const;
 
 export default function IntelligencePipeline() {
-  const ref = useRef<HTMLElement>(null);
-  const isInView = useInView(ref, { once: true, margin: "-80px" });
-
   return (
-    <section
-      ref={ref}
-      className="py-24 md:py-32 px-6"
-      style={{ backgroundColor: "#0A0908" }}
-    >
-      <div className="max-w-6xl mx-auto">
-        <motion.h2
-          initial={{ opacity: 0, y: 12 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.5 }}
-          className="font-black text-white text-center tracking-tighter leading-tight mb-4"
-          style={{
-            fontSize: "clamp(1.75rem,4vw,3rem)",
-            textWrap: "balance",
-          }}
-        >
-          We kill the risks. You own the margin.
-        </motion.h2>
-        <motion.p
-          initial={{ opacity: 0 }}
-          animate={isInView ? { opacity: 1 } : {}}
-          transition={{ delay: 0.15, duration: 0.4 }}
-          className="text-gray-400 text-center text-sm md:text-base max-w-2xl mx-auto mb-16"
-        >
-          500+ signals scanned. Customs cleared. Factory verified. 10 export-ready
-          winners, every week.
-        </motion.p>
+    <section className="s6-section">
+      {/* HEADLINE */}
+      <div className="s6-headline">
+        <h2>We kill the risks.<br />You own the margin.</h2>
+        <p>
+          500+ signals scanned. Customs cleared. Factory verified. 10 export-ready winners, every
+          week.
+        </p>
+      </div>
 
-        {/* Horizontal pipeline: flex-row desktop, flex-col mobile */}
-        <div className="flex flex-col lg:flex-row items-stretch gap-8 lg:gap-4">
-          {/* Phase 01: Mass Ingestion */}
-          <motion.div
-            custom={0}
-            initial="hidden"
-            animate={isInView ? "visible" : "hidden"}
-            variants={stagger}
-            className="flex-1 min-w-0 rounded-2xl border border-white/10 bg-[#11100D] p-6 flex flex-col"
-          >
-            <p className="text-[10px] font-black uppercase tracking-[0.3em] text-[#16A34A] mb-4">
-              01. RAW SIGNAL INGESTION
-            </p>
-            <div className="flex flex-wrap gap-2 justify-center items-center flex-1 min-h-[100px]">
-              {SOURCES.map((name, i) => (
-                <motion.span
-                  key={name}
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  animate={isInView ? { opacity: 1, scale: 1 } : {}}
-                  transition={{ delay: 0.3 + i * 0.08, duration: 0.4 }}
-                  className="rounded-lg bg-white/10 px-3 py-2 text-xs font-medium text-white/80 border border-white/5"
-                >
-                  {name}
-                </motion.span>
-              ))}
-            </div>
-            <p className="text-[10px] text-white/40 text-center mt-2">
-              Data blocks → pipeline
-            </p>
-          </motion.div>
-
-          {/* Connector: right (desktop) / down (mobile) */}
-          <div className="flex lg:hidden justify-center py-2 text-[#16A34A]">
-            <ArrowRight className="w-5 h-5 rotate-90" strokeWidth={2.5} />
-          </div>
-          <div className="hidden lg:flex items-center justify-center shrink-0 w-8 self-center">
-            <motion.div
-              initial={{ opacity: 0, x: -8 }}
-              animate={isInView ? { opacity: 1, x: 0 } : {}}
-              transition={{ delay: 0.5, duration: 0.4 }}
-              className="text-[#16A34A] drop-shadow-[0_0_8px_rgba(22,163,74,0.6)]"
-            >
-              <ArrowRight className="w-6 h-6" strokeWidth={2.5} />
-            </motion.div>
-          </div>
-
-          {/* Phase 02: Risk Elimination */}
-          <motion.div
-            custom={1}
-            initial="hidden"
-            animate={isInView ? "visible" : "hidden"}
-            variants={stagger}
-            className="flex-1 min-w-0 rounded-2xl border border-white/10 bg-[#1a0a0a] p-6 flex flex-col relative overflow-hidden"
-          >
-            <p className="text-[10px] font-black uppercase tracking-[0.3em] text-red-400 mb-4">
-              02. RISK ELIMINATION
-            </p>
-            {/* Red laser radar line */}
-            <div
-              className="absolute top-0 bottom-0 left-1/2 w-0.5 -translate-x-1/2 opacity-80"
-              style={{
-                background: `linear-gradient(180deg, transparent 0%, #EF4444 20%, #EF4444 80%, transparent 100%)`,
-                boxShadow: "0 0 20px #EF4444, 0 0 40px rgba(239,68,68,0.4)",
-              }}
-            />
-            <ul className="relative z-10 space-y-2 flex-1">
-              {REJECTED.map(({ label, suffix }, i) => (
-                <motion.li
-                  key={label}
-                  initial={{ opacity: 0, x: 8 }}
-                  animate={isInView ? { opacity: 1, x: 0 } : {}}
-                  transition={{ delay: 0.5 + i * 0.12, duration: 0.35 }}
-                  className="flex items-center gap-2 text-sm font-medium text-red-400"
-                  style={{
-                    textDecoration: "line-through",
-                    textDecorationColor: "#EF4444",
-                  }}
-                >
-                  <X className="w-4 h-4 shrink-0" />
-                  <span>
-                    {label} ➔ {suffix}
-                  </span>
-                </motion.li>
-              ))}
-            </ul>
-          </motion.div>
-
-          <div className="flex lg:hidden justify-center py-2 text-[#16A34A]">
-            <ArrowRight className="w-5 h-5 rotate-90" strokeWidth={2.5} />
-          </div>
-          {/* Connector */}
-          <div className="hidden lg:flex items-center justify-center shrink-0 w-8 self-center">
-            <motion.div
-              initial={{ opacity: 0, x: -8 }}
-              animate={isInView ? { opacity: 1, x: 0 } : {}}
-              transition={{ delay: 0.85, duration: 0.4 }}
-              className="text-[#16A34A] drop-shadow-[0_0_8px_rgba(22,163,74,0.6)]"
-            >
-              <ArrowRight className="w-6 h-6" strokeWidth={2.5} />
-            </motion.div>
-          </div>
-
-          {/* Phase 03: Human Audit */}
-          <motion.div
-            custom={2}
-            initial="hidden"
-            animate={isInView ? "visible" : "hidden"}
-            variants={stagger}
-            className="flex-1 min-w-0 rounded-2xl border border-white/10 bg-[#0d1f0d] p-6 flex flex-col"
-          >
-            <p className="text-[10px] font-black uppercase tracking-[0.3em] text-[#16A34A] mb-4">
-              03. HUMAN SCOUT AUDIT
-            </p>
-            <div className="flex justify-center mb-4">
-              <motion.div
-                initial={{ scale: 0.8, opacity: 0 }}
-                animate={isInView ? { scale: 1, opacity: 1 } : {}}
-                transition={{ delay: 0.9, duration: 0.4 }}
-                className="rounded-full bg-[#16A34A]/20 p-3 text-[#16A34A]"
+      {/* PIPELINE ROW */}
+      <div className="s6-row">
+        {/* 00. THE SIGNALS */}
+        <div className="s6-step">
+          <span className="s6-label">00. The Signals</span>
+          <div className="s6-pill-cloud">
+            {PILLS.map((p) => (
+              <span
+                key={p.label}
+                className="s6-pill"
+                style={{
+                  top: p.top,
+                  left: p.left,
+                  transform: `rotate(${p.rot})`,
+                  animationDelay: p.delay,
+                  animationDuration: p.dur,
+                  zIndex: p.label === "YouTube" || p.label === "Daiso" ? 4 : 2,
+                }}
               >
-                <ShieldCheck className="w-8 h-8" strokeWidth={2} />
-              </motion.div>
-            </div>
-            <ul className="space-y-2 flex-1">
-              {APPROVED.map((line, i) => (
-                <motion.li
-                  key={line}
-                  initial={{ opacity: 0 }}
-                  animate={isInView ? { opacity: 1 } : {}}
-                  transition={{ delay: 1 + i * 0.1, duration: 0.4 }}
-                  className="flex items-center gap-2 text-sm font-medium text-[#16A34A]"
-                >
-                  <Check
-                    className="w-4 h-4 shrink-0 drop-shadow-[0_0_6px_rgba(22,163,74,0.8)]"
-                    strokeWidth={2.5}
-                  />
-                  {line}
-                </motion.li>
-              ))}
-            </ul>
-          </motion.div>
-
-          <div className="flex lg:hidden justify-center py-2 text-[#16A34A]">
-            <ArrowRight className="w-5 h-5 rotate-90" strokeWidth={2.5} />
+                {p.label}
+              </span>
+            ))}
           </div>
-          {/* Connector */}
-          <div className="hidden lg:flex items-center justify-center shrink-0 w-8 self-center">
-            <motion.div
-              initial={{ opacity: 0, x: -8 }}
-              animate={isInView ? { opacity: 1, x: 0 } : {}}
-              transition={{ delay: 1.15, duration: 0.4 }}
-              className="text-[#16A34A] drop-shadow-[0_0_8px_rgba(22,163,74,0.6)]"
-            >
-              <ArrowRight className="w-6 h-6" strokeWidth={2.5} />
-            </motion.div>
-          </div>
+        </div>
 
-          {/* Phase 04: The Weekly 10 Winners */}
-          <motion.div
-            custom={3}
-            initial="hidden"
-            animate={isInView ? "visible" : "hidden"}
-            variants={stagger}
-            className="flex-1 min-w-0 rounded-2xl border border-[#16A34A]/30 bg-[#0d1f0d] p-6 flex flex-col relative"
-          >
-            <p className="text-[10px] font-black uppercase tracking-[0.3em] text-[#16A34A] mb-4">
-              04. THE WEEKLY 10 WINNERS
-            </p>
-            {/* Stacked cards visual */}
-            <div className="relative flex-1 min-h-[120px] flex items-center justify-center">
-              {[0, 1, 2].map((i) => (
-                <motion.div
-                  key={i}
-                  initial={{ opacity: 0, y: 8 }}
-                  animate={isInView ? { opacity: 1, y: 0 } : {}}
-                  transition={{ delay: 1.2 + i * 0.06, duration: 0.35 }}
-                  className="absolute rounded-xl border border-[#16A34A]/40 bg-[#0A0908] px-4 py-3 shadow-[0_0_20px_rgba(22,163,74,0.15)]"
-                  style={{
-                    transform: `translate(${i * 6}px, ${i * 4}px)`,
-                    zIndex: i,
-                  }}
-                >
-                  <span className="text-xs font-bold text-[#16A34A]">
-                    Winner card
-                  </span>
-                </motion.div>
-              ))}
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={isInView ? { opacity: 1 } : {}}
-                transition={{ delay: 1.45, duration: 0.4 }}
-                className="relative z-10 rounded-xl border border-[#16A34A]/50 bg-[#0d1f0d] px-5 py-4 text-center"
-              >
-                <span className="text-sm font-black text-[#16A34A]">10</span>
-                <span className="text-xs text-white/70 ml-1">winners</span>
-              </motion.div>
+        {/* ARROW */}
+        <div className="s6-arrow-wrap">→</div>
+
+        {/* 01. THE NOISE FILTER */}
+        <div className="s6-step">
+          <span className="s6-label">01. The Noise Filter</span>
+          {NOISE_ITEMS.map((item) => (
+            <div key={item} className="s6-kill-row">
+              <span className="s6-kill-tag">KILL</span>
+              <span className="s6-kill-text">{item}</span>
             </div>
-            <motion.p
-              initial={{ opacity: 0 }}
-              animate={isInView ? { opacity: 1 } : {}}
-              transition={{ delay: 1.5, duration: 0.4 }}
-              className="mt-4 text-center text-sm font-bold text-[#16A34A] drop-shadow-[0_0_12px_rgba(22,163,74,0.5)]"
-            >
-              Ready to source. Zero blind spots.
-            </motion.p>
-          </motion.div>
+          ))}
+          <div className="s6-filter-desc">
+            {NOISE_LINES.map((line) => (
+              <p key={line}>
+                <span style={{ color: "rgba(10,9,8,0.2)", fontSize: "10px" }}>→</span>
+                {line}
+              </p>
+            ))}
+          </div>
+        </div>
+
+        {/* ARROW */}
+        <div className="s6-arrow-wrap">→</div>
+
+        {/* 02. KOREA HQ VERIFICATION */}
+        <div className="s6-step">
+          <span className="s6-label">02. Korea HQ Verification</span>
+          {KOREA_HQ_ROWS.map((row) => (
+            <div key={row.main} className="s6-verify-row">
+              <span className="s6-verify-check" aria-hidden>✓</span>
+              <div>
+                <div className="s6-v-main">{row.main}</div>
+                <div className="s6-v-sub">{row.sub}</div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* ARROW */}
+        <div className="s6-arrow-wrap">→</div>
+
+        {/* 03. THE OUTPUT */}
+        <div className="s6-step">
+          <span className="s6-label">03. The Output</span>
+          <div className="s6-output-num">10+</div>
+          <p className="s6-output-desc">
+            Export-ready winners.
+            <br />
+            Every week.
+          </p>
+          <div className="s6-badge">
+            <div className="s6-badge-dot" />
+            <span>Ready to source</span>
+          </div>
         </div>
       </div>
     </section>

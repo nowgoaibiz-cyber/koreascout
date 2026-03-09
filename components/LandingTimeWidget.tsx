@@ -1,6 +1,8 @@
 // Server Component — "use client" 없음
 // red-400/60: IRON RULE 예외 — 수동 리서치 bar 전용 허용
 
+import { PRICING } from "@/src/config/pricing";
+
 const LEFT_ROWS = [
   { label: "Find trending product", hrs: 8 },
   { label: "Verify market demand", hrs: 6 },
@@ -21,19 +23,17 @@ export default function LandingTimeWidget() {
           Time vs. Money
         </p>
         <h2
-          className="font-black text-[#1A1916] tracking-tighter text-center
-          leading-none mb-16"
-          style={
-            {
-              fontSize: "clamp(2rem,5vw,4rem)",
-              textWrap: "balance",
-            } as React.CSSProperties
-          }
+          className="font-black text-center text-[#1A1916] mb-16"
+          style={{
+            fontSize: "clamp(2rem, 4.5vw, 3.5rem)",
+            fontWeight: 900,
+            letterSpacing: "-0.04em",
+            lineHeight: 1.05,
+            textWrap: "balance",
+          } as React.CSSProperties}
         >
           Time is your only
           <br />non-renewable resource.
-          <br />
-          <span style={{ color: "#16A34A" }}>Here&apos;s the math.</span>
         </h2>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -41,14 +41,14 @@ export default function LandingTimeWidget() {
           {/* LEFT — Manual (red-400/60 IRON RULE 예외 적용) */}
           <div className="bg-white border border-[#E8E6E1] rounded-2xl p-8
             shadow-[0_1px_3px_0_rgb(26_25_22/0.06)]">
-            <p className="text-[10px] font-black uppercase tracking-[0.3em]
-              text-[#9E9C98] mb-6">❌ Manual Research</p>
+            <p className="text-sm md:text-base font-bold uppercase tracking-widest
+              text-[#9E9C98] mb-6 whitespace-nowrap">❌ Manual Research</p>
             <div className="space-y-4">
               {LEFT_ROWS.map((row) => (
                 <div key={row.label}>
                   <div className="flex justify-between mb-1">
                     <span className="text-sm font-medium text-[#6B6860]">{row.label}</span>
-                    <span className="text-sm font-bold text-[#1A1916]">{row.hrs} hrs</span>
+                    <span className="text-base font-bold text-[#1A1916]">{row.hrs} hrs</span>
                   </div>
                   <div className="h-1.5 bg-[#F8F7F4] rounded-full overflow-hidden">
                     {/* red-400/60: IRON RULE 예외 허용 구역 */}
@@ -80,8 +80,8 @@ export default function LandingTimeWidget() {
           <div className="bg-[#F8F7F4] border border-[#E8E6E1] border-l-4
             border-l-[#16A34A] rounded-2xl p-8
             shadow-[0_4px_20px_0_rgb(22_163_74/0.08)]">
-            <p className="text-[10px] font-black uppercase tracking-[0.3em]
-              text-[#16A34A] mb-6">✓ KoreaScout Alpha</p>
+            <p className="text-sm md:text-base font-bold uppercase tracking-widest
+              text-[#16A34A] mb-6 whitespace-nowrap">✓ KoreaScout Alpha</p>
             <div className="space-y-4">
               {LEFT_ROWS.map((row) => (
                 <div key={row.label}>
@@ -105,7 +105,7 @@ export default function LandingTimeWidget() {
               </div>
               <div className="flex justify-between">
                 <span className="text-xs text-[#9E9C98]">Cost</span>
-                <span className="text-xs font-black text-[#1A1916]">$129/month</span>
+                <span className="text-xs font-black text-[#1A1916]">{PRICING.CURRENCY}{PRICING.ALPHA.monthly}/month</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-xs text-[#9E9C98]">Your ROI</span>

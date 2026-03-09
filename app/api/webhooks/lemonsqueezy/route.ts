@@ -4,9 +4,9 @@ import { createServiceRoleClient } from "@/lib/supabase/admin";
 
 const LEMONSQUEEZY_WEBHOOK_SECRET = process.env.LEMONSQUEEZY_WEBHOOK_SECRET;
 
-/** Standard $9 — checkout URL UUID (LemonSqueezy 웹훅은 variant_id를 숫자로 보낼 수 있음) */
+/** Standard $69 — checkout URL UUID (LemonSqueezy 웹훅은 variant_id를 숫자로 보낼 수 있음) */
 const STANDARD_VARIANT_UUID = "141f6710-c704-4ab3-b7c7-f30b2c587587";
-/** Alpha $29 — checkout URL UUID */
+/** Alpha $129 — checkout URL UUID */
 const ALPHA_VARIANT_UUID = "41bb4d4b-b9d6-4a60-8e19-19287c35516d";
 /** Standard/Alpha 숫자 variant_id (.env: LEMONSQUEEZY_VARIANT_ID_STANDARD / _ALPHA) — 일치 시 tier 업데이트 */
 const STANDARD_VARIANT_NUMERIC = process.env.LEMONSQUEEZY_VARIANT_ID_STANDARD

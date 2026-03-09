@@ -1,6 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui";
+import { PRICING } from "@/src/config/pricing";
 import { Lock } from "lucide-react";
 import type { ScoutFinalReportsRow } from "@/types/database";
 import { normalizeToArray, parseSourcingStrategy } from "./utils";
@@ -181,7 +182,7 @@ export function SocialProofTrendIntelligence({
                 SEO keywords &amp; viral hashtags are available on Alpha.
               </p>
               <a href="/pricing">
-                <Button variant="secondary" size="sm">Go Alpha $29/mo →</Button>
+                <Button variant="secondary" size="sm">Go Alpha {PRICING.CURRENCY}{PRICING.ALPHA.monthly}/mo →</Button>
               </a>
             </div>
           )}
@@ -221,7 +222,7 @@ export function SocialProofTrendIntelligence({
                 <Lock className="w-4 h-4 text-[#9E9C98]" />
                 <p className="text-sm text-[#6B6860] text-center">Full entry strategy is available on Alpha.</p>
                 <a href="/pricing">
-                  <Button variant="secondary" size="sm">Go Alpha $29/mo →</Button>
+                  <Button variant="secondary" size="sm">Go Alpha {PRICING.CURRENCY}{PRICING.ALPHA.monthly}/mo →</Button>
                 </a>
               </div>
             </div>

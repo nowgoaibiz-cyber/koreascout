@@ -1,9 +1,13 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import Hero from "@/components/Hero";
+import DynamiteFuseSection from "@/components/DynamiteFuseSection";
 import IntelligencePipeline from "@/components/IntelligencePipeline";
 import LandingTimeWidget from "@/components/LandingTimeWidget";
 import { createServiceRoleClient } from "@/lib/supabase/admin";
+import { PRICING } from "@/src/config/pricing";
+import { Rocket, Handshake, ShieldCheck } from "lucide-react";
+import FaqAccordion from "@/components/FaqAccordion";
 
 export const metadata: Metadata = {
   title: "KoreaScout — Korean Retail Intelligence Hub",
@@ -60,158 +64,13 @@ export default async function HomePage() {
 
   return (
     <>
-      <main className="w-full min-h-screen bg-[#0A0908] text-white selection:bg-[#16A34A]/30">
+      <main className="w-full min-h-screen bg-[#0A0908] text-white selection:bg-[#16A34A]/30 overflow-x-clip">
 
         {/* ══ S1: HERO ═══════════════════════════════════════════════════════════ */}
         <Hero />
 
-        {/* ══ S2: THE INTELLIGENCE GAP (섹션2최종.png — post-Hero) ═══════════════════ */}
-        <section className="bg-[#F8F7F4] pt-24 md:pt-32 pb-20 md:pb-28 px-6">
-          <div className="max-w-5xl mx-auto text-center">
-            {/* Header — centered, verbatim from image */}
-            <p
-              className="text-[10px] font-black uppercase tracking-[0.35em] text-[#16A34A] mb-4"
-              style={{ letterSpacing: "0.35em" }}
-            >
-              THE INTELLIGENCE GAP
-            </p>
-            <h2
-              className="font-black tracking-tighter leading-none mb-2"
-              style={{
-                fontSize: "clamp(2rem,5vw,4rem)",
-                textWrap: "balance",
-                color: "#0A0908",
-              } as React.CSSProperties}
-            >
-              You aren&apos;t late to the trend.
-            </h2>
-            <h2
-              className="font-black tracking-tighter leading-none mb-6"
-              style={{
-                fontSize: "clamp(2rem,5vw,4rem)",
-                textWrap: "balance",
-                color: "#16A34A",
-              } as React.CSSProperties}
-            >
-              You&apos;re late to the profit.
-            </h2>
-            <p className="text-[#6B6860] font-medium text-base md:text-lg max-w-xl mx-auto mb-14 md:mb-20 leading-relaxed">
-              By the time a product trends on social media,
-              <br />
-              the margin is already gone.
-            </p>
-
-            {/* Comparison card — white #FFFFFF, high border-radius, two panels */}
-            <div className="bg-[#FFFFFF] rounded-3xl overflow-hidden shadow-sm border border-[#E8E6E1]/60 flex flex-col md:flex-row">
-              {/* Left panel — WHAT YOU SEE, bg #1A1916 */}
-              <div className="flex-1 bg-[#1A1916] p-8 md:p-10 text-left">
-                <p className="text-[10px] font-black uppercase tracking-[0.25em] text-[#9E9C98] mb-6">
-                  WHAT YOU SEE
-                </p>
-                <div className="space-y-5">
-                  <div>
-                    <p className="text-[10px] font-bold uppercase tracking-wider text-[#6B6860] mb-0.5">
-                      DATA SOURCE
-                    </p>
-                    <p className="text-sm font-medium text-[#9E9C98]">
-                      TikTok · Instagram · Reddit
-                    </p>
-                  </div>
-                  <div>
-                    <p className="text-[10px] font-bold uppercase tracking-wider text-[#6B6860] mb-0.5">
-                      SIGNAL AGE
-                    </p>
-                    <p className="text-sm font-medium text-[#9E9C98]">
-                      60-90 days old
-                    </p>
-                  </div>
-                  <div>
-                    <p className="text-[10px] font-bold uppercase tracking-wider text-[#6B6860] mb-0.5">
-                      COMPETITORS AWARE
-                    </p>
-                    <p className="text-sm font-medium text-[#9E9C98]">
-                      Thousands
-                    </p>
-                  </div>
-                  <div>
-                    <p className="text-[10px] font-bold uppercase tracking-wider text-[#6B6860] mb-0.5">
-                      YOUR POSITION
-                    </p>
-                    <p className="text-sm font-medium text-[#9E9C98]">
-                      Sourcing what everyone knows
-                    </p>
-                  </div>
-                  <div className="pt-1">
-                    <p className="text-[10px] font-bold uppercase tracking-wider text-[#6B6860] mb-0.5">
-                      MARGIN POTENTIAL
-                    </p>
-                    <p className="text-xl font-black text-[#9E9C98]">
-                      0.9x
-                    </p>
-                  </div>
-                </div>
-                <p className="text-[10px] font-bold uppercase tracking-wider text-[#9E9C98] mt-8 pt-6 border-t border-white/10">
-                  ⚠️ LATE INTELLIGENCE
-                </p>
-              </div>
-
-              {/* Vertical divider — thin green line per image */}
-              <div className="w-px bg-[#16A34A] shrink-0 self-stretch hidden md:block" aria-hidden />
-
-              {/* Right panel — WHAT ALPHA MEMBERS SEE, bg #FFFFFF */}
-              <div className="flex-1 bg-[#FFFFFF] p-8 md:p-10 border-t md:border-t-0 border-[#E8E6E1] md:border-l-0 text-left">
-                <p className="text-[10px] font-black uppercase tracking-[0.25em] text-[#16A34A] mb-6">
-                  WHAT ALPHA MEMBERS SEE
-                </p>
-                <div className="space-y-5">
-                  <div>
-                    <p className="text-[10px] font-bold uppercase tracking-wider text-[#6B6860] mb-0.5">
-                      DATA SOURCE
-                    </p>
-                    <p className="text-sm font-medium text-[#0A0908]">
-                      Olive Young · Daiso · Real-time retail
-                    </p>
-                  </div>
-                  <div>
-                    <p className="text-[10px] font-bold uppercase tracking-wider text-[#6B6860] mb-0.5">
-                      SIGNAL AGE
-                    </p>
-                    <p className="text-sm font-medium text-[#0A0908]">
-                      Week 1 - Zero lag
-                    </p>
-                  </div>
-                  <div>
-                    <p className="text-[10px] font-bold uppercase tracking-wider text-[#6B6860] mb-0.5">
-                      COMPETITORS AWARE
-                    </p>
-                    <p className="text-sm font-medium text-[#0A0908]">
-                      &lt; 10 globally
-                    </p>
-                  </div>
-                  <div>
-                    <p className="text-[10px] font-bold uppercase tracking-wider text-[#6B6860] mb-0.5">
-                      YOUR POSITION
-                    </p>
-                    <p className="text-sm font-medium text-[#0A0908]">
-                      Sourcing before anyone knows
-                    </p>
-                  </div>
-                  <div className="pt-1">
-                    <p className="text-[10px] font-bold uppercase tracking-wider text-[#6B6860] mb-0.5">
-                      MARGIN POTENTIAL
-                    </p>
-                    <p className="text-xl font-black text-[#16A34A]">
-                      4.0x
-                    </p>
-                  </div>
-                </div>
-                <p className="text-[10px] font-bold uppercase tracking-wider text-[#16A34A] mt-8 pt-6 border-t border-[#E8E6E1]">
-                  <span style={{ color: "#16A34A" }}>●</span> REAL-TIME INTELLIGENCE
-                </p>
-              </div>
-            </div>
-          </div>
-        </section>
+        {/* ══ S2: THE INTELLIGENCE GAP — Dynamite Fuse + Bottom Copy ═══════════════════ */}
+        <DynamiteFuseSection />
 
         {/* ══ S4: TIME WIDGET ═══════════════════════════ */}
         <LandingTimeWidget />
@@ -220,19 +79,21 @@ export default async function HomePage() {
         <section className="bg-[#0A0908] py-32 px-6">
           <div className="max-w-6xl mx-auto">
             <h2
-              className="font-black text-white tracking-tighter text-center leading-none mb-4"
-              style={
-                { fontSize: "clamp(2rem,5vw,4rem)", textWrap: "balance" } as React.CSSProperties
-              }
+              className="font-black text-center text-white mb-3"
+              style={{
+                fontSize: "clamp(2.25rem, 5vw, 3.75rem)",
+                fontWeight: 900,
+                letterSpacing: "-0.04em",
+                lineHeight: 1.05,
+                textWrap: "balance",
+              } as React.CSSProperties}
             >
               Not a trend list.
               <br />
               A 6-layer intelligence brief —
-              <br />
-              <span style={{ color: "#16A34A" }}>battle-tested in Seoul.</span>
             </h2>
-            <p className="text-center text-white/40 font-medium mb-16">
-              What takes you 58 hours, takes our engine 4 minutes.
+            <p className="text-center text-white/60 font-medium mb-16 leading-relaxed max-w-2xl mx-auto" style={{ fontSize: "clamp(0.9375rem, 1.5vw, 1.125rem)" }}>
+              Battle-tested in Korea. What takes you 58 hours, takes our engine 4 minutes.
             </p>
 
             <div className="grid grid-cols-1 md:grid-cols-[0.45fr_0.55fr] gap-12 items-stretch">
@@ -386,9 +247,12 @@ export default async function HomePage() {
               LAUNCH KIT
             </p>
             <h2
-              className="font-black text-white tracking-tighter text-center leading-none mb-5"
+              className="font-black text-center text-white mb-5"
               style={{
-                fontSize: "clamp(2.25rem,5.5vw,4.25rem)",
+                fontSize: "clamp(2rem, 4.5vw, 3.5rem)",
+                fontWeight: 900,
+                letterSpacing: "-0.04em",
+                lineHeight: 1.05,
                 textWrap: "balance",
               } as React.CSSProperties}
             >
@@ -505,83 +369,6 @@ export default async function HomePage() {
         {/* ══ S6: THE INTELLIGENCE PIPELINE (Scout Engine) ═══════════════════════════════ */}
         <IntelligencePipeline />
 
-        {/* ══ S7: VIRAL SANDBOX TIMELINE ════════════════════ */}
-        <section className="bg-[#1A1916] py-24 px-6">
-          <div className="max-w-6xl mx-auto">
-            <p className="text-[10px] font-black uppercase tracking-[0.35em] text-[#9E9C98] text-center mb-4">
-              The Viral Sandbox
-            </p>
-            <h2
-              className="font-black text-white tracking-tighter text-center leading-none mb-4"
-              style={
-                { fontSize: "clamp(2rem,5vw,4rem)", textWrap: "balance" } as React.CSSProperties
-              }
-            >
-              Korea is the world&apos;s most
-              <br />
-              brutal product testing ground.
-              <br />
-              <span style={{ color: "#16A34A" }}>We are your ringside analyst.</span>
-            </h2>
-            <p className="text-center text-white/40 font-medium mb-16">
-              If it survives Korea&apos;s hyper-competitive market, it&apos;s a proven winner for
-              your global store.
-            </p>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-0 relative">
-              <div className="hidden md:block absolute top-4 left-[12.5%] right-[12.5%] h-px bg-gradient-to-r from-transparent via-[#16A34A]/30 to-transparent" />
-              {[
-                {
-                  w: "Week 01",
-                  e: "KoreaScout detects signal",
-                  d: "Olive Young hit\nGap Index: 54\nTrend Score: 91",
-                  q: "Our members\nhad 10 weeks.",
-                },
-                {
-                  w: "Week 04",
-                  e: "Alpha members source first",
-                  d: "Landed: $3.80\nMOQ: 500 units\nViral Sandbox: PASSED ✓",
-                  q: "While the\nmarket slept.",
-                },
-                {
-                  w: "Week 12",
-                  e: "TikTok US viral explosion",
-                  d: "22M views\nSearch +710%\nKR trend confirmed",
-                  q: "General public\ndiscovers it.",
-                },
-                {
-                  w: "Week 20",
-                  e: "Amazon Best Seller",
-                  d: "Sold out 3×\nLate movers\npaying 3× more",
-                  q: "You either\nscouted first,\nor you lost.",
-                },
-              ].map((node, i) => (
-                <div
-                  key={node.w}
-                  className={`flex flex-col items-center text-center px-4 ${
-                    i < 3 ? "border-r border-white/10" : ""
-                  }`}
-                >
-                  <div className="w-3 h-3 rounded-full bg-[#16A34A] mb-4 relative z-10" />
-                  <p className="text-[10px] font-black uppercase tracking-[0.3em] text-[#16A34A] mb-3">
-                    {node.w}
-                  </p>
-                  <p className="text-sm font-black text-white mb-3">{node.e}</p>
-                  <p className="text-xs text-white/50 leading-relaxed whitespace-pre-line mb-4">
-                    {node.d}
-                  </p>
-                  <p className="text-xs font-bold text-white/30 italic whitespace-pre-line">
-                    &ldquo;{node.q}&rdquo;
-                  </p>
-                </div>
-              ))}
-            </div>
-            <p className="text-center text-white/20 text-xs mt-10">
-              * Representative case based on KoreaScout tracking methodology. Individual results
-              may vary.
-            </p>
-          </div>
-        </section>
-
         {/* ══ S8: PRICING (3-tier from pricing page, v5 copy) ═══════════════════════════════════ */}
         <section id="pricing-cards" className="bg-white py-24 px-6">
           <div className="max-w-6xl mx-auto">
@@ -589,11 +376,22 @@ export default async function HomePage() {
               Pricing
             </p>
             <h2
-              className="font-black text-[#1A1916] tracking-tighter text-center leading-none mb-16"
-              style={{ fontSize: "clamp(2rem,5vw,4rem)" }}
+              className="font-black text-[#1A1916] text-center mb-4"
+              style={{
+                fontSize: "clamp(2rem, 4.5vw, 3.5rem)",
+                fontWeight: 900,
+                letterSpacing: "-0.04em",
+                lineHeight: 1.05,
+              } as React.CSSProperties}
             >
-              Choose your intelligence level.
+              For less than <span className="text-[#16A34A]">{PRICING.CURRENCY}{PRICING.ALPHA.daily.toFixed(2)}</span> a day.
             </h2>
+            <p
+              className="text-sm text-center mb-16"
+              style={{ color: "rgba(10,9,8,0.4)" }}
+            >
+              Hire your dedicated Korea-based intelligence team.
+            </p>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-stretch">
               {/* FREE */}
               <div className="bg-white border border-[#E8E6E1] rounded-2xl flex flex-col h-full p-8 md:p-12">
@@ -603,7 +401,7 @@ export default async function HomePage() {
                   </p>
                   <div className="mb-1">
                     <span className="text-5xl font-black text-[#1A1916] leading-none tracking-tighter">
-                      $0
+                      {PRICING.CURRENCY}{PRICING.FREE.monthly}
                     </span>
                   </div>
                   <p className="text-xs font-bold text-[#9E9C98] uppercase tracking-[0.2em] mb-1">
@@ -643,12 +441,12 @@ export default async function HomePage() {
                   </p>
                   <div className="mb-1">
                     <span className="text-5xl font-black text-[#1A1916] leading-none tracking-tighter">
-                      $69
+                      {PRICING.CURRENCY}{PRICING.STANDARD.monthly}
                     </span>
                     <span className="text-base text-[#9E9C98] font-medium ml-2">/ month</span>
                   </div>
                   <p className="text-xs font-bold text-[#9E9C98] mb-1">
-                    Approx. $2.30 / day
+                    Approx. {PRICING.CURRENCY}{PRICING.STANDARD.daily.toFixed(2)} / day
                   </p>
                 </div>
                 <div className="w-8 h-px bg-[#E8E6E1] my-5" />
@@ -660,7 +458,7 @@ export default async function HomePage() {
                 </div>
                 <div className="flex-grow my-8">
                   <p className="text-base font-medium text-[#6B6860] leading-relaxed">
-                    Know WHAT survived Korea&apos;s market. $2.30/day — less than your morning coffee,
+                    Know WHAT survived Korea&apos;s market. {PRICING.CURRENCY}{PRICING.STANDARD.daily.toFixed(2)}/day — less than your morning coffee,
                     more valuable than 14 hours of research.
                   </p>
                 </div>
@@ -671,7 +469,7 @@ export default async function HomePage() {
                     rel="noopener noreferrer"
                     className="block w-full text-center py-3 rounded-xl border-2 border-[#1A1916] text-sm font-black text-[#1A1916] hover:bg-[#1A1916] hover:text-white transition-all duration-200"
                   >
-                    Start Knowing — $69/mo
+                    Start Knowing — {PRICING.CURRENCY}{PRICING.STANDARD.monthly}/mo
                   </a>
                   <p className="text-xs text-[#9E9C98] text-center mt-3">
                     10+ products/week · Instant access
@@ -701,12 +499,12 @@ export default async function HomePage() {
                   </div>
                   <div className="mb-1">
                     <span className="text-5xl font-black text-[#1A1916] leading-none tracking-tighter">
-                      $129
+                      {PRICING.CURRENCY}{PRICING.ALPHA.monthly}
                     </span>
                     <span className="text-base text-[#9E9C98] font-medium ml-2">/ month</span>
                   </div>
                   <p className="text-xs font-bold text-[#16A34A] mb-1">
-                    Approx. $4.30 / day
+                    Approx. {PRICING.CURRENCY}{PRICING.ALPHA.daily.toFixed(2)} / day
                   </p>
                 </div>
                 <div className="w-8 h-px bg-[#E8E6E1] my-5" />
@@ -718,8 +516,8 @@ export default async function HomePage() {
                 </div>
                 <div className="flex-grow my-8">
                   <p className="text-base font-medium text-[#6B6860] leading-relaxed">
-                    Know HOW to bring it to your market. $4.30/day. Your Seoul-based sourcing team —
-                    on call every Thursday. 58 hours of work. 60 seconds to receive.
+                    Know HOW to bring it to your market. {PRICING.CURRENCY}{PRICING.ALPHA.daily.toFixed(2)}/day. Your Seoul-based sourcing team —
+                    58 hours of work. 60 seconds to receive.
                   </p>
                   {!isFull && (
                     <p className="mt-4 text-xs font-bold text-[#16A34A]">
@@ -743,7 +541,7 @@ export default async function HomePage() {
                       rel="noopener noreferrer"
                       className="block w-full text-center py-3 rounded-xl bg-[#16A34A] text-white text-sm font-black hover:bg-[#15803D] transition-colors duration-200 shadow-[0_4px_12px_0_rgb(22_163_74/0.3)]"
                     >
-                      Go Alpha — $129/mo
+                      Go Alpha — {PRICING.CURRENCY}{PRICING.ALPHA.monthly}/mo
                     </a>
                   )}
                   <p className="text-xs text-[#9E9C98] text-center mt-3">
@@ -755,154 +553,161 @@ export default async function HomePage() {
           </div>
         </section>
 
-        {/* ══ S9: TRUST + FOUNDER ═══════════════════════════ */}
-        <section className="bg-[#F8F7F4] py-24 px-6">
-          <div className="max-w-6xl mx-auto">
-            <p className="text-[10px] font-black uppercase tracking-[0.35em] text-[#9E9C98] text-center mb-4">
-              The Seoul Agency
+        {/* ══ S8b: INSTITUTIONAL POLICY (Alpha Moat) — synced from pricing page ═══════════════ */}
+        <section className="bg-[#1A1916] py-20 px-6">
+          <div className="max-w-3xl mx-auto border border-white/10 rounded-2xl p-10">
+            <p className="text-[10px] font-black uppercase tracking-[0.35em] text-[#16A34A] mb-6">
+              Institutional Policy
             </p>
-            <h2
-              className="font-black text-[#1A1916] tracking-tighter text-center leading-none mb-16"
-              style={
-                { fontSize: "clamp(2rem,5vw,4rem)", textWrap: "balance" } as React.CSSProperties
-              }
+            <h3
+              className="font-black text-white leading-tight tracking-tighter mb-6"
+              style={{ fontSize: "clamp(1.75rem, 4vw, 2.75rem)" }}
             >
-              We find the gold.
-              <br />
-              You take it to the global stage.
-              <br />
-              <span style={{ color: "#16A34A" }}>A perfect division of labor.</span>
-            </h2>
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-              {[
-                {
-                  label: "The Seoul Agency",
-                  body: "Operated by 지금행컴퍼니 (Jigeumhaeng Co.), registered in Seoul, Korea.\n\nDirect Olive Young & Daiso trend monitoring. Factory floor access. Human-verified. Not a scraper. Not a directory.",
-                },
-                {
-                  label: "The Expert Moat",
-                  body: "Built by ex-Coupang (Korea's Amazon) data specialists.\n\nWe understand how Korean consumer data moves before it becomes global. That's not a feature. That's a moat.",
-                },
-                {
-                  label: "Your Synergy",
-                  body: "We are search & data specialists.\nYou are the sales & scaling specialist.\n\nWe find the winner. You take it global.\n$129/mo. Perfect synergy.",
-                },
-              ].map((col) => (
-                <div
-                  key={col.label}
-                  className="bg-white border border-[#E8E6E1] rounded-2xl p-8 shadow-[0_1px_3px_0_rgb(26_25_22/0.06)]"
-                >
-                  <p className="text-[10px] font-black uppercase tracking-[0.3em] text-[#9E9C98] mb-4">
-                    {col.label}
-                  </p>
-                  <p className="text-base font-medium text-[#6B6860] leading-relaxed whitespace-pre-line">
-                    {col.body}
-                  </p>
-                </div>
-              ))}
-            </div>
-
-            <div className="bg-[#1A1916] rounded-2xl p-10 mb-12">
-              <p className="text-[10px] font-black uppercase tracking-[0.35em] text-[#16A34A] mb-6">
-                Founder&apos;s Note
-              </p>
-              <p
-                className="text-lg font-medium text-white/70 leading-relaxed"
-                style={{ fontStyle: "italic" }}
-              >
-                &ldquo;We spent years inside Korea&apos;s largest e-commerce operations, watching
-                which products exploded globally and which faded. The pattern was always the same:
-                the winners were spotted in Seoul 60–90 days before they hit the rest of the world.
-                <br />
-                <br />
-                KoreaScout is the system we built to give every global seller access to what we saw
-                from the inside.&rdquo;
-              </p>
-              <p className="text-sm font-bold text-white/40 mt-6">
-                — 지금행컴퍼니 (Jigeumhaeng Co.) · Seoul, Korea
-              </p>
-            </div>
-
-            <div className="max-w-2xl mx-auto">
-              <p className="text-[10px] font-black uppercase tracking-[0.35em] text-[#9E9C98] text-center mb-8">
-                Frequently Asked
-              </p>
-              {[
-                {
-                  q: "How is this different from Jungle Scout?",
-                  a: "Jungle Scout tells you what's selling on Amazon. KoreaScout tells you what will sell — 60–90 days before it reaches any marketplace. They're downstream. We're upstream.",
-                },
-                {
-                  q: "I don't speak Korean.",
-                  a: "Every report is in English. Supplier contacts include ready-to-send English email templates. You never need a word of Korean.",
-                },
-                {
-                  q: "Are the HS Codes and MOQ data guaranteed?",
-                  a: "No — and we'll be upfront about that. Our data are pre-verified intelligence estimates that give your customs broker a 90% head start. Professional guidance, not legal advice. Your broker confirms. We eliminate the research.",
-                },
-              ].map((item) => (
-                <details key={item.q} className="border-b border-[#E8E6E1] py-5 group">
-                  <summary className="text-sm font-bold text-[#1A1916] cursor-pointer list-none flex items-center justify-between gap-4">
-                    <span>{item.q}</span>
-                    <span className="text-[#9E9C98] group-open:rotate-180 transition-transform duration-200 shrink-0">
-                      ↓
-                    </span>
-                  </summary>
-                  <p className="text-sm font-medium text-[#6B6860] leading-relaxed mt-4">
-                    {item.a}
-                  </p>
-                </details>
-              ))}
-            </div>
+              Why only 3,000 members?
+            </h3>
+            <p className="text-lg text-white/60 font-medium leading-relaxed">
+              With over 50 million global sellers competing for the same demand, trend saturation is a certainty. Information loses its edge when everyone has it.
+              <br /><br />
+              By capping Alpha at exactly 3,000 spots—representing the top 0.006% of the global market—we mathematically minimize competition and protect your exclusive profit margins. We provide the verified intelligence. The execution is yours.
+              <br /><br />
+              We don&apos;t just find trends —{" "}
+              <span className="text-white font-semibold">we protect your opportunity.</span>
+            </p>
+            {!isFull && (
+              <div className="mt-8 flex items-center gap-3">
+                <span className="relative flex h-3 w-3 shrink-0">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#16A34A] opacity-75" />
+                  <span className="relative inline-flex rounded-full h-3 w-3 bg-[#16A34A] shadow-[0_0_10px_2px_rgba(22,163,74,0.9)]" />
+                </span>
+                <p className="text-xl md:text-2xl font-black text-[#16A34A]">
+                  {remaining.toLocaleString()} of {ALPHA_MAX.toLocaleString()} spots remaining
+                </p>
+              </div>
+            )}
           </div>
         </section>
 
-        {/* ══ S10: FINAL CTA ════════════════════════════════ */}
-        <section className="bg-[#1A1916] py-32 px-6 text-center">
-          <p className="text-[10px] font-black uppercase tracking-[0.35em] text-[#16A34A] mb-8">
-            Ready to Scout?
-          </p>
-          <h2
-            className="font-black text-white tracking-tighter leading-none mb-10"
-            style={{
-              fontSize: "clamp(2rem,5vw,4.5rem)",
-              textWrap: "balance",
-            } as React.CSSProperties}
-          >
-            The market moves while you hesitate.
-            <br />
-            Secure your intelligence
-            <br />
-            <span style={{ color: "#16A34A" }}>before the 3,000 spots are gone.</span>
-          </h2>
+        {/* ══ S9: TRUST + FOUNDER + FAQ + READY TO SCOUT (single bg #F8F7F4, no gap) ═══════════════════════════ */}
+        <section className="bg-[#F8F7F4] pt-24 pb-24 px-6">
+          <div className="max-w-6xl mx-auto">
+            {/* Trust & Moat — Headlines */}
+            <h2
+              className="font-black text-[#1A1916] text-center mb-4"
+              style={{
+                fontSize: "clamp(2rem, 4.5vw, 3.5rem)",
+                fontWeight: 900,
+                letterSpacing: "-0.04em",
+                lineHeight: 1.05,
+                textWrap: "balance",
+              } as React.CSSProperties}
+            >
+              A perfect division of labor.
+            </h2>
+            <p className="text-base md:text-lg text-center text-[#6B6860] max-w-2xl mx-auto mb-16 leading-relaxed">
+              We find the gold in Seoul. You take it to the global stage.
+            </p>
 
-          {!isFull && (
-            <div className="flex items-center justify-center gap-2 mb-10">
-              <span className="w-2.5 h-2.5 rounded-full bg-[#16A34A] animate-pulse" />
-              <p className="text-base font-black text-[#16A34A]">
-                {remaining.toLocaleString()} of {ALPHA_MAX.toLocaleString()} Alpha spots remaining
+            {/* 3-Column Trust & Moat Cards */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              <div className="bg-white rounded-2xl p-8 shadow-sm border border-[#E8E6E1]">
+                <Rocket className="text-[#16A34A] w-8 h-8 mb-4" aria-hidden />
+                <h3 className="text-lg font-bold text-[#1A1916] mb-3">The &quot;Korea&apos;s Amazon&quot; DNA.</h3>
+                <p className="text-base text-[#6B6860] leading-relaxed">
+                  Built by a former operator at Coupang (Korea&apos;s Amazon). We bring the fastest e-commerce market&apos;s execution speed and local vendor network directly to your sourcing pipeline.
+                </p>
+              </div>
+              <div className="bg-white rounded-2xl p-8 shadow-sm border border-[#E8E6E1]">
+                <ShieldCheck className="text-[#16A34A] w-8 h-8 mb-4" aria-hidden />
+                <h3 className="text-lg font-bold text-[#1A1916] mb-3">AI Scouted. Human Curated.</h3>
+                <p className="text-base text-[#6B6860] leading-relaxed">
+                  Operated by 지금행컴퍼니 in Seoul. While our AI engine monitors Korea&apos;s fastest-moving platforms, our human operators filter out the noise. You get 100% verified intelligence, ready for scaling.
+                </p>
+              </div>
+              <div className="bg-white rounded-2xl p-8 shadow-sm border border-[#E8E6E1]">
+                <Handshake className="text-[#16A34A] w-8 h-8 mb-4" aria-hidden />
+                <h3 className="text-lg font-bold text-[#1A1916] mb-3">We search. You scale.</h3>
+                <p className="text-base text-[#6B6860] leading-relaxed">
+                  We are your boots on the ground in Korea. You are the global scaling expert. A perfect synergy for less than <span className="text-[#16A34A] font-bold">{PRICING.CURRENCY}{PRICING.ALPHA.daily.toFixed(2)}</span> a day.
+                </p>
+              </div>
+            </div>
+
+            {/* Founder's Note — same container width, cream flow */}
+            <div className="mt-12">
+              <div className="bg-[#2A2824] rounded-3xl p-12 md:p-16 border border-white/5">
+                <h2 className="text-[10px] font-bold text-[#F8F7F4]/30 uppercase tracking-[0.3em] mb-8">
+                  Founder&apos;s Note
+                </h2>
+                <div className="border-l-2 border-[#16A34A] pl-6 md:pl-10">
+                  <div className="space-y-8 text-lg md:text-xl text-[#F8F7F4]/60 leading-relaxed tracking-tight font-sans font-medium">
+                    <p>
+                      &ldquo;Since April 2025, we&apos;ve been quietly building the foundation for KoreaScout. We engineered our own AI system with one clear mission: to decode Korea&apos;s hyper-fast trends for the rest of the world.&rdquo;
+                    </p>
+                    <p>
+                      &ldquo;Our philosophy is a perfect division of labor. We will relentlessly hunt down the best export-ready products in Seoul. You focus 100% on what you do best—scaling and dominating the global market.&rdquo;
+                    </p>
+                    <p>
+                      &ldquo;KoreaScout is a living startup. We will never stop evolving, and our intelligence will continuously update. Focus on selling. We&apos;ve got the scouting covered.&rdquo;
+                    </p>
+                  </div>
+                  <p className="mt-10 text-right text-[#F8F7F4]/40 text-sm font-bold">
+                    — 지금행컴퍼니 (Jigeumhaeng Co.) · Seoul, Korea
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* FAQ — Category accordion (compact), no border for background continuity */}
+          <div className="max-w-6xl mx-auto pt-16 pb-0 px-6 border-0">
+            <h2 className="text-5xl font-black text-black mb-8">
+              Frequently Asked
+            </h2>
+            <FaqAccordion />
+          </div>
+
+          {/* Ready to Scout CTA — same section, no gap (no black band) */}
+          <div className="max-w-6xl mx-auto pt-0 pb-0 text-center overflow-x-clip border-0">
+            <h2
+              className="font-black text-[#1A1916] mt-6 mb-6"
+              style={{
+                fontSize: "clamp(2rem, 4.5vw, 3.5rem)",
+                fontWeight: 900,
+                letterSpacing: "-0.04em",
+                lineHeight: 1.05,
+                textWrap: "balance",
+              } as React.CSSProperties}
+            >
+              Ready to Scout?
+            </h2>
+            <p className="text-base md:text-lg font-medium text-[#6B6860] leading-relaxed mb-4 max-w-xl mx-auto">
+              The market moves while you hesitate.
+            </p>
+            <p className="text-base md:text-lg font-medium text-[#6B6860] leading-relaxed mb-10 max-w-xl mx-auto">
+              Secure your intelligence before the 3,000 spots are gone.
+            </p>
+
+            {!isFull && (
+              <div className="flex items-center justify-center gap-2 mb-10">
+                <span className="w-2.5 h-2.5 rounded-full bg-[#16A34A] animate-pulse" />
+                <p className="text-base font-black text-[#16A34A]">
+                  {remaining.toLocaleString()} of {ALPHA_MAX.toLocaleString()} Alpha spots remaining
+                </p>
+              </div>
+            )}
+
+            <div className="flex flex-col items-center mb-4">
+              <a
+                href="#pricing-cards"
+                className="w-full max-w-md px-12 py-5 rounded-xl font-black text-lg text-white bg-[#16A34A] hover:bg-[#15803D] transition-colors duration-200 shadow-[0_4px_20px_0_rgb(22_163_74/0.4)] text-center"
+              >
+                Get Exclusive Access Now
+              </a>
+              <p className="text-xs text-[#9E9C98] font-medium mt-4">
+                No contracts · Cancel anytime · Instant access
               </p>
             </div>
-          )}
-
-          <div className="flex flex-wrap items-center justify-center gap-4 mb-6">
-            <a
-              href="#pricing-cards"
-              className="px-10 py-4 rounded-xl font-black text-base text-white bg-[#16A34A] hover:bg-[#15803D] transition-colors duration-200 shadow-[0_4px_20px_0_rgb(22_163_74/0.4)]"
-            >
-              Get Exclusive Access Now
-            </a>
-            <a
-              href="/pricing"
-              className="px-10 py-4 rounded-xl font-bold text-base text-white border border-white/30 hover:border-white/60 transition-colors duration-200"
-            >
-              View All Plans
-            </a>
           </div>
-          <p className="text-xs text-white/30 font-medium">
-            No contracts · Cancel anytime · Instant access
-          </p>
         </section>
 
         {/* Footer — Cream Shutter (Constitution) */}

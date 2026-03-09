@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
 import { createServiceRoleClient } from "@/lib/supabase/admin";
+import { PRICING } from "@/src/config/pricing";
 
 export const metadata: Metadata = {
   title: "Pricing — KoreaScout",
-  description: "Compare Free, Standard $9, and Alpha $29. Choose your intelligence level.",
+  description: `Compare Free, Standard ${PRICING.CURRENCY}${PRICING.STANDARD.monthly}, and Alpha ${PRICING.CURRENCY}${PRICING.ALPHA.monthly}. Choose your intelligence level.`,
 };
 
 const STANDARD_CHECKOUT_URL =
@@ -135,9 +136,23 @@ export default async function PricingPage() {
       {/* S2: 3-TIER CARDS */}
       <section id="pricing-cards" className="bg-white py-24 px-6">
         <div className="max-w-6xl mx-auto">
-          <h2 className="font-black text-[#1A1916] tracking-tighter uppercase text-center mb-16 text-xl whitespace-nowrap">
-            Choose Your Intelligence Level
+          <h2
+            className="font-black text-[#1A1916] text-center mb-4"
+            style={{
+              fontSize: "clamp(2rem, 4.5vw, 3.5rem)",
+              fontWeight: 900,
+              letterSpacing: "-0.04em",
+              lineHeight: 1.05,
+            } as React.CSSProperties}
+          >
+            For less than <span className="text-[#16A34A]">{PRICING.CURRENCY}{PRICING.ALPHA.daily.toFixed(2)}</span> a day.
           </h2>
+          <p
+            className="text-sm text-center mb-16"
+            style={{ color: "rgba(10,9,8,0.4)" }}
+          >
+            Hire your dedicated Korea-based intelligence team.
+          </p>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-stretch">
             {/* FREE */}
             <div className="bg-white border border-[#E8E6E1] rounded-2xl flex flex-col h-full p-8 md:p-12">
@@ -147,7 +162,7 @@ export default async function PricingPage() {
                 </p>
                 <div className="mb-1">
                   <span className="text-5xl font-black text-[#1A1916] leading-none tracking-tighter">
-                    $0
+                    {PRICING.CURRENCY}{PRICING.FREE.monthly}
                   </span>
                 </div>
                 <p className="text-xs font-bold text-[#9E9C98] uppercase tracking-[0.2em] mb-1">
@@ -188,12 +203,12 @@ export default async function PricingPage() {
                 </p>
                 <div className="mb-1">
                   <span className="text-5xl font-black text-[#1A1916] leading-none tracking-tighter">
-                    $69
+                    {PRICING.CURRENCY}{PRICING.STANDARD.monthly}
                   </span>
                   <span className="text-base text-[#9E9C98] font-medium ml-2">/ month</span>
                 </div>
                 <p className="text-xs font-bold text-[#9E9C98] mb-1">
-                  Approx. $2.30 / day
+                  Approx. {PRICING.CURRENCY}{PRICING.STANDARD.daily.toFixed(2)} / day
                 </p>
               </div>
               <div className="w-8 h-px bg-[#E8E6E1] my-5" />
@@ -218,7 +233,7 @@ export default async function PricingPage() {
                   rel="noopener noreferrer"
                   className="block w-full text-center py-3 rounded-xl border-2 border-[#1A1916] text-sm font-black text-[#1A1916] hover:bg-[#1A1916] hover:text-white transition-all"
                 >
-                  Start Knowing — $69/mo
+                  Start Knowing — {PRICING.CURRENCY}{PRICING.STANDARD.monthly}/mo
                 </a>
                 <p className="text-xs text-[#9E9C98] text-center mt-3">
                   10+ products/week · Instant access
@@ -248,12 +263,12 @@ export default async function PricingPage() {
                 </div>
                 <div className="mb-1">
                   <span className="text-5xl font-black text-[#1A1916] leading-none tracking-tighter">
-                    $129
+                    {PRICING.CURRENCY}{PRICING.ALPHA.monthly}
                   </span>
                   <span className="text-base text-[#9E9C98] font-medium ml-2">/ month</span>
                 </div>
                 <p className="text-xs font-bold text-[#16A34A] mb-1">
-                  Approx. $4.30 / day
+                  Approx. {PRICING.CURRENCY}{PRICING.ALPHA.daily.toFixed(2)} / day
                 </p>
               </div>
               <div className="w-8 h-px bg-[#E8E6E1] my-5" />
@@ -289,7 +304,7 @@ export default async function PricingPage() {
                     rel="noopener noreferrer"
                     className="block w-full text-center py-3 rounded-xl bg-[#16A34A] text-white text-sm font-black hover:bg-[#15803D] transition-colors shadow-[0_4px_12px_0_rgb(22_163_74/0.3)]"
                   >
-                    Go Alpha — $129/mo
+                    Go Alpha — {PRICING.CURRENCY}{PRICING.ALPHA.monthly}/mo
                   </a>
                 )}
                 <p className="text-xs text-[#9E9C98] text-center mt-3">
@@ -421,7 +436,7 @@ export default async function PricingPage() {
             </p>
             <h2 className="text-4xl md:text-5xl lg:text-6xl font-black tracking-tighter leading-[1.1] flex flex-col items-center">
               <span className="text-[#F8F7F4] block">Unlock the entire intelligence pipeline.</span>
-              <span className="text-[#16A34A] block mt-1 md:mt-2">For under $4.50 a day.</span>
+              <span className="text-[#16A34A] block mt-1 md:mt-2">For under {PRICING.CURRENCY}{PRICING.ALPHA.marketingDailyLimit.toFixed(2)} a day.</span>
             </h2>
           </div>
         </div>
@@ -444,7 +459,7 @@ export default async function PricingPage() {
               rel="noopener noreferrer"
               className="w-full text-center py-4 border border-white/30 text-white rounded-xl font-bold text-base hover:border-white/60 transition-colors"
             >
-              Start with Standard — $69/mo
+              Start with Standard — {PRICING.CURRENCY}{PRICING.STANDARD.monthly}/mo
             </a>
             {isMembershipFull ? (
               <a
@@ -460,7 +475,7 @@ export default async function PricingPage() {
                 rel="noopener noreferrer"
                 className="w-full text-center py-4 bg-[#16A34A] text-white rounded-xl font-black text-base hover:bg-[#15803D] shadow-[0_4px_20px_0_rgb(22_163_74/0.4)] transition-colors"
               >
-                Go Alpha — $129/mo
+                Go Alpha — {PRICING.CURRENCY}{PRICING.ALPHA.monthly}/mo
               </a>
             )}
           </div>

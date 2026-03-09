@@ -1,6 +1,7 @@
 'use client'
 
 import { Lock } from 'lucide-react'
+import { PRICING } from '@/src/config/pricing'
 import { Button } from './Button'
 
 export type PaywallTier = 'standard' | 'alpha'
@@ -21,7 +22,7 @@ export function PaywallOverlay({
   className = '',
 }: PaywallOverlayProps) {
   const ctaLabel =
-    tier === 'alpha' ? 'Go Alpha $29/mo →' : 'Go Standard $9/mo →'
+    tier === 'alpha' ? `Go Alpha ${PRICING.CURRENCY}${PRICING.ALPHA.monthly}/mo →` : `Go Standard ${PRICING.CURRENCY}${PRICING.STANDARD.monthly}/mo →`
 
   return (
     <div className={`relative overflow-hidden ${className}`.trim()}>

@@ -16,7 +16,15 @@ export default function LaunchKit() {
   return (
     <section className="border-b border-[rgba(255,255,255,0.1)] bg-[#0A0908] py-24 md:py-32">
       <div className="mx-auto max-w-6xl px-6">
-        <h2 className="font-black uppercase tracking-tighter text-white text-2xl md:text-3xl">
+        <h2
+          className="font-black uppercase tracking-tighter text-white"
+          style={{
+            fontSize: "clamp(2rem, 4.5vw, 3.5rem)",
+            fontWeight: 900,
+            letterSpacing: "-0.04em",
+            lineHeight: 1.05,
+          }}
+        >
           We bridge the Korea Gap.
         </h2>
         <p className="mt-4 max-w-2xl text-lg font-medium leading-relaxed text-white/60">
