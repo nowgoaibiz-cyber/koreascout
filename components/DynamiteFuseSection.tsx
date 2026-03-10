@@ -2,9 +2,10 @@
 
 import { motion } from "framer-motion";
 
-const TOTAL_DURATION = 9; // 9s: 0→15%(2s), 15→85%(6s), [PAUSE 85% 2s], 85→100%(9s) 소멸
-// 0~2s, 2~6s, 6~8s(정지), 8~9s
-const TIMES = [0, 2 / 9, 6 / 9, 8 / 9, 1]; // [0, 0.222, 0.667, 0.889, 1]
+const TOTAL_DURATION = 9;
+// 2단 일시정지: 0→25%(2s), [PAUSE 25% 1s], 25→80%(2.5s), [PAUSE 80% 2s], 80→100%(1.5s)
+const WIDTH_KEYFRAMES = ["0%", "25%", "25%", "80%", "80%", "100%"];
+const TIMES = [0, 0.222, 0.333, 0.611, 0.833, 1];
 
 // 용접 불꽃: 중심에서 사방으로 튀는 미세 입자 (거리 px, 각도 없이 x/y로 표현)
 const WELDING_PARTICLES = [
@@ -26,11 +27,11 @@ const WELDING_PARTICLES = [
 
 const TRAVEL_VARIANTS = {
   travel: {
-    x: ["0%", "15%", "85%", "85%", "100%"],
+    x: WIDTH_KEYFRAMES,
     transition: {
       duration: TOTAL_DURATION,
       times: TIMES,
-      ease: "linear",
+      ease: "linear" as const,
     },
   },
   extinguish: {
@@ -39,10 +40,17 @@ const TRAVEL_VARIANTS = {
   },
 };
 
-// 6s~8s 정지 구간: 스파클러 강도 상승 (폭발 직전 에너지)
+// 25%·80% 일시정지 구간: 스파클러 강도 상승 (그 자리에서 타오르는 연출)
 const PAUSE_INTENSITY_VARIANT = {
-  scale: [1, 1, 1.14, 1.14, 1],
-  filter: ["brightness(1)", "brightness(1)", "brightness(1.35)", "brightness(1.35)", "brightness(1)"],
+  scale: [1, 1, 1.14, 1.14, 1.14, 1],
+  filter: [
+    "brightness(1)",
+    "brightness(1)",
+    "brightness(1.35)",
+    "brightness(1.35)",
+    "brightness(1.35)",
+    "brightness(1)",
+  ],
   transition: { duration: TOTAL_DURATION, times: TIMES },
 };
 
@@ -61,7 +69,7 @@ export default function DynamiteFuseSection() {
             {/* 기본 라인 — 1px white/10 */}
             <div className="absolute left-0 right-0 top-1/2 -translate-y-1/2 h-px rounded-full bg-white/10" />
 
-            {/* 활성화 선: 9초 동안 0%→15%→85%(정지)→100% (불꽃 이동과 동일) */}
+            {/* 활성화 선: 9초 0%→25%→[PAUSE 1s]→80%→[PAUSE 2s]→100% (불꽃 이동과 동일) */}
             <motion.div
               className="absolute left-0 top-1/2 -translate-y-1/2 h-px rounded-full origin-left pointer-events-none bg-white"
               initial={{ width: "0%" }}
@@ -69,20 +77,20 @@ export default function DynamiteFuseSection() {
               viewport={{ once: true, amount: 0.3 }}
               variants={{
                 burn: {
-                  width: ["0%", "15%", "85%", "85%", "100%"],
+                  width: WIDTH_KEYFRAMES,
                   transition: {
                     duration: TOTAL_DURATION,
                     times: TIMES,
-                    ease: "linear",
+                    ease: "linear" as const,
                   },
                 },
               }}
             />
 
-            {/* Left marker (|) — 15%, 날카롭고 미니멀 */}
+            {/* Left marker — Market Saturation Margin, 25% (1초 일시정지) */}
             <div
               className="absolute flex flex-col items-center pointer-events-none"
-              style={{ left: "15%", bottom: "50%", transform: "translate(-50%, 0)" }}
+              style={{ left: "25%", bottom: "50%", transform: "translate(-50%, 0)" }}
             >
               <motion.span
                 className="text-[9px] md:text-[14px] font-light tracking-tighter text-white/40 uppercase mb-1 whitespace-nowrap"
@@ -101,10 +109,10 @@ export default function DynamiteFuseSection() {
               <div className="w-px bg-white/30" style={{ height: "8px" }} />
             </div>
 
-            {/* Right marker (|) — 85% */}
+            {/* Right marker — KoreaScout Edge Potential, 80% (2초 일시정지) */}
             <div
               className="absolute flex flex-col items-center pointer-events-none"
-              style={{ left: "85%", bottom: "50%", transform: "translate(-50%, 0)" }}
+              style={{ left: "80%", bottom: "50%", transform: "translate(-50%, 0)" }}
             >
               <motion.span
                 className="text-[9px] md:text-[14px] font-light tracking-tighter text-white/40 uppercase mb-1 whitespace-nowrap"
@@ -117,7 +125,7 @@ export default function DynamiteFuseSection() {
                 variants={{
                   revealRight: {
                     opacity: 1,
-                    transition: { delay: 6, duration: 0.35 },
+                    transition: { delay: 5.5, duration: 0.35 },
                   },
                 }}
               >
@@ -126,7 +134,7 @@ export default function DynamiteFuseSection() {
               <div className="w-px bg-white/40" style={{ height: "8px" }} />
             </div>
 
-            {/* ══ Welding Sparkler: 0%→15%(2s)→85%(6s)→[PAUSE 2s]→100%(9s) 소멸 ══ */}
+            {/* ══ Welding Sparkler: 0→25%(2s)→[PAUSE 1s]→80%(2.5s)→[PAUSE 2s]→100%(1.5s) (정지 시 파티클은 그 자리에서 계속 타오름) ══ */}
             <motion.div
               className="absolute left-0 top-1/2 -translate-y-1/2 z-10 w-full"
               style={{ height: 0 }}
@@ -135,7 +143,7 @@ export default function DynamiteFuseSection() {
               viewport={{ once: true, amount: 0.3 }}
               variants={TRAVEL_VARIANTS}
             >
-              {/* 6s~8s 정지 구간에 스파클 강도 상승 (폭발 직전 에너지) */}
+              {/* 25%·80% 정지 구간에 스파클 강도 상승 (폭발 직전 에너지) */}
               <motion.div
                 className="absolute top-0 left-0 -translate-x-1/2 origin-center"
                 style={{ width: "2px", height: "2px" }}

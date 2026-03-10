@@ -242,3 +242,8 @@ When I make a mistake, I revert and explain in Korean.
 
 This is the standard. This is the law.
 ═══════════════════════════════════════════════════════
+# [CRITICAL SYSTEM RULE: GIT OPERATIONS]
+1. NEVER execute `git checkout`, `git reset`, `git revert`, or `git clean` without EXPLICIT, direct permission from the user.
+2. If an error occurs, DO NOT attempt to rollback to a previous Git commit automatically. 
+3. Your default behavior for errors is to FIX THE CODE in the current state, NOT to time-travel.
+4. If you think a Git rollback is the only solution, you MUST ask: "Would you like me to restore from a previous Git version? (Warning: This may delete recent uncommitted files)." and WAIT for the user to type "YES".

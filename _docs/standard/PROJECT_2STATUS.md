@@ -1,301 +1,204 @@
-# K-Product Scout — 프로젝트 현황
+# KoreaScout — 프로젝트 현황 (PROJECT_2STATUS) v3.0
 
-> **대상:** Gemini, Claude 등 AI 팀원 공유용  
-> **최종 갱신:** 2026-03-05  
-> **목적:** 현재 프로젝트 상태를 정확히 파악하기 위한 단일 문서
+> 전수조사 기준: 코드베이스 직접 열람. 모든 항목에 근거 파일명·줄번호 명시.
 
 ---
 
-## 1. 파일 트리
+## ZONE A: 설정 및 인프라
 
-`node_modules`, `.next`, `.git` 제외한 전체 파일 목록.
+### 기술 스택 (package.json)
+- **next:** 16.1.6 (package.json 15행)
+- **react / react-dom:** 19.2.3 (package.json 16-17행)
+- **@supabase/ssr:** ^0.8.0, **@supabase/supabase-js:** ^2.98.0 (package.json 11-12행)
+- **framer-motion:** ^12.35.0, **lucide-react:** ^0.575.0 (package.json 13-14행)
+- **tailwindcss:** ^4, **@tailwindcss/postcss:** ^4 (package.json 21, 26행)
+- **typescript:** ^5 (package.json 27행)
 
-```
-K-ProductScout/
-├── .cursorrules
-├── .env.local
-├── .env.local.example
-├── .gitignore
-├── README.md
-├── _docs/
-│   ├── 01_CORE_SPEC.md
-│   ├── 02_DESIGN_SYSTEM.md
-│   ├── 03_AUDIT_PROJECT_STATE.md
-│   ├── 04_AUDIT_DARK_REMNANTS.md
-│   ├── PROJECT_2DB_STATUS.md
-│   ├── PROJECT_2STATUS.md
-│   ├── PROJECT_3DATA_MAP.md
-│   ├── PROJECT_4UI_STRATEGY.md
-│   ├── PROJECT_CURRENT_DESIGN.md
-│   ├── SECTION_5_EXPORT_LOGISTICS_DATA_REPORT.md
-│   └── SECTION_6_MEDIA_VAULT_DIAGNOSTIC.md
-├── eslint.config.mjs
-├── middleware.ts
-├── next-env.d.ts
-├── next.config.ts
-├── package-lock.json
-├── package.json
-├── postcss.config.mjs
-├── tsconfig.json
-├── app/
-│   ├── favicon.ico
-│   ├── globals.css
-│   ├── layout.tsx
-│   ├── page.tsx
-│   ├── account/
-│   │   └── page.tsx
-│   ├── auth/
-│   │   └── callback/
-│   │       └── route.ts
-│   ├── api/
-│   │   └── webhooks/
-│   │       └── lemonsqueezy/
-│   │           └── route.ts
-│   ├── login/
-│   │   └── page.tsx
-│   ├── pricing/
-│   │   └── page.tsx
-│   ├── signup/
-│   │   └── page.tsx
-│   └── weekly/
-│       ├── page.tsx
-│       └── [weekId]/
-│           ├── page.tsx
-│           └── [id]/
-│               └── page.tsx
-├── components/
-│   ├── GoogleSignInButton.tsx
-│   ├── LockedSection.tsx
-│   ├── LogoutButton.tsx
-│   └── Navigation.tsx
-├── lib/
-│   ├── auth-server.ts
-│   └── supabase/
-│   │   ├── admin.ts
-│   │   ├── client.ts
-│   │   ├── middleware.ts
-│   │   └── server.ts
-├── public/
-│   ├── file.svg
-│   ├── globe.svg
-│   ├── next.svg
-│   ├── vercel.svg
-│   └── window.svg
-├── supabase/
-│   └── migrations/
-│       └── 001_phase2_schema.sql
-└── types/
-    └── database.ts
-```
+### 루트 설정
+- **next.config.ts:** images.remotePatterns에 Unsplash, Supabase, Naver, Coupang 등 허용 (1-56행).
+- **middleware.ts:** /admin 비로그인 시 /admin/login 리다이렉트; 쿠키 `kps_admin_session` 또는 env `ADMIN_COOKIE_NAME` 사용 (1-27행). 그 외 경로는 `updateSession` 호출.
+- **tsconfig.json:** target ES2017, paths `@/*` → `./*`, strict true, jsx react-jsx (1-33행).
+- **postcss.config.mjs:** `@tailwindcss/postcss`만 사용 (1-7행).
+- **eslint.config.mjs:** next core-web-vitals + typescript, .next/ out/ build/ 무시 (1-17행).
+
+### 환경 변수 (코드에서 참조된 것)
+- `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY` (lib/supabase/client.ts 5-6, server.ts 11-12, middleware.ts 8-9, admin.ts 9-10)
+- `SUPABASE_SERVICE_ROLE_KEY` (lib/supabase/admin.ts 10)
+- `LEMONSQUEEZY_WEBHOOK_SECRET` (app/api/webhooks/lemonsqueezy/route.ts 5)
+- `LEMONSQUEEZY_VARIANT_ID_STANDARD`, `LEMONSQUEEZY_VARIANT_ID_ALPHA` (app/api/webhooks/lemonsqueezy/route.ts 12-16)
+- `ADMIN_COOKIE_NAME` (middleware.ts 7, app/api/admin/reports/route.ts 5, app/api/admin/reports/[id]/route.ts 7, app/api/admin/auth/route.ts 22, app/api/admin/logout/route.ts 4)
+- `ADMIN_PASSWORD` (app/api/admin/auth/route.ts 7)
+
+### .cursorrules 요약
+- _docs/standard: 헌법 문서만. _docs/ 루트에 파일 생성 금지.
+- 3-tier 접근: FREE / STANDARD / ALPHA. canSeeAlpha·LockedSection 제거·티어 조건 완화 금지.
+- UI 100% 영어, CEO 소통 100% 한국어.
+- Spec 선독: PROJECT_SPEC, DESIGN_SYSTEM, ACCESS_CONTROL_LOGIC.
+- 색상: #16A34A, #15803D, #1A1916, #E8E6E1, #F8F7F4 등 지정 토큰만 사용 (.cursorrules 176-197행).
+- Git: checkout/reset/revert/clean 사용자 명시 허락 없이 금지 (.cursorrules 243-245행).
 
 ---
 
-## 2. 완료된 작업 (페이지/기능 상태)
+## ZONE B: 설정 파일 (pricing 등)
 
-| 항목 | 상태 | 비고 |
+### src/config/pricing.ts (전문)
+- `PRICING.FREE`: monthly 0, daily 0
+- `PRICING.STANDARD`: monthly 69, daily 2.3
+- `PRICING.ALPHA`: monthly 129, daily 4.3, marketingDailyLimit 4.5
+- `PRICING.CURRENCY`: "$"
+
+---
+
+## ZONE C: lib/ 백엔드 로직
+
+### lib/supabase/client.ts
+- `createClient()`: createBrowserClient(URL, ANON_KEY). 클라이언트 컴포넌트용.
+
+### lib/supabase/server.ts
+- `createClient()`: createServerClient + cookies (getAll/setAll). RLS 적용.
+
+### lib/supabase/middleware.ts
+- `updateSession(request)`: createServerClient로 세션 갱신, getUser() 호출.
+
+### lib/supabase/admin.ts
+- `createServiceRoleClient()`: service_role 키, RLS 우회. 웹훅·관리용.
+
+### lib/auth-server.ts
+- `getAuthTier()`: 서버에서 createClient()로 getUser(), profiles에서 tier·subscription_start_at 조회 (23-27행). **주의:** profiles 스키마(001)에 subscription_start_at 없음 — 타입/DB 불일치.
+
+### app/actions/favorites.ts
+- `toggleFavorite(reportId, weekId?)`: user_favorites 테이블 insert/delete, revalidatePath /account, /weekly/[weekId].
+
+---
+
+## ZONE D: app/ 라우팅 전체
+
+### app/layout.tsx
+- Plus_Jakarta_Sans, JetBrains_Mono 폰트 변수. Header 포함. body bg-[#0A0908].
+
+### app/page.tsx (랜딩)
+- **권한:** 비로그인 포함 전체 공개.
+- **구현 섹션:** S1 Hero(Hero), S2 DynamiteFuseSection, S4 LandingTimeWidget, S5 Intelligence Engine(6-layer+Market Brief 카드), S6 Launch Kit(4문항 카드), S6 IntelligencePipeline, S8 Pricing(3-tier 카드, getAlphaCount 서비스롤), S8b Institutional Policy, S9 Trust+Founder+FAQ(FaqAccordion)+Ready CTA, Footer(Pricing/Sample Report/Contact 링크).
+- **상태:** 서버 컴포넌트. getAlphaCount()로 profiles tier=alpha count 조회 (45-56행). STANDARD/ALPHA 체크아웃 URL 하드코딩 (22-25행). isFull 시 /waitlist 링크 (411-416행).
+- **미구현 라우트:** /contact, /waitlist 링크는 있으나 해당 page.tsx 없음 (footer 509행, pricing 411행).
+
+### app/pricing/page.tsx
+- **권한:** 전체 공개.
+- **구현:** S1 다크 히어로, S2 3-tier 카드(Free/Standard/Alpha), S3 Alpha Moat, S4 FEATURE_GROUPS 테이블, S6 최종 CTA. getAlphaMemberCount() 서비스롤. Alpha 만석 시 /waitlist.
+
+### app/auth/callback/route.ts
+- GET: code 있으면 exchangeCodeForSession 후 `${origin}/sample-report` 리다이렉트 (4-12행). next 파라미터 미반영.
+
+### app/login/page.tsx
+- **권한:** 비로그인 대상. useRouter, useSearchParams(next, error). signInWithPassword. 성공 시 nextUrl || "/". GoogleSignInButton.
+
+### app/signup/page.tsx
+- **권한:** 비로그인 대상. signUp 후 success 시 "Check your email" UI. isPasswordValid: 8자 이상+숫자 또는 특수문자.
+
+### app/forgot-password/page.tsx
+- resetPasswordForEmail, redirectTo `${origin}/auth/callback?next=/reset-password`.
+
+### app/reset-password/page.tsx
+- updateUser({ password }), 성공 시 router.push("/login").
+
+### app/account/page.tsx
+- **권한:** 로그인 필수, 미로그인 시 redirect("/login") (19-22행).
+- **구현:** getAuthTier(), scout_final_reports count, user_favorites로 My Picks 목록, FavoriteButton·ManageBillingButton. tier별 Upgrade/Manage Billing 링크. "Billing portal will be available in Phase 4." (261행).
+
+### app/account/password/page.tsx
+- **권한:** 로그인 필수. useEffect에서 getUser 없으면 replace("/login"). updateUser({ password }) 후 /account?updated=password.
+
+### app/weekly/page.tsx
+- **권한:** 로그인 필수 (66-68행 redirect("/login")).
+- **구현:** getAuthTier(), weeks 조회(status=published), latest 3주, Free Sliding Window(14일 지난 주 1개), Golden Handcuffs(subscriptionStartAt·최신 3주). MonthAccordion으로 The Vault, Featured Report(Free만). canAccessWeek 분기.
+
+### app/weekly/[weekId]/page.tsx
+- **권한:** 로그인 필수. canAccess 동일 로직. RLS로 scout_final_reports·user_favorites 조회. FavoriteButton, 제품 카드 링크 /weekly/[weekId]/[id].
+
+### app/weekly/[weekId]/[id]/page.tsx
+- **권한:** 로그인 후 RLS로 열람 가능한 보고서만. canSeeStandard / canSeeAlpha·isTeaser 분기. ProductIdentity, TrendSignalDashboard, MarketIntelligence, SocialProofTrendIntelligence, SourcingIntel, SupplierContact. LockedSection(SECTION_3/4/CONSUMER/ALPHA_SOURCING/ALPHA_SUPPLIER). ClientLeftNav.
+
+### app/weekly/MonthAccordion.tsx
+- 클라이언트: useState(open), ChevronDown, defaultOpen·currentMonthKey.
+
+### app/sample-report/page.tsx
+- **권한:** 공개. sampleReportData 사용, tier="alpha", isTeaser true. ProductIdentity~SupplierContact 전부 표시. 상단 배너 "Subscribe to Alpha".
+
+### app/admin/page.tsx
+- **권한:** 쿠키 kps_admin_session=authenticated. GET /api/admin/reports. week/status 필터, 로그아웃 POST /api/admin/logout 후 location /admin/login.
+
+### app/admin/login/page.tsx
+- POST /api/admin/auth { password }. 성공 시 router.push("/admin").
+
+### app/admin/[id]/page.tsx
+- **권한:** 동일 쿠키. GET/PATCH /api/admin/reports/[id]. 폼: Product Identity, Trend Signal, Market Intel, Social Proof, Export & Logistics, Launch Kit. GlobalPricesHelper, HazmatCheckboxes, AiPageLinksHelper. status published/hidden 선택. edit_history JSON 저장. PATCH 시 kr_price_usd·estimated_cost_usd 제외 (57-58행).
+
+### app/error.tsx
+- "use client". error, reset. Logo, "Intelligence Interrupted.", Try Again·Back to Home.
+
+### app/not-found.tsx
+- Logo, "Intelligence Not Found.", Back to Home.
+
+### API 라우트
+- **app/api/webhooks/lemonsqueezy/route.ts:** POST, x-signature 검증, subscription_created/updated 시 variant_id로 tier 매핑, profiles update by user_id(custom_data) 또는 email. subscription_cancelled/expired 시 tier=free, ls_subscription_id=null.
+- **app/api/admin/reports/route.ts:** GET, 쿠키 검사 후 scout_final_reports 목록 (id, product_name, week_id, market_viability, status, created_at).
+- **app/api/admin/reports/[id]/route.ts:** GET 단일, PATCH 업데이트. assertAdmin 쿠키. revalidatePath weekly.
+- **app/api/admin/auth/route.ts:** POST { password }, ADMIN_PASSWORD와 일치 시 쿠키 설정 7일.
+- **app/api/admin/logout/route.ts:** POST, 쿠키 삭제 후 redirect /admin/login.
+
+---
+
+## ZONE E: components/ 요약
+
+- **layout:** Header(server)→HeaderShellClient, HeaderNavClient(로그인 시 Weekly Report/Account/Logout), ClientLeftNav(sections, userEmail, tier, IntersectionObserver).
+- **report:** ProductIdentity, TrendSignalDashboard, MarketIntelligence, SocialProofTrendIntelligence, SourcingIntel, SupplierContact. constants(SECTION_*_CTA, EXPORT_STATUS_DISPLAY). utils(formatHsCode, parseGlobalPricesForGrid, getAiDetailUrl 등).
+- **ui (components/ui/index.ts):** Button, Card, Badge, Input, Textarea, KeywordPill, PaywallOverlay.
+- **기타:** Hero(HeroCTA, /videos/hero.mp4), DynamiteFuseSection, LandingTimeWidget, IntelligencePipeline, FaqAccordion, LaunchKit, Logo, LogoutButton, ManageBillingButton, FavoriteButton(toggleFavorite), RemoveFavoriteButton, GoogleSignInButton(signInWithOAuth google), HazmatBadges, BrokerEmailDraft, ExpandableText, GroupBBrokerSection, DonutGauge, LockedSection, StatusBadge, ViralHashtagPills, CopyButton, GlobalPricingTable, TagCloud, PriceComparisonBar, ScrollToIdButton, AlphaVaultPreview, SplashScreen, GrandEntrance, IntelligenceTicker, ContactCard. **admin:** HazmatCheckboxes, AiPageLinksHelper, GlobalPricesHelper.
+
+---
+
+## ZONE F: CSS 및 디자인 시스템
+
+### app/globals.css
+- @import "tailwindcss"; @theme inline: --color-cream-50~400, --color-ink-100~900, --color-accent, --color-danger, --color-warning, --color-info, semantic aliases (--color-bg-page 등), --font-sans/mono, --radius-sm~2xl, --shadow-card/elevated/modal.
+- :root: --background #030303, --foreground #ffffff, --indigo, --purple, --amber, --bg-card, --border, --text-muted/mid.
+- @layer base: body 배경·색·font-family·font-size 1.0625rem.
+- keyframes: hero-fade-in, s2-scale-noise, s2-scale-alpha, floatDrift, pulse, pulseDot.
+- .s6-section ~ .s6-badge: Intelligence Pipeline 섹션용 클래스. @media (max-width: 768px) .s6-row 컬럼 전환.
+
+### _docs/standard (참조된 스펙)
+- 01_CORE_SPEC.md: DB 변경 규칙, v1.3 가격 정책 등.
+- 04_ACCESS_CONTROL_LOGIC.md: Gate 1~3, Golden Handcuffs, Free Sliding Window, subscription_start_at 언급.
+- 02_DESIGN_SYSTEM.md, 02_PRICING_STRATEGY.md, 10_LUXURY_UI_AUDIT.md, SAMPLE_REPORT_AUDIT.md, DATA_SCHEMA_RECON_REPORT.md 등 존재.
+
+---
+
+## ZONE G: public/ 미디어
+
+- **확인된 파일:** window.svg, file.svg, vercel.svg, images/skin1004.png, images/noise-search.png, images/Gemini_Generated_Image_x9yjm1x9yjm1x9yj.png, videos/README.md, **videos/hero.mp4** (존재). Hero.tsx 35행 src="/videos/hero.mp4".
+
+---
+
+## 구현 여부 요약
+
+| 항목 | 상태 | 근거 |
 |------|------|------|
-| **랜딩 페이지** (`/`) | ✅ 동작 | Hero, 가치 제안, FAQ, 인라인 #pricing 섹션. |
-| **Pricing 전용 페이지** (`/pricing`) | ✅ 동작 | Section 12 비교표 구현. Dark B2B 테마, Alpha MOST POPULAR, Standard/Alpha CTA → LemonSqueezy Checkout URL 연결. |
-| **로그인** (`/login`) | ✅ 동작 | 이메일/비밀번호 + Google, Supabase Auth |
-| **회원가입** (`/signup`) | ✅ 동작 | 가입 시 `profiles` 자동 생성(트리거) |
-| **Auth 콜백** (`/auth/callback`) | ✅ 동작 | OAuth 리다이렉트 처리 |
-| **Weekly 허브** (`/weekly`) | ✅ 동작 | 주차 목록, Free 14일 잠금/해제, RLS 반영 |
-| **상품 리스트** (`/weekly/[weekId]`) | ✅ 동작 | 상품 카드, `is_teaser` 뱃지 |
-| **상품 상세** (`/weekly/[weekId]/[id]`) | ✅ 동작 | Tier별 섹션 분기, LockedSection CTA → `/pricing` |
-| **계정** (`/account`) | ⚠️ 부분 | 로그인 필수, 이메일 표시. 구독/고객 포털 링크는 TODO. |
-| **LemonSqueezy Webhook** (`POST /api/webhooks/lemonsqueezy`) | ✅ 동작 | 서명 검증, subscription_created/updated → tier 업데이트, subscription_cancelled/expired → tier=free. Service role로 RLS 우회. |
-| **시드 데이터** | ❌ 미삽입 | `weeks` / `scout_final_reports` 테스트 데이터 없으면 Weekly 빈 목록. |
+| /contact | 미구현 | app/contact/page.tsx 없음, footer 링크만 존재 |
+| /waitlist | 미구현 | app/waitlist/page.tsx 없음, pricing·home 링크만 존재 |
+| auth/callback next 파라미터 | 미반영 | route.ts 항상 /sample-report로 리다이렉트 |
+| Billing portal | 미구현 | account 페이지 "Phase 4" 문구 |
+| user_favorites 테이블 | 코드에서 사용 | 마이그레이션 파일에는 정의 없음 (PROJECT_2DB_STATUS 참고) |
+| profiles.subscription_start_at | 코드에서 조회 | lib/auth-server.ts 26행; 스키마/타입에 없음 |
 
 ---
 
-## 3. 현재 기술 구성
+## 신규 발견 항목 (블라인드 스팟)
 
-### 3-1. 패키지 (package.json)
-
-| 구분 | 패키지 | 버전 |
-|------|--------|------|
-| **런타임** | next | 16.1.6 |
-| | react | 19.2.3 |
-| | react-dom | 19.2.3 |
-| | @supabase/ssr | ^0.8.0 |
-| | @supabase/supabase-js | ^2.98.0 |
-| | lucide-react | ^0.575.0 |
-| **개발** | typescript | ^5 |
-| | eslint | ^9 |
-| | eslint-config-next | 16.1.6 |
-| | tailwindcss | ^4 |
-| | @tailwindcss/postcss | ^4 |
-| | @types/node | ^20 |
-| | @types/react | ^19 |
-| | @types/react-dom | ^19 |
-
-결제: LemonSqueezy Checkout 링크 + Webhook. LemonSqueezy SDK 미사용.
-
-### 3-2. 환경 변수
-
-| 변수 | 설정 여부 | 용도 |
-|------|------------|------|
-| `NEXT_PUBLIC_SUPABASE_URL` | ✅ | Supabase 프로젝트 URL |
-| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | ✅ | Supabase anon key (RLS 적용) |
-| `SUPABASE_SERVICE_ROLE_KEY` | ✅ | 웹훅에서 profiles 업데이트 시 RLS 우회 |
-| `LEMONSQUEEZY_API_KEY` | ✅ | LemonSqueezy API (선택 사용) |
-| `LEMONSQUEEZY_WEBHOOK_SECRET` | ✅ | 웹훅 X-Signature HMAC 검증 |
-| `LEMONSQUEEZY_VARIANT_ID_STANDARD` | ✅ | 숫자 variant_id (예: 1349474) → tier `standard` |
-| `LEMONSQUEEZY_VARIANT_ID_ALPHA` | ✅ | 숫자 variant_id (예: 1349486) → tier `alpha` |
+- **app/weekly/MonthAccordion.tsx:** app/weekly 하위에 있는 클라이언트 컴포넌트 (페이지가 아님).
+- **components/admin/GlobalPricesHelper, HazmatCheckboxes, AiPageLinksHelper:** admin [id] 편집 폼에서만 사용.
+- **data/sampleReportData.ts:** sample-report 전용 정적 데이터, ScoutFinalReportsRow 타입 완전 구현.
+- **ReportStatus 'hidden':** types/database.ts 12행 ReportStatus에 'hidden' 포함. admin [id]에서 status published/hidden 선택 (316-317행). 001 마이그레이션 CHECK에는 'draft','published','archived'만 있음.
 
 ---
 
-## 4. 페이지 라우트
-
-| 경로 | 설명 |
-|------|------|
-| `/` | 랜딩. Hero, 기능 소개, FAQ, #pricing. |
-| `/pricing` | 3-tier 비교표 + Standard/Alpha LemonSqueezy Checkout 링크 (target=_blank). |
-| `/login` | 로그인 (이메일/비밀번호 + Google). |
-| `/signup` | 회원가입. |
-| `/auth/callback` | OAuth 콜백. |
-| `/account` | 계정(이메일). 구독/포털 TODO. |
-| `/weekly` | Weekly 허브. |
-| `/weekly/[weekId]` | 해당 주차 상품 리스트. |
-| `/weekly/[weekId]/[id]` | 상품 상세. Tier 분기, CTA → /pricing. |
-| `POST /api/webhooks/lemonsqueezy` | LemonSqueezy 웹훅. 서명 검증 후 tier 갱신. |
-
----
-
-## 5. 컴포넌트
-
-| 컴포넌트 | 경로 | 용도 |
-|----------|------|------|
-| Navigation | `components/Navigation.tsx` | 상단 공통 네비게이션. |
-| GoogleSignInButton | `components/GoogleSignInButton.tsx` | Google OAuth. |
-| LogoutButton | `components/LogoutButton.tsx` | 로그아웃. |
-| LockedSection | `components/LockedSection.tsx` | 상세 페이지 잠금 섹션, CTA `/pricing`. |
-
----
-
-## 6. Technical Log (14:00 KST 이후)
-
-### 6-1. ngrok 및 웹훅 인증
-
-- **상황:** 로컬/배포 웹훅 URL로 LemonSqueezy에서 POST 시 400/401/500 발생.
-- **서명 검증:**  
-  - `request.text()`로 **raw body** 확보 후 `JSON.parse` 분리. (body 한 번만 소비.)  
-  - `X-Signature` 헤더와 `LEMONSQUEEZY_WEBHOOK_SECRET`으로 HMAC-SHA256 hex digest 계산, `crypto.timingSafeEqual`로 비교. 실패 시 401 반환.
-- **ngrok 사용 시:** LemonSqueezy Webhook URL을 ngrok HTTPS URL (예: `https://xxx.ngrok.io/api/webhooks/lemonsqueezy`)로 설정하고, 동일한 Signing secret 사용. 로컬에서는 `next dev` + ngrok 터널로 수신.
-
-### 6-2. 400 Bad Request 원인 및 수정
-
-- **원인 1 — Unknown variant_id:**  
-  LemonSqueezy 웹훅은 체크아웃 URL의 UUID가 아니라 **숫자 variant_id**를 보냄. 기존 코드는 UUID만 비교해 매칭 실패 → 400.
-- **수정:**  
-  - `.env`에 `LEMONSQUEEZY_VARIANT_ID_STANDARD`, `LEMONSQUEEZY_VARIANT_ID_ALPHA` (숫자) 추가.  
-  - `variantIdToTier(variantId)`: `variantId`가 **number**이거나 숫자 **string**이면 `parseInt` 후 env에서 읽은 숫자와 비교해 `'standard'`/`'alpha'` 반환. UUID는 기존 로직 유지.
-- **원인 2 — Missing variant_id:**  
-  payload가 예상과 다르면 `data.attributes.variant_id`가 없을 수 있음.  
-- **수정:**  
-  - 400 반환 직전에 `attrs`(또는 관련 payload)를 `console.warn`으로 로그.  
-  - 수신 시 `event`, `data.type`, `data.id`, `data.attributes` 키, `variant_id` 값/타입을 `console.log`로 출력해 실제 페이로드 구조 확인.
-
-### 6-3. 500 및 프로필 업데이트
-
-- **원인:** 웹훅에서 `profiles` 업데이트 시 anon 클라이언트 사용 → RLS로 인해 업데이트 거부 또는 행 미조회.
-- **수정:**  
-  - `lib/supabase/admin.ts`에 `createServiceRoleClient()` 추가. `SUPABASE_SERVICE_ROLE_KEY` 사용, `persistSession: false`.  
-  - 웹훅 핸들러에서는 이 **service role 클라이언트**만 사용해 `profiles`의 `tier`, `ls_subscription_id`, `tier_updated_at` 갱신 (및 취소/만료 시 `tier='free'`, `ls_subscription_id=null`).
-- **유저 식별:**  
-  - 우선 `meta.custom_data.user_id` (Supabase auth UUID).  
-  - 없으면 `data.attributes.user_email`로 `profiles`에서 해당 행을 찾아 업데이트.
-
-### 6-4. 적용된 코드 요약
-
-- **route.ts:**  
-  - Raw body → 서명 검증 → JSON 파싱 → `meta.event_name` / `x-event-name`으로 이벤트 분기.  
-  - `subscription_created` / `subscription_updated`: `variant_id` → `variantIdToTier()` → tier 결정 → `custom_data.user_id` 또는 `user_email`로 profile 업데이트.  
-  - `subscription_cancelled` / `subscription_expired`: `data.id`로 `ls_subscription_id` 매칭 후 `tier='free'`, `ls_subscription_id=null`.  
-  - 각 400/401/500 반환 직전에 원인과 수신값 로그 추가.
-
----
-
-## 7. Progress — 결제 연동 및 테스트
-
-| 항목 | 상태 | 비고 |
-|------|------|------|
-| Pricing 페이지 | ✅ | Section 12 비교표, Alpha 강조, CTA 버튼. |
-| Checkout 링크 | ✅ | Standard/Alpha 각각 LemonSqueezy Checkout URL, `target="_blank"` `rel="noopener noreferrer"`. |
-| Webhook 엔드포인트 | ✅ | `POST /api/webhooks/lemonsqueezy` 구현. |
-| 서명 검증 | ✅ | HMAC-SHA256 + timingSafeEqual. |
-| tier 업데이트 (구독 생성/갱신) | ✅ | variant_id(숫자) → env 매핑 → `profiles.tier` / `ls_subscription_id` / `tier_updated_at` 갱신. |
-| tier 다운그레이드 (취소/만료) | ✅ | `ls_subscription_id`로 프로필 찾아 `tier='free'`. |
-| 테스트 결제 → 200 성공 | ✅ | 로그에서 variant_id 숫자(1349474 등) 확인 후, `LEMONSQUEEZY_VARIANT_ID_STANDARD` 설정으로 400 해소, 웹훅 200 및 tier 반영 확인. |
-
-**결제 연동 완성도:** Checkout 진입 → 결제 완료 → 웹훅 수신 → profiles tier 갱신까지 플로우 완료. `/account`에서 구독 상태/고객 포털 링크 노출은 별도 작업.
-
----
-
-## 8. 알려진 이슈 / 미완료
-
-- **시드 데이터:** `weeks` / `scout_final_reports` 미삽입 시 Weekly 빈 목록.
-- **seo_keywords:** DB는 `TEXT[]`, `types/database.ts`는 `string[] | null` — 필요 시 타입 정리.
-- **account:** 구독 상태 표시 및 LemonSqueezy 고객 포털 링크 미구현.
-
----
-
-## 8b. Section Status (Product Detail Page)
-
-| 섹션 | 상태 | 비고 |
-|------|------|------|
-| **Section 4** (Social Proof & Trend Intelligence) | **DONE** | 럭셔리 타이포·카드·Gap Index Hero·Trending Signals·Scout Strategy 최종 적용. Design Constitution 반영 완료. |
-| **Section 5** (Export & Logistics Intel) | **DONE** | Phase 16-A 완료. Dual-hero 가격, 실시간 환율, Cream 푸터, 13px 태그, 로지스틱스 가시성 강화 등 100% Luxury UI 적용. |
-
----
-
-## 8c. Current Focus — Phase 2 진입
-
-**Phase 1 (Report Completion) 종료. Phase 2 준비.**
-
-- **현재 마일스톤:** Phase 16-A (Report Pixel Polish & Constitution Ratification) **COMPLETED**.
-- **Git:** 새 저장소 `koreascout`로 마이그레이션 완료. Push 및 동기화 완료.
-- **리포트 상태:** 100% Luxury UI 적용 — Dual-hero 가격, 동적 환율, Cream 푸터, 13px 태그, 강화된 로지스틱스 가시성.
-- **다음:** Pricing Page 개발 (Stitch MCP 사용 Sandbox 테스트).
-
-**UI 작업 단일 소스:** 이후 모든 UI 작업은 `_docs/standard/10_LUXURY_UI_AUDIT.md` (v2.0)을 **단일 기준 문서**로 참조. 위반 시 revert.
-
----
-
-## 9. Make.com 연동 및 DB 스키마
-
-| 항목 | 상태 | 비고 |
-|------|------|------|
-| **Backend / Make.com 데이터 파이프라인** | ✅ **100% 완료** | 외부 소스 → Make.com → Supabase `scout_final_reports` 적재 완료. |
-| **DB 스키마 업데이트** | ✅ **100% 완료** | `scout_final_reports` 확장 반영: evidence 필드, weight 컬럼, `rising_keywords`/`viral_hashtags` TEXT, `sourcing_tip` 5단계 전략 등. 상세는 `PROJECT_2DB_STATUS.md` 참고. |
-
-설계상 LemonSqueezy → Next.js Webhook → Supabase `profiles` 업데이트는 구현 완료.
-
----
-
-## 10. Additional Updates Found by AI
-
-(14:00 KST 이후 대화·수정 기준으로, 사용자가 명시하지 않았으나 반영된 사항.)
-
-- **Pricing 페이지 메타데이터:** `app/pricing/page.tsx`에 `metadata` (title: "Pricing — K-Product Scout", description) 추가.
-- **웹훅 로그:** 400/401/500 원인 추적을 위해 `[lemonsqueezy]` 접두어로 event, data.type, data.id, attributes 키, variant_id 값/타입, 및 각 에러 반환 직전 상세 로그 추가.
-- **variant_id 이중 지원:** 숫자 외에 **문자열 숫자**(`"1349474"`)도 `variantIdToTier`에서 `parseInt` 후 비교하도록 처리.
-- **.env.local.example:** `SUPABASE_SERVICE_ROLE_KEY`, `LEMONSQUEEZY_*`, `LEMONSQUEEZY_VARIANT_ID_STANDARD` / `_ALPHA` 플레이스홀더 및 주석 추가.
-- **Checkout 링크 보안:** Standard/Alpha CTA에 `target="_blank"` 및 `rel="noopener noreferrer"` 적용.
-- **profiles 업데이트 필드:** 웹훅에서 `tier`, `ls_subscription_id`, `tier_updated_at`만 갱신. `ls_customer_id`는 현재 웹훅 로직에서 미설정(필요 시 추후 추가).
-
----
-
----
-
-## 11. [2026-03-05] Governance — Design Constitution (Phase 16-A Ratified)
-
-- **Completed:** Section 4 럭셔리 UI 확정 기준으로 `_docs/standard/10_LUXURY_UI_AUDIT.md` (v2.0) 작성. Main Header / Sub-Label / Body(200자 ternary) / Card Container / Hero Number 규칙 명시.
-- **Completed:** Section 4 → **DONE**, Section 5 → **DONE** (Phase 16-A Report Pixel Polish 완료).
-- **Reference:** 이후 모든 UI 작업은 **`_docs/standard/10_LUXURY_UI_AUDIT.md` (v2.0)** 를 단일 소스로 사용. 홈/프라이싱/리포트 등 페이지 타입별 Decision Matrix 및 Zero Tolerance 적용.
-- **Next:** Pricing Page 개발 (Stitch MCP Sandbox). Make.com 1-click 리포트 생성은 Phase 2 PENDING.
-- **Blockers:** 없음.
-
----
-
-이 문서는 `01_CORE_SPEC.md`, `PROJECT_2DB_STATUS.md`와 함께 사용하면 현재 구현 범위와 결제·웹훅 상태를 한눈에 맞출 수 있습니다.
+*문서 끝. 모든 기술적 서술은 위에 명시한 파일·행 기준으로 검증됨.*

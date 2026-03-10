@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import Hero from "@/components/Hero";
+import LandingPipelineSneakPeek from "@/components/LandingPipelineSneakPeek";
 import DynamiteFuseSection from "@/components/DynamiteFuseSection";
 import IntelligencePipeline from "@/components/IntelligencePipeline";
 import LandingTimeWidget from "@/components/LandingTimeWidget";
@@ -68,6 +69,9 @@ export default async function HomePage() {
 
         {/* ══ S1: HERO ═══════════════════════════════════════════════════════════ */}
         <Hero />
+
+        {/* ══ S1.5: PIPELINE SNEAK PEEK ═══════════════════════════════════════════ */}
+        <LandingPipelineSneakPeek />
 
         {/* ══ S2: THE INTELLIGENCE GAP — Dynamite Fuse + Bottom Copy ═══════════════════ */}
         <DynamiteFuseSection />
