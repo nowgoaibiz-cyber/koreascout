@@ -150,12 +150,12 @@ export default function ProductIdentity({
               textWrap: "balance",
             } as React.CSSProperties}
           >
-            {report.product_name || report.translated_name}
+            {report.translated_name || report.product_name}
           </h1>
 
-          {report.translated_name && (
+          {report.product_name && (
             <p className="text-lg font-medium text-[#6B6860] line-clamp-2 mb-6">
-              {report.translated_name}
+              {report.product_name}
             </p>
           )}
 
