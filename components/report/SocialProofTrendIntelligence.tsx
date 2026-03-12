@@ -107,6 +107,12 @@ export function SocialProofTrendIntelligence({
               </span>
             </div>
           )}
+          {report.trend_entry_strategy?.trim() && (
+            <div className="mt-4">
+              <p className="text-xs font-bold text-[#9E9C98] uppercase tracking-[0.2em] mb-2">Entry Strategy</p>
+              <p className="text-sm text-[#6B6860] leading-relaxed">{report.trend_entry_strategy}</p>
+            </div>
+          )}
           {report.opportunity_reasoning?.trim() && (
             <p className="text-base italic text-[#6B6860] max-w-lg mx-auto leading-relaxed mt-4">
               {report.opportunity_reasoning}

@@ -120,10 +120,10 @@ export function MarketIntelligence({
           const sixMarkets: { code: string; label: string; row: (typeof rows)[number] | null }[] = [
             { code: "US", label: "North America", row: findRow("US") ?? null },
             { code: "UK", label: "United Kingdom", row: findRow("UK") ?? null },
-            { code: "EU", label: "European Union", row: null },
-            { code: "JP", label: "Japan", row: null },
+            { code: "EU", label: "European Union", row: findRow("EU") ?? null },
+            { code: "JP", label: "Japan", row: findRow("JP") ?? null },
             { code: "SEA", label: "Southeast Asia", row: findRow("SEA") ?? null },
-            { code: "UAE", label: "Middle East", row: null },
+            { code: "UAE", label: "Middle East", row: findRow("UAE") ?? null },
           ];
 
           return (
@@ -132,6 +132,11 @@ export function MarketIntelligence({
                 <h3 className="text-xl font-bold text-[#1A1916]">Global Market Availability</h3>
                 <span className="text-sm text-[#6B6860] font-normal ml-3">6 Strategic Markets for K-Products</span>
               </div>
+              {report.best_platform?.trim() && (
+                <p className="text-xs text-[#9E9C98] mt-1">
+                  Best Entry: <span className="font-bold text-[#1A1916]">{report.best_platform}</span>
+                </p>
+              )}
               <div className="grid grid-cols-2 gap-x-16" style={{ marginTop: "1.2cm", rowGap: "1.2cm" }}>
                 {sixMarkets.map((market) => {
                   const isUntapped = !market.row || market.row.isBlueOcean;
@@ -158,6 +163,12 @@ export function MarketIntelligence({
                             </div>
                             {market.row!.platform && (
                               <p className="text-xs text-[#9E9C98] mt-1">via {market.row!.platform}</p>
+                            )}
+                            {market.row!.seller_type && market.row!.seller_type.trim() && market.row!.seller_type.trim() !== "Untapped" && (
+                              <p className="text-xs text-[#9E9C98] mt-1">{market.row!.seller_type}</p>
+                            )}
+                            {market.row!.review_data && market.row!.review_data.trim() && market.row!.review_data.trim() !== "Untapped" && (
+                              <p className="text-xs text-[#9E9C98] mt-1">{market.row!.review_data}</p>
                             )}
                           </>
                         )}

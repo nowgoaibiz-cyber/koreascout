@@ -68,6 +68,8 @@ export interface ScoutFinalReportsRow {
   m_homepage: string | null;
   naver_link: string | null;
   wholesale_link?: string | null;
+  global_site_url?: string | null;
+  b2b_inquiry_url?: string | null;
   video_url: string | null;
   competitor_analysis_pdf: string | null;
   /** v1.2: 바이럴 숏폼 영상 URL */
@@ -138,6 +140,9 @@ export interface ScoutFinalReportsRow {
   required_certificates?: string | null;
   /** Freeform logistics notes */
   shipping_notes?: string | null;
+  sourcing_tip_logistics?: string | null;
+  hazmat_summary?: string | null;
+  can_oem?: boolean | null;
   /** Key risky ingredient to highlight */
   key_risk_ingredient?: string | null;
   /** Regulatory or status reasoning text */
@@ -159,6 +164,8 @@ export interface ScoutFinalReportsRow {
   export_cert_note?: string | null;
   /** Admin edit history log: { entries: [{ timestamp, changes: [{ field, before, after }] }] } */
   edit_history?: Json | null;
+  composite_score?: number | null;
+  go_verdict?: string | null;
 }
 
 export interface UserFavoritesRow {

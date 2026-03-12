@@ -175,6 +175,12 @@ export function SourcingIntel({
                       <ExpandableText text={report.spec_summary} label="Specifications" />
                     </div>
                   )}
+                  {report.hazmat_summary?.trim() && (
+                    <div className="mt-6">
+                      <p className="text-xl font-bold text-[#1A1916] mb-4">Hazmat Summary</p>
+                      <ExpandableText text={report.hazmat_summary} />
+                    </div>
+                  )}
                 </div>
               )}
             </>
@@ -217,6 +223,12 @@ export function SourcingIntel({
                           </div>
                         </div>
                       ))}
+                    </div>
+                  )}
+                  {report.sourcing_tip_logistics?.trim() && (
+                    <div className="border-t border-dashed border-[#E8E6E1] pt-8">
+                      <p className="text-sm font-bold text-[#6B6860] tracking-widest mb-3">Logistics Intelligence</p>
+                      <p className="text-sm italic text-[#6B6860] leading-relaxed">{report.sourcing_tip_logistics}</p>
                     </div>
                   )}
                   {hasNotes && (

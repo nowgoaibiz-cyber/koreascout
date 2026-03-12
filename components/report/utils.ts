@@ -4,8 +4,9 @@ const GLOBAL_REGIONS = [
   { key: "us", flag: "🇺🇸", label: "US" },
   { key: "uk", flag: "🇬🇧", label: "UK" },
   { key: "sea", flag: "🇸🇬", label: "SEA" },
-  { key: "au", flag: "🇦🇺", label: "AU" },
-  { key: "india", flag: "🇮🇳", label: "IN" },
+  { key: "eu", flag: "🇪🇺", label: "EU" },
+  { key: "jp", flag: "🇯🇵", label: "JP" },
+  { key: "uae", flag: "🇦🇪", label: "UAE" },
 ] as const;
 
 export function formatHsCode(raw: string | null | undefined): string {
@@ -70,34 +71,33 @@ export function parseSourcingStrategy(
   raw: string | null | undefined
 ): StrategyStep[] {
   if (!raw) return [];
-  const stepConfig: { pattern: RegExp; icon: string; label: string; color: string }[] = [
-    { pattern: /\[마케팅\s*전략\]/i, icon: "📈", label: "Marketing Strategy", color: "emerald" },
-    { pattern: /\[가격\s*[\/·]\s*마진\s*전략\]/i, icon: "💰", label: "Pricing & Margin", color: "amber" },
-    { pattern: /\[B2B\s*소싱\s*전략\]/i, icon: "🏭", label: "B2B Sourcing", color: "blue" },
-    { pattern: /\[통관\s*[\/·]\s*규제\s*전략\]/i, icon: "📋", label: "Regulation & Compliance", color: "red" },
-    { pattern: /\[물류\s*[\/·]\s*배송\s*전략\]/i, icon: "📦", label: "Logistics & Shipping", color: "purple" },
+  // Language-agnostic: any line that is entirely [ ... ] is a section header
+  const headerRegex = /(?:^|\n)\s*\[([^\n]*?)\]/g;
+  const matches: { index: number; fullMatch: string; title: string }[] = [];
+  let m: RegExpExecArray | null;
+  while ((m = headerRegex.exec(raw)) !== null) {
+    matches.push({ index: m.index, fullMatch: m[0], title: m[1].trim() });
+  }
+  if (matches.length === 0) {
+    if (raw.trim()) {
+      return [{ icon: "📋", label: "Strategy Overview", color: "emerald", content: raw.trim() }];
+    }
+    return [];
+  }
+  const iconColorList: { icon: string; color: string }[] = [
+    { icon: "📈", color: "emerald" },
+    { icon: "💰", color: "amber" },
+    { icon: "🏭", color: "blue" },
+    { icon: "📋", color: "red" },
+    { icon: "📦", color: "purple" },
   ];
   const steps: StrategyStep[] = [];
-  for (let i = 0; i < stepConfig.length; i++) {
-    const current = stepConfig[i];
-    const match = raw.match(current.pattern);
-    if (!match) continue;
-    const startIdx = match.index! + match[0].length;
-    let endIdx = raw.length;
-    for (let j = i + 1; j < stepConfig.length; j++) {
-      const nextMatch = raw.match(stepConfig[j].pattern);
-      if (nextMatch) {
-        endIdx = nextMatch.index!;
-        break;
-      }
-    }
+  for (let i = 0; i < matches.length; i++) {
+    const startIdx = matches[i].index + matches[i].fullMatch.length;
+    const endIdx = matches[i + 1] ? matches[i + 1].index : raw.length;
     const content = raw.slice(startIdx, endIdx).trim();
-    if (content) {
-      steps.push({ icon: current.icon, label: current.label, color: current.color, content });
-    }
-  }
-  if (steps.length === 0 && raw.trim()) {
-    steps.push({ icon: "📋", label: "Strategy Overview", color: "emerald", content: raw.trim() });
+    const { icon, color } = iconColorList[i % iconColorList.length];
+    steps.push({ icon, label: matches[i].title, color, content });
   }
   return steps;
 }
@@ -114,6 +114,8 @@ export type RegionPriceRow = {
   priceDisplay: string | null;
   platform?: string | null;
   isBlueOcean: boolean;
+  review_data?: string | null;
+  seller_type?: string | null;
 };
 
 export function parseGlobalPricesForGrid(
@@ -134,8 +136,20 @@ export function parseGlobalPricesForGrid(
     }
   }
   if (parsed) {
+    type MarketData = { price_usd?: number; price_original?: string | number; platform?: string; review_data?: string | null; seller_type?: string | null };
+    const hasGroupKeys = "us_uk_eu" in parsed || "jp_sea" in parsed || "uae" in parsed;
+    const flat: Record<string, MarketData | undefined> = hasGroupKeys
+      ? {
+          us: (parsed as Record<string, { us?: MarketData; uk?: MarketData; eu?: MarketData }>)["us_uk_eu"]?.us,
+          uk: (parsed as Record<string, { us?: MarketData; uk?: MarketData; eu?: MarketData }>)["us_uk_eu"]?.uk,
+          eu: (parsed as Record<string, { us?: MarketData; uk?: MarketData; eu?: MarketData }>)["us_uk_eu"]?.eu,
+          jp: (parsed as Record<string, { jp?: MarketData; sea?: MarketData }>)["jp_sea"]?.jp,
+          sea: (parsed as Record<string, { jp?: MarketData; sea?: MarketData }>)["jp_sea"]?.sea,
+          uae: (parsed as Record<string, { uae?: MarketData }>)["uae"]?.uae,
+        }
+      : (parsed as Record<string, MarketData>);
     for (const r of GLOBAL_REGIONS) {
-      const data = parsed[r.key] ?? parsed[r.key === "au" ? "australia" : r.key];
+      const data = flat[r.key] ?? flat[r.key === "au" ? "australia" : r.key];
       const priceUsd = data?.price_usd;
       const priceOrig = data?.price_original != null ? String(data.price_original).replace(/[$,]/g, "") : "";
       const num = priceUsd != null ? priceUsd : priceOrig ? parseFloat(priceOrig) : NaN;
@@ -149,12 +163,16 @@ export function parseGlobalPricesForGrid(
                 ? `$${priceOrig}`
                 : null)
         : null;
+      const review_data = data?.review_data ?? null;
+      const seller_type = data?.seller_type ?? null;
       out.push({
         flag: r.flag,
         label: r.label,
         priceDisplay: priceDisplay ?? null,
         platform: data?.platform ?? null,
         isBlueOcean,
+        review_data,
+        seller_type,
       });
     }
     return out;

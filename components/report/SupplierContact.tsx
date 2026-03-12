@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui";
-import { ArrowRight, ArrowUpRight, Download, ExternalLink, Film, Globe, ImageIcon, LayoutTemplate, Mail, Phone, Play, ShoppingBag } from "lucide-react";
+import { ArrowRight, ArrowUpRight, Download, ExternalLink, Film, Globe, Globe2, ImageIcon, LayoutTemplate, Mail, Phone, Play, ShoppingBag } from "lucide-react";
 import type { ScoutFinalReportsRow } from "@/types/database";
 import { getAiDetailUrl } from "./utils";
 
@@ -54,12 +54,30 @@ export function SupplierContact({
   } catch {
     // ignore
   }
+  const hasNested = "us_uk_eu" in rawPrices || "jp_sea" in rawPrices || "uae" in rawPrices;
+  if (hasNested) {
+    const usUkEu = rawPrices["us_uk_eu"] as { us?: { url?: string; platform?: string }; uk?: { url?: string; platform?: string }; eu?: { url?: string; platform?: string } } | undefined;
+    const jpSea = rawPrices["jp_sea"] as { jp?: { url?: string; platform?: string }; sea?: { url?: string; platform?: string } } | undefined;
+    const uaeVal = rawPrices["uae"] as { uae?: { url?: string; platform?: string } } | undefined;
+    rawPrices = {
+      ...Object.fromEntries(Object.entries(rawPrices).filter(([k]) => k !== "us_uk_eu" && k !== "jp_sea" && k !== "uae")),
+      us: usUkEu?.us,
+      uk: usUkEu?.uk,
+      eu: usUkEu?.eu,
+      jp: jpSea?.jp,
+      sea: jpSea?.sea,
+      uae: uaeVal?.uae,
+    } as Record<string, { url?: string; platform?: string }>;
+  }
   const regionsList = [
     { id: "us", name: "US" },
     { id: "uk", name: "UK" },
     { id: "sea", name: "SEA" },
     { id: "australia", name: "AU" },
     { id: "india", name: "IN" },
+    { id: "eu", name: "EU" },
+    { id: "jp", name: "JP" },
+    { id: "uae", name: "UAE" },
   ];
   const globalProofTags: Array<{ region: string; url: string; platform?: string }> = regionsList
     .map((r) => ({
@@ -180,7 +198,7 @@ export function SupplierContact({
                 <p className="text-sm italic text-[#9E9C98]">Not available</p>
               )}
             </div>
-            {(report.moq?.trim() || report.lead_time?.trim()) && (
+            {(report.moq?.trim() || report.lead_time?.trim() || report.can_oem != null) && (
               <div className="flex gap-32 mt-10">
                 {report.moq?.trim() && (
                   <div>
@@ -188,12 +206,22 @@ export function SupplierContact({
                     <p className="text-4xl font-black tracking-tighter text-[#1A1916]">{report.moq}</p>
                   </div>
                 )}
-                {report.lead_time?.trim() && (
-                  <div>
-                    <p className="text-xs font-bold text-[#9E9C98] uppercase tracking-[0.2em] mb-3">Est. Production Lead Time</p>
-                    <p className="text-4xl font-black tracking-tighter text-[#1A1916]">{report.lead_time}</p>
-                  </div>
-                )}
+                <div className="flex items-start gap-10">
+                  {report.lead_time?.trim() && (
+                    <div>
+                      <p className="text-xs font-bold text-[#9E9C98] uppercase tracking-[0.2em] mb-3">Est. Production Lead Time</p>
+                      <p className="text-4xl font-black tracking-tighter text-[#1A1916]">{report.lead_time}</p>
+                    </div>
+                  )}
+                  {report.can_oem != null && (
+                    <div>
+                      <p className="text-xs font-bold text-[#9E9C98] uppercase tracking-[0.2em] mb-3">OEM / ODM</p>
+                      <p className="text-4xl font-black tracking-tighter text-[#1A1916]">
+                        {report.can_oem ? "Available" : "Not Available"}
+                      </p>
+                    </div>
+                  )}
+                </div>
               </div>
             )}
           </div>
@@ -201,9 +229,27 @@ export function SupplierContact({
           <div className="bg-[#F8F7F4] rounded-2xl p-10 mb-6">
             <p className={refA}>Supplier &amp; Brand Intel</p>
             {report.m_name?.trim() && (
-              <p className="text-5xl font-black text-[#1A1916] leading-none tracking-tighter break-words mb-8">
-                {report.m_name}
-              </p>
+              <div className="mb-8">
+                <div className="flex items-baseline gap-3 flex-wrap">
+                  <p className="text-5xl font-black text-[#1A1916] leading-none tracking-tighter">
+                    {report.translated_name?.split(" ")[0]?.toUpperCase() ?? report.m_name}
+                    <span className="text-5xl font-black text-[#1A1916] ml-3">| {report.m_name}</span>
+                  </p>
+                  {report.corporate_scale?.trim() && (
+                    <p className="text-lg font-medium text-[#9E9C98]">
+                      {(() => {
+                        const scaleMap: Record<string, string> = {
+                          "중소기업": "SME",
+                          "대기업": "Enterprise",
+                          "스타트업": "Startup",
+                          "중견기업": "Mid-size",
+                        };
+                        return scaleMap[report.corporate_scale!.trim()] ?? report.corporate_scale;
+                      })()}
+                    </p>
+                  )}
+                </div>
+              </div>
             )}
             {(() => {
               const contacts = [
@@ -233,6 +279,20 @@ export function SupplierContact({
                   icon: <ShoppingBag className="w-8 h-8 text-[#9E9C98] group-hover:text-[#16A34A] shrink-0 transition-colors" />,
                   label: "Wholesale Portal",
                   href: report.wholesale_link!.trim(),
+                  external: true as const,
+                },
+                report.global_site_url?.trim() && {
+                  id: "global_site",
+                  icon: <Globe2 className="w-8 h-8 text-[#9E9C98] group-hover:text-[#16A34A] shrink-0 transition-colors" />,
+                  label: "Global Site",
+                  href: report.global_site_url!.trim(),
+                  external: true as const,
+                },
+                report.b2b_inquiry_url?.trim() && {
+                  id: "b2b_inquiry",
+                  icon: <ArrowUpRight className="w-8 h-8 text-[#9E9C98] group-hover:text-[#16A34A] shrink-0 transition-colors" />,
+                  label: "B2B Inquiry",
+                  href: report.b2b_inquiry_url!.trim(),
                   external: true as const,
                 },
               ].filter(Boolean) as Array<{ id: string; icon: React.ReactNode; label: string; href: string; external: boolean }>;

@@ -154,10 +154,38 @@ export default function ProductIdentity({
           </h1>
 
           {report.product_name && (
-            <p className="text-lg font-medium text-[#6B6860] line-clamp-2 mb-6">
+            <p className="text-lg font-medium text-[#6B6860] line-clamp-2 mb-4">
               {report.product_name}
             </p>
           )}
+
+          {(report.go_verdict?.trim() || report.composite_score != null) && (() => {
+            const verdictStyleMap: Record<string, { bg: string; text: string; dot: string }> = {
+              "GO":          { bg: "bg-[#F0FDF4] border border-[#16A34A]", text: "text-[#16A34A]", dot: "bg-[#16A34A]" },
+              "CAUTIOUS GO": { bg: "bg-[#FFFBEB] border border-[#D97706]", text: "text-[#D97706]", dot: "bg-[#D97706]" },
+              "NO GO":       { bg: "bg-[#FEF2F2] border border-[#DC2626]", text: "text-[#DC2626]", dot: "bg-[#DC2626]" },
+            };
+            const key = report.go_verdict?.trim().toUpperCase() ?? "";
+            const style = verdictStyleMap[key] ?? { bg: "bg-[#F8F7F4] border border-[#E8E6E1]", text: "text-[#6B6860]", dot: "bg-[#9E9C98]" };
+
+            return (
+              <div className="flex items-center gap-3 mb-6">
+                {report.go_verdict?.trim() && (
+                  <span className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-md text-xs font-black uppercase tracking-widest ${style.bg} ${style.text}`}>
+                    <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${style.dot}`} />
+                    {report.go_verdict.trim()}
+                  </span>
+                )}
+                {report.composite_score != null && (
+                  <span className="text-xs font-bold text-[#9E9C98] tracking-wide">
+                    {report.composite_score.toFixed(1)}
+                    <span className="font-medium text-[#D5D3CE]"> / 10</span>
+                    <span className="ml-2 text-[#9E9C98]">KoreaScout Intelligence Score</span>
+                  </span>
+                )}
+              </div>
+            );
+          })()}
 
           <div className="mt-6 bg-[#F8F7F4] rounded-2xl p-6 border border-[#E8E6E1]">
             <div className="flex flex-col space-y-3">
