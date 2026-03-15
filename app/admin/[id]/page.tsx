@@ -9,10 +9,10 @@ import { HazmatCheckboxes } from "@/components/admin/HazmatCheckboxes";
 import { AiPageLinksHelper } from "@/components/admin/AiPageLinksHelper";
 
 type SaveStatus = "idle" | "saved" | "error";
-type OpenSections = { s1: boolean; s2: boolean; s3: boolean; s4: boolean; s5: boolean; s6: boolean };
+type OpenSections = { s1: boolean; s2: boolean; s3: boolean; s4: boolean; s5: boolean; s6: boolean; s7: boolean };
 type DiffItem = { field: string; fieldKo: string; before: string; after: string };
 
-const EXPORT_STATUS_OPTIONS = ["Available", "Check Regulations", "Restricted", "Not Recommended"];
+const EXPORT_STATUS_OPTIONS = ["Green", "Yellow", "Red"];
 const COMPETITION_OPTIONS = ["Low", "Medium", "High"];
 
 /** Korean labels for every DB field (for diff modal & edit history) */
@@ -84,6 +84,19 @@ const FIELD_LABELS_KO: Record<string, string> = {
   marketing_assets_url: "마케팅자산URL",
   ai_detail_page_links: "AI상세페이지링크",
   published_at: "발행일시",
+  go_verdict: "GO판정",
+  composite_score: "종합점수",
+  growth_signal: "성장시그널",
+  search_volume: "검색볼륨",
+  best_platform: "최적플랫폼",
+  trend_entry_strategy: "진입전략",
+  shipping_tier: "배송티어",
+  key_risk_ingredient: "위험성분",
+  hazmat_summary: "위험물요약",
+  global_site_url: "글로벌사이트URL",
+  b2b_inquiry_url: "B2B문의URL",
+  can_oem: "OEM가능여부",
+  ai_image_url: "AI이미지URL",
 };
 
 /** Normalizes value for display: parses JSON array strings so we don't show escaped slashes. */
@@ -143,6 +156,7 @@ export default function AdminEditPage() {
     s4: false,
     s5: false,
     s6: true,
+    s7: true,
   });
 
   useEffect(() => {
@@ -181,6 +195,8 @@ export default function AdminEditPage() {
     "product_name", "translated_name", "category", "kr_price", "export_status", "viability_reason",
     "image_url", "naver_link", "week_id", "m_name", "corporate_scale", "contact_email", "contact_phone", "m_homepage", "wholesale_link", "status",
     "market_viability", "competition_level", "gap_status", "gap_index", "billable_weight_g",
+    "go_verdict", "composite_score", "growth_signal", "search_volume", "best_platform", "trend_entry_strategy",
+    "shipping_tier", "key_risk_ingredient", "hazmat_summary", "global_site_url", "b2b_inquiry_url", "can_oem", "ai_image_url",
     "wow_rate", "mom_growth", "growth_evidence", "profit_multiplier", "top_selling_point", "common_pain_point",
     "new_content_volume", "global_prices", "buzz_summary", "kr_local_score", "global_trend_score", "kr_evidence",
     "global_evidence", "kr_source_used", "opportunity_reasoning", "rising_keywords", "seo_keywords", "viral_hashtags",
@@ -484,6 +500,23 @@ export default function AdminEditPage() {
                 />
               </div>
               <div className="flex flex-col gap-1.5">
+                <label className={labelClass}>AI Image URL (AI이미지URL)</label>
+                <input
+                  value={formData.ai_image_url ?? ""}
+                  onChange={(e) => setFormData((p) => ({ ...p!, ai_image_url: e.target.value }))}
+                  className={inputClass}
+                  placeholder="AI-generated image URL"
+                />
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <label className={labelClass}>GO Verdict (GO판정) <span className="text-[#9E9C98] normal-case font-normal">(자동)</span></label>
+                <div className={readOnlyClass}>{formData.go_verdict ?? "—"}</div>
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <label className={labelClass}>Composite Score (종합점수) <span className="text-[#9E9C98] normal-case font-normal">(자동)</span></label>
+                <div className={readOnlyClass}>{formData.composite_score ?? "—"}</div>
+              </div>
+              <div className="flex flex-col gap-1.5">
                 <label className={labelClass}>Naver Link (네이버링크)</label>
                 <input
                   value={formData.naver_link ?? ""}
@@ -544,14 +577,6 @@ export default function AdminEditPage() {
                 </select>
               </div>
               <div className="flex flex-col gap-1.5">
-                <label className={labelClass}>Opportunity Status (기회상태)</label>
-                <input
-                  value={formData.gap_status ?? ""}
-                  onChange={(e) => setFormData((p) => ({ ...p!, gap_status: e.target.value }))}
-                  className={inputClass}
-                />
-              </div>
-              <div className="flex flex-col gap-1.5">
                 <label className={labelClass}>WoW Growth (WoW성장률)</label>
                 <input
                   value={formData.wow_rate ?? ""}
@@ -574,6 +599,15 @@ export default function AdminEditPage() {
                   value={formData.growth_evidence ?? ""}
                   onChange={(e) => setFormData((p) => ({ ...p!, growth_evidence: e.target.value }))}
                   className={`${inputClass} resize-none`}
+                />
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <label className={labelClass}>Growth Signal (성장시그널)</label>
+                <input
+                  value={formData.growth_signal ?? ""}
+                  onChange={(e) => setFormData((p) => ({ ...p!, growth_signal: e.target.value }))}
+                  className={inputClass}
+                  placeholder="e.g. Stable, Rising, Viral"
                 />
               </div>
             </div>
@@ -631,6 +665,24 @@ export default function AdminEditPage() {
                   value={formData.new_content_volume ?? ""}
                   onChange={(e) => setFormData((p) => ({ ...p!, new_content_volume: e.target.value }))}
                   className={inputClass}
+                />
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <label className={labelClass}>Search Volume (검색볼륨)</label>
+                <input
+                  value={formData.search_volume ?? ""}
+                  onChange={(e) => setFormData((p) => ({ ...p!, search_volume: e.target.value }))}
+                  className={inputClass}
+                  placeholder="e.g. Rising (18,100/mo)"
+                />
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <label className={labelClass}>Best Platform (최적플랫폼)</label>
+                <input
+                  value={formData.best_platform ?? ""}
+                  onChange={(e) => setFormData((p) => ({ ...p!, best_platform: e.target.value }))}
+                  className={inputClass}
+                  placeholder="e.g. Amazon US, TikTok Shop"
                 />
               </div>
               <div className="flex flex-col gap-1.5">
@@ -851,6 +903,16 @@ export default function AdminEditPage() {
                   placeholder="AI-generated. Edit to fix hallucinations."
                 />
               </div>
+              <div className="flex flex-col gap-1.5">
+                <label className={labelClass}>Trend Entry Strategy (진입전략)</label>
+                <textarea
+                  rows={3}
+                  value={formData.trend_entry_strategy ?? ""}
+                  onChange={(e) => setFormData((p) => ({ ...p!, trend_entry_strategy: e.target.value }))}
+                  className={`${inputClass} resize-none`}
+                  placeholder="AI-generated. Edit if needed."
+                />
+              </div>
             </div>
           )}
         </div>
@@ -991,6 +1053,33 @@ export default function AdminEditPage() {
                   className={`${inputClass} resize-none`}
                 />
               </div>
+              <div className="flex flex-col gap-1.5">
+                <label className={labelClass}>Shipping Tier (배송티어)</label>
+                <input
+                  value={formData.shipping_tier ?? ""}
+                  onChange={(e) => setFormData((p) => ({ ...p!, shipping_tier: e.target.value }))}
+                  className={inputClass}
+                  placeholder="e.g. Tier 1"
+                />
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <label className={labelClass}>Key Risk Ingredient (위험성분)</label>
+                <input
+                  value={formData.key_risk_ingredient ?? ""}
+                  onChange={(e) => setFormData((p) => ({ ...p!, key_risk_ingredient: e.target.value }))}
+                  className={inputClass}
+                  placeholder="e.g. Retinol, Aerosol"
+                />
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <label className={labelClass}>Hazmat Summary (위험물요약)</label>
+                <textarea
+                  rows={2}
+                  value={formData.hazmat_summary ?? ""}
+                  onChange={(e) => setFormData((p) => ({ ...p!, hazmat_summary: e.target.value }))}
+                  className={`${inputClass} resize-none`}
+                />
+              </div>
             </div>
           )}
         </div>
@@ -1063,9 +1152,61 @@ export default function AdminEditPage() {
                   className={inputClass}
                 />
               </div>
-              <p className="text-xs font-semibold text-[#16A34A] uppercase tracking-widest pt-2">
-                Golden Data
-              </p>
+              <div className="flex flex-col gap-1.5">
+                <label className={labelClass}>Global Site URL (글로벌사이트URL)</label>
+                <input
+                  type="url"
+                  value={formData.global_site_url ?? ""}
+                  onChange={(e) => setFormData((p) => ({ ...p!, global_site_url: e.target.value }))}
+                  className={inputClass}
+                />
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <label className={labelClass}>B2B Inquiry URL (B2B문의URL)</label>
+                <input
+                  type="url"
+                  value={formData.b2b_inquiry_url ?? ""}
+                  onChange={(e) => setFormData((p) => ({ ...p!, b2b_inquiry_url: e.target.value }))}
+                  className={inputClass}
+                />
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <label className={labelClass}>Can OEM (OEM가능여부)</label>
+                <select
+                  value={formData.can_oem === true ? "true" : formData.can_oem === false ? "false" : ""}
+                  onChange={(e) => setFormData((p) => ({
+                    ...p!,
+                    can_oem: e.target.value === "true" ? true : e.target.value === "false" ? false : null
+                  }))}
+                  className={inputClass}
+                >
+                  <option value="">— 미확인 —</option>
+                  <option value="true">Yes (가능)</option>
+                  <option value="false">No (불가)</option>
+                </select>
+              </div>
+            </div>
+          )}
+        </div>
+
+        <div className="rounded-2xl border-2 border-[#16A34A] bg-white shadow-[0_1px_3px_0_rgb(26_25_22/0.06)] overflow-hidden">
+          <button
+            type="button"
+            onClick={() => toggleSection("s7")}
+            className="w-full flex items-center justify-between px-6 py-4 hover:bg-[#F8F7F4] transition-colors"
+          >
+            <div className="flex items-center gap-3">
+              <span className="text-xs font-bold text-white bg-[#16A34A] px-2 py-0.5 rounded-md uppercase tracking-widest">CEO</span>
+              <span className="text-sm font-semibold text-[#1A1916]">CEO Direct Input Zone</span>
+              <span className="text-xs text-[#9E9C98]">— 대표님 직접 입력 전용</span>
+            </div>
+            <span className="text-[#9E9C98] text-xs">{openSections.s7 ? "▼" : "▶"}</span>
+          </button>
+          {openSections.s7 && (
+            <div className="px-6 pb-6 flex flex-col gap-5 border-t-2 border-[#16A34A]">
+              <p className="text-xs text-[#9E9C98] pt-4">이 구역은 대표님이 브랜드와 직접 협의하거나 발품 팔아 확인한 정보만 입력합니다. Make.com이 자동으로 채우지 않습니다.</p>
+
+              <p className="text-xs font-semibold text-[#16A34A] uppercase tracking-widest pt-2">B2B 소싱 원가 & 조건</p>
               <div className="flex flex-col gap-1.5">
                 <label className={labelClass}>Verified Cost (USD) (검증된 원가)</label>
                 <input
@@ -1089,12 +1230,7 @@ export default function AdminEditPage() {
                 <input
                   type="date"
                   value={formData.verified_at ? String(formData.verified_at).slice(0, 10) : ""}
-                  onChange={(e) =>
-                    setFormData((p) => ({
-                      ...p!,
-                      verified_at: e.target.value ? e.target.value : null,
-                    }))
-                  }
+                  onChange={(e) => setFormData((p) => ({ ...p!, verified_at: e.target.value ? e.target.value : null }))}
                   className={inputClass}
                 />
               </div>
@@ -1131,9 +1267,7 @@ export default function AdminEditPage() {
                 />
               </div>
 
-              <p className="text-xs font-semibold text-[#2563EB] uppercase tracking-widest pt-4">
-                Media Links
-              </p>
+              <p className="text-xs font-semibold text-[#2563EB] uppercase tracking-widest pt-4">미디어 & 마케팅 자산</p>
               <div className="flex flex-col gap-1.5">
                 <label className={labelClass}>Viral Video URL (바이럴영상URL)</label>
                 <input
@@ -1159,9 +1293,7 @@ export default function AdminEditPage() {
                 />
               </div>
 
-              <p className="text-xs font-semibold text-[#7C3AED] uppercase tracking-widest pt-4">
-                AI Assets
-              </p>
+              <p className="text-xs font-semibold text-[#7C3AED] uppercase tracking-widest pt-4">AI 자산</p>
               <div className="flex flex-col gap-1.5">
                 <label className={labelClass}>AI Detail Page Links (AI상세페이지링크)</label>
                 <div className="bg-[#F8F7F4] rounded-xl border border-[#E8E6E1] p-4">
