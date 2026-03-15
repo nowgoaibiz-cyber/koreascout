@@ -178,7 +178,7 @@ export function SourcingIntel({
                   {report.hazmat_summary?.trim() && (
                     <div className="mt-6">
                       <p className="text-xl font-bold text-[#1A1916] mb-4">Hazmat Summary</p>
-                      <ExpandableText text={report.hazmat_summary} />
+                      <ExpandableText text={report.hazmat_summary} label="Hazmat Summary" />
                     </div>
                   )}
                 </div>
