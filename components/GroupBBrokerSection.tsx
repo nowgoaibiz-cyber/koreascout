@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { CopyButton } from "@/components/CopyButton";
 import { BrokerEmailDraft } from "@/components/BrokerEmailDraft";
 import type { ScoutFinalReportsRow } from "@/types/database";
 
@@ -19,6 +18,21 @@ export function GroupBBrokerSection({
   canSeeAlpha: boolean;
 }) {
   const [isEmailOpen, setIsEmailOpen] = useState(false);
+
+  const hsCodeValue = report.hs_code?.trim()
+    ? formatHsCode(report.hs_code) || report.hs_code || ""
+    : "";
+  const [hsCopied, setHsCopied] = useState(false);
+  async function copyHsCode() {
+    if (!hsCodeValue) return;
+    try {
+      await navigator.clipboard.writeText(hsCodeValue);
+      setHsCopied(true);
+      setTimeout(() => setHsCopied(false), 1500);
+    } catch {
+      // noop
+    }
+  }
 
   return (
     <div className="bg-[#F8F7F4] rounded-2xl p-10">
@@ -48,9 +62,13 @@ export function GroupBBrokerSection({
                   }`}>
                     {formatHsCode(report.hs_code) || report.hs_code}
                   </p>
-                  <CopyButton
-                    value={formatHsCode(report.hs_code) || report.hs_code || ""}
-                  />
+                  <button
+                    type="button"
+                    onClick={copyHsCode}
+                    className="text-xs font-medium px-3 py-1 rounded-md border border-[#E8E6E1] text-[#6B6860] hover:text-[#1A1916] hover:border-[#1A1916] transition-colors"
+                  >
+                    {hsCopied ? "Copied!" : "Copy"}
+                  </button>
                 </div>
                 {!isEmailOpen && report.hs_description?.trim() && (
                   <p className="text-lg text-[#1A1916] leading-relaxed">

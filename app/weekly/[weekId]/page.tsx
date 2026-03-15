@@ -156,7 +156,7 @@ export default async function ProductListPage({
                 <li key={p.id}>
                   <Link
                     href={`/weekly/${weekId}/${p.id}`}
-                    className="group relative flex flex-col md:flex-row gap-6 p-6 bg-white rounded-2xl border border-gray-200 hover:border-[#16A34A]/40 hover:shadow-lg transition-all"
+                    className="group relative flex flex-col md:flex-row gap-6 p-6 bg-white rounded-2xl border border-[#E8E6E1] hover:border-[#16A34A]/40 hover:shadow-lg transition-all"
                   >
                     <FavoriteButton
                       reportId={p.id}
@@ -164,7 +164,7 @@ export default async function ProductListPage({
                       isFavorited={favoriteReportIds.has(p.id)}
                     />
                     {/* Zone 1: The Visual */}
-                    <div className="relative h-32 w-32 md:h-40 md:w-40 shrink-0 overflow-hidden rounded-xl border border-gray-100 bg-gray-50 shadow-sm">
+                    <div className="relative h-32 w-32 md:h-40 md:w-40 shrink-0 overflow-hidden rounded-xl border border-[#E8E6E1] bg-[#F8F7F4] shadow-sm">
                       {p.image_url ? (
                         <Image
                           src={p.image_url}
@@ -174,7 +174,7 @@ export default async function ProductListPage({
                           sizes="(max-width: 768px) 128px, 160px"
                         />
                       ) : (
-                        <div className="h-full w-full flex flex-col items-center justify-center text-gray-400 gap-1">
+                        <div className="h-full w-full flex flex-col items-center justify-center text-[#9E9C98] gap-1">
                           <ImageOff className="h-8 w-8 md:h-10 md:w-10" strokeWidth={1.5} />
                           <span className="text-[10px] font-medium">No image</span>
                         </div>
@@ -198,7 +198,7 @@ export default async function ProductListPage({
                           {categoryTags.map((tag: string, i: number) => (
                             <span
                               key={i}
-                              className="bg-gray-50 border border-gray-100 text-gray-600 text-[11px] px-2 py-0.5 rounded-md font-medium"
+                              className="bg-[#F8F7F4] border border-[#E8E6E1] text-[#6B6860] text-[11px] px-2 py-0.5 rounded-md font-medium"
                             >
                               {tag}
                             </span>
@@ -208,7 +208,7 @@ export default async function ProductListPage({
                       <span className="text-[10px] font-bold text-[#16A34A] tracking-wider uppercase mb-1 block mt-3">
                         ⚡ Trend Insight
                       </span>
-                      <p className="text-gray-700 leading-relaxed line-clamp-2">
+                      <p className="text-[#3D3B36] leading-relaxed line-clamp-2">
                         {p.viability_reason}
                       </p>
                     </div>
@@ -216,7 +216,7 @@ export default async function ProductListPage({
                     {/* Zone 3: Metrics & Action */}
                     <div className="flex flex-col items-end justify-center shrink-0 gap-3">
                       <div className="flex flex-col items-end">
-                        <span className="text-[10px] font-medium text-gray-500 uppercase tracking-wider">
+                        <span className="text-[10px] font-medium text-[#9E9C98] uppercase tracking-wider">
                           Market Score
                         </span>
                         <span className="text-4xl font-black text-[#1A1916] tabular-nums">

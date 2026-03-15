@@ -167,7 +167,7 @@ export function BrokerEmailDraft({
             onClick={handleCopy}
             className="px-4 py-2 rounded-lg bg-[#16A34A] text-white text-sm font-semibold hover:bg-[#15803D] transition-colors"
           >
-            {copied ? "✅ Copied!" : "📋 Copy Email Draft"}
+            {copied ? "✅ Copied!" : "Copy Email Draft"}
           </button>
         </div>
       )}

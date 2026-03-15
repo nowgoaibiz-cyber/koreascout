@@ -190,7 +190,7 @@ export default async function WeeklyHubPage() {
           <div className="relative rounded-2xl overflow-hidden min-h-[320px] md:min-h-[400px] border border-[#BBF7D0]/20 flex items-end group cursor-pointer">
             {/* Placeholder background (replace with dynamic image later) */}
             <div
-              className="absolute inset-0 bg-gray-800 bg-cover bg-center opacity-50 group-hover:opacity-60 transition-opacity"
+              className="absolute inset-0 bg-[#0A0908] bg-cover bg-center opacity-50 group-hover:opacity-60 transition-opacity"
               style={{
                 backgroundImage: "url(https://images.unsplash.com/photo-1617897903246-719242758050?q=80&w=1200)",
               }}
@@ -219,7 +219,7 @@ export default async function WeeklyHubPage() {
               <h2 className="text-2xl md:text-3xl font-black text-white mb-2 leading-tight group-hover:text-[#BBF7D0] transition-colors">
                 Olive Young&apos;s Top 5 Viral Sunscreens
               </h2>
-              <p className="text-gray-300 font-medium text-sm md:text-base flex items-center gap-2">
+              <p className="text-[#9E9C98] font-medium text-sm md:text-base flex items-center gap-2">
                 Read the full intel <span className="text-[#16A34A]">→</span>
               </p>
             </div>
@@ -241,7 +241,7 @@ export default async function WeeklyHubPage() {
                 </p>
                 <Link
                   href={`/weekly/${featuredWeek.week_id}`}
-                  className="block rounded-2xl border-2 border-[#16A34A]/30 bg-green-50/30 p-8 sm:p-10
+                  className="block rounded-2xl border-2 border-[#16A34A]/30 bg-[#16A34A]/10 p-8 sm:p-10
                     shadow-[0_4px_24px_-4px_rgb(22_163_74/0.2)]
                     hover:border-[#16A34A] hover:shadow-[0_8px_32px_-4px_rgb(22_163_74/0.25)]
                     transition-all duration-200"
@@ -334,7 +334,7 @@ export default async function WeeklyHubPage() {
                                 <button
                                   type="button"
                                   disabled
-                                  className="inline-flex items-center rounded-lg bg-gray-100 text-gray-400 border border-gray-200 cursor-not-allowed px-5 py-2.5 text-sm font-bold"
+                                  className="inline-flex items-center rounded-lg bg-[#F8F7F4] text-[#9E9C98] border border-[#E8E6E1] cursor-not-allowed px-5 py-2.5 text-sm font-bold"
                                 >
                                   ARCHIVE LOCKED
                                 </button>
