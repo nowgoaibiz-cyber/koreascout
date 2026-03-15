@@ -1,8 +1,130 @@
 "use client";
 
+import { useState } from "react";
+import { LineChart } from "lucide-react";
 import { ScrollToIdButton } from "@/components/ScrollToIdButton";
 import { isPositiveGrowth, parseGlobalPricesForGrid } from "./utils";
 import type { ScoutFinalReportsRow } from "@/types/database";
+
+function getShopeeOrLazadaName(url: string | null | undefined): string | null {
+  if (!url) return null;
+  try {
+    const hostname = new URL(url).hostname;
+    if (hostname.includes("shopee.sg")) return "Shopee SG";
+    if (hostname.includes("shopee.com.my")) return "Shopee MY";
+    if (hostname.includes("lazada.sg")) return "Lazada SG";
+    if (hostname.includes("lazada.com.my")) return "Lazada MY";
+  } catch { return null; }
+  return null;
+}
+
+function ListingsBlock({ row }: { row: import("./utils").RegionPriceRow }) {
+  const [open, setOpen] = useState(false);
+
+  const allListings = row.listings ?? [];
+  const validListings = allListings.filter(l => l.price_usd && l.price_usd > 0);
+
+  const officialListing = row.official_url
+    ? allListings.find(l => l.url === row.official_url) ?? null
+    : null;
+
+  const nonOfficialListings = validListings.filter(l => l.url !== row.official_url);
+  const cheapestListing = nonOfficialListings
+    .sort((a, b) => (a.price_usd ?? 0) - (b.price_usd ?? 0))[0];
+  const bestPriceListing = cheapestListing ?? officialListing;
+  const showOfficialSeparately = !!(cheapestListing && officialListing && (row.official_price_usd ?? 0) > 0);
+  const bestPriceDisplay = bestPriceListing?.price_usd
+    ? `$${bestPriceListing.price_usd.toFixed(2)}`
+    : row.priceDisplay;
+
+  const seenKeys = new Set<string>();
+  // cheapestListing과 officialListing key 미리 등록 (중복 방지)
+  if (cheapestListing) {
+    const name = cheapestListing.platform || getShopeeOrLazadaName(cheapestListing.url) || cheapestListing.title || "";
+    seenKeys.add(`${name}__${cheapestListing.price_usd ?? 0}`);
+  }
+  if (officialListing) {
+    const name = officialListing.platform || getShopeeOrLazadaName(officialListing.url) || officialListing.title || "";
+    seenKeys.add(`${name}__${officialListing.price_usd ?? 0}`);
+  }
+  const otherListings = validListings
+    .filter(l => l.url !== cheapestListing?.url && l.url !== row.official_url)
+    .sort((a, b) => (a.price_usd ?? 0) - (b.price_usd ?? 0))
+    .filter(l => {
+      const name = l.platform || getShopeeOrLazadaName(l.url) || l.title || "";
+      const key = `${name}__${l.price_usd ?? 0}`;
+      if (seenKeys.has(key)) return false;
+      seenKeys.add(key);
+      return true;
+    });
+
+  const reviewDisplay = (() => {
+    const r = row.review_data?.trim();
+    if (!r || r === "Untapped" || r === "Available") return null;
+    if (/\d+(\.\d+)?\s*stars?/i.test(r)) return r;
+    return null;
+  })();
+
+  const priceTextSize = "text-2xl font-extrabold text-[#1A1916] tracking-tight leading-none";
+
+  return (
+    <div className="space-y-3">
+      <div>
+        <p className="text-[10px] font-black tracking-[0.15em] uppercase text-[#9E9C98] mb-1">
+          Best Price
+        </p>
+        <p className={priceTextSize}>{bestPriceDisplay ?? "—"}</p>
+        {row.seller_type && row.seller_type !== "Untapped" && (
+          <p className="text-xs text-[#9E9C98] mt-0.5">{row.seller_type}</p>
+        )}
+      </div>
+
+      {showOfficialSeparately && officialListing && (row.official_price_usd ?? 0) > 0 && (
+        <div className="pt-2 border-t border-[#E8E6E1]">
+          <p className="text-[10px] font-black tracking-[0.15em] uppercase text-[#16A34A] mb-1">
+            Official Store
+          </p>
+          <p className={priceTextSize}>
+            ${row.official_price_usd!.toFixed(2)}
+          </p>
+          {officialListing.platform && (
+            <p className="text-xs text-[#9E9C98] mt-0.5">{officialListing.platform}</p>
+          )}
+        </div>
+      )}
+
+      {otherListings.length > 0 && (
+        <div className="pt-1">
+          <button
+            onClick={() => setOpen(v => !v)}
+            className="text-xs font-semibold text-[#6B6860] hover:text-[#1A1916] transition-colors flex items-center gap-1"
+          >
+            <span>{open ? "▲" : "▼"}</span>
+            <span>+ {otherListings.length} more sellers</span>
+          </button>
+          {open && (
+            <div className="mt-2 space-y-1.5 border-t border-[#E8E6E1] pt-2">
+              {otherListings.map((l, i) => (
+                <div key={i} className="flex items-center justify-between">
+                  <span className="text-xs text-[#6B6860] truncate max-w-[120px]">
+                    {l.platform || getShopeeOrLazadaName(l.url) || l.title || "Unknown"}
+                  </span>
+                  <span className="text-xs font-bold text-[#1A1916] shrink-0 ml-2">
+                    ${l.price_usd?.toFixed(2)}
+                  </span>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+
+      {reviewDisplay && (
+        <p className="text-xs text-[#9E9C98] pt-1">{reviewDisplay}</p>
+      )}
+    </div>
+  );
+}
 
 export function MarketIntelligence({
   report,
@@ -60,7 +182,7 @@ export function MarketIntelligence({
         {hasProfitBlock && (
           <div className="bg-[#F8F7F4] rounded-xl border border-[#E8E6E1] p-6 mb-6">
             <div style={{ marginBottom: "1.2cm" }}>
-              <div className="bg-green-50 border border-green-200 rounded-xl px-4 py-2 inline-flex items-center mb-2">
+              <div className="bg-[#F0FDF4] border border-[#BBF7D0] rounded-xl px-4 py-2 inline-flex items-center mb-2">
                 <p className="text-3xl font-extrabold text-[#16A34A] tracking-tight">
                   🔥 UP TO {String(profitMultiplier ?? "").replace(/[x×]/gi, "")}× MARGIN POTENTIAL
                 </p>
@@ -156,21 +278,9 @@ export function MarketIntelligence({
                             <p className="text-xs italic text-[#9E9C98]">No established sellers detected.</p>
                           </>
                         ) : (
-                          <>
-                            <div className="flex items-center gap-2 mb-1">
-                              <div className="w-2 h-2 rounded-full bg-[#9E9C98]" />
-                              <p className="text-xl font-extrabold text-[#1A1916]">{market.row!.priceDisplay}</p>
-                            </div>
-                            {market.row!.platform && (
-                              <p className="text-xs text-[#9E9C98] mt-1">via {market.row!.platform}</p>
-                            )}
-                            {market.row!.seller_type && market.row!.seller_type.trim() && market.row!.seller_type.trim() !== "Untapped" && (
-                              <p className="text-xs text-[#9E9C98] mt-1">{market.row!.seller_type}</p>
-                            )}
-                            {market.row!.review_data && market.row!.review_data.trim() && market.row!.review_data.trim() !== "Untapped" && (
-                              <p className="text-xs text-[#9E9C98] mt-1">{market.row!.review_data}</p>
-                            )}
-                          </>
+                          !isUntapped && market.row && (
+                            <ListingsBlock row={market.row} />
+                          )
                         )}
                       </div>
                     </div>
@@ -262,6 +372,22 @@ export function MarketIntelligence({
           </div>
         )}
 
+      </div>
+
+      <div className="mt-6 pt-4 border-t border-[#E8E6E1]/50 flex flex-wrap items-start gap-1.5">
+        <LineChart className="w-3 h-3 text-[#9E9C98]/60 shrink-0" />
+        <span className="text-[10px] text-[#9E9C98]/60 uppercase tracking-widest font-medium">
+          Real-time Market Radar:
+        </span>
+        <span className="w-full text-[10px] text-[#9E9C98]/50 tracking-wide">
+          Americas & Europe — Amazon (US · UK · DE · FR) · Sephora · YesStyle · Stylevana · StyleKorean
+        </span>
+        <span className="w-full text-[10px] text-[#9E9C98]/50 tracking-wide">
+          Japan & Southeast Asia — Qoo10 · Rakuten · @cosme · Shopee · Lazada · Tokopedia
+        </span>
+        <span className="w-full text-[10px] text-[#9E9C98]/50 tracking-wide">
+          Middle East — Amazon AE · Noon · Namshi · Boutiqaat · Carrefour UAE · Olive Young Global · Lamise Beauty
+        </span>
       </div>
     </section>
   );

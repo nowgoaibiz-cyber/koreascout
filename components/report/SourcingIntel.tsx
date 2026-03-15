@@ -5,7 +5,7 @@ import { HazmatBadges } from "@/components/HazmatBadges";
 import { ExpandableText } from "@/components/ExpandableText";
 import { Button } from "@/components/ui";
 import { PRICING } from "@/src/config/pricing";
-import { AlertTriangle, ArrowRight, CheckCircle, Lock, XCircle } from "lucide-react";
+import { AlertTriangle, ArrowRight, CheckCircle, Lock, ShieldCheck, XCircle } from "lucide-react";
 import type { ScoutFinalReportsRow } from "@/types/database";
 import { describeShippingTier, parseSourcingStrategy } from "./utils";
 
@@ -225,12 +225,6 @@ export function SourcingIntel({
                       ))}
                     </div>
                   )}
-                  {report.sourcing_tip_logistics?.trim() && (
-                    <div className="border-t border-dashed border-[#E8E6E1] pt-8">
-                      <p className="text-sm font-bold text-[#6B6860] tracking-widest mb-3">Logistics Intelligence</p>
-                      <p className="text-sm italic text-[#6B6860] leading-relaxed">{report.sourcing_tip_logistics}</p>
-                    </div>
-                  )}
                   {hasNotes && (
                     <div className="border-t border-dashed border-[#E8E6E1] pt-8">
                       <p className="text-sm font-bold text-[#6B6860] tracking-widest mb-3">Shipping Notes</p>
@@ -261,6 +255,16 @@ export function SourcingIntel({
           </a>
         </div>
       )}
+
+      <div className="mt-6 pt-4 border-t border-[#E8E6E1]/50 flex flex-wrap items-center gap-2">
+        <ShieldCheck className="w-3 h-3 text-[#9E9C98]/60 shrink-0" />
+        <span className="text-[10px] text-[#9E9C98]/60 uppercase tracking-widest font-medium">
+          Compliance &amp; Safety Cleared by:
+        </span>
+        <span className="text-[10px] text-[#9E9C98]/50 tracking-wide">
+          FDA MoCRA · CPNP · INCIDecoder · EWG · CosDNA
+        </span>
+      </div>
     </section>
   );
 }

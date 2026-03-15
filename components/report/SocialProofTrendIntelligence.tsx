@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui";
 import { PRICING } from "@/src/config/pricing";
-import { Lock } from "lucide-react";
+import { Globe, Lock } from "lucide-react";
 import type { ScoutFinalReportsRow } from "@/types/database";
 import { normalizeToArray, parseSourcingStrategy } from "./utils";
 
@@ -235,6 +235,16 @@ export function SocialProofTrendIntelligence({
           )}
         </div>
       )}
+
+      <div className="mt-6 pt-4 border-t border-[#E8E6E1]/50 flex flex-wrap items-center gap-2">
+        <Globe className="w-3 h-3 text-[#9E9C98]/60 shrink-0" />
+        <span className="text-[10px] text-[#9E9C98]/60 uppercase tracking-widest font-medium">
+          Global Sentiment Tracked via:
+        </span>
+        <span className="text-[10px] text-[#9E9C98]/50 tracking-wide">
+          Reddit (r/AsianBeauty) · TikTok · Google Trends · YouTube · Weee!
+        </span>
+      </div>
     </section>
   );
 }

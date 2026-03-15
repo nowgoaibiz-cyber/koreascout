@@ -1,6 +1,10 @@
+# GLOBAL_MARKET_PROOF_AUDIT.md
+
+## 소스: `components/report/SupplierContact.tsx` (전체)
+
+```tsx
 "use client";
 
-import { useState } from "react";
 import { Button } from "@/components/ui";
 import { ArrowRight, ArrowUpRight, Download, ExternalLink, Film, Globe, Globe2, ImageIcon, LayoutTemplate, Mail, Phone, Play, ShoppingBag } from "lucide-react";
 import type { ScoutFinalReportsRow } from "@/types/database";
@@ -60,33 +64,13 @@ export function SupplierContact({
     const usUkEu = rawPrices["us_uk_eu"] as { us?: { url?: string; platform?: string }; uk?: { url?: string; platform?: string }; eu?: { url?: string; platform?: string } } | undefined;
     const jpSea = rawPrices["jp_sea"] as { jp?: { url?: string; platform?: string }; sea?: { url?: string; platform?: string } } | undefined;
     const uaeVal = rawPrices["uae"] as { uae?: { url?: string; platform?: string } } | undefined;
-    // shopee_lazada listings를 sea listings에 병합 후 최저가 URL로 sea.url 업데이트
-    const shopeeData = rawPrices["shopee_lazada"] as { price_usd?: number; url?: string; listings?: Array<{ price_usd?: number; url?: string; platform?: string; title?: string }> } | undefined;
-    const seaBase = jpSea?.sea as { url?: string; platform?: string; price_usd?: number; listings?: Array<{ price_usd?: number; url?: string; platform?: string }> } | undefined;
-
-    // 기존 SEA + shopee_lazada listings 합산 후 최저가 URL 선택
-    const mergedSeaListings = [
-      ...(seaBase?.listings ?? []),
-      ...(shopeeData?.listings ?? []),
-    ];
-    const bestSeaListing = mergedSeaListings
-      .filter(l => l.price_usd && l.price_usd > 0)
-      .sort((a, b) => (a.price_usd ?? 0) - (b.price_usd ?? 0))[0];
-
-    const seaMerged = {
-      ...(seaBase ?? {}),
-      url: bestSeaListing?.url ?? seaBase?.url ?? shopeeData?.url ?? undefined,
-      platform: bestSeaListing?.platform ?? seaBase?.platform ?? undefined,
-      listings: mergedSeaListings,
-    };
-
     rawPrices = {
-      ...Object.fromEntries(Object.entries(rawPrices).filter(([k]) => k !== "us_uk_eu" && k !== "jp_sea" && k !== "uae" && k !== "shopee_lazada")),
+      ...Object.fromEntries(Object.entries(rawPrices).filter(([k]) => k !== "us_uk_eu" && k !== "jp_sea" && k !== "uae")),
       us: usUkEu?.us,
       uk: usUkEu?.uk,
       eu: usUkEu?.eu,
       jp: jpSea?.jp,
-      sea: seaMerged,
+      sea: jpSea?.sea,
       uae: uaeVal?.uae,
     } as Record<string, { url?: string; platform?: string }>;
   }
@@ -100,20 +84,13 @@ export function SupplierContact({
     { id: "jp", name: "JP" },
     { id: "uae", name: "UAE" },
   ];
-  type ProofListing = { platform?: string; title?: string; price_usd?: number; url?: string };
-  type ProofTag = { region: string; url: string; platform?: string; listings?: ProofListing[] };
-  const globalProofTags: ProofTag[] = regionsList
-    .map((r) => {
-      const regionData = rawPrices[r.id] as { url?: string; platform?: string; listings?: ProofListing[] } | undefined;
-      if (!regionData?.url?.startsWith("http")) return null;
-      return {
-        region: r.name,
-        url: regionData.url,
-        platform: regionData.platform?.trim() || undefined,
-        listings: regionData.listings ?? [],
-      };
-    })
-    .filter((t): t is ProofTag => t !== null);
+  const globalProofTags: Array<{ region: string; url: string; platform?: string }> = regionsList
+    .map((r) => ({
+      region: r.name,
+      url: rawPrices[r.id]?.url,
+      platform: rawPrices[r.id]?.platform?.trim() || undefined,
+    }))
+    .filter((t): t is { region: string; url: string; platform: string | undefined } => typeof t.url === "string" && t.url.startsWith("http"));
 
   const assetCards = [
     viralUrl && {
@@ -261,10 +238,7 @@ export function SupplierContact({
                 <div className="flex items-baseline gap-3 flex-wrap">
                   <p className="text-5xl font-black text-[#1A1916] leading-none tracking-tighter">
                     {report.translated_name?.split(" ")[0]?.toUpperCase() ?? report.m_name}
-                    <span className="text-5xl font-black text-[#1A1916] ml-3">
-                    <span className="font-thin text-[#9E9C98] mx-2">|</span>
-                    {report.m_name}
-                  </span>
+                    <span className="text-5xl font-black text-[#1A1916] ml-3">| {report.m_name}</span>
                   </p>
                   {report.corporate_scale?.trim() && (
                     <p className="text-lg font-medium text-[#9E9C98]">
@@ -365,7 +339,39 @@ export function SupplierContact({
             {globalProofTags.length > 0 && (
               <div id="global-market-proof" className="border-t border-[#E8E6E1] pt-8 mt-8 scroll-mt-[160px]">
                 <p className="text-xs font-bold text-[#9E9C98] uppercase tracking-[0.2em] mb-6">Global Market Proof</p>
-                <GlobalProofAccordion tags={globalProofTags} />
+                {(() => {
+                  const n = globalProofTags.length;
+                  const renderCard = (
+                    tag: { region: string; platform?: string; url: string },
+                    borderClass: string,
+                    paddingClass: string,
+                    colClass: string = ""
+                  ) => (
+                    <a
+                      key={tag.region}
+                      href={tag.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className={`flex items-center justify-between bg-white rounded-xl ${borderClass} ${paddingClass} ${colClass} transition-all cursor-pointer group hover:border-[#1A1916] hover:shadow-md`}
+                    >
+                      <div className="flex items-center gap-4 min-w-0">
+                        <span className="bg-[#1A1916] text-white px-3 py-1.5 rounded-md text-xs font-black uppercase tracking-widest shrink-0">
+                          {tag.region}
+                        </span>
+                        {tag.platform && (
+                          <span className="text-sm md:text-base font-bold text-[#1A1916] truncate">{tag.platform}</span>
+                        )}
+                      </div>
+                      <ArrowUpRight className="w-5 h-5 text-[#9E9C98] group-hover:text-[#1A1916] transition-colors shrink-0 ml-3" />
+                    </a>
+                  );
+                  if (n === 1) return <div className="grid grid-cols-1">{renderCard(globalProofTags[0], "border-2 border-[#E8E6E1]", "p-6")}</div>;
+                  if (n === 2) return <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">{globalProofTags.map((tag) => renderCard(tag, "border-2 border-[#E8E6E1]", "p-5"))}</div>;
+                  if (n === 3) return <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">{globalProofTags.map((tag) => renderCard(tag, "border border-[#E8E6E1]", "p-4"))}</div>;
+                  if (n === 4) return <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">{globalProofTags.map((tag) => renderCard(tag, "border border-[#E8E6E1]", "p-4"))}</div>;
+                  if (n === 5) return <div className="grid grid-cols-6 gap-3">{globalProofTags.map((tag, i) => renderCard(tag, "border border-[#E8E6E1]", "p-4", i < 2 ? "col-span-3" : "col-span-2"))}</div>;
+                  return <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">{globalProofTags.map((tag) => renderCard(tag, "border border-[#E8E6E1]", "p-4"))}</div>;
+                })()}
               </div>
             )}
           </div>
@@ -419,131 +425,4 @@ export function SupplierContact({
     </section>
   );
 }
-
-function getShopeeOrLazadaLabel(url: string | null | undefined): string | null {
-  if (!url) return null;
-  try {
-    const h = new URL(url).hostname;
-    if (h.includes("shopee.sg")) return "Shopee SG";
-    if (h.includes("shopee.com.my")) return "Shopee MY";
-    if (h.includes("lazada.sg")) return "Lazada SG";
-    if (h.includes("lazada.com.my")) return "Lazada MY";
-  } catch { return null; }
-  return null;
-}
-
-function getPlatformLabel(l: { platform?: string | null; title?: string | null; url?: string | null }): string {
-  if (l.platform) return l.platform;
-  const sl = getShopeeOrLazadaLabel(l.url ?? null);
-  if (sl) return sl;
-  if (l.url) {
-    try {
-      return new URL(l.url).hostname.replace("www.", "");
-    } catch { /* ignore */ }
-  }
-  return l.title || "Unknown";
-}
-
-function GlobalProofAccordion({ tags }: { tags: Array<{ region: string; url: string; platform?: string; listings?: Array<{ platform?: string; title?: string; price_usd?: number; url?: string }> }> }) {
-  const [openRegion, setOpenRegion] = useState<string | null>(null);
-  const toggle = (region: string) => setOpenRegion(prev => prev === region ? null : region);
-
-  return (
-    <div className="space-y-3">
-      {tags.map((tag) => {
-        const isOpen = openRegion === tag.region;
-
-        // 1. 중복 제거 (platform명 + price_usd 기준)
-        const seenKeys = new Set<string>();
-        const deduped = (tag.listings ?? [])
-          .filter(l => l.url?.startsWith("http"))
-          .filter(l => {
-            const name = getPlatformLabel(l);
-            const key = `${name}__${l.price_usd ?? 0}`;
-            if (seenKeys.has(key)) return false;
-            seenKeys.add(key);
-            return true;
-          });
-
-        // 2. 정렬: price_usd > 0 오름차순, 0은 맨 아래
-        const sortedListings = [
-          ...deduped.filter(l => (l.price_usd ?? 0) > 0).sort((a, b) => (a.price_usd ?? 0) - (b.price_usd ?? 0)),
-          ...deduped.filter(l => (l.price_usd ?? 0) === 0),
-        ];
-
-        const sellerCount = sortedListings.length;
-
-        return (
-          <div key={tag.region} className="bg-white rounded-xl border border-[#E8E6E1] overflow-hidden transition-all">
-            {/* 헤더 */}
-            <button
-              onClick={() => toggle(tag.region)}
-              className="w-full flex items-center justify-between p-5 hover:bg-[#F8F7F4] transition-colors group"
-            >
-              <div className="flex items-center gap-4">
-                <span className="bg-[#1A1916] text-white px-3 py-1.5 rounded-md text-xs font-black uppercase tracking-widest shrink-0">
-                  {tag.region}
-                </span>
-                {tag.platform && (
-                  <span className="text-sm font-bold text-[#1A1916] truncate">{tag.platform}</span>
-                )}
-              </div>
-              <div className="flex items-center gap-2 shrink-0 ml-3">
-                {sellerCount > 0 && (
-                  <span className="text-xs text-[#9E9C98]">{sellerCount} seller{sellerCount > 1 ? "s" : ""}</span>
-                )}
-                <span className="text-[#9E9C98] group-hover:text-[#1A1916] transition-colors text-sm">
-                  {isOpen ? "▲" : "▼"}
-                </span>
-              </div>
-            </button>
-
-            {/* 펼쳐진 listings */}
-            {isOpen && (
-              <div className="border-t border-[#E8E6E1] divide-y divide-[#E8E6E1]/60">
-                {sortedListings.length > 0 ? sortedListings.map((l, i) => {
-                  const isSoldOut = (l.price_usd ?? 0) === 0;
-                  return (
-                    <a
-                      key={i}
-                      href={l.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center justify-between px-5 py-3.5 hover:bg-[#F8F7F4] transition-colors group/row"
-                    >
-                      <span className="text-sm font-medium text-[#1A1916] truncate">
-                        {getPlatformLabel(l)}
-                      </span>
-                      <div className="flex items-center gap-2 shrink-0 ml-3">
-                        {isSoldOut ? (
-                          <span className="text-[9px] font-black tracking-widest uppercase text-[#9E9C98] bg-[#F8F7F4] border border-[#E8E6E1] px-2 py-0.5 rounded-full">
-                            Sold Out
-                          </span>
-                        ) : (
-                          <span className="text-sm font-bold text-[#1A1916]">
-                            ${l.price_usd!.toFixed(2)}
-                          </span>
-                        )}
-                        <ArrowUpRight className="w-4 h-4 text-[#9E9C98] group-hover/row:text-[#1A1916] transition-colors" />
-                      </div>
-                    </a>
-                  );
-                }) : (
-                  <a
-                    href={tag.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center justify-between px-5 py-3.5 hover:bg-[#F8F7F4] transition-colors group/row"
-                  >
-                    <span className="text-sm font-medium text-[#1A1916]">{tag.platform || tag.region}</span>
-                    <ArrowUpRight className="w-4 h-4 text-[#9E9C98] group-hover/row:text-[#1A1916] transition-colors" />
-                  </a>
-                )}
-              </div>
-            )}
-          </div>
-        );
-      })}
-    </div>
-  );
-}
+```

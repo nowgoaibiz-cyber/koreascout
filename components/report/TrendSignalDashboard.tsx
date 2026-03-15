@@ -2,9 +2,22 @@
 
 import { DonutGauge } from "@/components/DonutGauge";
 import { Badge } from "@/components/ui";
-import { TrendingUp } from "lucide-react";
+import { Radar, TrendingUp } from "lucide-react";
 import type { ScoutFinalReportsRow } from "@/types/database";
 import { safeParsePlatformScores } from "./utils";
+
+function getPlatformBadge(score: number): { label: string; bg: string; text: string; border: string } {
+  if (score === 0) return { label: "UNTAPPED", bg: "#16A34A", text: "#FFFFFF", border: "#16A34A" };
+  if (score <= 30) return { label: "EARLY SIGNAL", bg: "#F8F7F4", text: "#1A1916", border: "#E8E6E1" };
+  if (score <= 70) return { label: "TRENDING", bg: "#F8F7F4", text: "#1A1916", border: "#E8E6E1" };
+  return { label: "SATURATED", bg: "#F8F7F4", text: "#9E9C98", border: "#E8E6E1" };
+}
+
+function getRedditBadge(sentiment: string | undefined): { label: string; bg: string; text: string; border: string } {
+  if (sentiment?.toLowerCase() === "positive") return { label: "VALIDATED", bg: "#F8F7F4", text: "#1A1916", border: "#E8E6E1" };
+  if (sentiment?.toLowerCase() === "negative") return { label: "FRICTION", bg: "#F8F7F4", text: "#1A1916", border: "#E8E6E1" };
+  return { label: "QUIET", bg: "#F8F7F4", text: "#9E9C98", border: "#E8E6E1" };
+}
 
 export function TrendSignalDashboard({ report }: { report: ScoutFinalReportsRow }) {
   const score = typeof report.market_viability === "number" ? report.market_viability : 0;
@@ -69,40 +82,51 @@ export function TrendSignalDashboard({ report }: { report: ScoutFinalReportsRow 
         </div>
       </div>
 
-      <div className="mt-8 bg-[#F8F7F4] rounded-xl border border-[#E8E6E1] p-6 pl-6 md:pl-10">
-        <h3 className="text-xl font-bold text-[#1A1916] mb-4">Platform Breakdown</h3>
+      <div className="mt-8 bg-[#F8F7F4] rounded-xl border border-[#E8E6E1] p-6">
+        <h3 className="text-xl font-bold text-[#1A1916] mb-6">Platform Breakdown</h3>
         {platformData ? (
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 items-start">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
             {platforms.map(({ key, label }) => {
               const data = platformData[key];
               const platformScore = data?.score ?? 0;
+              const badge = getPlatformBadge(platformScore);
               return (
-                <div key={key} className="flex flex-col items-center">
-                  <p className="text-base font-bold text-[#6B6860] mb-3 uppercase tracking-widest shrink-0">{label}</p>
-                  <DonutGauge value={platformScore} size={100} strokeWidth={8} />
+                <div
+                  key={key}
+                  className="bg-white rounded-xl border border-[#E8E6E1] p-5 flex flex-col items-center justify-between gap-3 min-h-[160px]"
+                >
+                  <p className="text-sm font-bold text-[#9E9C98] uppercase tracking-widest">{label}</p>
+                  <span
+                    className="px-4 py-1.5 rounded-full text-sm font-bold uppercase tracking-widest"
+                    style={{ backgroundColor: badge.bg, color: badge.text, border: `1px solid ${badge.border}` }}
+                  >
+                    {badge.label}
+                  </span>
+                  <p className="text-sm text-center leading-relaxed"
+                    style={{ color: platformScore === 0 ? "#16A34A" : "#9E9C98" }}
+                  >
+                    {platformScore === 0 ? "No mentions found" : `Score: ${platformScore}`}
+                  </p>
                 </div>
               );
             })}
-            <div className="flex flex-col items-center">
-              <p className="text-base font-bold text-[#6B6860] mb-3 uppercase tracking-widest shrink-0">Reddit</p>
-              <div className="w-[100px] h-[100px] flex items-center justify-center">
-                {reddit?.sentiment ? (
-                  <Badge
-                    variant={
-                      reddit.sentiment.toLowerCase() === "positive"
-                        ? "success"
-                        : reddit.sentiment.toLowerCase() === "negative"
-                          ? "danger"
-                          : "default"
-                    }
+            {(() => {
+              const redditBadge = getRedditBadge(reddit?.sentiment);
+              return (
+                <div className="bg-white rounded-xl border border-[#E8E6E1] p-5 flex flex-col items-center justify-between gap-3 min-h-[160px]">
+                  <p className="text-sm font-bold text-[#9E9C98] uppercase tracking-widest">Reddit</p>
+                  <span
+                    className="px-4 py-1.5 rounded-full text-sm font-bold uppercase tracking-widest"
+                    style={{ backgroundColor: redditBadge.bg, color: redditBadge.text, border: `1px solid ${redditBadge.border}` }}
                   >
-                    {reddit.sentiment}
-                  </Badge>
-                ) : (
-                  <span className="text-sm text-[#9E9C98]">No data</span>
-                )}
-              </div>
-            </div>
+                    {redditBadge.label}
+                  </span>
+                  <p className="text-sm text-[#9E9C98] text-center leading-relaxed">
+                    {reddit?.sentiment ? `Sentiment: ${reddit.sentiment}` : "No data"}
+                  </p>
+                </div>
+              );
+            })()}
           </div>
         ) : (
           <p className="text-base text-[#9E9C98]">No platform data</p>
@@ -139,6 +163,16 @@ export function TrendSignalDashboard({ report }: { report: ScoutFinalReportsRow 
             <p className="text-base text-[#9E9C98]">No growth data</p>
           </>
         )}
+      </div>
+
+      <div className="mt-6 pt-4 border-t border-[#E8E6E1]/50 flex flex-wrap items-center gap-2">
+        <Radar className="w-3 h-3 text-[#9E9C98]/60 shrink-0" />
+        <span className="text-[10px] text-[#9E9C98]/60 uppercase tracking-widest font-medium">
+          Verified Local Demand via:
+        </span>
+        <span className="text-[10px] text-[#9E9C98]/50 tracking-wide">
+          Hwahae · Glowpick · Olive Young · Chicor · Naver Data Lab
+        </span>
       </div>
     </section>
   );

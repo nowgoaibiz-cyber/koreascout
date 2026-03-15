@@ -116,6 +116,20 @@ export type RegionPriceRow = {
   isBlueOcean: boolean;
   review_data?: string | null;
   seller_type?: string | null;
+  url?: string | null;
+  official_url?: string | null;
+  official_price_usd?: number | null;
+  official_platform?: string | null;
+  price_local?: number | null;
+  currency?: string | null;
+  listings?: Array<{
+    platform?: string | null;
+    title?: string | null;
+    price_usd?: number | null;
+    price_local?: number | null;
+    currency?: string | null;
+    url?: string | null;
+  }> | null;
 };
 
 export function parseGlobalPricesForGrid(
@@ -136,7 +150,18 @@ export function parseGlobalPricesForGrid(
     }
   }
   if (parsed) {
-    type MarketData = { price_usd?: number; price_original?: string | number; platform?: string; review_data?: string | null; seller_type?: string | null };
+    type MarketData = {
+      price_usd?: number;
+      price_original?: string | number;
+      platform?: string;
+      review_data?: string | null;
+      seller_type?: string | null;
+      url?: string | null;
+      official_url?: string | null;
+      price_local?: number | null;
+      currency?: string | null;
+      listings?: Array<{ platform?: string | null; title?: string | null; price_usd?: number | null; price_local?: number | null; currency?: string | null; url?: string | null }> | null;
+    };
     const hasGroupKeys = "us_uk_eu" in parsed || "jp_sea" in parsed || "uae" in parsed;
     const flat: Record<string, MarketData | undefined> = hasGroupKeys
       ? {
@@ -148,6 +173,28 @@ export function parseGlobalPricesForGrid(
           uae: (parsed as Record<string, { uae?: MarketData }>)["uae"]?.uae,
         }
       : (parsed as Record<string, MarketData>);
+    // shopee_lazada 데이터를 SEA에 병합
+    const shopeeLazada = (parsed as Record<string, unknown>)["shopee_lazada"] as MarketData | undefined;
+    if (shopeeLazada?.listings?.length) {
+      const seaData = flat["sea"];
+      const mergedListings = [...(seaData?.listings ?? []), ...shopeeLazada.listings];
+      const withPrice = mergedListings.filter((l): l is typeof l & { price_usd: number } =>
+        typeof (l as { price_usd?: number }).price_usd === "number" && (l as { price_usd: number }).price_usd > 0
+      );
+      const minEntry = withPrice.length
+        ? withPrice.reduce((best, l) => ((l as { price_usd?: number }).price_usd! < (best as { price_usd?: number }).price_usd! ? l : best))
+        : null;
+      flat["sea"] = {
+        ...seaData,
+        listings: mergedListings,
+        ...(minEntry
+          ? {
+              price_usd: (minEntry as { price_usd?: number }).price_usd,
+              url: (minEntry as { url?: string | null }).url ?? seaData?.url ?? shopeeLazada.url,
+            }
+          : {}),
+      };
+    }
     for (const r of GLOBAL_REGIONS) {
       const data = flat[r.key] ?? flat[r.key === "au" ? "australia" : r.key];
       const priceUsd = data?.price_usd;
@@ -173,6 +220,23 @@ export function parseGlobalPricesForGrid(
         isBlueOcean,
         review_data,
         seller_type,
+        url: data?.url ?? null,
+        official_url: data?.official_url ?? null,
+        official_price_usd: (() => {
+          if (!data?.official_url || !data?.listings) return null;
+          const found = (data.listings as Array<{ url?: string | null; price_usd?: number | null }>)
+            .find(l => l.url === data.official_url);
+          return (found?.price_usd && found.price_usd > 0) ? found.price_usd : null;
+        })(),
+        official_platform: (() => {
+          if (!data?.official_url || !data?.listings) return null;
+          const found = (data.listings as Array<{ url?: string | null; platform?: string | null }>)
+            .find(l => l.url === data.official_url);
+          return found?.platform ?? null;
+        })(),
+        price_local: data?.price_local ?? null,
+        currency: data?.currency ?? null,
+        listings: (data?.listings ?? null) as RegionPriceRow["listings"],
       });
     }
     return out;
@@ -220,7 +284,7 @@ export function parseGlobalPricesForGrid(
       });
     }
   }
-  return out.length > 0 ? out : GLOBAL_REGIONS.map((r) => ({ flag: r.flag, label: r.label, priceDisplay: null, platform: null, isBlueOcean: true }));
+  return out.length > 0 ? out : GLOBAL_REGIONS.map((r) => ({ flag: r.flag, label: r.label, priceDisplay: null, platform: null, isBlueOcean: true, url: null, official_url: null, official_price_usd: null, official_platform: null, price_local: null, currency: null, listings: null }));
 }
 
 export function parseGlobalPrices(

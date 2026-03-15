@@ -73,6 +73,7 @@ export default async function WeeklyHubPage() {
   const { data: weeks, error } = await supabase
     .from("weeks")
     .select("week_id, week_label, start_date, end_date, published_at, product_count, summary, scout_final_reports(count)")
+    .filter("scout_final_reports.status", "eq", "published")
     .eq("status", "published")
     .order("start_date", { ascending: false });
 
@@ -292,7 +293,7 @@ export default async function WeeklyHubPage() {
                   {group.weeks.map((week, weekIndex) => {
                     const canAccess = canAccessWeek(week);
                     const isLocked = !canAccess;
-                    const actualCount = week.scout_final_reports?.[0]?.count ?? week.product_count ?? 0;
+                    const actualCount = week.scout_final_reports?.[0]?.count ?? 0;
                     const isFirstItemInVault = index === 0 && weekIndex === 0;
                     const withinThreeDays = isWithinLastNDays(week.published_at, 3);
                     const showJustReleased = isPaid && (isFirstItemInVault || withinThreeDays);
