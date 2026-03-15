@@ -22,7 +22,8 @@ function ListingsBlock({ row }: { row: import("./utils").RegionPriceRow }) {
   const [open, setOpen] = useState(false);
 
   const allListings = row.listings ?? [];
-  const validListings = allListings.filter(l => l.price_usd && l.price_usd > 0);
+  const validListings = allListings.filter(l => l.price_usd && l.price_usd > 0 && (l as { sold_out?: boolean }).sold_out !== true);
+  const soldOutListings = allListings.filter(l => (l as { sold_out?: boolean }).sold_out === true || (l.price_usd ?? 0) === 0);
 
   const officialListing = row.official_url
     ? allListings.find(l => l.url === row.official_url) ?? null
@@ -47,7 +48,7 @@ function ListingsBlock({ row }: { row: import("./utils").RegionPriceRow }) {
     const name = officialListing.platform || getShopeeOrLazadaName(officialListing.url) || officialListing.title || "";
     seenKeys.add(`${name}__${officialListing.price_usd ?? 0}`);
   }
-  const otherListings = validListings
+  const otherValidListings = validListings
     .filter(l => l.url !== cheapestListing?.url && l.url !== row.official_url)
     .sort((a, b) => (a.price_usd ?? 0) - (b.price_usd ?? 0))
     .filter(l => {
@@ -57,6 +58,7 @@ function ListingsBlock({ row }: { row: import("./utils").RegionPriceRow }) {
       seenKeys.add(key);
       return true;
     });
+  const moreSellersList = [...otherValidListings, ...soldOutListings];
 
   const reviewDisplay = (() => {
     const r = row.review_data?.trim();
@@ -93,27 +95,36 @@ function ListingsBlock({ row }: { row: import("./utils").RegionPriceRow }) {
         </div>
       )}
 
-      {otherListings.length > 0 && (
+      {moreSellersList.length > 0 && (
         <div className="pt-1">
           <button
             onClick={() => setOpen(v => !v)}
             className="text-xs font-semibold text-[#6B6860] hover:text-[#1A1916] transition-colors flex items-center gap-1"
           >
             <span>{open ? "▲" : "▼"}</span>
-            <span>+ {otherListings.length} more sellers</span>
+            <span>+ {moreSellersList.length} more sellers</span>
           </button>
           {open && (
             <div className="mt-2 space-y-1.5 border-t border-[#E8E6E1] pt-2">
-              {otherListings.map((l, i) => (
-                <div key={i} className="flex items-center justify-between">
-                  <span className="text-xs text-[#6B6860] truncate max-w-[120px]">
-                    {l.platform || getShopeeOrLazadaName(l.url) || l.title || "Unknown"}
-                  </span>
-                  <span className="text-xs font-bold text-[#1A1916] shrink-0 ml-2">
-                    ${l.price_usd?.toFixed(2)}
-                  </span>
-                </div>
-              ))}
+              {moreSellersList.map((l, i) => {
+                const soldOut = (l as { sold_out?: boolean }).sold_out === true || (l.price_usd ?? 0) === 0;
+                const hasPrice = (l.price_usd ?? 0) > 0;
+                return (
+                  <div key={i} className="flex items-center justify-between">
+                    <span className="text-xs text-[#6B6860] truncate max-w-[120px]">
+                      {l.platform || getShopeeOrLazadaName(l.url) || l.title || "Unknown"}
+                    </span>
+                    <span className="text-xs font-bold text-[#1A1916] shrink-0 ml-2 flex items-center gap-1.5">
+                      {soldOut && (
+                        <span className="text-[9px] font-black tracking-widest uppercase text-[#9E9C98] bg-[#F8F7F4] border border-[#E8E6E1] px-1.5 py-0.5 rounded-full">
+                          Sold Out
+                        </span>
+                      )}
+                      {hasPrice && <span>${l.price_usd!.toFixed(2)}</span>}
+                    </span>
+                  </div>
+                );
+              })}
             </div>
           )}
         </div>

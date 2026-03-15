@@ -57,14 +57,13 @@ export function SupplierContact({
   }
   const hasNested = "us_uk_eu" in rawPrices || "jp_sea" in rawPrices || "uae" in rawPrices;
   if (hasNested) {
-    const usUkEu = rawPrices["us_uk_eu"] as { us?: { url?: string; platform?: string }; uk?: { url?: string; platform?: string }; eu?: { url?: string; platform?: string } } | undefined;
-    const jpSea = rawPrices["jp_sea"] as { jp?: { url?: string; platform?: string }; sea?: { url?: string; platform?: string } } | undefined;
+    const usUkEu = rawPrices["us_uk_eu"] as { us?: { url?: string; platform?: string; listings?: unknown[] }; uk?: { url?: string; platform?: string; listings?: unknown[] }; eu?: { url?: string; platform?: string; listings?: unknown[] } } | undefined;
+    const jpSea = rawPrices["jp_sea"] as { jp?: { url?: string; platform?: string }; sea?: { url?: string; platform?: string; listings?: unknown[] } } | undefined;
     const uaeVal = rawPrices["uae"] as { uae?: { url?: string; platform?: string } } | undefined;
-    // shopee_lazada listings를 sea listings에 병합 후 최저가 URL로 sea.url 업데이트
     const shopeeData = rawPrices["shopee_lazada"] as { price_usd?: number; url?: string; listings?: Array<{ price_usd?: number; url?: string; platform?: string; title?: string }> } | undefined;
     const seaBase = jpSea?.sea as { url?: string; platform?: string; price_usd?: number; listings?: Array<{ price_usd?: number; url?: string; platform?: string }> } | undefined;
 
-    // 기존 SEA + shopee_lazada listings 합산 후 최저가 URL 선택
+    // SEA: jp_sea.sea.listings + shopee_lazada.listings 둘 다 병합 후 표시
     const mergedSeaListings = [
       ...(seaBase?.listings ?? []),
       ...(shopeeData?.listings ?? []),
@@ -91,27 +90,30 @@ export function SupplierContact({
     } as Record<string, { url?: string; platform?: string }>;
   }
   const regionsList = [
-    { id: "us", name: "US" },
-    { id: "uk", name: "UK" },
-    { id: "sea", name: "SEA" },
-    { id: "australia", name: "AU" },
-    { id: "india", name: "IN" },
-    { id: "eu", name: "EU" },
-    { id: "jp", name: "JP" },
-    { id: "uae", name: "UAE" },
+    { id: "us",  name: "US",  fullName: "North America" },
+    { id: "uk",  name: "UK",  fullName: "United Kingdom" },
+    { id: "eu",  name: "EU",  fullName: "European Union" },
+    { id: "jp",  name: "JP",  fullName: "Japan" },
+    { id: "sea", name: "SEA", fullName: "Southeast Asia" },
+    { id: "uae", name: "UAE", fullName: "Middle East" },
   ];
-  type ProofListing = { platform?: string; title?: string; price_usd?: number; url?: string };
-  type ProofTag = { region: string; url: string; platform?: string; listings?: ProofListing[] };
+  type ProofListing = { platform?: string; title?: string; price_usd?: number; url?: string; sold_out?: boolean };
+  type ProofTag = { region: string; fullName: string; url: string; platform?: string; listings?: ProofListing[] };
   const globalProofTags: ProofTag[] = regionsList
     .map((r) => {
       const regionData = rawPrices[r.id] as { url?: string; platform?: string; listings?: ProofListing[] } | undefined;
-      if (!regionData?.url?.startsWith("http")) return null;
-      return {
+      const hasUrl = regionData?.url?.startsWith("http");
+      const hasListings = (regionData?.listings?.length ?? 0) > 0;
+      if (!hasUrl && !hasListings) return null;
+      const url = regionData?.url || (regionData?.listings?.[0] as { url?: string } | undefined)?.url || "#";
+      const tag: ProofTag = {
         region: r.name,
-        url: regionData.url,
-        platform: regionData.platform?.trim() || undefined,
-        listings: regionData.listings ?? [],
+        fullName: r.fullName,
+        url,
+        platform: regionData?.platform?.trim() || undefined,
+        listings: regionData?.listings ?? [],
       };
+      return tag;
     })
     .filter((t): t is ProofTag => t !== null);
 
@@ -444,7 +446,7 @@ function getPlatformLabel(l: { platform?: string | null; title?: string | null; 
   return l.title || "Unknown";
 }
 
-function GlobalProofAccordion({ tags }: { tags: Array<{ region: string; url: string; platform?: string; listings?: Array<{ platform?: string; title?: string; price_usd?: number; url?: string }> }> }) {
+function GlobalProofAccordion({ tags }: { tags: Array<{ region: string; fullName: string; url: string; platform?: string; listings?: Array<{ platform?: string; title?: string; price_usd?: number; url?: string; sold_out?: boolean }> }> }) {
   const [openRegion, setOpenRegion] = useState<string | null>(null);
   const toggle = (region: string) => setOpenRegion(prev => prev === region ? null : region);
 
@@ -456,7 +458,7 @@ function GlobalProofAccordion({ tags }: { tags: Array<{ region: string; url: str
         // 1. 중복 제거 (platform명 + price_usd 기준)
         const seenKeys = new Set<string>();
         const deduped = (tag.listings ?? [])
-          .filter(l => l.url?.startsWith("http"))
+          .filter(l => l.url && l.url.trim() !== "")
           .filter(l => {
             const name = getPlatformLabel(l);
             const key = `${name}__${l.price_usd ?? 0}`;
@@ -465,11 +467,14 @@ function GlobalProofAccordion({ tags }: { tags: Array<{ region: string; url: str
             return true;
           });
 
-        // 2. 정렬: price_usd > 0 오름차순, 0은 맨 아래
-        const sortedListings = [
-          ...deduped.filter(l => (l.price_usd ?? 0) > 0).sort((a, b) => (a.price_usd ?? 0) - (b.price_usd ?? 0)),
-          ...deduped.filter(l => (l.price_usd ?? 0) === 0),
-        ];
+        // 2. 정렬: 활성(가격 있음, sold_out 아님) 오름차순 → 품절/무가격 맨 아래 가격 내림차순
+        const topGroup = deduped
+          .filter(l => (l.price_usd ?? 0) > 0 && l.sold_out !== true)
+          .sort((a, b) => (a.price_usd ?? 0) - (b.price_usd ?? 0));
+        const bottomGroup = deduped
+          .filter(l => (l.price_usd ?? 0) === 0 || l.sold_out === true)
+          .sort((a, b) => (b.price_usd ?? 0) - (a.price_usd ?? 0));
+        const sortedListings = [...topGroup, ...bottomGroup];
 
         const sellerCount = sortedListings.length;
 
@@ -484,9 +489,7 @@ function GlobalProofAccordion({ tags }: { tags: Array<{ region: string; url: str
                 <span className="bg-[#1A1916] text-white px-3 py-1.5 rounded-md text-xs font-black uppercase tracking-widest shrink-0">
                   {tag.region}
                 </span>
-                {tag.platform && (
-                  <span className="text-sm font-bold text-[#1A1916] truncate">{tag.platform}</span>
-                )}
+                <span className="text-sm text-[#9E9C98] ml-2">{tag.fullName}</span>
               </div>
               <div className="flex items-center gap-2 shrink-0 ml-3">
                 {sellerCount > 0 && (
@@ -502,7 +505,8 @@ function GlobalProofAccordion({ tags }: { tags: Array<{ region: string; url: str
             {isOpen && (
               <div className="border-t border-[#E8E6E1] divide-y divide-[#E8E6E1]/60">
                 {sortedListings.length > 0 ? sortedListings.map((l, i) => {
-                  const isSoldOut = (l.price_usd ?? 0) === 0;
+                  const isSoldOut = (l.price_usd ?? 0) === 0 || l.sold_out === true;
+                  const hasPrice = (l.price_usd ?? 0) > 0;
                   return (
                     <a
                       key={i}
@@ -515,11 +519,12 @@ function GlobalProofAccordion({ tags }: { tags: Array<{ region: string; url: str
                         {getPlatformLabel(l)}
                       </span>
                       <div className="flex items-center gap-2 shrink-0 ml-3">
-                        {isSoldOut ? (
+                        {isSoldOut && (
                           <span className="text-[9px] font-black tracking-widest uppercase text-[#9E9C98] bg-[#F8F7F4] border border-[#E8E6E1] px-2 py-0.5 rounded-full">
                             Sold Out
                           </span>
-                        ) : (
+                        )}
+                        {hasPrice && (
                           <span className="text-sm font-bold text-[#1A1916]">
                             ${l.price_usd!.toFixed(2)}
                           </span>

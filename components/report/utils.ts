@@ -1,12 +1,12 @@
 import { SHIPPING_TIER_TOOLTIP } from "./constants";
 
 const GLOBAL_REGIONS = [
-  { key: "us", flag: "🇺🇸", label: "US" },
-  { key: "uk", flag: "🇬🇧", label: "UK" },
-  { key: "sea", flag: "🇸🇬", label: "SEA" },
-  { key: "eu", flag: "🇪🇺", label: "EU" },
-  { key: "jp", flag: "🇯🇵", label: "JP" },
-  { key: "uae", flag: "🇦🇪", label: "UAE" },
+  { key: "us",  flag: "🇺🇸", label: "US",  fullLabel: "North America" },
+  { key: "uk",  flag: "🇬🇧", label: "UK",  fullLabel: "United Kingdom" },
+  { key: "eu",  flag: "🇪🇺", label: "EU",  fullLabel: "European Union" },
+  { key: "jp",  flag: "🇯🇵", label: "JP",  fullLabel: "Japan" },
+  { key: "sea", flag: "🇸🇬", label: "SEA", fullLabel: "Southeast Asia" },
+  { key: "uae", flag: "🇦🇪", label: "UAE", fullLabel: "Middle East" },
 ] as const;
 
 export function formatHsCode(raw: string | null | undefined): string {
@@ -196,7 +196,7 @@ export function parseGlobalPricesForGrid(
       };
     }
     for (const r of GLOBAL_REGIONS) {
-      const data = flat[r.key] ?? flat[r.key === "au" ? "australia" : r.key];
+      const data = flat[r.key];
       const priceUsd = data?.price_usd;
       const priceOrig = data?.price_original != null ? String(data.price_original).replace(/[$,]/g, "") : "";
       const num = priceUsd != null ? priceUsd : priceOrig ? parseFloat(priceOrig) : NaN;
