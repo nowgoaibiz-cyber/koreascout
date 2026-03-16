@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
-import { createClient } from "@/lib/supabase/server";
 import { createServiceRoleClient } from "@/lib/supabase/admin";
 import { PRICING } from "@/src/config/pricing";
+import CheckoutButton from "@/components/CheckoutButton";
 
 export const metadata: Metadata = {
   title: "Pricing — KoreaScout",
@@ -112,10 +112,6 @@ export default async function PricingPage() {
   const alphaCount = await getAlphaMemberCount();
   const isMembershipFull = alphaCount >= ALPHA_MAX_SPOTS;
   const remainingSpots = Math.max(0, ALPHA_MAX_SPOTS - alphaCount);
-
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  const userEmail = user?.email ?? "";
 
   return (
     <>
@@ -232,14 +228,12 @@ export default async function PricingPage() {
                 </p>
               </div>
               <div className="mt-auto">
-                <a
-                  href={userEmail ? `${STANDARD_CHECKOUT_URL}?checkout[email]=${encodeURIComponent(userEmail)}` : STANDARD_CHECKOUT_URL}
-                  target="_blank"
-                  rel="noopener noreferrer"
+                <CheckoutButton
+                  checkoutUrl={STANDARD_CHECKOUT_URL}
                   className="block w-full text-center py-3 rounded-xl border-2 border-[#1A1916] text-sm font-black text-[#1A1916] hover:bg-[#1A1916] hover:text-white transition-all"
                 >
                   Start Knowing — {PRICING.CURRENCY}{PRICING.STANDARD.monthly}/mo
-                </a>
+                </CheckoutButton>
                 <p className="text-xs text-[#9E9C98] text-center mt-3">
                   10+ products/week · Instant access
                 </p>
@@ -303,14 +297,12 @@ export default async function PricingPage() {
                     Join the Waiting List
                   </a>
                 ) : (
-                  <a
-                    href={userEmail ? `${ALPHA_CHECKOUT_URL}?checkout[email]=${encodeURIComponent(userEmail)}` : ALPHA_CHECKOUT_URL}
-                    target="_blank"
-                    rel="noopener noreferrer"
+                  <CheckoutButton
+                    checkoutUrl={ALPHA_CHECKOUT_URL}
                     className="block w-full text-center py-3 rounded-xl bg-[#16A34A] text-white text-sm font-black hover:bg-[#15803D] transition-colors shadow-[0_4px_12px_0_rgb(22_163_74/0.3)]"
                   >
                     Go Alpha — {PRICING.CURRENCY}{PRICING.ALPHA.monthly}/mo
-                  </a>
+                  </CheckoutButton>
                 )}
                 <p className="text-xs text-[#9E9C98] text-center mt-3">
                   10+ products/week · Full sourcing intel
@@ -458,14 +450,12 @@ export default async function PricingPage() {
         )}
         <div className="flex flex-col items-center gap-4 max-w-2xl mx-auto mb-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
-            <a
-              href={userEmail ? `${STANDARD_CHECKOUT_URL}?checkout[email]=${encodeURIComponent(userEmail)}` : STANDARD_CHECKOUT_URL}
-              target="_blank"
-              rel="noopener noreferrer"
+            <CheckoutButton
+              checkoutUrl={STANDARD_CHECKOUT_URL}
               className="w-full text-center py-4 border border-white/30 text-white rounded-xl font-bold text-base hover:border-white/60 transition-colors"
             >
               Start with Standard — {PRICING.CURRENCY}{PRICING.STANDARD.monthly}/mo
-            </a>
+            </CheckoutButton>
             {isMembershipFull ? (
               <a
                 href="/waitlist"
@@ -474,14 +464,12 @@ export default async function PricingPage() {
                 Join Alpha Waiting List
               </a>
             ) : (
-              <a
-                href={userEmail ? `${ALPHA_CHECKOUT_URL}?checkout[email]=${encodeURIComponent(userEmail)}` : ALPHA_CHECKOUT_URL}
-                target="_blank"
-                rel="noopener noreferrer"
+              <CheckoutButton
+                checkoutUrl={ALPHA_CHECKOUT_URL}
                 className="w-full text-center py-4 bg-[#16A34A] text-white rounded-xl font-black text-base hover:bg-[#15803D] shadow-[0_4px_20px_0_rgb(22_163_74/0.4)] transition-colors"
               >
                 Go Alpha — {PRICING.CURRENCY}{PRICING.ALPHA.monthly}/mo
-              </a>
+              </CheckoutButton>
             )}
           </div>
         </div>

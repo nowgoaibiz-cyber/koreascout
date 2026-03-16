@@ -63,13 +63,13 @@ export function HeaderNavClient({
           Weekly Report
         </Link>
         {tier === "free" && (
-          <Link href="/pricing" className={primaryClass} style={transitionStyle}>
-            Upgrade — {PRICING.CURRENCY}{PRICING.STANDARD.monthly}/mo
+          <Link href="/pricing" className={ghostClass} style={transitionStyle}>
+            Pricing
           </Link>
         )}
         {tier === "standard" && (
           <Link href="/pricing" className={ghostClass} style={transitionStyle}>
-            Go Alpha — {PRICING.CURRENCY}{PRICING.ALPHA.monthly}/mo
+            Upgrade
           </Link>
         )}
         <Link href="/account" className={ghostClass} style={transitionStyle}>
