@@ -738,6 +738,10 @@ export default async function HomePage() {
               </Link>
             </div>
           </div>
+          <div className="mt-4 flex justify-center gap-6">
+            <a href="/legal/terms" className="text-xs text-[#9E9C98] hover:text-[#0A0908] transition-colors">Terms of Service</a>
+            <a href="/legal/privacy" className="text-xs text-[#9E9C98] hover:text-[#0A0908] transition-colors">Privacy Policy</a>
+          </div>
         </footer>
       </main>
     </>
