@@ -38,7 +38,7 @@ function LoginContent() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#1A1916] relative overflow-hidden px-4 py-12">
+    <div className="min-h-screen flex items-center justify-center bg-[#1A1916] relative overflow-hidden px-4 pt-24 pb-12">
       {/* Subtle radial gradient blur */}
       <div
         className="absolute inset-0 pointer-events-none"
@@ -128,9 +128,9 @@ function LoginContent() {
             {loading ? "Signing in…" : "Sign in"}
           </button>
         </form>
-        <p className="text-center text-xs text-[#9E9C98] mt-3 leading-relaxed">
+        <p className="text-center text-[10px] text-[#9E9C98] mt-3 whitespace-nowrap">
           By signing in, you agree to our{" "}
-          <a href="/legal/terms" className="underline hover:text-[#0A0908]">Terms of Service</a>
+          <a href="/legal/terms" className="underline hover:text-[#0A0908]">Terms</a>
           {" "}and{" "}
           <a href="/legal/privacy" className="underline hover:text-[#0A0908]">Privacy Policy</a>.
         </p>

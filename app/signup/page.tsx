@@ -16,6 +16,8 @@ function SignUpContent() {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [resendCooldown, setResendCooldown] = useState(0);
+  const [resendMessage, setResendMessage] = useState("");
 
   const loginHref = nextUrl ? `/login?next=${encodeURIComponent(nextUrl)}` : "/login";
 
@@ -43,9 +45,27 @@ function SignUpContent() {
     router.refresh();
   }
 
+  async function handleResend() {
+    if (resendCooldown > 0) return;
+    const supabase = createClient();
+    const { error } = await supabase.auth.resend({ type: "signup", email });
+    if (error) {
+      setResendMessage("Failed to resend. Please try again.");
+    } else {
+      setResendMessage("Verification email sent! Check your inbox.");
+      setResendCooldown(60);
+      const interval = setInterval(() => {
+        setResendCooldown((prev) => {
+          if (prev <= 1) { clearInterval(interval); return 0; }
+          return prev - 1;
+        });
+      }, 1000);
+    }
+  }
+
   if (success) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#1A1916] relative overflow-hidden px-4 py-12">
+      <div className="min-h-screen flex items-center justify-center bg-[#1A1916] relative overflow-hidden px-4 pt-24 pb-12">
         <div className="absolute inset-0 pointer-events-none" aria-hidden>
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-green-900/20 blur-3xl rounded-full" />
         </div>
@@ -59,6 +79,18 @@ function SignUpContent() {
             <p className="text-sm text-gray-600 mb-6">
               We sent a confirmation link to <strong className="text-gray-900">{email}</strong>. Click it to activate your account.
             </p>
+            <div className="mb-4">
+              {resendMessage && (
+                <p className="text-sm text-[#16A34A] mb-2">{resendMessage}</p>
+              )}
+              <button
+                onClick={handleResend}
+                disabled={resendCooldown > 0}
+                className="text-sm text-[#9E9C98] hover:text-[#0A0908] disabled:cursor-not-allowed transition-colors"
+              >
+                {resendCooldown > 0 ? `Resend available in ${resendCooldown}s` : "Didn't receive the email? Resend"}
+              </button>
+            </div>
             <Link
               href={loginHref}
               className="block w-full bg-[#1A1916] text-white font-bold py-3 rounded-xl hover:bg-black scale-100 hover:scale-[1.02] transition-transform text-center"
@@ -77,7 +109,7 @@ function SignUpContent() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#1A1916] relative overflow-hidden px-4 py-12">
+    <div className="min-h-screen flex items-center justify-center bg-[#1A1916] relative overflow-hidden px-4 pt-24 pb-12">
       <div className="absolute inset-0 pointer-events-none" aria-hidden>
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-green-900/20 blur-3xl rounded-full" />
       </div>
@@ -149,9 +181,9 @@ function SignUpContent() {
               {loading ? "Creating account…" : "Create account"}
             </button>
           </form>
-          <p className="text-center text-xs text-[#9E9C98] mt-3 leading-relaxed">
+          <p className="text-center text-[10px] text-[#9E9C98] mt-3 whitespace-nowrap">
             By signing up, you agree to our{" "}
-            <a href="/legal/terms" className="underline hover:text-[#0A0908]">Terms of Service</a>
+            <a href="/legal/terms" className="underline hover:text-[#0A0908]">Terms</a>
             {" "}and{" "}
             <a href="/legal/privacy" className="underline hover:text-[#0A0908]">Privacy Policy</a>.
           </p>
