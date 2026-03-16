@@ -16,12 +16,7 @@ export default function HeroCTA() {
       if (session) {
         router.push("/weekly");
       } else {
-        await supabase.auth.signInWithOAuth({
-          provider: "google",
-          options: {
-            redirectTo: `${window.location.origin}/auth/callback`,
-          },
-        });
+        router.push("/login");
       }
     } catch {
       setLoading(false);
