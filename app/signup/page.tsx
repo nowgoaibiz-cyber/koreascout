@@ -149,7 +149,7 @@ function SignUpContent() {
               {loading ? "Creating account…" : "Create account"}
             </button>
           </form>
-          <p className="text-center text-xs text-[#9E9C98] mt-3">
+          <p className="text-center text-xs text-[#9E9C98] mt-3 leading-relaxed">
             By signing up, you agree to our{" "}
             <a href="/legal/terms" className="underline hover:text-[#0A0908]">Terms of Service</a>
             {" "}and{" "}

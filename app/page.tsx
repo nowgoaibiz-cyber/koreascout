@@ -714,9 +714,13 @@ export default async function HomePage() {
         {/* Footer — Cream Shutter (Constitution) */}
         <footer className="bg-[#F8F7F4] border-t border-[#E8E6E1] py-8 px-6">
           <div className="mx-auto flex max-w-6xl flex-col flex-wrap items-center justify-between gap-4 sm:flex-row">
-            <span className="text-center text-sm text-[#6B6860] sm:text-left">
-              © 2026 KoreaScout. All rights reserved.
-            </span>
+            <div className="flex flex-col gap-1">
+              <p className="text-sm text-[#9E9C98]">© 2026 KoreaScout. All rights reserved.</p>
+              <div className="flex gap-4">
+                <a href="/legal/terms" className="text-xs text-[#9E9C98] hover:text-[#0A0908] transition-colors">Terms of Service</a>
+                <a href="/legal/privacy" className="text-xs text-[#9E9C98] hover:text-[#0A0908] transition-colors">Privacy Policy</a>
+              </div>
+            </div>
             <div className="flex gap-6">
               <Link
                 href="/pricing"
@@ -737,10 +741,6 @@ export default async function HomePage() {
                 Contact
               </Link>
             </div>
-          </div>
-          <div className="mt-4 flex justify-center gap-6">
-            <a href="/legal/terms" className="text-xs text-[#9E9C98] hover:text-[#0A0908] transition-colors">Terms of Service</a>
-            <a href="/legal/privacy" className="text-xs text-[#9E9C98] hover:text-[#0A0908] transition-colors">Privacy Policy</a>
           </div>
         </footer>
       </main>
