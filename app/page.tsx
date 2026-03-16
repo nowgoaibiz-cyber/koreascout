@@ -5,6 +5,7 @@ import LandingPipelineSneakPeek from "@/components/LandingPipelineSneakPeek";
 import DynamiteFuseSection from "@/components/DynamiteFuseSection";
 import IntelligencePipeline from "@/components/IntelligencePipeline";
 import LandingTimeWidget from "@/components/LandingTimeWidget";
+import { createClient } from "@/lib/supabase/server";
 import { createServiceRoleClient } from "@/lib/supabase/admin";
 import { PRICING } from "@/src/config/pricing";
 import { Rocket, Handshake, ShieldCheck } from "lucide-react";
@@ -62,6 +63,10 @@ export default async function HomePage() {
   const alphaCount = await getAlphaCount();
   const remaining = Math.max(0, ALPHA_MAX - alphaCount);
   const isFull = alphaCount >= ALPHA_MAX;
+
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  const userEmail = user?.email ?? "";
 
   return (
     <>
@@ -468,7 +473,7 @@ export default async function HomePage() {
                 </div>
                 <div className="mt-auto">
                   <a
-                    href={STANDARD_CHECKOUT_URL}
+                    href={userEmail ? `${STANDARD_CHECKOUT_URL}?checkout[email]=${encodeURIComponent(userEmail)}` : STANDARD_CHECKOUT_URL}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="block w-full text-center py-3 rounded-xl border-2 border-[#1A1916] text-sm font-black text-[#1A1916] hover:bg-[#1A1916] hover:text-white transition-all duration-200"
@@ -540,7 +545,7 @@ export default async function HomePage() {
                     </a>
                   ) : (
                     <a
-                      href={ALPHA_CHECKOUT_URL}
+                      href={userEmail ? `${ALPHA_CHECKOUT_URL}?checkout[email]=${encodeURIComponent(userEmail)}` : ALPHA_CHECKOUT_URL}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="block w-full text-center py-3 rounded-xl bg-[#16A34A] text-white text-sm font-black hover:bg-[#15803D] transition-colors duration-200 shadow-[0_4px_12px_0_rgb(22_163_74/0.3)]"

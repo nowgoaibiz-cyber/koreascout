@@ -3,6 +3,7 @@
 import Link from "next/link";
 import type { User } from "@supabase/supabase-js";
 import { LogoutButton } from "@/components/LogoutButton";
+import { PRICING } from "@/src/config/pricing";
 
 const NAV_TRANSITION =
   "color 0.4s cubic-bezier(0.4,0,0.2,1), background-color 0.4s cubic-bezier(0.4,0,0.2,1), border-color 0.4s cubic-bezier(0.4,0,0.2,1)";
@@ -25,9 +26,11 @@ function getPrimaryClass(isTransparent: boolean) {
 
 export function HeaderNavClient({
   user,
+  tier,
   isTransparent,
 }: {
   user: User | null;
+  tier: string;
   isTransparent: boolean;
 }) {
   const ghostClass = getGhostClass(isTransparent);
@@ -59,6 +62,16 @@ export function HeaderNavClient({
         <Link href="/weekly" className={ghostClass} style={transitionStyle}>
           Weekly Report
         </Link>
+        {tier === "free" && (
+          <Link href="/pricing" className={primaryClass} style={transitionStyle}>
+            Upgrade — {PRICING.CURRENCY}{PRICING.STANDARD.monthly}/mo
+          </Link>
+        )}
+        {tier === "standard" && (
+          <Link href="/pricing" className={ghostClass} style={transitionStyle}>
+            Go Alpha — {PRICING.CURRENCY}{PRICING.ALPHA.monthly}/mo
+          </Link>
+        )}
         <Link href="/account" className={ghostClass} style={transitionStyle}>
           Account
         </Link>

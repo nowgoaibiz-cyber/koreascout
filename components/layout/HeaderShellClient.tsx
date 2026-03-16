@@ -47,7 +47,7 @@ function subscribeToScroll(callback: () => void) {
   return () => window.removeEventListener("scroll", notify);
 }
 
-export function HeaderShellClient({ user }: { user: User | null }) {
+export function HeaderShellClient({ user, tier }: { user: User | null; tier: string }) {
   const pathname = usePathname();
   const isHomeRoute = pathname === "/";
   const isScrolled = useSyncExternalStore(
@@ -88,7 +88,7 @@ export function HeaderShellClient({ user }: { user: User | null }) {
           />
         </Link>
 
-        <HeaderNavClient user={user} isTransparent={isTransparent} />
+        <HeaderNavClient user={user} tier={tier} isTransparent={isTransparent} />
       </div>
     </header>
   );
