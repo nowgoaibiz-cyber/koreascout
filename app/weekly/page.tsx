@@ -169,7 +169,7 @@ export default async function WeeklyHubPage() {
   return (
     <div className="min-h-screen bg-[#F8F7F4]">
       {/* 1. DARK HERO — section label + tier badge only */}
-      <section className="bg-[#1A1916] pt-16 pb-6 px-6">
+      <section className="bg-[#1A1916] pt-24 pb-6 px-6">
         <div className="max-w-5xl mx-auto">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <p className="text-sm font-bold tracking-[0.3em] uppercase text-[#16A34A]">
@@ -217,11 +217,8 @@ export default async function WeeklyHubPage() {
                 HOT ISSUE
               </span>
               <h2 className="text-2xl md:text-3xl font-black text-white mb-2 leading-tight group-hover:text-[#BBF7D0] transition-colors">
-                Olive Young&apos;s Top 5 Viral Sunscreens
+                Coming Soon
               </h2>
-              <p className="text-[#9E9C98] font-medium text-sm md:text-base flex items-center gap-2">
-                Read the full intel <span className="text-[#16A34A]">→</span>
-              </p>
             </div>
           </div>
         </div>

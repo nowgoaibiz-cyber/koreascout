@@ -3,13 +3,10 @@
 import { useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
-import GrandEntrance from "./GrandEntrance";
-
 export default function HeroCTA() {
   const router = useRouter();
   const supabase = createClient();
   const [loading, setLoading] = useState(false);
-  const [showEntrance, setShowEntrance] = useState(false);
 
   async function handleAccess() {
     if (loading) return;
@@ -17,7 +14,7 @@ export default function HeroCTA() {
     try {
       const { data: { session } } = await supabase.auth.getSession();
       if (session) {
-        setShowEntrance(true);
+        router.push("/sample-report");
       } else {
         await supabase.auth.signInWithOAuth({
           provider: "google",
@@ -33,10 +30,6 @@ export default function HeroCTA() {
 
   return (
     <>
-      {showEntrance && (
-        <GrandEntrance onComplete={() => router.push("/sample-report")} />
-      )}
-
       <div className="flex flex-col md:flex-row items-stretch md:items-center gap-3 w-full md:w-auto max-w-sm md:max-w-none mx-auto">
         {/* PRIMARY CTA — Request Access: #16A34A, same box as secondary */}
         <button
