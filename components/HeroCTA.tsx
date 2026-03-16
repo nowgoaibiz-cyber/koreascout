@@ -60,7 +60,12 @@ export default function HeroCTA() {
             </>
           )}
         </button>
-
+        <p className="text-center text-xs text-white/50 mt-2">
+          By signing up, you agree to our{" "}
+          <a href="/legal/terms" className="underline hover:text-white/80">Terms of Service</a>
+          {" "}and{" "}
+          <a href="/legal/privacy" className="underline hover:text-white/80">Privacy Policy</a>.
+        </p>
         {/* SECONDARY CTA — View Sample Report: transparent, border #F8F7F4/30, same box */}
         <a
           href="/sample-report"

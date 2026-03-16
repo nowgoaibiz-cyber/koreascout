@@ -128,6 +128,12 @@ function LoginContent() {
             {loading ? "Signing in…" : "Sign in"}
           </button>
         </form>
+        <p className="text-center text-xs text-[#9E9C98] mt-3">
+          By signing in, you agree to our{" "}
+          <a href="/legal/terms" className="underline hover:text-[#0A0908]">Terms of Service</a>
+          {" "}and{" "}
+          <a href="/legal/privacy" className="underline hover:text-[#0A0908]">Privacy Policy</a>.
+        </p>
         <p className="mt-6 text-center text-sm text-gray-600">
           Don&apos;t have an account?{" "}
           <Link

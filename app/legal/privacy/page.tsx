@@ -1,7 +1,7 @@
 export default function PrivacyPolicy() {
   return (
     <main className="min-h-screen bg-[#F8F7F4]">
-      <div className="max-w-3xl mx-auto px-6 py-16">
+      <div className="max-w-3xl mx-auto px-6 pt-28 pb-16">
         <h1 className="text-3xl font-bold text-[#0A0908] mb-2">Privacy Policy</h1>
         <p className="text-sm text-[#9E9C98] mb-12">Last updated: March 2026</p>
 
@@ -11,8 +11,8 @@ export default function PrivacyPolicy() {
         </section>
 
         <section className="mb-10">
-          <h2 className="text-lg font-bold text-[#0A0908] mb-3">2. How We Use Your Data</h2>
-          <p className="text-[#4A4845] leading-relaxed">Your data is used solely to authenticate your account and deliver the service. We do not sell, share, or distribute your personal information to third parties.</p>
+          <h2 className="text-lg font-bold text-[#0A0908] mb-3">2. How We Use Your Data & Cookies</h2>
+          <p className="text-[#4A4845] leading-relaxed">Your data is used solely to authenticate your account and deliver the service. We use essential cookies strictly for user authentication and session management. We do not use advertising or tracking cookies. We do not sell, share, or distribute your personal information to third parties.</p>
         </section>
 
         <section className="mb-10">
