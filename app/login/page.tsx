@@ -39,14 +39,6 @@ function LoginContent() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#F8F7F4] relative overflow-hidden px-4 pt-24 pb-12">
-      {/* Subtle radial gradient blur */}
-      <div
-        className="absolute inset-0 pointer-events-none"
-        aria-hidden
-      >
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-green-900/20 blur-3xl rounded-full" />
-      </div>
-
       <div className="w-full max-w-md flex flex-col items-center gap-8 relative z-10">
         <div className="bg-white p-8 sm:p-12 rounded-2xl shadow-2xl w-full">
           <Link href="/" className="block focus:outline-none focus-visible:ring-2 focus-visible:ring-[#16A34A] focus-visible:ring-offset-2 rounded-lg w-fit mx-auto">
