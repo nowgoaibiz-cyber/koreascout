@@ -278,36 +278,40 @@ export function MarketIntelligence({
                   Best Entry: <span className="font-bold text-[#1A1916]">{report.best_platform}</span>
                 </p>
               )}
-              <LockedValue locked={!canSeeStandard} tier="standard">
-                <div className="grid grid-cols-2 gap-x-16" style={{ marginTop: "1.2cm", rowGap: "1.2cm" }}>
-                  {sixMarkets.map((market) => {
+              <div className="grid grid-cols-2 gap-x-16" style={{ marginTop: "1.2cm", rowGap: "1.2cm" }}>
+                {sixMarkets.map((market) => {
                   const isUntapped = !market.row || market.row.isBlueOcean;
                   return (
                     <div key={market.code} className="border-l-4 border-[#16A34A] pl-8 py-6 min-h-[150px]">
-                      <p className="text-2xl font-extrabold text-[#6B6860] uppercase tracking-widest mb-3">
+                      <p className="text-2xl font-extrabold text-[#1A1916] uppercase tracking-widest mb-3">
                         {market.code}
-                        <span className="text-sm font-normal normal-case tracking-normal text-[#9E9C98] ml-2">{market.label}</span>
+                        <span className="text-sm font-normal normal-case tracking-normal text-[#1A1916]/70 ml-2">
+                          {market.label}
+                        </span>
                       </p>
                       <div style={{ marginTop: "0.6cm" }}>
-                        {isUntapped ? (
-                          <>
-                            <div className="flex items-center gap-2 mb-1">
-                              <div className="w-2 h-2 rounded-full bg-[#16A34A]" />
-                              <p className="text-sm font-semibold text-[#16A34A] tracking-widest uppercase">Untapped</p>
-                            </div>
-                            <p className="text-xs italic text-[#9E9C98]">No established sellers detected.</p>
-                          </>
-                        ) : (
-                          !isUntapped && market.row && (
-                            <ListingsBlock row={market.row} />
-                          )
-                        )}
+                        <LockedValue locked={!canSeeStandard} tier="standard" minHeight="60px">
+                          {isUntapped ? (
+                            <>
+                              <div className="flex items-center gap-2 mb-1">
+                                <div className="w-2 h-2 rounded-full bg-[#16A34A]" />
+                                <p className="text-sm font-semibold text-[#16A34A] tracking-widest uppercase">
+                                  Untapped
+                                </p>
+                              </div>
+                              <p className="text-xs italic text-[#1A1916]/70">
+                                No established sellers detected.
+                              </p>
+                            </>
+                          ) : (
+                            market.row && <ListingsBlock row={market.row} />
+                          )}
+                        </LockedValue>
                       </div>
                     </div>
                   );
                 })}
-                </div>
-              </LockedValue>
+              </div>
               <div style={{ marginTop: "2.5cm" }}>
                 <div className="border-t border-[#E8E6E1] pt-6">
                   <p className="text-base italic text-[#6B6860]">
