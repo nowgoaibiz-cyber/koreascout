@@ -51,6 +51,10 @@ export default async function ProductDetailPage({
   const isFavorited = !!favoriteRow?.report_id;
 
   if (error || !report) notFound();
+  if (report.is_premium === true && tier === "free") {
+    const { redirect } = await import("next/navigation");
+    redirect("/pricing");
+  }
 
   const idList = (weekReports ?? []).map((r) => r.id);
   const currentIndex = idList.indexOf(id);
@@ -130,11 +134,9 @@ export default async function ProductDetailPage({
 
             {hasLogistics && <SourcingIntel report={maskedReport} tier={tier as string} isTeaser={isTeaser} />}
 
-            {hasSupplier && (
-              <div id="section-6" className="scroll-mt-[160px]">
-                <SupplierContact report={maskedReport} tier={tier as "free" | "standard" | "alpha"} isTeaser={isTeaser} />
-              </div>
-            )}
+            <div id="section-6" className="scroll-mt-[160px]">
+              <SupplierContact report={maskedReport} tier={tier as "free" | "standard" | "alpha"} isTeaser={isTeaser} />
+            </div>
 
             <section className="rounded-2xl border border-[#E8E6E1] bg-[#F8F7F4] p-6">
               <div className="flex items-center justify-between gap-4 mb-6">
