@@ -26,7 +26,8 @@ export function SupplierContact({
     (report.wholesale_link && report.wholesale_link?.trim()) ||
     (report.sourcing_tip && report.sourcing_tip.trim());
 
-  if (!hasSupplierFields) return null;
+  // Always render the section so labels are visible to all tiers.
+  // hasSupplierFields is kept for potential future use but no longer gates rendering.
 
   const verifiedCostUsd = report.verified_cost_usd ?? null;
   const verifiedCostNote = report.verified_cost_note?.trim()?.toLowerCase() ?? null;

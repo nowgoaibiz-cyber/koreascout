@@ -1,6 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui";
+import { LockedValue } from "@/components/ui/LockedValue";
 import { PRICING } from "@/src/config/pricing";
 import { Globe, Lock } from "lucide-react";
 import type { ScoutFinalReportsRow } from "@/types/database";
@@ -196,46 +197,44 @@ export function SocialProofTrendIntelligence({
         </div>
       )}
 
-      {steps.length > 0 && (
-        <div className="bg-[#F8F7F4] rounded-2xl p-10 mb-12">
-          <p className="text-xl font-bold text-[#1A1916] mb-10">Scout Strategy Report</p>
+      <div className="bg-[#F8F7F4] rounded-2xl p-10 mb-12">
+        <p className="text-xl font-bold text-[#1A1916] mb-10">Scout Strategy Report</p>
 
-          {canSeeAlpha ? (
-            <div className="space-y-16">
-              {steps.map((step, i) => (
-                <div key={i} className="relative flex gap-6">
-                  <span
-                    className="absolute -top-4 -left-2 text-[80px] font-black leading-none select-none pointer-events-none opacity-[0.03]"
-                    style={{ color: "#1A1916" }}
-                    aria-hidden="true"
-                  >
-                    {String(i + 1).padStart(2, "0")}
-                  </span>
-                  <div className="w-1 bg-[#16A34A] rounded-full shrink-0 self-stretch" />
-                  <div className="flex-1">
-                    <p className="text-xs font-semibold text-[#9E9C98] uppercase tracking-widest mb-2">Step {i + 1}</p>
-                    <p className="text-base font-extrabold text-[#1A1916] mb-3">{step.label}</p>
+        <div className="space-y-16">
+          {[
+            { label: "Marketing Strategy" },
+            { label: "Price / Margin Strategy" },
+            { label: "B2B Sourcing Strategy" },
+          ].map((placeholder, i) => {
+            const step = steps[i];
+            return (
+              <div key={i} className="relative flex gap-6">
+                <span
+                  className="absolute -top-4 -left-2 text-[80px] font-black leading-none select-none pointer-events-none opacity-[0.03]"
+                  style={{ color: "#1A1916" }}
+                  aria-hidden="true"
+                >
+                  {String(i + 1).padStart(2, "0")}
+                </span>
+                <div className="w-1 bg-[#16A34A] rounded-full shrink-0 self-stretch" />
+                <div className="flex-1">
+                  <p className="text-xs font-semibold text-[#9E9C98] uppercase tracking-widest mb-2">
+                    Step {i + 1}
+                  </p>
+                  <p className="text-base font-extrabold text-[#1A1916] mb-3">
+                    {step?.label || placeholder.label}
+                  </p>
+                  <LockedValue locked={!canSeeAlpha} tier="alpha" minHeight="80px">
                     <p className="text-lg text-[#1A1916] leading-relaxed mb-16 font-medium whitespace-pre-line">
-                      {step.content}
+                      {step?.content || "—"}
                     </p>
-                  </div>
+                  </LockedValue>
                 </div>
-              ))}
-            </div>
-          ) : (
-            <div className="space-y-4">
-              <div className="h-32 w-full rounded-xl bg-[#E8E6E1]/50" />
-              <div className="flex flex-col items-center justify-center py-8 gap-3 rounded-xl border border-[#E8E6E1] bg-white px-4">
-                <Lock className="w-4 h-4 text-[#9E9C98]" />
-                <p className="text-sm text-[#6B6860] text-center">Full entry strategy is available on Alpha.</p>
-                <a href="/pricing">
-                  <Button variant="secondary" size="sm">Go Alpha {PRICING.CURRENCY}{PRICING.ALPHA.monthly}/mo →</Button>
-                </a>
               </div>
-            </div>
-          )}
+            );
+          })}
         </div>
-      )}
+      </div>
 
       <div className="mt-6 pt-4 border-t border-[#E8E6E1]/50 flex flex-wrap items-center gap-2">
         <Globe className="w-3 h-3 text-[#9E9C98]/60 shrink-0" />
