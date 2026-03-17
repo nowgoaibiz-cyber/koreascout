@@ -22,7 +22,7 @@ export default async function ProductDetailPage({
 }) {
   const { weekId, id } = await params;
   const supabase = await createClient();
-  const { userId, userEmail, tier } = await getAuthTier();
+  const { userId, userEmail, tier, subscriptionStartAt } = await getAuthTier();
 
   const [{ data: report, error }, { data: weekReports }, { data: week }, { data: favoriteRow }] = await Promise.all([
     supabase
