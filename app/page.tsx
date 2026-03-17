@@ -138,7 +138,7 @@ export default async function HomePage() {
                   {
                     n: "06",
                     t: "Launch Kit",
-                    d: "4K viral video, marketing assets, SEO keywords, broker email draft. Day 1 ready. Nothing left to produce.",
+                    d: "4K On-Site Sourcing Footage (Raw), SEO keywords, broker email draft. Day 1 ready to launch and scale.",
                     s: "16+ HRS",
                   },
                 ].map((layer) => (
@@ -215,7 +215,7 @@ export default async function HomePage() {
                         "Custom Broker Email Draft (English Template)",
                         "Verified MOQ & Factory Price (EXW)",
                         "Verified Direct Sourcing Intel",
-                        "4K Viral Video & Marketing Asset Kit",
+                        "4K On-Site Sourcing Footage (Raw)",
                       ].map((item) => (
                         <li key={item} className="flex items-center gap-2 text-sm text-white">
                           <UnlockIcon className="shrink-0 text-[#16A34A] w-4 h-4" />
@@ -322,10 +322,8 @@ export default async function HomePage() {
                   alpha: true,
                   q: "How do I market this?",
                   items: [
-                    "Raw Ad Footage & Store Visuals",
+                    "4K On-Site Sourcing Footage (Raw)",
                     "Viral Video References",
-                    "Sales Page Design Framework",
-                    "Curated Brand Resource Kit",
                   ],
                   cta: "Day 1 ready to launch.",
                   time: "SAVES 16 HRS",

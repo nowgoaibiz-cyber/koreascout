@@ -7,7 +7,7 @@ const PILLS = [
   { label: "B2B Product Data", top: "112px", left: "0px", rot: "0.6deg", delay: "1.3s", dur: "3.9s" },
 ] as const;
 
-const NOISE_ITEMS = ["Hazmat / Battery", "HS Code Blocked", "Gap Index < 2.0×"] as const;
+const NOISE_ITEMS = ["Hazmat / Battery", "HS Code Blocked", "Margin Multiplier < 2.0×"] as const;
 
 const NOISE_LINES = ["Zero-margin trends purged", "Global market gaps detected"] as const;
 

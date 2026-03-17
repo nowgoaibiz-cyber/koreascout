@@ -101,9 +101,7 @@ const FEATURE_GROUPS: FeatureGroup[] = [
       { feature: "Direct Wholesale Portal Link", free: "—", standard: "—", alpha: "✓" },
       { feature: "Global Market Proof Links", free: "—", standard: "—", alpha: "✓" },
       { feature: "Viral Hook Reference (Success Cases)", free: "—", standard: "—", alpha: "✓" },
-      { feature: "4K Raw Ad Footage (Unedited)", free: "—", standard: "—", alpha: "✓" },
-      { feature: "AI Landing Page Drafts", free: "—", standard: "—", alpha: "✓" },
-      { feature: "High-Res Brand Asset Kit", free: "—", standard: "—", alpha: "✓" },
+      { feature: "4K On-Site Sourcing Footage (Raw)", free: "—", standard: "—", alpha: "✓" },
     ],
   },
 ];
@@ -191,7 +189,7 @@ export default async function PricingPage() {
                   Unlock Free Intelligence
                 </a>
                 <p className="text-xs text-[#9E9C98] text-center mt-3">
-                  3 products/week · 14-day delayed access
+                  10+ products · 1 week unlocked · 14-day delay
                 </p>
               </div>
             </div>
@@ -235,7 +233,7 @@ export default async function PricingPage() {
                   Start Knowing — {PRICING.CURRENCY}{PRICING.STANDARD.monthly}/mo
                 </CheckoutButton>
                 <p className="text-xs text-[#9E9C98] text-center mt-3">
-                  10+ products/week · Instant access
+                  30+ products · Last 3 weeks · Instant access
                 </p>
               </div>
             </div>
@@ -305,7 +303,7 @@ export default async function PricingPage() {
                   </CheckoutButton>
                 )}
                 <p className="text-xs text-[#9E9C98] text-center mt-3">
-                  10+ products/week · Full sourcing intel
+                  30+ products · Last 3 weeks · Full sourcing intel
                 </p>
               </div>
             </div>
