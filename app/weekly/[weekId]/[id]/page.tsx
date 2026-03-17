@@ -38,7 +38,7 @@ export default async function ProductDetailPage({
       .eq("week_id", weekId)
       .eq("status", "published")
       .order("created_at", { ascending: true }),
-    supabase.from("weeks").select("week_label").eq("week_id", weekId).single(),
+    supabase.from("weeks").select("week_label, published_at").eq("week_id", weekId).single(),
     userId
       ? supabase
           .from("user_favorites")
