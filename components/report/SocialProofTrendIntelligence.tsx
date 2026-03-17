@@ -1,9 +1,7 @@
 "use client";
 
-import { Button } from "@/components/ui";
 import { LockedValue } from "@/components/ui/LockedValue";
-import { PRICING } from "@/src/config/pricing";
-import { Globe, Lock } from "lucide-react";
+import { Globe } from "lucide-react";
 import type { ScoutFinalReportsRow } from "@/types/database";
 import { normalizeToArray, parseSourcingStrategy } from "./utils";
 
@@ -18,11 +16,11 @@ export function SocialProofTrendIntelligence({
 }) {
   const canSeeAlpha = tier === "alpha" || isTeaser;
   const canSeeStandard = tier === "standard" || tier === "alpha" || isTeaser;
+  const canSeeFree = tier === "free" || tier === "standard" || tier === "alpha" || isTeaser;
 
   const risingKw = normalizeToArray(report.rising_keywords);
   const seoKw = normalizeToArray(report.seo_keywords);
   const viralHt = normalizeToArray(report.viral_hashtags);
-  const hasAnyTrending = risingKw.length > 0 || seoKw.length > 0 || viralHt.length > 0;
 
   const allSteps = parseSourcingStrategy(report.sourcing_tip);
   const steps = allSteps.slice(0, 3);
@@ -36,166 +34,154 @@ export function SocialProofTrendIntelligence({
         Social Proof &amp; Trend Intelligence
       </h2>
 
-      {report.buzz_summary?.trim() && (
-        <div className="bg-[#F8F7F4] rounded-2xl p-10 mb-12">
-          <p className="text-xl font-bold text-[#1A1916] mb-6">Social Buzz</p>
-          <span className="block text-6xl font-serif text-[#16A34A] leading-none mb-6">&ldquo;</span>
-          <p className="text-3xl italic font-medium text-[#1A1916] leading-tight max-w-4xl">
-            {report.buzz_summary}
-          </p>
-          <p className="text-[10px] tracking-[0.4em] uppercase text-[#9E9C98] mt-8">
-            KoreaScout Intelligence Engine
-          </p>
-        </div>
-      )}
+      <div className="bg-[#F8F7F4] rounded-2xl p-10 mb-12">
+        <p className="text-xl font-bold text-[#1A1916] mb-6">Social Buzz</p>
+        <LockedValue locked={!canSeeStandard} tier="standard" minHeight="80px">
+          <div>
+            <span className="block text-6xl font-serif text-[#16A34A] leading-none mb-6">&ldquo;</span>
+            <p className="text-3xl italic font-medium text-[#1A1916] leading-tight max-w-4xl">
+              {report.buzz_summary || "—"}
+            </p>
+            <p className="text-[10px] tracking-[0.4em] uppercase text-[#9E9C98] mt-8">
+              KoreaScout Intelligence Engine
+            </p>
+          </div>
+        </LockedValue>
+      </div>
 
-      {(report.kr_local_score != null || report.global_trend_score != null) && (
-        <div className="bg-[#F8F7F4] rounded-2xl p-10 mb-12">
-          <p className="text-xl font-bold text-[#1A1916] mb-10">Market Gap Analysis</p>
-          <div className="grid grid-cols-2">
-            <div className="pr-12 border-r border-[#E8E6E1]">
-              <p className="text-sm font-bold text-[#6B6860] tracking-widest mb-4">Korean Traction</p>
-              <p className="text-7xl font-extrabold text-[#16A34A] tracking-tighter leading-none">
-                {report.kr_local_score ?? "—"}
-              </p>
-              <div className="w-full h-1 rounded-full bg-[#E8E6E1] overflow-hidden mt-4 mb-6">
-                <div
-                  className="h-full rounded-full bg-[#16A34A] transition-all"
-                  style={{ width: `${Math.min(report.kr_local_score || 0, 100)}%` }}
-                />
+      <div className="bg-[#F8F7F4] rounded-2xl p-10 mb-12">
+        <p className="text-xl font-bold text-[#1A1916] mb-10">Market Gap Analysis</p>
+        <div className="grid grid-cols-2">
+          <div className="pr-12 border-r border-[#E8E6E1]">
+            <p className="text-sm font-bold text-[#6B6860] tracking-widest mb-4">Korean Traction</p>
+            <LockedValue locked={!canSeeStandard} tier="standard" minHeight="80px">
+              <div>
+                <p className="text-7xl font-extrabold text-[#16A34A] tracking-tighter leading-none">
+                  {report.kr_local_score ?? "—"}
+                </p>
+                <div className="w-full h-1 rounded-full bg-[#E8E6E1] overflow-hidden mt-4 mb-6">
+                  <div
+                    className="h-full rounded-full bg-[#16A34A] transition-all"
+                    style={{ width: `${Math.min(report.kr_local_score || 0, 100)}%` }}
+                  />
+                </div>
+                {report.kr_evidence?.trim() && (
+                  <p className="text-lg text-[#1A1916] leading-relaxed mt-4">{report.kr_evidence}</p>
+                )}
+                {report.kr_source_used?.trim() && (
+                  <p className="text-xs text-[#9E9C98] mt-3">Source: {report.kr_source_used}</p>
+                )}
               </div>
-              {report.kr_evidence?.trim() && (
-                <p className="text-lg text-[#1A1916] leading-relaxed mt-4">{report.kr_evidence}</p>
-              )}
-              {report.kr_source_used?.trim() && (
-                <p className="text-xs text-[#9E9C98] mt-3">Source: {report.kr_source_used}</p>
-              )}
-            </div>
-            <div className="pl-12">
-              <p className="text-sm font-bold text-[#6B6860] tracking-widest mb-4">Global Presence</p>
-              <p className="text-7xl font-extrabold text-[#2563EB] tracking-tighter leading-none">
-                {report.global_trend_score ?? "—"}
-              </p>
-              <div className="w-full h-1 rounded-full bg-[#E8E6E1] overflow-hidden mt-4 mb-6">
-                <div
-                  className="h-full rounded-full bg-[#2563EB] transition-all"
-                  style={{ width: `${Math.min(report.global_trend_score || 0, 100)}%` }}
-                />
+            </LockedValue>
+          </div>
+          <div className="pl-12">
+            <p className="text-sm font-bold text-[#6B6860] tracking-widest mb-4">Global Presence</p>
+            <LockedValue locked={!canSeeStandard} tier="standard" minHeight="80px">
+              <div>
+                <p className="text-7xl font-extrabold text-[#2563EB] tracking-tighter leading-none">
+                  {report.global_trend_score ?? "—"}
+                </p>
+                <div className="w-full h-1 rounded-full bg-[#E8E6E1] overflow-hidden mt-4 mb-6">
+                  <div
+                    className="h-full rounded-full bg-[#2563EB] transition-all"
+                    style={{ width: `${Math.min(report.global_trend_score || 0, 100)}%` }}
+                  />
+                </div>
+                {report.global_evidence?.trim() && (
+                  <p className="text-lg text-[#1A1916] leading-relaxed mt-4">{report.global_evidence}</p>
+                )}
               </div>
-              {report.global_evidence?.trim() && (
-                <p className="text-lg text-[#1A1916] leading-relaxed mt-4">{report.global_evidence}</p>
-              )}
-            </div>
+            </LockedValue>
           </div>
         </div>
-      )}
+      </div>
 
-      {report.gap_index != null && (
-        <div className="mt-32 mb-32 text-center">
-          <p className="text-xl font-bold text-[#1A1916] mb-6">Gap Index</p>
-          <p className="font-black text-[#16A34A] leading-none tracking-tighter" style={{ fontSize: "140px" }}>
-            {report.gap_index}
-          </p>
-          {report.gap_status && (
-            <div className="mt-4 mb-6 flex justify-center">
-              <span
-                className={`inline-flex items-center px-3 py-1 rounded-full font-semibold text-sm ${
-                  report.gap_status === "Blue Ocean" || report.gap_status === "Emerging"
-                    ? "bg-[#DCFCE7] text-[#16A34A]"
-                    : "bg-[#FEF3C7] text-[#D97706]"
-                }`}
-              >
-                {report.gap_status}
-              </span>
-            </div>
-          )}
-          {report.trend_entry_strategy?.trim() && (
-            <div className="mt-4">
-              <p className="text-xs font-bold text-[#9E9C98] uppercase tracking-[0.2em] mb-2">Entry Strategy</p>
-              <p className="text-sm text-[#6B6860] leading-relaxed">{report.trend_entry_strategy}</p>
-            </div>
-          )}
-          {report.opportunity_reasoning?.trim() && (
-            <p className="text-base italic text-[#6B6860] max-w-lg mx-auto leading-relaxed mt-4">
-              {report.opportunity_reasoning}
+      <div className="mt-32 mb-32 text-center">
+        <p className="text-xl font-bold text-[#1A1916] mb-6">Gap Index</p>
+        <LockedValue locked={!canSeeStandard} tier="standard" minHeight="120px">
+          <div>
+            <p className="font-black text-[#16A34A] leading-none tracking-tighter" style={{ fontSize: "140px" }}>
+              {report.gap_index ?? "—"}
             </p>
-          )}
-        </div>
-      )}
-
-      {hasAnyTrending && (
-        <div className="bg-[#F8F7F4] rounded-2xl p-10 mb-12">
-          <p className="text-xl font-bold text-[#1A1916] mb-10">Trending Signals</p>
-
-          {risingKw.length > 0 && (
-            <div className="mb-8">
-              <p className="text-sm font-bold text-[#6B6860] tracking-widest mb-4">Rising Keywords (KR)</p>
-              <div className="flex flex-wrap gap-3 w-full">
-                {risingKw.map((kw) => (
-                  <span
-                    key={kw}
-                    className="flex-1 min-w-max text-center bg-[#DCFCE7] text-[#16A34A] rounded-full px-6 py-3 text-sm font-bold tracking-tight hover:bg-[#BBF7D0] transition-colors cursor-default"
-                  >
-                    ↗ {kw}
-                  </span>
-                ))}
+            {report.gap_status && (
+              <div className="mt-4 mb-6 flex justify-center">
+                <span
+                  className={`inline-flex items-center px-3 py-1 rounded-full font-semibold text-sm ${
+                    report.gap_status === "Blue Ocean" || report.gap_status === "Emerging"
+                      ? "bg-[#DCFCE7] text-[#16A34A]"
+                      : "bg-[#FEF3C7] text-[#D97706]"
+                  }`}
+                >
+                  {report.gap_status}
+                </span>
               </div>
-            </div>
-          )}
-
-          {seoKw.length > 0 && (
-            <div className="mb-8">
-              <p className="text-sm font-bold text-[#6B6860] tracking-widest mb-4">Global SEO Keywords</p>
-              {canSeeStandard ? (
-                <div className="flex flex-wrap gap-3 w-full">
-                  {seoKw.map((kw) => (
-                    <span
-                      key={kw}
-                      className="flex-1 min-w-max text-center bg-white border border-[#E8E6E1] text-[#1A1916] rounded-full px-6 py-3 text-sm font-bold tracking-tight hover:bg-[#F1F0ED] transition-colors cursor-default"
-                    >
-                      {kw}
-                    </span>
-                  ))}
-                </div>
-              ) : (
-                <div className="h-12 w-full rounded-full bg-[#E8E6E1]/50" />
-              )}
-            </div>
-          )}
-
-          {viralHt.length > 0 && (
-            <div className="mb-8">
-              <p className="text-sm font-bold text-[#6B6860] tracking-widest mb-4">Viral Hashtags</p>
-              {canSeeStandard ? (
-                <div className="flex flex-wrap gap-3 w-full">
-                  {viralHt.map((ht) => (
-                    <span
-                      key={ht}
-                      className="flex-1 min-w-max text-center bg-white border border-[#E8E6E1] text-[#1A1916] rounded-full px-6 py-3 text-sm font-black hover:bg-[#F1F0ED] transition-colors cursor-default"
-                    >
-                      #{ht.startsWith("#") ? ht.slice(1) : ht}
-                    </span>
-                  ))}
-                </div>
-              ) : (
-                <div className="h-12 w-full rounded-full bg-[#E8E6E1]/50" />
-              )}
-            </div>
-          )}
-
-          {!canSeeStandard && (seoKw.length > 0 || viralHt.length > 0) && (
-            <div className="mt-6 flex flex-col items-center justify-center py-8 gap-3 rounded-xl border border-[#E8E6E1] bg-white px-4">
-              <Lock className="w-4 h-4 text-[#9E9C98]" />
-              <p className="text-sm text-[#6B6860] text-center">
-                SEO keywords &amp; viral hashtags are available on Standard and above.
+            )}
+            {report.trend_entry_strategy?.trim() && (
+              <div className="mt-4">
+                <p className="text-xs font-bold text-[#9E9C98] uppercase tracking-[0.2em] mb-2">Entry Strategy</p>
+                <p className="text-sm text-[#6B6860] leading-relaxed">{report.trend_entry_strategy}</p>
+              </div>
+            )}
+            {report.opportunity_reasoning?.trim() && (
+              <p className="text-base italic text-[#6B6860] max-w-lg mx-auto leading-relaxed mt-4">
+                {report.opportunity_reasoning}
               </p>
-              <a href="/pricing">
-                <Button variant="secondary" size="sm">Go Standard {PRICING.CURRENCY}{PRICING.STANDARD.monthly}/mo →</Button>
-              </a>
+            )}
+          </div>
+        </LockedValue>
+      </div>
+
+      <div className="bg-[#F8F7F4] rounded-2xl p-10 mb-12">
+        <p className="text-xl font-bold text-[#1A1916] mb-10">Trending Signals</p>
+
+        <div className="mb-8">
+          <p className="text-sm font-bold text-[#6B6860] tracking-widest mb-4">Rising Keywords (KR)</p>
+          <LockedValue locked={!canSeeStandard} tier="standard" minHeight="52px">
+            <div className="flex flex-wrap gap-3 w-full">
+              {risingKw.length > 0 ? risingKw.map((kw) => (
+                <span
+                  key={kw}
+                  className="flex-1 min-w-max text-center bg-[#DCFCE7] text-[#16A34A] rounded-full px-6 py-3 text-sm font-bold tracking-tight hover:bg-[#BBF7D0] transition-colors cursor-default"
+                >
+                  ↗ {kw}
+                </span>
+              )) : <span className="text-[#9E9C98] text-sm">—</span>}
             </div>
-          )}
+          </LockedValue>
         </div>
-      )}
+
+        <div className="mb-8">
+          <p className="text-sm font-bold text-[#6B6860] tracking-widest mb-4">Global SEO Keywords</p>
+          <LockedValue locked={!canSeeStandard} tier="standard" minHeight="52px">
+            <div className="flex flex-wrap gap-3 w-full">
+              {seoKw.length > 0 ? seoKw.map((kw) => (
+                <span
+                  key={kw}
+                  className="flex-1 min-w-max text-center bg-white border border-[#E8E6E1] text-[#1A1916] rounded-full px-6 py-3 text-sm font-bold tracking-tight hover:bg-[#F1F0ED] transition-colors cursor-default"
+                >
+                  {kw}
+                </span>
+              )) : <span className="text-[#9E9C98] text-sm">—</span>}
+            </div>
+          </LockedValue>
+        </div>
+
+        <div className="mb-8">
+          <p className="text-sm font-bold text-[#6B6860] tracking-widest mb-4">Viral Hashtags</p>
+          <LockedValue locked={!canSeeStandard} tier="standard" minHeight="52px">
+            <div className="flex flex-wrap gap-3 w-full">
+              {viralHt.length > 0 ? viralHt.map((ht) => (
+                <span
+                  key={ht}
+                  className="flex-1 min-w-max text-center bg-white border border-[#E8E6E1] text-[#1A1916] rounded-full px-6 py-3 text-sm font-black hover:bg-[#F1F0ED] transition-colors cursor-default"
+                >
+                  #{ht.startsWith("#") ? ht.slice(1) : ht}
+                </span>
+              )) : <span className="text-[#9E9C98] text-sm">—</span>}
+            </div>
+          </LockedValue>
+        </div>
+      </div>
 
       <div className="bg-[#F8F7F4] rounded-2xl p-10 mb-12">
         <p className="text-xl font-bold text-[#1A1916] mb-10">Scout Strategy Report</p>

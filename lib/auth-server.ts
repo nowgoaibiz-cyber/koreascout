@@ -43,7 +43,8 @@ export function maskReportByTier(
 
   const masked = { ...report };
 
-  const nullFields = [
+  // Fields nulled for BOTH free and standard
+  const nullForFreeAndStandard = [
     "export_status",
     "status_reason",
     "actual_weight_g",
@@ -86,8 +87,40 @@ export function maskReportByTier(
     "ai_image_url",
   ] as const;
 
-  for (const key of nullFields) {
+  // Additional fields nulled for FREE only (not standard)
+  const nullForFreeOnly = [
+    "profit_multiplier",
+    "estimated_cost_usd",
+    "global_prices",
+    "search_volume",
+    "mom_growth",
+    "wow_rate",
+    "top_selling_point",
+    "common_pain_point",
+    "best_platform",
+    "gap_index",
+    "gap_status",
+    "buzz_summary",
+    "rising_keywords",
+    "seo_keywords",
+    "viral_hashtags",
+    "trend_entry_strategy",
+    "opportunity_reasoning",
+    "kr_local_score",
+    "global_trend_score",
+    "kr_evidence",
+    "global_evidence",
+    "kr_source_used",
+  ] as const;
+
+  for (const key of nullForFreeAndStandard) {
     (masked as Record<string, unknown>)[key] = null;
+  }
+
+  if (tier === "free") {
+    for (const key of nullForFreeOnly) {
+      (masked as Record<string, unknown>)[key] = null;
+    }
   }
 
   return masked;
