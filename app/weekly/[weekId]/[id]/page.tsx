@@ -55,16 +55,16 @@ export default async function ProductDetailPage({
   const isTeaser = report.is_teaser === true;
 
   const canAccessThisWeek = (() => {
+    if (tier === "free") {
+      return isTeaser === true;
+    }
     if (tier === "standard" || tier === "alpha") {
       if (isTeaser) return true;
       if (!subscriptionStartAt) return false;
       const subDate = new Date(subscriptionStartAt);
       const weekDate = week?.published_at ? new Date(week.published_at) : null;
-      if (!weekDate) return false;
+      if (!weekDate) return true; // published_at 없으면 허용 (데이터 누락 방어)
       return weekDate >= subDate;
-    }
-    if (tier === "free") {
-      return isTeaser === true;
     }
     return false;
   })();
