@@ -172,7 +172,7 @@ export default async function PricingPage() {
               <div className="bg-[#F8F7F4] border border-[#E8E6E1] rounded-xl px-4 py-3 min-h-[120px] flex items-center">
                 <p className="text-sm text-[#1A1916] leading-relaxed">
                   <span className="font-black uppercase">INSTANT ACCESS:</span>{" "}
-                  <span className="font-medium">3 products/week unlocked immediately.</span>
+                  <span className="font-medium">10+ products unlocked immediately. (1 week · 14-day delay)</span>
                 </p>
               </div>
               <div className="flex-grow my-8">
