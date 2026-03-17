@@ -51,10 +51,6 @@ export default async function ProductDetailPage({
   const isFavorited = !!favoriteRow?.report_id;
 
   if (error || !report) notFound();
-  if (report.is_premium === true && tier === "free") {
-    const { redirect } = await import("next/navigation");
-    redirect("/pricing");
-  }
 
   const idList = (weekReports ?? []).map((r) => r.id);
   const currentIndex = idList.indexOf(id);
