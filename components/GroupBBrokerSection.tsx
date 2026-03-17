@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { BrokerEmailDraft } from "@/components/BrokerEmailDraft";
+import { LockedValue } from "@/components/ui/LockedValue";
 import type { ScoutFinalReportsRow } from "@/types/database";
 
 function formatHsCode(raw: string | null | undefined): string {
@@ -98,10 +99,12 @@ export function GroupBBrokerSection({
           </div>
         </div>
       ) : (
-        <div className="grid grid-cols-2 gap-6">
-          <div className="h-24 rounded-xl bg-[#F2F1EE]" />
-          <div className="h-24 rounded-xl bg-[#F2F1EE]" />
-        </div>
+        <LockedValue locked={!canSeeAlpha} tier="alpha">
+          <div className="grid grid-cols-2 gap-6">
+            <div className="h-24 rounded-xl bg-[#F2F1EE]" />
+            <div className="h-24 rounded-xl bg-[#F2F1EE]" />
+          </div>
+        </LockedValue>
       )}
     </div>
   );

@@ -3,9 +3,8 @@
 import { GroupBBrokerSection } from "@/components/GroupBBrokerSection";
 import { HazmatBadges } from "@/components/HazmatBadges";
 import { ExpandableText } from "@/components/ExpandableText";
-import { Button } from "@/components/ui";
-import { PRICING } from "@/src/config/pricing";
-import { AlertTriangle, ArrowRight, CheckCircle, Lock, ShieldCheck, XCircle } from "lucide-react";
+import { LockedValue } from "@/components/ui/LockedValue";
+import { AlertTriangle, ArrowRight, CheckCircle, ShieldCheck, XCircle } from "lucide-react";
 import type { ScoutFinalReportsRow } from "@/types/database";
 import { describeShippingTier, parseSourcingStrategy } from "./utils";
 
@@ -53,7 +52,7 @@ export function SourcingIntel({
         <div className="bg-[#F8F7F4] rounded-2xl p-10">
           <p className="text-xl font-bold text-[#1A1916] mb-8">Export Readiness</p>
 
-          {canSeeAlpha ? (
+          <LockedValue locked={!canSeeAlpha} tier="alpha">
             <div className={`rounded-xl border-2 ${exportConfig.border} ${exportConfig.bg} px-8 py-6`}>
               <div className="flex items-center gap-4 mb-4">
                 {report.export_status === "Green" && <CheckCircle className={`w-8 h-8 shrink-0 ${exportConfig.color}`} />}
@@ -75,9 +74,7 @@ export function SourcingIntel({
                   "A high-entry barrier is your competitive moat. Overcoming this hurdle ensures market exclusivity. Verify local compliance status."}
               </p>
             </div>
-          ) : (
-            <div className="h-20 w-full rounded-xl bg-[#F2F1EE]" />
-          )}
+          </LockedValue>
         </div>
 
         <GroupBBrokerSection report={report} canSeeAlpha={canSeeAlpha} />
@@ -85,7 +82,7 @@ export function SourcingIntel({
         <div className="bg-[#F8F7F4] rounded-2xl p-10">
           <p className="text-xl font-bold text-[#1A1916] mb-8">Logistics Dashboard</p>
 
-          {canSeeAlpha ? (
+          <LockedValue locked={!canSeeAlpha} tier="alpha">
             <>
               {hasWeight && (
                 <div className="flex items-center gap-3 mb-12">
@@ -184,13 +181,7 @@ export function SourcingIntel({
                 </div>
               )}
             </>
-          ) : (
-            <div className="space-y-4">
-              <div className="h-16 w-full rounded-xl bg-[#F2F1EE]" />
-              <div className="h-24 w-full rounded-xl bg-[#F2F1EE]" />
-              <div className="h-20 w-full rounded-xl bg-[#F2F1EE]" />
-            </div>
-          )}
+          </LockedValue>
         </div>
 
         {(() => {
@@ -202,7 +193,7 @@ export function SourcingIntel({
             <div className="bg-[#F8F7F4] rounded-2xl p-10">
               <p className="text-xl font-bold text-[#1A1916] mb-10">Compliance &amp; Logistics Strategy</p>
 
-              {canSeeAlpha ? (
+              <LockedValue locked={!canSeeAlpha} tier="alpha">
                 <>
                   {logisticsSteps.length > 0 && (
                     <div className="space-y-16 mb-10">
@@ -232,29 +223,12 @@ export function SourcingIntel({
                     </div>
                   )}
                 </>
-              ) : (
-                <div className="space-y-4">
-                  <div className="h-24 w-full rounded-xl bg-[#F2F1EE]" />
-                  <div className="h-16 w-full rounded-xl bg-[#F2F1EE]" />
-                </div>
-              )}
+              </LockedValue>
             </div>
           );
         })()}
 
       </div>
-
-      {!canSeeAlpha && (
-        <div className="absolute inset-0 bg-gradient-to-t from-white via-white/80 to-transparent flex flex-col items-center justify-end pb-6 gap-3 rounded-2xl">
-          <Lock className="w-5 h-5 text-[#9E9C98]" />
-          <p className="text-sm text-[#6B6860] text-center max-w-xs">
-            Unlock full logistics intelligence with Alpha.
-          </p>
-          <a href="/pricing">
-            <Button variant="secondary" size="sm">Go Alpha {PRICING.CURRENCY}{PRICING.ALPHA.monthly}/mo →</Button>
-          </a>
-        </div>
-      )}
 
       <div className="mt-6 pt-4 border-t border-[#E8E6E1]/50 flex flex-wrap items-center gap-2">
         <ShieldCheck className="w-3 h-3 text-[#9E9C98]/60 shrink-0" />

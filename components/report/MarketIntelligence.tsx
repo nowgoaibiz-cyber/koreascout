@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { LineChart } from "lucide-react";
 import { ScrollToIdButton } from "@/components/ScrollToIdButton";
+import { LockedValue } from "@/components/ui/LockedValue";
 import { isPositiveGrowth, parseGlobalPricesForGrid } from "./utils";
 import type { ScoutFinalReportsRow } from "@/types/database";
 
@@ -178,6 +179,7 @@ export function MarketIntelligence({
   const painPoint = report.common_pain_point?.trim() || null;
 
   const isAlpha = tier === "alpha";
+  const canSeeStandard = tier === "standard" || tier === "alpha" || isTeaser;
 
   return (
     <section
@@ -194,9 +196,11 @@ export function MarketIntelligence({
           <div className="bg-[#F8F7F4] rounded-xl border border-[#E8E6E1] p-6 mb-6">
             <div style={{ marginBottom: "1.2cm" }}>
               <div className="bg-[#F0FDF4] border border-[#BBF7D0] rounded-xl px-4 py-2 inline-flex items-center mb-2">
-                <p className="text-3xl font-extrabold text-[#16A34A] tracking-tight">
-                  🔥 UP TO {String(profitMultiplier ?? "").replace(/[x×]/gi, "")}× MARGIN POTENTIAL
-                </p>
+                <LockedValue locked={!canSeeStandard} tier="standard">
+                  <p className="text-3xl font-extrabold text-[#16A34A] tracking-tight">
+                    🔥 UP TO {String(profitMultiplier ?? "").replace(/[x×]/gi, "")}× MARGIN POTENTIAL
+                  </p>
+                </LockedValue>
               </div>
               <p className="text-base italic text-[#6B6860]">
                 *Projected margin based on estimated KR wholesale cost and global market analysis.
@@ -208,9 +212,11 @@ export function MarketIntelligence({
                 <p className="text-lg font-bold text-[#6B6860] uppercase tracking-widest" style={{ marginTop: "0.8cm" }}>
                   Est. Wholesale
                 </p>
-                <p className="text-5xl font-extrabold text-[#1A1916] tracking-tighter" style={{ marginTop: "0.4cm" }}>
-                  {estimatedCost ? `~$${estimatedCost}` : "—"}
-                </p>
+                <LockedValue locked={!canSeeStandard} tier="standard">
+                  <p className="text-5xl font-extrabold text-[#1A1916] tracking-tighter" style={{ marginTop: "0.4cm" }}>
+                    {estimatedCost ? `~$${estimatedCost}` : "—"}
+                  </p>
+                </LockedValue>
                 <p className="text-xs text-[#9E9C98] mt-2">Est. KR Wholesale</p>
                 <div style={{ marginTop: "0.6cm" }}>
                   {isAlpha ? (
@@ -229,9 +235,11 @@ export function MarketIntelligence({
                 <p className="text-lg font-bold text-[#6B6860] uppercase tracking-widest" style={{ marginTop: "0.8cm" }}>
                   Global Valuation
                 </p>
-                <p className="text-5xl font-extrabold text-[#16A34A] tracking-tighter" style={{ marginTop: "0.4cm" }}>
-                  {globalValuationDisplay}
-                </p>
+                <LockedValue locked={!canSeeStandard} tier="standard">
+                  <p className="text-5xl font-extrabold text-[#16A34A] tracking-tighter" style={{ marginTop: "0.4cm" }}>
+                    {globalValuationDisplay}
+                  </p>
+                </LockedValue>
                 {parsedPrices.length >= 1 ? (
                   <div className="mt-2">
                     <p className="text-sm font-semibold text-[#16A34A]/80">Verified Market Price</p>
@@ -270,8 +278,9 @@ export function MarketIntelligence({
                   Best Entry: <span className="font-bold text-[#1A1916]">{report.best_platform}</span>
                 </p>
               )}
-              <div className="grid grid-cols-2 gap-x-16" style={{ marginTop: "1.2cm", rowGap: "1.2cm" }}>
-                {sixMarkets.map((market) => {
+              <LockedValue locked={!canSeeStandard} tier="standard">
+                <div className="grid grid-cols-2 gap-x-16" style={{ marginTop: "1.2cm", rowGap: "1.2cm" }}>
+                  {sixMarkets.map((market) => {
                   const isUntapped = !market.row || market.row.isBlueOcean;
                   return (
                     <div key={market.code} className="border-l-4 border-[#16A34A] pl-8 py-6 min-h-[150px]">
@@ -297,7 +306,8 @@ export function MarketIntelligence({
                     </div>
                   );
                 })}
-              </div>
+                </div>
+              </LockedValue>
               <div style={{ marginTop: "2.5cm" }}>
                 <div className="border-t border-[#E8E6E1] pt-6">
                   <p className="text-base italic text-[#6B6860]">
@@ -321,35 +331,41 @@ export function MarketIntelligence({
                   {searchVolume && (
                     <div className="mb-16">
                       <p className="text-sm font-bold text-[#6B6860] tracking-widest mb-4">SEARCH VOLUME</p>
-                      <p className="text-4xl font-extrabold text-[#1A1916]">{searchVolume}</p>
+                      <LockedValue locked={!canSeeStandard} tier="standard">
+                        <p className="text-4xl font-extrabold text-[#1A1916]">{searchVolume}</p>
+                      </LockedValue>
                     </div>
                   )}
                   {momGrowth && (
                     <div className="mb-16">
                       <p className="text-sm font-bold text-[#6B6860] tracking-widest mb-4">MoM GROWTH</p>
-                      {momGrowth.length <= 10 ? (
-                        <p className={`text-4xl font-extrabold ${isPositiveGrowth(momGrowth) ? "text-[#16A34A]" : "text-[#DC2626]"}`}>
-                          {momGrowth} <span className="text-3xl">{isPositiveGrowth(momGrowth) ? "↑" : "↓"}</span>
-                        </p>
-                      ) : (
-                        <p className={`text-lg font-medium leading-relaxed ${isPositiveGrowth(momGrowth) ? "text-[#16A34A]" : "text-[#DC2626]"}`}>
-                          {momGrowth}
-                        </p>
-                      )}
+                      <LockedValue locked={!canSeeStandard} tier="standard">
+                        {momGrowth.length <= 10 ? (
+                          <p className={`text-4xl font-extrabold ${isPositiveGrowth(momGrowth) ? "text-[#16A34A]" : "text-[#DC2626]"}`}>
+                            {momGrowth} <span className="text-3xl">{isPositiveGrowth(momGrowth) ? "↑" : "↓"}</span>
+                          </p>
+                        ) : (
+                          <p className={`text-lg font-medium leading-relaxed ${isPositiveGrowth(momGrowth) ? "text-[#16A34A]" : "text-[#DC2626]"}`}>
+                            {momGrowth}
+                          </p>
+                        )}
+                      </LockedValue>
                     </div>
                   )}
                   {wowRate && wowRate !== "N/A" && (
                     <div className="mb-16">
                       <p className="text-sm font-bold text-[#6B6860] tracking-widest mb-4">WoW GROWTH</p>
-                      {wowRate.length <= 10 ? (
-                        <p className={`text-4xl font-extrabold ${isPositiveGrowth(wowRate) ? "text-[#16A34A]" : "text-[#DC2626]"}`}>
-                          {wowRate} <span className="text-3xl">{isPositiveGrowth(wowRate) ? "↑" : "↓"}</span>
-                        </p>
-                      ) : (
-                        <p className={`text-lg font-medium leading-relaxed ${isPositiveGrowth(wowRate) ? "text-[#16A34A]" : "text-[#DC2626]"}`}>
-                          {wowRate}
-                        </p>
-                      )}
+                      <LockedValue locked={!canSeeStandard} tier="standard">
+                        {wowRate.length <= 10 ? (
+                          <p className={`text-4xl font-extrabold ${isPositiveGrowth(wowRate) ? "text-[#16A34A]" : "text-[#DC2626]"}`}>
+                            {wowRate} <span className="text-3xl">{isPositiveGrowth(wowRate) ? "↑" : "↓"}</span>
+                          </p>
+                        ) : (
+                          <p className={`text-lg font-medium leading-relaxed ${isPositiveGrowth(wowRate) ? "text-[#16A34A]" : "text-[#DC2626]"}`}>
+                            {wowRate}
+                          </p>
+                        )}
+                      </LockedValue>
                     </div>
                   )}
                 </div>
@@ -361,13 +377,17 @@ export function MarketIntelligence({
                     {winningFeature && (
                       <div>
                         <p className="text-sm font-bold text-[#6B6860] uppercase tracking-widest mb-4">Competitive Edge</p>
-                        <p className="text-lg text-[#1A1916] leading-relaxed mb-16">{winningFeature}</p>
+                        <LockedValue locked={!canSeeStandard} tier="standard">
+                          <p className="text-lg text-[#1A1916] leading-relaxed mb-16">{winningFeature}</p>
+                        </LockedValue>
                       </div>
                     )}
                     {painPoint && (
                       <div>
                         <p className="text-sm font-bold text-[#6B6860] uppercase tracking-widest mb-4 mt-8">Risk Factor</p>
-                        <p className="text-lg text-[#1A1916] leading-relaxed mb-16">{painPoint}</p>
+                        <LockedValue locked={!canSeeStandard} tier="standard">
+                          <p className="text-lg text-[#1A1916] leading-relaxed mb-16">{painPoint}</p>
+                        </LockedValue>
                       </div>
                     )}
                   </div>
