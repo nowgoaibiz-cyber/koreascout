@@ -52,13 +52,33 @@ export default async function ProductDetailPage({
 
   if (error || !report) notFound();
 
+  const isTeaser = report.is_teaser === true;
+
+  const canAccessThisWeek = (() => {
+    if (tier === "standard" || tier === "alpha") {
+      if (isTeaser) return true;
+      if (!subscriptionStartAt) return false;
+      const subDate = new Date(subscriptionStartAt);
+      const weekDate = week?.published_at ? new Date(week.published_at) : null;
+      if (!weekDate) return false;
+      return weekDate >= subDate;
+    }
+    if (tier === "free") {
+      return isTeaser === true;
+    }
+    return false;
+  })();
+
+  if (!canAccessThisWeek) {
+    const { redirect } = await import("next/navigation");
+    redirect(`/weekly/${weekId}`);
+  }
+
   const idList = (weekReports ?? []).map((r) => r.id);
   const currentIndex = idList.indexOf(id);
   const prevId = currentIndex > 0 ? idList[currentIndex - 1] : null;
   const nextId = currentIndex >= 0 && currentIndex < idList.length - 1 ? idList[currentIndex + 1] : null;
   const weekLabel = week?.week_label?.trim() || weekId;
-
-  const isTeaser = report.is_teaser === true;
   const canSeeAlpha = tier === "alpha" || isTeaser;
   const maskedReport = maskReportByTier(report as ScoutFinalReportsRow, tier as "free" | "standard" | "alpha");
 
