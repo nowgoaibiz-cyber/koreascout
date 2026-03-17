@@ -15,9 +15,6 @@ function SignUpContent() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-  const [success, setSuccess] = useState(false);
-  const [resendCooldown, setResendCooldown] = useState(0);
-  const [resendMessage, setResendMessage] = useState("");
 
   const loginHref = nextUrl ? `/login?next=${encodeURIComponent(nextUrl)}` : "/login";
 
@@ -41,75 +38,11 @@ function SignUpContent() {
       setError(signUpError.message);
       return;
     }
-    setSuccess(true);
-    router.refresh();
-  }
-
-  async function handleResend() {
-    if (resendCooldown > 0) return;
-    const supabase = createClient();
-    const { error } = await supabase.auth.resend({ type: "signup", email });
-    if (error) {
-      setResendMessage("Failed to resend. Please try again.");
-    } else {
-      setResendMessage("Verification email sent! Check your inbox.");
-      setResendCooldown(60);
-      const interval = setInterval(() => {
-        setResendCooldown((prev) => {
-          if (prev <= 1) { clearInterval(interval); return 0; }
-          return prev - 1;
-        });
-      }, 1000);
-    }
-  }
-
-  if (success) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-[#1A1916] relative overflow-hidden px-4 pt-24 pb-12">
-        <div className="absolute inset-0 pointer-events-none" aria-hidden>
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-green-900/20 blur-3xl rounded-full" />
-        </div>
-        <div className="w-full max-w-md flex flex-col items-center gap-8 relative z-10">
-          <div className="bg-white p-8 sm:p-12 rounded-2xl shadow-2xl w-full text-center">
-            <Logo className="w-48 h-auto mx-auto mb-8" />
-            <div className="w-12 h-12 rounded-full bg-[#DCFCE7] border border-[#BBF7D0] flex items-center justify-center mx-auto mb-4 text-[#16A34A]">
-              ✓
-            </div>
-            <h1 className="text-lg font-semibold text-gray-900 mb-2">Check your email</h1>
-            <p className="text-sm text-gray-600 mb-6">
-              We sent a confirmation link to <strong className="text-gray-900">{email}</strong>. Click it to activate your account.
-            </p>
-            <div className="mb-4">
-              {resendMessage && (
-                <p className="text-sm text-[#16A34A] mb-2">{resendMessage}</p>
-              )}
-              <button
-                onClick={handleResend}
-                disabled={resendCooldown > 0}
-                className="text-sm text-[#9E9C98] hover:text-[#0A0908] disabled:cursor-not-allowed transition-colors"
-              >
-                {resendCooldown > 0 ? `Resend available in ${resendCooldown}s` : "Didn't receive the email? Resend"}
-              </button>
-            </div>
-            <Link
-              href={loginHref}
-              className="block w-full bg-[#1A1916] text-white font-bold py-3 rounded-xl hover:bg-black scale-100 hover:scale-[1.02] transition-transform text-center"
-            >
-              Go to sign in
-            </Link>
-            <p className="mt-6 text-sm text-gray-600">
-              <Link href="/" className="text-[#16A34A] hover:text-[#15803D] font-medium">
-                ← Back to home
-              </Link>
-            </p>
-          </div>
-        </div>
-      </div>
-    );
+    router.push(`/signup/verify?email=${encodeURIComponent(email)}`);
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#1A1916] relative overflow-hidden px-4 pt-24 pb-12">
+    <div className="min-h-screen flex items-center justify-center bg-[#F8F7F4] relative overflow-hidden px-4 pt-24 pb-12">
       <div className="absolute inset-0 pointer-events-none" aria-hidden>
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-green-900/20 blur-3xl rounded-full" />
       </div>

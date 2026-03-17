@@ -38,7 +38,7 @@ function LoginContent() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#1A1916] relative overflow-hidden px-4 pt-24 pb-12">
+    <div className="min-h-screen flex items-center justify-center bg-[#F8F7F4] relative overflow-hidden px-4 pt-24 pb-12">
       {/* Subtle radial gradient blur */}
       <div
         className="absolute inset-0 pointer-events-none"
