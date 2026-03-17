@@ -16,6 +16,7 @@ export function SocialProofTrendIntelligence({
   isTeaser: boolean;
 }) {
   const canSeeAlpha = tier === "alpha" || isTeaser;
+  const canSeeStandard = tier === "standard" || tier === "alpha" || isTeaser;
 
   const risingKw = normalizeToArray(report.rising_keywords);
   const seoKw = normalizeToArray(report.seo_keywords);
@@ -144,7 +145,7 @@ export function SocialProofTrendIntelligence({
           {seoKw.length > 0 && (
             <div className="mb-8">
               <p className="text-sm font-bold text-[#6B6860] tracking-widest mb-4">Global SEO Keywords</p>
-              {canSeeAlpha ? (
+              {canSeeStandard ? (
                 <div className="flex flex-wrap gap-3 w-full">
                   {seoKw.map((kw) => (
                     <span
@@ -164,7 +165,7 @@ export function SocialProofTrendIntelligence({
           {viralHt.length > 0 && (
             <div className="mb-8">
               <p className="text-sm font-bold text-[#6B6860] tracking-widest mb-4">Viral Hashtags</p>
-              {canSeeAlpha ? (
+              {canSeeStandard ? (
                 <div className="flex flex-wrap gap-3 w-full">
                   {viralHt.map((ht) => (
                     <span
@@ -181,14 +182,14 @@ export function SocialProofTrendIntelligence({
             </div>
           )}
 
-          {!canSeeAlpha && (seoKw.length > 0 || viralHt.length > 0) && (
+          {!canSeeStandard && (seoKw.length > 0 || viralHt.length > 0) && (
             <div className="mt-6 flex flex-col items-center justify-center py-8 gap-3 rounded-xl border border-[#E8E6E1] bg-white px-4">
               <Lock className="w-4 h-4 text-[#9E9C98]" />
               <p className="text-sm text-[#6B6860] text-center">
-                SEO keywords &amp; viral hashtags are available on Alpha.
+                SEO keywords &amp; viral hashtags are available on Standard and above.
               </p>
               <a href="/pricing">
-                <Button variant="secondary" size="sm">Go Alpha {PRICING.CURRENCY}{PRICING.ALPHA.monthly}/mo →</Button>
+                <Button variant="secondary" size="sm">Go Standard {PRICING.CURRENCY}{PRICING.STANDARD.monthly}/mo →</Button>
               </a>
             </div>
           )}
