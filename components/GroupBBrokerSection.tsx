@@ -19,21 +19,7 @@ export function GroupBBrokerSection({
   canSeeAlpha: boolean;
 }) {
   const [isEmailOpen, setIsEmailOpen] = useState(false);
-
-  const hsCodeValue = report.hs_code?.trim()
-    ? formatHsCode(report.hs_code) || report.hs_code || ""
-    : "";
-  const [hsCopied, setHsCopied] = useState(false);
-  async function copyHsCode() {
-    if (!hsCodeValue) return;
-    try {
-      await navigator.clipboard.writeText(hsCodeValue);
-      setHsCopied(true);
-      setTimeout(() => setHsCopied(false), 1500);
-    } catch {
-      // noop
-    }
-  }
+  const [isCopied, setIsCopied] = useState(false);
 
   return (
     <div className="bg-[#F8F7F4] rounded-2xl p-10">
@@ -41,71 +27,53 @@ export function GroupBBrokerSection({
         HS Code &amp; Broker Weapon
       </p>
 
-      {canSeeAlpha ? (
-        <div
-          className={`transition-all duration-300 ease-in-out ${
-            isEmailOpen
-              ? "flex flex-col w-full gap-8"
-              : "grid grid-cols-2"
-          }`}
-        >
-          <div className={
-            isEmailOpen
-              ? "w-full pb-6 border-b border-[#E8E6E1]"
-              : "pr-10 border-r border-[#E8E6E1]"
-          }>
-            <p className="text-sm font-bold text-[#6B6860] tracking-widest mb-3">HS Code</p>
+      <div className="grid grid-cols-2 gap-6">
+        <div>
+          <p className="text-sm font-bold text-[#6B6860] tracking-widest mb-4">HS Code</p>
+          <LockedValue locked={!canSeeAlpha} tier="alpha" minHeight="80px">
             {report.hs_code?.trim() ? (
-              <>
-                <div className="flex items-center gap-3 mb-2">
-                  <p className={`font-extrabold font-mono text-[#1A1916] tracking-tight transition-all duration-300 ${
-                    isEmailOpen ? "text-2xl" : "text-4xl"
-                  }`}>
-                    {formatHsCode(report.hs_code) || report.hs_code}
+              <div>
+                <div className="flex items-center gap-3 mb-3">
+                  <p className="text-4xl font-black tracking-tighter text-[#1A1916]">
+                    {formatHsCode(report.hs_code)}
                   </p>
                   <button
                     type="button"
-                    onClick={copyHsCode}
-                    className="text-xs font-medium px-3 py-1 rounded-md border border-[#E8E6E1] text-[#6B6860] hover:text-[#1A1916] hover:border-[#1A1916] transition-colors"
+                    onClick={() => {
+                      navigator.clipboard.writeText(report.hs_code ?? "");
+                      setIsCopied(true);
+                      setTimeout(() => setIsCopied(false), 2000);
+                    }}
+                    className="text-xs font-bold text-[#9E9C98] border border-[#E8E6E1] px-3 py-1 rounded-full hover:bg-white transition-colors"
                   >
-                    {hsCopied ? "Copied!" : "Copy"}
+                    {isCopied ? "Copied!" : "Copy"}
                   </button>
                 </div>
                 {!isEmailOpen && report.hs_description?.trim() && (
-                  <p className="text-lg text-[#1A1916] leading-relaxed">
+                  <p className="text-sm text-[#6B6860] leading-relaxed">
                     {report.hs_description}
                   </p>
                 )}
-              </>
+              </div>
             ) : (
-              <p className="text-sm text-[#9E9C98] italic">
-                No HS code available.
-              </p>
+              <p className="text-sm italic text-[#9E9C98]">No HS code available.</p>
             )}
-          </div>
+          </LockedValue>
+        </div>
 
-          <div className={isEmailOpen ? "w-full" : "pl-10"}>
-            <p className="text-sm font-bold text-[#6B6860] tracking-widest mb-4">Broker Email Draft</p>
+        <div>
+          <p className="text-sm font-bold text-[#6B6860] tracking-widest mb-4">Broker Email Draft</p>
+          <LockedValue locked={!canSeeAlpha} tier="alpha" minHeight="80px">
             {report.hs_code?.trim() ? (
-              <BrokerEmailDraft
-                report={report}
-                onOpenChange={setIsEmailOpen}
-              />
+              <BrokerEmailDraft report={report} onOpenChange={setIsEmailOpen} />
             ) : (
-              <p className="text-sm text-[#9E9C98] italic">
+              <p className="text-sm italic text-[#9E9C98]">
                 Available once HS code is confirmed.
               </p>
             )}
-          </div>
+          </LockedValue>
         </div>
-      ) : (
-        <LockedValue locked={!canSeeAlpha} tier="alpha">
-          <div className="grid grid-cols-2 gap-6">
-            <div className="h-24 rounded-xl bg-[#F2F1EE]" />
-            <div className="h-24 rounded-xl bg-[#F2F1EE]" />
-          </div>
-        </LockedValue>
-      )}
+      </div>
     </div>
   );
 }

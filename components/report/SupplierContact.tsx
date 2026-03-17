@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Button } from "@/components/ui";
+import { LockedValue } from "@/components/ui/LockedValue";
 import { ArrowRight, ArrowUpRight, Download, ExternalLink, Film, Globe, Globe2, ImageIcon, LayoutTemplate, Mail, Phone, Play, ShoppingBag } from "lucide-react";
 import type { ScoutFinalReportsRow } from "@/types/database";
 import { getAiDetailUrl } from "./utils";
@@ -26,7 +26,7 @@ export function SupplierContact({
     (report.wholesale_link && report.wholesale_link?.trim()) ||
     (report.sourcing_tip && report.sourcing_tip.trim());
 
-  if (!hasSupplierFields && !canSeeAlpha) return null;
+  if (!hasSupplierFields) return null;
 
   const verifiedCostUsd = report.verified_cost_usd ?? null;
   const verifiedCostNote = report.verified_cost_note?.trim()?.toLowerCase() ?? null;
@@ -185,197 +185,213 @@ export function SupplierContact({
     hoverIcon: React.ReactNode;
   }>;
 
-  const refA = "text-xl font-bold text-[#1A1916] mb-10";
-  const refB = "text-sm font-bold text-[#6B6860] tracking-widest mb-4";
   const refC = "text-base text-[#3D3B36] leading-relaxed opacity-90";
 
   return (
     <section className="bg-white rounded-2xl border border-[#E8E6E1] p-6 shadow-[0_1px_3px_0_rgb(26_25_22/0.06)]">
-      {canSeeAlpha && (
-        <>
-          <div>
-            <h2 className="text-3xl font-bold text-[#1A1916] mb-4 tracking-tight">Launch & Execution Kit</h2>
-            <p className="text-sm text-[#6B6860] leading-relaxed mt-1">
-              From product discovery to live campaign — everything you need.
-            </p>
-          </div>
+      <>
+        <h2 className="text-3xl font-bold text-[#1A1916] mb-4 tracking-tight">
+          Launch &amp; Execution Kit
+        </h2>
+        <p className="text-sm text-[#6B6860] mb-8">
+          From product discovery to live campaign — everything you need.
+        </p>
 
-          <div className="bg-[#F8F7F4] rounded-2xl p-10 mb-6 mt-6">
-            <p className={refA}>Financial Briefing</p>
-            <div className="mb-10">
-              <p className={refB}>Cost Per Unit</p>
+        <div className="bg-[#F8F7F4] rounded-2xl p-10 mb-6 mt-6">
+          <p className="text-xl font-bold text-[#1A1916] mb-10">Financial Briefing</p>
+
+          <div className="mb-6">
+            <p className="text-xs font-bold text-[#9E9C98] uppercase tracking-[0.2em] mb-3">
+              Cost Per Unit
+            </p>
+            <LockedValue locked={!canSeeAlpha} tier="alpha" minHeight="80px">
               {hasVerifiedPrice && !isUndisclosed ? (
-                <>
-                  <p className="font-black tracking-tighter text-[#1A1916] leading-none" style={{ fontSize: "80px" }}>
+                <div>
+                  <p className="text-5xl font-black tracking-tighter text-[#1A1916]">
                     ${costNum.toFixed(2)}
                   </p>
                   {report.verified_at && (
-                    <p className="text-xs italic text-[#9E9C98] mt-3">
+                    <p className="text-xs text-[#9E9C98] mt-2">
                       Verified by KoreaScout on{" "}
                       {new Date(report.verified_at).toLocaleDateString("en-US", {
-                        year: "numeric",
-                        month: "long",
-                        day: "numeric",
+                        year: "numeric", month: "long", day: "numeric",
                       })}
                     </p>
                   )}
-                </>
-              ) : verifiedCostUsd != null && verifiedCostUsd !== "" && isUndisclosed ? (
-                <p className="text-sm italic text-[#6B6860]">
-                  Pricing verified and on file. Contact the manufacturer directly or use the broker email in Section 5.
+                </div>
+              ) : verifiedCostUsd != null && isUndisclosed ? (
+                <p className="text-sm italic text-[#6B6860] leading-relaxed">
+                  Pricing verified and on file. Contact the manufacturer directly.
                 </p>
               ) : (
                 <p className="text-sm italic text-[#9E9C98]">Not available</p>
               )}
+            </LockedValue>
+          </div>
+
+          <div className="flex gap-32 mt-10">
+            <div>
+              <p className="text-xs font-bold text-[#9E9C98] uppercase tracking-[0.2em] mb-3">MOQ</p>
+              <LockedValue locked={!canSeeAlpha} tier="alpha" minHeight="60px">
+                <p className="text-4xl font-black tracking-tighter text-[#1A1916]">
+                  {report.moq?.trim() || "—"}
+                </p>
+              </LockedValue>
             </div>
-            {(report.moq?.trim() || report.lead_time?.trim() || report.can_oem != null) && (
-              <div className="flex gap-32 mt-10">
-                {report.moq?.trim() && (
-                  <div>
-                    <p className="text-xs font-bold text-[#9E9C98] uppercase tracking-[0.2em] mb-3">MOQ</p>
-                    <p className="text-4xl font-black tracking-tighter text-[#1A1916]">{report.moq}</p>
-                  </div>
-                )}
-                <div className="flex items-start gap-10">
-                  {report.lead_time?.trim() && (
-                    <div>
-                      <p className="text-xs font-bold text-[#9E9C98] uppercase tracking-[0.2em] mb-3">Est. Production Lead Time</p>
-                      <p className="text-4xl font-black tracking-tighter text-[#1A1916]">{report.lead_time}</p>
-                    </div>
-                  )}
-                  {report.can_oem != null && (
-                    <div>
-                      <p className="text-xs font-bold text-[#9E9C98] uppercase tracking-[0.2em] mb-3">OEM / ODM</p>
-                      <p className="text-4xl font-black tracking-tighter text-[#1A1916]">
-                        {report.can_oem ? "Available" : "Not Available"}
-                      </p>
-                    </div>
-                  )}
-                </div>
-              </div>
-            )}
+            <div>
+              <p className="text-xs font-bold text-[#9E9C98] uppercase tracking-[0.2em] mb-3">
+                Est. Production Lead Time
+              </p>
+              <LockedValue locked={!canSeeAlpha} tier="alpha" minHeight="60px">
+                <p className="text-4xl font-black tracking-tighter text-[#1A1916]">
+                  {report.lead_time?.trim() || "—"}
+                </p>
+              </LockedValue>
+            </div>
+            <div>
+              <p className="text-xs font-bold text-[#9E9C98] uppercase tracking-[0.2em] mb-3">
+                OEM / ODM
+              </p>
+              <LockedValue locked={!canSeeAlpha} tier="alpha" minHeight="60px">
+                <p className="text-2xl font-black tracking-tighter text-[#1A1916]">
+                  {report.can_oem == null ? "—" : report.can_oem ? "Available" : "Not Available"}
+                </p>
+              </LockedValue>
+            </div>
           </div>
+        </div>
 
-          <div className="bg-[#F8F7F4] rounded-2xl p-10 mb-6">
-            <p className={refA}>Supplier &amp; Brand Intel</p>
-            {report.m_name?.trim() && (
-              <div className="mb-8">
-                <div className="flex items-baseline gap-3 flex-wrap">
-                  <p className="text-5xl font-black text-[#1A1916] leading-none tracking-tighter">
-                    {report.translated_name?.split(" ")[0]?.toUpperCase() ?? report.m_name}
-                    <span className="text-5xl font-black text-[#1A1916] ml-3">
-                    <span className="font-thin text-[#9E9C98] mx-2">|</span>
+        <div className="bg-[#F8F7F4] rounded-2xl p-10 mb-6">
+          <p className="text-xl font-bold text-[#1A1916] mb-10">Supplier &amp; Brand Intel</p>
+
+          <LockedValue locked={!canSeeAlpha} tier="alpha" minHeight="120px">
+            <div>
+              {report.m_name?.trim() && (
+                <div className="mb-8">
+                  <p className="text-4xl font-black tracking-tighter text-[#1A1916] mb-2">
+                    {report.translated_name?.split(" ")[0]?.toUpperCase() || report.m_name}
+                    {" "}<span className="text-[#1A1916]/40">|</span>{" "}
                     {report.m_name}
-                  </span>
+                    {report.corporate_scale?.trim() && (
+                      <span className="ml-3 text-sm font-bold text-[#9E9C98]">
+                        {report.corporate_scale === "중소기업" ? "SME" :
+                         report.corporate_scale === "대기업" ? "Enterprise" :
+                         report.corporate_scale === "스타트업" ? "Startup" :
+                         report.corporate_scale === "중견기업" ? "Mid-size" :
+                         report.corporate_scale}
+                      </span>
+                    )}
                   </p>
-                  {report.corporate_scale?.trim() && (
-                    <p className="text-lg font-medium text-[#9E9C98]">
-                      {(() => {
-                        const scaleMap: Record<string, string> = {
-                          "중소기업": "SME",
-                          "대기업": "Enterprise",
-                          "스타트업": "Startup",
-                          "중견기업": "Mid-size",
-                        };
-                        return scaleMap[report.corporate_scale!.trim()] ?? report.corporate_scale;
-                      })()}
-                    </p>
-                  )}
                 </div>
-              </div>
-            )}
-            {(() => {
-              const contacts = [
-                report.contact_email?.trim() && {
-                  id: "email",
-                  icon: <Mail className="w-8 h-8 text-[#9E9C98] group-hover:text-[#16A34A] shrink-0 transition-colors" />,
-                  label: report.contact_email!.trim(),
-                  href: `mailto:${report.contact_email!.trim()}`,
-                  external: false as const,
-                },
-                report.contact_phone?.trim() && {
-                  id: "phone",
-                  icon: <Phone className="w-8 h-8 text-[#9E9C98] group-hover:text-[#16A34A] shrink-0 transition-colors" />,
-                  label: report.contact_phone!.trim(),
-                  href: `tel:${report.contact_phone!.trim()}`,
-                  external: false as const,
-                },
-                report.m_homepage?.trim() && {
-                  id: "website",
-                  icon: <Globe className="w-8 h-8 text-[#9E9C98] group-hover:text-[#16A34A] shrink-0 transition-colors" />,
-                  label: "Website",
-                  href: report.m_homepage!.trim(),
-                  external: true as const,
-                },
-                report.wholesale_link?.trim() && {
-                  id: "wholesale",
-                  icon: <ShoppingBag className="w-8 h-8 text-[#9E9C98] group-hover:text-[#16A34A] shrink-0 transition-colors" />,
-                  label: "Wholesale Portal",
-                  href: report.wholesale_link!.trim(),
-                  external: true as const,
-                },
-                report.global_site_url?.trim() && {
-                  id: "global_site",
-                  icon: <Globe2 className="w-8 h-8 text-[#9E9C98] group-hover:text-[#16A34A] shrink-0 transition-colors" />,
-                  label: "Global Site",
-                  href: report.global_site_url!.trim(),
-                  external: true as const,
-                },
-                report.b2b_inquiry_url?.trim() && {
-                  id: "b2b_inquiry",
-                  icon: <ArrowUpRight className="w-8 h-8 text-[#9E9C98] group-hover:text-[#16A34A] shrink-0 transition-colors" />,
-                  label: "B2B Inquiry",
-                  href: report.b2b_inquiry_url!.trim(),
-                  external: true as const,
-                },
-              ].filter(Boolean) as Array<{ id: string; icon: React.ReactNode; label: string; href: string; external: boolean }>;
+              )}
+              {(() => {
+                const contacts = [
+                  report.contact_email?.trim() && {
+                    id: "email",
+                    icon: <Mail className="w-8 h-8 text-[#9E9C98] group-hover:text-[#16A34A] shrink-0 transition-colors" />,
+                    label: report.contact_email!.trim(),
+                    href: `mailto:${report.contact_email!.trim()}`,
+                    external: false as const,
+                  },
+                  report.contact_phone?.trim() && {
+                    id: "phone",
+                    icon: <Phone className="w-8 h-8 text-[#9E9C98] group-hover:text-[#16A34A] shrink-0 transition-colors" />,
+                    label: report.contact_phone!.trim(),
+                    href: `tel:${report.contact_phone!.trim()}`,
+                    external: false as const,
+                  },
+                  report.m_homepage?.trim() && {
+                    id: "website",
+                    icon: <Globe className="w-8 h-8 text-[#9E9C98] group-hover:text-[#16A34A] shrink-0 transition-colors" />,
+                    label: "Website",
+                    href: report.m_homepage!.trim(),
+                    external: true as const,
+                  },
+                  report.wholesale_link?.trim() && {
+                    id: "wholesale",
+                    icon: <ShoppingBag className="w-8 h-8 text-[#9E9C98] group-hover:text-[#16A34A] shrink-0 transition-colors" />,
+                    label: "Wholesale Portal",
+                    href: report.wholesale_link!.trim(),
+                    external: true as const,
+                  },
+                  report.global_site_url?.trim() && {
+                    id: "global_site",
+                    icon: <Globe2 className="w-8 h-8 text-[#9E9C98] group-hover:text-[#16A34A] shrink-0 transition-colors" />,
+                    label: "Global Site",
+                    href: report.global_site_url!.trim(),
+                    external: true as const,
+                  },
+                  report.b2b_inquiry_url?.trim() && {
+                    id: "b2b_inquiry",
+                    icon: <ArrowUpRight className="w-8 h-8 text-[#9E9C98] group-hover:text-[#16A34A] shrink-0 transition-colors" />,
+                    label: "B2B Inquiry",
+                    href: report.b2b_inquiry_url!.trim(),
+                    external: true as const,
+                  },
+                ].filter(Boolean) as Array<{ id: string; icon: React.ReactNode; label: string; href: string; external: boolean }>;
 
-              if (contacts.length === 0) return null;
-              return (
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-10">
-                  {contacts.map((contact, i) => (
-                    <a
-                      key={contact.id}
-                      href={contact.href}
-                      target={contact.external ? "_blank" : undefined}
-                      rel={contact.external ? "noopener noreferrer" : undefined}
-                      className={`flex items-center gap-5 bg-white border-2 border-[#E8E6E1] rounded-2xl p-8 hover:border-[#16A34A] transition-colors group ${contacts.length === 3 && i === 2 ? "col-span-1 sm:col-span-2" : ""}`}
-                    >
-                      {contact.icon}
-                      <span className="text-xl font-bold text-[#1A1916] truncate">{contact.label}</span>
-                    </a>
-                  ))}
-                </div>
-              );
-            })()}
-            {(report.sample_policy?.trim() || report.export_cert_note?.trim()) && (
-              <div className="border-t border-[#E8E6E1] pt-8 space-y-5">
-                {report.sample_policy?.trim() && (
-                  <div>
-                    <p className="text-xs font-bold text-[#9E9C98] uppercase tracking-[0.2em] mb-3">Sample Policy</p>
-                    <p className="text-sm font-medium text-[#1A1916] leading-relaxed">{report.sample_policy}</p>
+                if (contacts.length === 0) return null;
+                return (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-10">
+                    {contacts.map((contact, i) => (
+                      <a
+                        key={contact.id}
+                        href={contact.href}
+                        target={contact.external ? "_blank" : undefined}
+                        rel={contact.external ? "noopener noreferrer" : undefined}
+                        className={`flex items-center gap-5 bg-white border-2 border-[#E8E6E1] rounded-2xl p-8 hover:border-[#16A34A] transition-colors group ${contacts.length === 3 && i === 2 ? "col-span-1 sm:col-span-2" : ""}`}
+                      >
+                        {contact.icon}
+                        <span className="text-xl font-bold text-[#1A1916] truncate">{contact.label}</span>
+                      </a>
+                    ))}
                   </div>
-                )}
-                {report.export_cert_note?.trim() && (
-                  <div>
-                    <p className="text-xs font-bold text-[#9E9C98] uppercase tracking-[0.2em] mb-3">Compliance Note</p>
-                    <p className="text-sm font-medium text-[#1A1916] leading-relaxed">{report.export_cert_note}</p>
-                  </div>
-                )}
-              </div>
-            )}
-            {globalProofTags.length > 0 && (
-              <div id="global-market-proof" className="border-t border-[#E8E6E1] pt-8 mt-8 scroll-mt-[160px]">
-                <p className="text-xs font-bold text-[#9E9C98] uppercase tracking-[0.2em] mb-6">Global Market Proof</p>
-                <GlobalProofAccordion tags={globalProofTags} />
-              </div>
-            )}
+                );
+              })()}
+            </div>
+          </LockedValue>
+
+          <div className="mt-8">
+            <p className="text-xs font-bold text-[#9E9C98] uppercase tracking-[0.2em] mb-3">
+              Sample Policy
+            </p>
+            <LockedValue locked={!canSeeAlpha} tier="alpha" minHeight="50px">
+              <p className="text-sm text-[#3D3B36] leading-relaxed">
+                {report.sample_policy?.trim() || "—"}
+              </p>
+            </LockedValue>
           </div>
 
-          {assetCards.length > 0 && (
-            <div className="bg-[#F8F7F4] rounded-2xl p-10">
-              <p className={refA}>Creative Assets</p>
-              <div className="grid grid-cols-2 gap-6">
+          <div className="mt-6">
+            <p className="text-xs font-bold text-[#9E9C98] uppercase tracking-[0.2em] mb-3">
+              Compliance Note
+            </p>
+            <LockedValue locked={!canSeeAlpha} tier="alpha" minHeight="50px">
+              <p className="text-sm text-[#3D3B36] leading-relaxed">
+                {report.export_cert_note?.trim() || "—"}
+              </p>
+            </LockedValue>
+          </div>
+
+          <div className="mt-8">
+            <p className="text-xs font-bold text-[#9E9C98] uppercase tracking-[0.2em] mb-6">
+              Global Market Proof
+            </p>
+            <LockedValue locked={!canSeeAlpha} tier="alpha" minHeight="100px">
+              {globalProofTags.length > 0 ? (
+                <GlobalProofAccordion tags={globalProofTags} />
+              ) : (
+                <p className="text-sm italic text-[#9E9C98]">No global listings found.</p>
+              )}
+            </LockedValue>
+          </div>
+        </div>
+
+        <div className="bg-[#F8F7F4] rounded-2xl p-10">
+          <p className="text-xl font-bold text-[#1A1916] mb-10">Creative Assets</p>
+          <LockedValue locked={!canSeeAlpha} tier="alpha" minHeight="120px">
+            {assetCards.length > 0 ? (
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 {assetCards.map((card) => (
                   <div
                     key={card.id}
@@ -414,10 +430,12 @@ export function SupplierContact({
                   </div>
                 ))}
               </div>
-            </div>
-          )}
-        </>
-      )}
+            ) : (
+              <p className="text-sm italic text-[#9E9C98]">No creative assets available.</p>
+            )}
+          </LockedValue>
+        </div>
+      </>
     </section>
   );
 }
