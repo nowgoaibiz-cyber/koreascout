@@ -24,7 +24,12 @@ export default async function ProductDetailPage({
   const supabase = await createClient();
   const { userId, userEmail, tier, subscriptionStartAt } = await getAuthTier();
 
-  const [{ data: report, error }, { data: weekReports }, { data: week }, { data: favoriteRow }] = await Promise.all([
+  const [
+    { data: report, error },
+    { data: weekReports },
+    { data: week },
+    { data: favoriteRow },
+  ] = await Promise.all([
     supabase
       .from("scout_final_reports")
       .select("*")
@@ -48,6 +53,14 @@ export default async function ProductDetailPage({
           .maybeSingle()
       : Promise.resolve({ data: null }),
   ]);
+  const { data: freeWeek } = await supabase
+    .from("weeks")
+    .select("week_id, published_at")
+    .eq("status", "published")
+    .lt("published_at", new Date(Date.now() - 14 * 24 * 60 * 60 * 1000).toISOString())
+    .order("published_at", { ascending: false })
+    .limit(1)
+    .single();
   const isFavorited = !!favoriteRow?.report_id;
 
   if (error || !report) notFound();
@@ -56,7 +69,7 @@ export default async function ProductDetailPage({
 
   const canAccessThisWeek = (() => {
     if (tier === "free") {
-      return isTeaser === true;
+      return freeWeek?.week_id === weekId;
     }
     if (tier === "standard" || tier === "alpha") {
       if (isTeaser) return true;
