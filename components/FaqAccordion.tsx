@@ -15,7 +15,7 @@ const FAQ_DATA: FaqCategory[] = [
     items: [
       {
         q: "How is KoreaScout different from Jungle Scout or Helium 10?",
-        a: "Jungle Scout and Helium 10 tell you what's already selling on Amazon — meaning by the time you act, the margin is gone. KoreaScout operates 4–6 weeks upstream, inside the Korean market where trends are born. We scan TikTok Korea, Instagram Korea, Olive Young, Daiso, and B2B product pipelines — then cross-reference against Amazon's existing catalog to find the gap. You're not chasing demand. You're arriving before it.",
+        a: "Jungle Scout and Helium 10 tell you what's already selling on Amazon — meaning by the time you act, the margin is gone. KoreaScout operates 4–6 weeks upstream, inside the Korean market where trends are born. We scan TikTok Korea, Instagram Korea, Hwahae, Glowpick, Olive Young, Chicor, and Naver Data Lab — then cross-reference against Amazon's existing catalog to find the gap. You're not chasing demand. You're arriving before it.",
       },
       {
         q: "How fresh is the intelligence?",
@@ -23,11 +23,15 @@ const FAQ_DATA: FaqCategory[] = [
       },
       {
         q: "What is the Gap Index?",
-        a: "The Gap Index is KoreaScout's proprietary scoring metric. It measures the ratio between a product's current Korean sell-through velocity and its existing supply on global platforms (Amazon US, Amazon EU, Shopify). A score of 2.0× or higher means demand is outpacing global supply — a quantified market gap. Products below 2.0× are eliminated before they reach your report.",
+        a: "The Gap Index is KoreaScout's proprietary scoring metric. It measures the spread between a product's Korean demand momentum and its current global supply footprint across Amazon US, Amazon EU, and Shopify. A high Gap Index means the product is buzzing in Korea but has virtually no established competition globally — that's your entry window. Products with a low Gap Index are filtered out before they reach your report.",
       },
       {
         q: "Can I trust AI-generated product research?",
-        a: "KoreaScout is not a prompt-to-output AI tool. Our pipeline is: signal collection → AI pre-filtering → Korea HQ human verification → compliance check → report. Every product that reaches your inbox has been verified by our Seoul-based team for factory viability, MOQ accuracy, and export compliance. The AI eliminates noise. Humans verify the signal.",
+        a: "KoreaScout is not a prompt-to-output AI tool. Our pipeline is: signal collection → AI pre-filtering → human verification → compliance check → report. Every product that reaches your report has been cross-verified across multiple Korean demand sources for market viability. The AI eliminates noise. The data verifies the signal.",
+      },
+      {
+        q: "How many products do I get each week?",
+        a: "Every week, KoreaScout publishes 10+ curated K-products. Standard and Alpha members get instant access to the latest 3 weeks — that's 30+ verified products from day one. Free members get access to one unlocked week with a 14-day delay. Every product in your report has cleared our Margin Multiplier threshold and passed multi-source Korean demand verification.",
       },
     ],
   },
@@ -37,20 +41,16 @@ const FAQ_DATA: FaqCategory[] = [
     subtitle: "I don't speak Korean. How does this help me actually source?",
     items: [
       {
-        q: "I don't speak Korean. How do I actually contact suppliers?",
-        a: "Alpha members receive the factory's direct contact (email + KakaoTalk where available), verified MOQ and EXW unit cost, and a pre-written broker email draft in both English and Korean. You copy, send, and negotiate in your language. The language barrier is our problem, not yours.",
-      },
-      {
         q: "What about customs and import regulations? I've been burned before.",
-        a: "Every product in our report is pre-screened against HS Code classifications for US, EU, and AU markets. Hazmat flags, battery restrictions, and CPNP/MoCRA cosmetic compliance requirements are checked before a product enters the report. Alpha members receive the estimated HS Code and compliance status. Products that fail this check are killed at the Noise Filter stage — you never see them.",
+        a: "Each Alpha report includes the estimated HS Code for US and EU import classification, along with hazmat status and key compliance flags (FDA MoCRA, CPNP, ingredient screening). This is reference intelligence — not legal advice. Use it to have an informed conversation with your customs broker before you commit to a shipment. The goal is no surprises at the border.",
       },
       {
         q: "Is the supplier information verified or just scraped?",
-        a: "Verified. Our Korea HQ team confirms factory direct lines, current MOQ, and EXW pricing before each weekly report cycle. We do not include supplier contacts that have not been responsive within the prior 30-day window. Stale contacts are rotated out.",
+        a: "Alpha reports include manufacturer name, contact information, and sourcing reference links sourced from Korean B2B databases and verified product listings. We provide the lead — direct outreach and negotiation is yours to own. Supplier responsiveness and MOQ terms vary by manufacturer and are subject to change.",
       },
       {
         q: "Can KoreaScout help me with logistics after sourcing?",
-        a: "KoreaScout is an intelligence platform, not a freight forwarder. We give you the product intelligence, compliance pre-clearance, and supplier contact. Your existing freight partner handles the shipment. We are the 60-second decision, not the 3-month supply chain.",
+        a: "KoreaScout is an intelligence platform, not a freight forwarder. We give you the product intelligence, compliance reference data, and supplier contact. Your existing freight partner handles the shipment. We are the 60-second decision, not the 3-month supply chain.",
       },
     ],
   },
@@ -65,7 +65,7 @@ const FAQ_DATA: FaqCategory[] = [
       },
       {
         q: "Why does Alpha cost $129/mo when Standard is $69/mo?",
-        a: "Standard gives you the full trend intelligence layer: Gap Index, Margin Score, Platform Velocity, Growth Signal. That alone replaces 58 hours of manual sourcing research per month. Alpha adds the action layer: verified factory contacts, MOQ + EXW pricing, HS Code classification, compliance pre-clearance, 4K product visuals, SEO keywords, and a broker email draft. The $60 difference buys you a complete sourcing brief — ready to act on, not just read. If your average product margin is $8/unit and you source 200 units from one Alpha-sourced product, that's $1,600 gross from a $129 subscription. The math works on the first product.",
+        a: "Standard gives you the full trend intelligence layer: Gap Index, Margin Multiplier, Platform Velocity, Growth Signal. That alone replaces 58 hours of manual sourcing research per month. Alpha adds the action layer: verified factory contacts, MOQ + EXW pricing, HS Code reference, compliance flags, 4K On-Site Sourcing Footage (Raw), SEO keywords, and a broker email draft. The $60 difference buys you a complete sourcing brief — ready to act on, not just read. If your average margin is $8/unit and you source 200 units from one Alpha-sourced product, that's $1,600 gross from a $129 subscription. The math works on the first product.",
       },
       {
         q: "Can I upgrade from Standard to Alpha later?",
@@ -96,7 +96,7 @@ const FAQ_DATA: FaqCategory[] = [
       },
       {
         q: "Can I cancel anytime?",
-        a: "Yes. One click, no forms, no calls. When you cancel, your subscription does not cut off immediately — you retain full Standard or Alpha access through the remainder of your current billing period, down to the last day. Cancellation simply stops the next charge. Your paid period is yours entirely.",
+        a: "Yes. One click, no forms, no calls. Before you cancel — know this: your KoreaScout vault is cumulative. Every week you're subscribed, your accessible report library grows. When you cancel, you lose access to all previously unlocked reports. If you resubscribe later, your vault does not restore — you start fresh from the new subscription date only. Cancellation simply stops the next charge. Your current paid period remains fully active until the last day.",
       },
       {
         q: "Is my payment information secure?",
