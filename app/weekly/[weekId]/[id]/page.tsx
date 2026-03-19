@@ -61,6 +61,13 @@ export default async function ProductDetailPage({
     .order("published_at", { ascending: false })
     .limit(1)
     .single();
+  const { data: latest3Weeks } = await supabase
+    .from("weeks")
+    .select("week_id")
+    .eq("status", "published")
+    .order("published_at", { ascending: false })
+    .limit(3);
+  const latest3WeekIds = (latest3Weeks ?? []).map((w) => w.week_id);
   const isFavorited = !!favoriteRow?.report_id;
 
   if (error || !report) notFound();
@@ -73,10 +80,12 @@ export default async function ProductDetailPage({
     }
     if (tier === "standard" || tier === "alpha") {
       if (isTeaser) return true;
+      const isLatestWeek = latest3WeekIds.includes(weekId);
+      if (isLatestWeek) return true;
       if (!subscriptionStartAt) return false;
       const subDate = new Date(subscriptionStartAt);
       const weekDate = week?.published_at ? new Date(week.published_at) : null;
-      if (!weekDate) return true; // published_at 없으면 허용 (데이터 누락 방어)
+      if (!weekDate) return true;
       return weekDate >= subDate;
     }
     return false;
