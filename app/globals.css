@@ -443,11 +443,15 @@ html {
   html, body {
     background: #FFFFFF !important;
     color: #1A1916 !important;
-    font-size: 12pt !important;
+    font-size: 11pt !important;
     margin: 0 !important;
     padding: 0 !important;
     width: 100% !important;
   }
+
+  h1 { font-size: 18pt !important; }
+  h2 { font-size: 14pt !important; }
+  h3 { font-size: 12pt !important; }
 
   /* Make main content fill the full page width since sidebar is gone */
   main,
@@ -471,15 +475,16 @@ html {
 
   /* ── 3. PAGE BREAK — PREVENT CARD SLICING ── */
 
-  /* Prevent cards/sections from being cut in half across pages */
+  /* Only prevent breaks inside small cards, not entire sections */
   section,
-  article,
-  [class*="card"],
-  [class*="Card"],
+  article {
+    break-inside: auto !important;
+    page-break-inside: auto !important;
+  }
+
+  /* Only avoid breaks inside small individual cards */
   [class*="rounded-2xl"],
-  [class*="rounded-xl"],
-  [class*="border"],
-  [class*="section"] {
+  [class*="rounded-xl"] {
     break-inside: avoid !important;
     page-break-inside: avoid !important;
   }
@@ -529,5 +534,30 @@ html {
   @page {
     size: A4;
     margin: 16mm 20mm 16mm 20mm;
+  }
+
+  /* Kill the 60vh bottom padding that creates blank pages */
+  .pb-\[60vh\] {
+    padding-bottom: 0 !important;
+  }
+
+  /* Kill min-h-screen that forces full viewport height */
+  .min-h-screen {
+    min-height: 0 !important;
+  }
+
+  /* Kill sidebar left padding on main column */
+  .pl-\[18rem\] {
+    padding-left: 0 !important;
+  }
+
+  /* Kill top margin on content stack */
+  .mt-10 {
+    margin-top: 8px !important;
+  }
+
+  /* Kill top padding on content wrapper */
+  .pt-10 {
+    padding-top: 8px !important;
   }
 }
