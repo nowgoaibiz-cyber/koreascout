@@ -144,7 +144,9 @@ export default async function ProductDetailPage({
       {userEmail && (
         <ZombieWatermark email={userEmail} />
       )}
-      <ClientLeftNav sections={sections} userEmail={userEmail} tier={tier as "free" | "standard" | "alpha"} />
+      <div className="print-hide">
+        <ClientLeftNav sections={sections} userEmail={userEmail} tier={tier as "free" | "standard" | "alpha"} />
+      </div>
       <div className="flex-1 pl-[18rem]">
         <div className="max-w-6xl mx-auto px-6 sm:px-8 pt-10 pb-[60vh]">
           <div className="space-y-6 mt-10">

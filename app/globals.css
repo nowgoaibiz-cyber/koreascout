@@ -361,3 +361,137 @@ html {
     height: 160px;
   }
 }
+
+@media print {
+
+  /* ── 1. HIDE ALL WEB UI CHROME ── */
+
+  /* Hide top header / navigation bar */
+  header,
+  [class*="header"],
+  [class*="Header"],
+  nav,
+  [class*="navbar"],
+  [class*="NavBar"] {
+    display: none !important;
+  }
+
+  /* Hide left sidebar (ClientLeftNav) */
+  /* Target: the aside or nav wrapper rendered by ClientLeftNav */
+  /* Also target common sidebar wrapper patterns */
+  aside,
+  [class*="sidebar"],
+  [class*="left-nav"],
+  [class*="ClientLeftNav"],
+  [class*="leftnav"],
+  [class*="side-nav"] {
+    display: none !important;
+  }
+
+  /* Hide bottom account/tier/logout area inside sidebar */
+  [class*="logout"],
+  [class*="Logout"],
+  [class*="tier-badge"],
+  [class*="account-info"] {
+    display: none !important;
+  }
+
+  /* Hide "Back to week" navigation link */
+  a[href*="/weekly"]:first-of-type {
+    display: none !important;
+  }
+
+  /* Hide any sticky banners, overlays, toasts */
+  [class*="sticky"],
+  [class*="toast"],
+  [class*="modal"],
+  [class*="overlay"],
+  [class*="PaywallOverlay"],
+  [class*="banner"] {
+    display: none !important;
+  }
+
+  /* Hide upgrade CTA buttons at bottom of report */
+  [class*="upgrade"],
+  [class*="cta"],
+  [class*="upsell"] {
+    display: none !important;
+  }
+
+  .print-hide {
+    display: none !important;
+  }
+
+  /* ── 2. MAIN CONTENT EXPANDS TO FULL WIDTH ── */
+
+  /* Reset body and html */
+  html, body {
+    background: #FFFFFF !important;
+    color: #1A1916 !important;
+    font-size: 12pt !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+  }
+
+  /* Make main content fill the full page width since sidebar is gone */
+  main,
+  [class*="main-content"],
+  [class*="content-area"],
+  [class*="report-body"] {
+    margin-left: 0 !important;
+    padding-left: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  /* Page wrapper — remove sidebar offset */
+  .max-w-6xl,
+  .max-w-5xl,
+  .max-w-4xl {
+    max-width: 100% !important;
+    margin: 0 auto !important;
+    padding: 0 24px !important;
+  }
+
+  /* ── 3. PAGE BREAK — PREVENT CARD SLICING ── */
+
+  /* Prevent cards/sections from being cut in half across pages */
+  section,
+  article,
+  [class*="card"],
+  [class*="Card"],
+  [class*="rounded-2xl"],
+  [class*="rounded-xl"],
+  [class*="border"],
+  [class*="section"] {
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
+  }
+
+  /* Force page break before each major report section */
+  [id*="section"],
+  [class*="report-section"] {
+    break-before: auto;
+    page-break-before: auto;
+  }
+
+  /* ── 4. PRINT COLOR & LINK ADJUSTMENTS ── */
+
+  /* Ensure colors print correctly */
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* Hide URLs that appear after links when printing */
+  a[href]::after {
+    content: none !important;
+  }
+
+  /* ── 5. PAGE MARGINS (A4 B2B REPORT STYLE) ── */
+  @page {
+    size: A4;
+    margin: 16mm 20mm 16mm 20mm;
+  }
+}
