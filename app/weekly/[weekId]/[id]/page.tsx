@@ -13,6 +13,7 @@ import {
   SupplierContact,
   EXPORT_STATUS_DISPLAY,
 } from "@/components/report";
+import ZombieWatermark from "@/components/ZombieWatermark";
 import type { ScoutFinalReportsRow } from "@/types/database";
 
 export default async function ProductDetailPage({
@@ -140,6 +141,9 @@ export default async function ProductDetailPage({
 
   return (
     <div className="flex min-h-screen bg-[#F8F7F4]">
+      {userEmail && (
+        <ZombieWatermark email={userEmail} />
+      )}
       <ClientLeftNav sections={sections} userEmail={userEmail} tier={tier as "free" | "standard" | "alpha"} />
       <div className="flex-1 pl-[18rem]">
         <div className="max-w-6xl mx-auto px-6 sm:px-8 pt-10 pb-[60vh]">
