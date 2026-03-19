@@ -418,8 +418,23 @@ html {
     display: none !important;
   }
 
+  /* Force full-width layout when sidebar is hidden */
+  .print-hide + * {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin-left: 0 !important;
+    padding-left: 0 !important;
+    flex: 1 1 100% !important;
+  }
+
+  /* Also target the parent flex container */
   .print-hide {
     display: none !important;
+    width: 0 !important;
+    min-width: 0 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    flex: 0 0 0 !important;
   }
 
   /* ── 2. MAIN CONTENT EXPANDS TO FULL WIDTH ── */
@@ -474,6 +489,27 @@ html {
   [class*="report-section"] {
     break-before: auto;
     page-break-before: auto;
+  }
+
+  /* Reduce excessive spacing between sections for print */
+  .space-y-6 > * + * {
+    margin-top: 12px !important;
+  }
+  .space-y-8 > * + * {
+    margin-top: 16px !important;
+  }
+  .mb-6, .mb-8, .mb-10, .mb-12 {
+    margin-bottom: 12px !important;
+  }
+  .pb-6, .pb-8, .pb-10, .pb-12 {
+    padding-bottom: 12px !important;
+  }
+  .pt-6, .pt-8, .pt-10 {
+    padding-top: 12px !important;
+  }
+  .py-6, .py-8, .py-10 {
+    padding-top: 12px !important;
+    padding-bottom: 12px !important;
   }
 
   /* ── 4. PRINT COLOR & LINK ADJUSTMENTS ── */
