@@ -3,6 +3,12 @@ export default function PrivacyPolicy() {
     <main className="min-h-screen bg-[#F8F7F4]">
       <div className="max-w-3xl mx-auto px-6 pt-28 pb-16">
         <h1 className="text-3xl font-bold text-[#0A0908] mb-2">Privacy Policy</h1>
+        <a
+          href="/legal/privacy-kr"
+          className="inline-block text-sm text-[#16A34A] underline mb-4"
+        >
+          🇰🇷 한국어 버전 보기 (국문 개인정보처리방침)
+        </a>
         <p className="text-sm text-[#9E9C98] mb-12">Last updated: March 2026</p>
 
         <section className="mb-10">

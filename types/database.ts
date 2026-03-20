@@ -49,7 +49,7 @@ export interface ScoutFinalReportsRow {
   viability_reason: string;
   market_viability: number;
   competition_level: string;
-  profit_multiplier: number;
+  profit_multiplier: string;
   search_volume: string;
   mom_growth: string;
   gap_status: string;

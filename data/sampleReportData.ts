@@ -24,7 +24,7 @@ export const sampleReportData: ScoutFinalReportsRow = {
     "Glass Skin and centella trends are spiking globally; SKIN1004's Hyalu-Cica formula has strong KFDA credentials and viral TikTok traction.",
   market_viability: 87,
   competition_level: "Medium",
-  profit_multiplier: 3.0,
+  profit_multiplier: "3.0",
   search_volume: "215,000+",
   mom_growth: "+34%",
   gap_status: "Blue Ocean",

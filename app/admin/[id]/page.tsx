@@ -635,7 +635,7 @@ export default function AdminEditPage() {
                   onChange={(e) =>
                     setFormData((p) => ({
                       ...p!,
-                      profit_multiplier: e.target.value === "" ? 0 : Number(e.target.value),
+                      profit_multiplier: e.target.value,
                     }))
                   }
                   className={inputClass}

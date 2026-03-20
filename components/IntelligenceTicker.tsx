@@ -33,7 +33,7 @@ export default async function IntelligenceTicker() {
           d.translated_name ?? d.product_name ?? "—",
           d.market_viability != null ? `TREND ${d.market_viability}` : null,
           d.gap_index != null ? `GAP ${Math.round(d.gap_index as number)}` : null,
-          d.profit_multiplier != null ? `MARGIN ${d.profit_multiplier}×` : null,
+          d.profit_multiplier != null ? `MARGIN ${String(d.profit_multiplier ?? "").replace(/[x×]/gi, "")}×` : null,
         ]
           .filter(Boolean)
           .join(" · ")

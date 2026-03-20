@@ -148,7 +148,7 @@ export function MarketIntelligence({
   isTeaser: boolean;
 }) {
   const estimatedCost = report.estimated_cost_usd ?? null;
-  const profitMultiplier = report.profit_multiplier ?? null;
+  const profitMultiplier = parseFloat(String(report.profit_multiplier ?? "0").replace(/[^0-9.]/g, "")) || 1;
   const rows = parseGlobalPricesForGrid(report.global_prices, report.global_price as string | Record<string, unknown> | null | undefined);
 
   const pricedRows = rows.filter((r) => !r.isBlueOcean && r.priceDisplay);
