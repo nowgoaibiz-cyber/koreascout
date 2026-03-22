@@ -19,6 +19,7 @@ const COMPETITION_OPTIONS = ["Low", "Medium", "High"];
 const FIELD_LABELS_KO: Record<string, string> = {
   id: "ID",
   product_name: "제품명",
+  naver_product_name: "네이버 상품명",
   translated_name: "번역명",
   category: "카테고리",
   kr_price: "한국가격(₩)",
@@ -192,7 +193,7 @@ export default function AdminEditPage() {
   }, []);
 
   const formKeys = [
-    "product_name", "translated_name", "category", "kr_price", "export_status", "viability_reason",
+    "product_name", "naver_product_name", "translated_name", "category", "kr_price", "export_status", "viability_reason",
     "image_url", "naver_link", "week_id", "m_name", "corporate_scale", "contact_email", "contact_phone", "m_homepage", "wholesale_link", "status",
     "market_viability", "competition_level", "gap_status", "gap_index", "billable_weight_g",
     "go_verdict", "composite_score", "growth_signal", "search_volume", "best_platform", "trend_entry_strategy",
@@ -430,6 +431,14 @@ export default function AdminEditPage() {
                 <input
                   value={formData.product_name ?? ""}
                   onChange={(e) => setFormData((p) => ({ ...p!, product_name: e.target.value }))}
+                  className={inputClass}
+                />
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <label className={labelClass}>Naver Product Name (네이버 상품명)</label>
+                <input
+                  value={formData.naver_product_name ?? ""}
+                  onChange={(e) => setFormData((p) => ({ ...p!, naver_product_name: e.target.value }))}
                   className={inputClass}
                 />
               </div>

@@ -36,6 +36,7 @@ export interface ScoutFinalReportsRow {
   id: string;
   week_id: string;
   product_name: string;
+  naver_product_name?: string | null;
   translated_name: string;
   image_url: string;
   ai_image_url: string | null;
