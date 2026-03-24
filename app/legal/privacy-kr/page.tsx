@@ -68,14 +68,21 @@ export default function PrivacyPolicyKr() {
           <p className="text-[#4A4845] leading-relaxed">
             서비스명: KoreaScout
             <br />
-            운영사: 지금행컴퍼니
+            운영사: 코리아스카우트
             <br />
-            이메일:{" "}
+            사업자등록번호: 640-22-02088
+            <br />
+            대표자: 좌행복
+            <br />
+            주소: 경기도 용인시 중부대로 1391, 2층 D240호 드림비즈테크
+            <br />
+            통신판매업신고번호: 2026-용인처인-00830
+            <br />
+            이메일:
+            {" "}
             <a href="mailto:support@koreascout.com" className="text-[#16A34A] underline">
               support@koreascout.com
             </a>
-            <br />
-            사업자등록번호 및 대표자명은 추후 업데이트 예정입니다.
           </p>
         </section>
 

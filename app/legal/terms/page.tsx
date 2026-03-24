@@ -7,7 +7,7 @@ export default function TermsOfService() {
 
         <section className="mb-10">
           <h2 className="text-lg font-bold text-[#0A0908] mb-3">1. Service Description</h2>
-          <p className="text-[#4A4845] leading-relaxed">KoreaScout is a subscription-based B2B intelligence platform providing weekly Korean product trend reports for global sellers. The service is operated by Haengbok Jwa. Payment processing, tax collection, and receipts are handled by LemonSqueezy, acting as the Merchant of Record. By using this service, you confirm you are at least 18 years of age.</p>
+          <p className="text-[#4A4845] leading-relaxed">KoreaScout is a subscription-based B2B intelligence platform providing weekly Korean product trend reports for global sellers. The service is operated by KoreaScout, Business Registration No. 640-22-02088, CEO: Haengbok Jwa. Payment processing, tax collection, and receipts are handled by LemonSqueezy, acting as the Merchant of Record. By using this service, you confirm you are at least 18 years of age.</p>
         </section>
 
         <section className="mb-10">
@@ -52,7 +52,19 @@ export default function TermsOfService() {
 
         <section className="mb-10">
           <h2 className="text-lg font-bold text-[#0A0908] mb-3">10. Contact</h2>
-          <p className="text-[#4A4845] leading-relaxed">For any questions regarding these Terms, contact us at <a href="mailto:support@koreascout.com" className="text-[#16A34A] underline">support@koreascout.com</a>.</p>
+          <p className="text-[#4A4845] leading-relaxed">
+            For any questions regarding these Terms, contact us at <a href="mailto:support@koreascout.com" className="text-[#16A34A] underline">support@koreascout.com</a>.
+            <br /><br />
+            KoreaScout
+            <br />
+            Business Registration No.: 640-22-02088
+            <br />
+            CEO: Haengbok Jwa
+            <br />
+            Address: Dream Biz Tech, 1391 Jungbu-daero, 2F D240, Yongin-si, Gyeonggi-do, Korea
+            <br />
+            E-commerce License No.: 2026-용인처인-00830
+          </p>
         </section>
       </div>
     </main>

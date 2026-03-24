@@ -710,31 +710,35 @@ export default async function HomePage() {
         </section>
 
         {/* Footer — Cream Shutter (Constitution) */}
-        <footer className="bg-[#F8F7F4] border-t border-[#E8E6E1] py-8 px-6">
-          <div className="mx-auto flex max-w-6xl flex-col flex-wrap items-center justify-between gap-4 sm:flex-row">
-            <div className="flex flex-col gap-1">
-              <p className="text-sm text-[#9E9C98]">© 2026 KoreaScout. All rights reserved.</p>
-              <div className="flex gap-4">
+        <footer className="bg-[#F8F7F4] border-t border-[#E8E6E1] py-10 px-6">
+          <div className="mx-auto flex max-w-6xl flex-col items-start justify-between gap-8 md:flex-row md:items-start">
+            <div className="flex flex-col gap-2">
+              <p className="text-xs text-[#9E9C98]">© 2026 KoreaScout. All rights reserved.</p>
+              <p className="text-xs text-[#9E9C98]">KoreaScout | CEO: Haengbok Jwa | Biz Reg No.: 640-22-02088</p>
+              <p className="text-xs text-[#9E9C98]">E-commerce License No.: 2026-용인처인-00830</p>
+              <p className="text-xs text-[#9E9C98]">Dream Biz Tech, 1391 Jungbu-daero, 2F D240, Yongin-si, Gyeonggi-do, Korea</p>
+              <p className="text-xs text-[#9E9C98]">support@koreascout.com</p>
+              <div className="flex gap-4 pt-1">
                 <a href="/legal/terms" className="text-xs text-[#9E9C98] hover:text-[#0A0908] transition-colors">Terms of Service</a>
                 <a href="/legal/privacy" className="text-xs text-[#9E9C98] hover:text-[#0A0908] transition-colors">Privacy Policy</a>
               </div>
             </div>
-            <div className="flex gap-6">
+            <div className="flex flex-col gap-2 md:flex-row md:gap-6">
               <Link
                 href="/pricing"
-                className="text-sm font-medium text-[#1A1916] transition-colors duration-200 hover:text-[#16A34A]"
+                className="text-sm font-medium text-[#0A0908] transition-colors duration-200 hover:text-[#16A34A]"
               >
                 Pricing
               </Link>
               <Link
                 href="/sample-report"
-                className="text-sm font-medium text-[#1A1916] transition-colors duration-200 hover:text-[#16A34A]"
+                className="text-sm font-medium text-[#0A0908] transition-colors duration-200 hover:text-[#16A34A]"
               >
                 Sample Report
               </Link>
               <Link
                 href="/contact"
-                className="text-sm font-medium text-[#1A1916] transition-colors duration-200 hover:text-[#16A34A]"
+                className="text-sm font-medium text-[#0A0908] transition-colors duration-200 hover:text-[#16A34A]"
               >
                 Contact
               </Link>
