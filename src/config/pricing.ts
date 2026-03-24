@@ -4,13 +4,13 @@ export const PRICING = {
     daily: 0,
   },
   STANDARD: {
-    monthly: 69,
-    daily: 2.3,
+    monthly: 79,
+    daily: 2.63,
   },
   ALPHA: {
-    monthly: 129,
-    daily: 4.3,
-    marketingDailyLimit: 4.5, // For "under $4.50 a day" copy
+    monthly: 199,
+    daily: 6.63,
+    marketingDailyLimit: 6.7, // For "under $4.50 a day" copy
   },
   CURRENCY: "$",
 } as const;
