@@ -22,9 +22,9 @@ export const metadata: Metadata = {
 };
 
 const STANDARD_CHECKOUT_URL =
-  "https://k-productscout26.lemonsqueezy.com/checkout/buy/141f6710-c704-4ab3-b7c7-f30b2c587587";
+  "https://getkoreascout.lemonsqueezy.com/checkout/buy/e9701b40-aad3-446e-b00a-617d0159d501";
 const ALPHA_CHECKOUT_URL =
-  "https://k-productscout26.lemonsqueezy.com/checkout/buy/41bb4d4b-b9d6-4a60-8e19-19287c35516d";
+  "https://getkoreascout.lemonsqueezy.com/checkout/buy/936321c8-fba1-4f88-bb30-8865c8006fac";
 const ALPHA_MAX = 3000;
 
 function UnlockIcon({ className }: { className?: string }) {
@@ -619,7 +619,7 @@ export default async function HomePage() {
                 <ShieldCheck className="text-[#16A34A] w-8 h-8 mb-4" aria-hidden />
                 <h3 className="text-lg font-bold text-[#1A1916] mb-3">AI Scouted. Human Curated.</h3>
                 <p className="text-base text-[#6B6860] leading-relaxed">
-                  Operated by 지금행컴퍼니 in Seoul. While our AI engine monitors Korea&apos;s fastest-moving platforms, our human operators filter out the noise. You get 100% verified intelligence, ready for scaling.
+                  Operated by KoreaScout in Korea. While our AI engine monitors Korea&apos;s fastest-moving platforms, our human operators filter out the noise. You get 100% verified intelligence, ready for scaling.
                 </p>
               </div>
               <div className="bg-white rounded-2xl p-8 shadow-sm border border-[#E8E6E1]">
@@ -650,7 +650,7 @@ export default async function HomePage() {
                     </p>
                   </div>
                   <p className="mt-10 text-right text-[#F8F7F4]/40 text-sm font-bold">
-                    — 지금행컴퍼니 (Jigeumhaeng Co.) · Seoul, Korea
+                    — KoreaScout · Korea
                   </p>
                 </div>
               </div>

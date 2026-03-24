@@ -9,9 +9,9 @@ export const metadata: Metadata = {
 };
 
 const STANDARD_CHECKOUT_URL =
-  "https://k-productscout26.lemonsqueezy.com/checkout/buy/141f6710-c704-4ab3-b7c7-f30b2c587587";
+  "https://getkoreascout.lemonsqueezy.com/checkout/buy/e9701b40-aad3-446e-b00a-617d0159d501";
 const ALPHA_CHECKOUT_URL =
-  "https://k-productscout26.lemonsqueezy.com/checkout/buy/41bb4d4b-b9d6-4a60-8e19-19287c35516d";
+  "https://getkoreascout.lemonsqueezy.com/checkout/buy/936321c8-fba1-4f88-bb30-8865c8006fac";
 const ALPHA_MAX_SPOTS = 3000;
 
 async function getAlphaMemberCount(): Promise<number> {

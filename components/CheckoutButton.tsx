@@ -11,10 +11,13 @@ export default function CheckoutButton({ checkoutUrl, children, className }: Che
   const handleClick = async () => {
     const supabase = createClient();
     const { data: { user } } = await supabase.auth.getUser();
+    const userId = user?.id;
     const email = user?.email;
-    const url = email
-      ? `${checkoutUrl}?checkout[email]=${encodeURIComponent(email)}`
-      : checkoutUrl;
+    const params = new URLSearchParams();
+    if (email) params.set("checkout[email]", email);
+    if (userId) params.set("checkout[custom][user_id]", userId);
+    const qs = params.toString();
+    const url = qs ? `${checkoutUrl}?${qs}` : checkoutUrl;
     window.open(url, "_blank", "noopener,noreferrer");
   };
 
