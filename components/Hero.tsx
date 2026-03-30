@@ -65,8 +65,7 @@ export default function Hero() {
             fontSize: "clamp(9px, 2vw, 11px)",
             letterSpacing: "0.2em",
             textAlign: "center",
-            whiteSpace: "normal",
-            overflowWrap: "break-word",
+            whiteSpace: "nowrap",
             padding: "0 16px",
             color: "rgba(255,255,255,0.4)",
           }}

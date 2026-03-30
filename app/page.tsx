@@ -75,32 +75,38 @@ export default async function HomePage() {
         <LandingPipelineSneakPeek />
 
         {/* ══ S2.5: SOLDOUT SIGNAL ════════════════════════════════════ */}
-        <section className="bg-[#0A0908] py-32 px-6 text-center overflow-hidden">
-          <div className="max-w-4xl mx-auto">
-            <p className="text-[10px] font-black uppercase tracking-[0.35em] text-[#16A34A] mb-6">
-              EVERY WEEK
-            </p>
-            <h2
-              className="font-black text-white text-center mb-12"
-              style={{
-                fontSize: "clamp(1.8rem, 4vw, 3.5rem)",
-                letterSpacing: "-0.04em",
-                lineHeight: 1.05,
-              }}
-            >
-              The same question —<br />
-              <span className="text-[#16A34A]">&ldquo;What&apos;s next?&rdquo;</span><br />
-              We answer it before it sells out.
-            </h2>
-            <div className="relative max-w-xs mx-auto rounded-2xl overflow-hidden shadow-[0_0_40px_rgba(22,163,74,0.15)]">
-              <video
-                autoPlay
-                muted
-                loop
-                playsInline
-                className="w-full rounded-2xl"
-                src="/videos/soldout.mp4"
-              />
+        <section className="bg-[#0A0908] py-32 px-6 overflow-hidden">
+          <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center gap-12 md:gap-20">
+            {/* 좌측: 카피 */}
+            <div className="w-full md:w-1/2 flex flex-col items-start">
+              <p className="text-[10px] font-black uppercase tracking-[0.35em] text-[#16A34A] mb-6">
+                EVERY WEEK, THE SAME QUESTION
+              </p>
+              <h2
+                className="font-black text-white mb-0"
+                style={{
+                  fontSize: "clamp(1.8rem, 4vw, 3.5rem)",
+                  letterSpacing: "-0.04em",
+                  lineHeight: 1.05,
+                }}
+              >
+                <span className="text-[#16A34A]">&ldquo;What&apos;s next?&rdquo;</span><br />
+                We answer it<br />
+                before it sells out.
+              </h2>
+            </div>
+            {/* 우측: 영상 */}
+            <div className="w-full md:w-1/2 flex justify-center md:justify-end">
+              <div className="relative w-full max-w-xs rounded-2xl overflow-hidden shadow-[0_0_40px_rgba(22,163,74,0.15)]">
+                <video
+                  autoPlay
+                  muted
+                  loop
+                  playsInline
+                  className="w-full rounded-2xl"
+                  src="/videos/soldout.mp4"
+                />
+              </div>
             </div>
           </div>
         </section>
@@ -580,9 +586,6 @@ export default async function HomePage() {
           </div>
         </section>
 
-        {/* ══ S2: THE INTELLIGENCE GAP — Dynamite Fuse + Bottom Copy ═══════════════════ */}
-        <DynamiteFuseSection />
-
         {/* ══ S8b: INSTITUTIONAL POLICY (Alpha Moat) — synced from pricing page ═══════════════ */}
         <section className="bg-[#1A1916] py-20 px-6">
           <div className="max-w-3xl mx-auto border border-white/10 rounded-2xl p-10">
@@ -616,6 +619,9 @@ export default async function HomePage() {
             )}
           </div>
         </section>
+
+        {/* ══ S2: THE INTELLIGENCE GAP — Dynamite Fuse + Bottom Copy ═══════════════════ */}
+        <DynamiteFuseSection />
 
         {/* ══ S9: TRUST + FOUNDER + FAQ + READY TO SCOUT (single bg #F8F7F4, no gap) ═══════════════════════════ */}
         <section className="bg-[#F8F7F4] pt-24 pb-24 px-6">
