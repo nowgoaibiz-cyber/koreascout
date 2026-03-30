@@ -82,7 +82,7 @@ export default async function HomePage() {
               <h2
                 className="font-black text-white mb-0"
                 style={{
-                  fontSize: "clamp(1.8rem, 4vw, 3.5rem)",
+                  fontSize: "clamp(1.4rem, 2.8vw, 2.6rem)",
                   letterSpacing: "-0.04em",
                   lineHeight: 1.05,
                 }}

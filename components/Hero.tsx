@@ -59,20 +59,6 @@ export default function Hero() {
         className="relative text-center px-6 max-w-7xl mx-auto flex flex-col items-center justify-center"
         style={{ zIndex: 20, paddingBottom: "clamp(60px, 10vh, 120px)" }}
       >
-        <p
-          className="font-bold uppercase mb-4"
-          style={{
-            fontSize: "clamp(8px, 1.5vw, 10px)",
-            letterSpacing: "0.2em",
-            textAlign: "center",
-            whiteSpace: "normal",
-            overflowWrap: "break-word",
-            padding: "0 16px",
-            color: "rgba(255,255,255,0.4)",
-          }}
-        >
-          Weekly Korean Product Intelligence for Global Sellers.
-        </p>
         <h1
           className="font-black text-[#FFFFFF]"
           style={{
