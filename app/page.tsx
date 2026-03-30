@@ -75,8 +75,8 @@ export default async function HomePage() {
         <LandingPipelineSneakPeek />
 
         {/* ══ S2.5: SOLDOUT SIGNAL ════════════════════════════════════ */}
-        <section className="bg-[#0A0908] py-32 px-6 overflow-hidden">
-          <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center gap-12 md:gap-20">
+        <section className="bg-[#0A0908] py-20 md:py-24 px-4 md:px-6 overflow-hidden">
+          <div className="max-w-6xl mx-auto flex flex-col md:flex-row gap-12 md:gap-16 lg:gap-20 items-center">
             {/* 좌측: 카피 */}
             <div className="w-full md:w-1/2 flex flex-col items-start">
               <h2
@@ -87,14 +87,13 @@ export default async function HomePage() {
                   lineHeight: 1.05,
                 }}
               >
-                Every week, the same question —<br />
                 <span className="text-[#16A34A]">&ldquo;What&apos;s next?&rdquo;</span><br />
                 We answer it before it sells out.
               </h2>
             </div>
             {/* 우측: 영상 */}
-            <div className="w-full md:w-1/2 flex justify-center md:justify-end">
-              <div className="relative w-full max-w-[480px] rounded-2xl overflow-hidden shadow-[0_0_40px_rgba(22,163,74,0.15)]">
+            <div className="w-full md:w-1/2 flex justify-center md:justify-start">
+              <div className="w-full max-w-[480px] rounded-2xl overflow-hidden shadow-[0_0_40px_rgba(22,163,74,0.15)]">
                 <video
                   autoPlay
                   muted
