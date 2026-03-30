@@ -29,7 +29,7 @@ export default function HeroCTA() {
         type="button"
         onClick={handleViewReport}
         disabled={loading}
-        className="w-full md:w-64 h-14 rounded-xl flex items-center justify-center gap-2 font-black text-[15px] tracking-wide text-white border border-transparent transition-all duration-200 outline-none disabled:cursor-wait"
+        className="w-full md:w-64 h-14 px-6 rounded-xl flex items-center justify-center gap-2 font-black text-[15px] tracking-wide text-white border border-transparent transition-all duration-200 outline-none disabled:cursor-wait"
         style={{ background: "#16A34A" }}
         onMouseEnter={(e) => {
           if (!loading) {
