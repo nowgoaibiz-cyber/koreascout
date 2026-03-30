@@ -16,7 +16,10 @@ export default function LandingPipelineSneakPeek() {
           <p className="text-sm font-bold tracking-[0.2em] uppercase text-accent mb-4">
             WHAT WE DO
           </p>
-          <h2 className="text-2xl md:text-3xl font-semibold text-ink-900 leading-[1.15] tracking-tight">
+          <h2
+            className="font-semibold text-ink-900 leading-[1.15] tracking-tight"
+            style={{ fontSize: "clamp(1.5rem, 2.5vw, 2.25rem)" }}
+          >
             We Scout What's Hot in Korea.<br />You Lead the Global Trend.
           </h2>
         </div>
