@@ -16,8 +16,8 @@ export default function LandingPipelineSneakPeek() {
           <p className="text-sm font-bold tracking-[0.2em] uppercase text-accent mb-4">
             WHAT WE DO
           </p>
-          <h2 className="text-4xl md:text-5xl font-semibold text-ink-900 leading-[1.2] tracking-tight max-w-xl">
-            The exclusive pipeline bridging Korean trends to your global scale.
+          <h2 className="text-3xl md:text-4xl font-semibold text-ink-900 leading-[1.2] tracking-tight max-w-xl">
+            We Scout What's Hot in Korea. You Lead the Global Trend.
           </h2>
         </div>
 

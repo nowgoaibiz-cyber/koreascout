@@ -71,7 +71,7 @@ export default function Hero() {
             color: "rgba(255,255,255,0.4)",
           }}
         >
-          The K-Beauty Trend Pipeline.
+          Weekly Korean Product Intelligence for Global Sellers.
         </p>
         <h1
           className="font-black text-[#FFFFFF]"
@@ -85,9 +85,9 @@ export default function Hero() {
             padding: "0 20px",
           }}
         >
-          Before Your Feed
+          The K-Beauty Trend Pipeline.
           <br />
-          Knows It Exists.
+          Before Your Feed Knows It Exists.
         </h1>
 
         <div className="mt-20 flex flex-col items-center justify-center">
