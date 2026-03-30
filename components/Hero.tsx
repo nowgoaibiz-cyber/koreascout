@@ -77,17 +77,16 @@ export default function Hero() {
           className="font-black text-[#FFFFFF]"
           style={{
             margin: 0,
-            fontSize: "clamp(1.8rem, 4.5vw, 4rem)",
+            fontSize: "clamp(1.4rem, 3.2vw, 3.5rem)",
             fontWeight: 900,
             letterSpacing: "-0.04em",
             textAlign: "center",
             lineHeight: 1.1,
             padding: "0 20px",
+            whiteSpace: "nowrap",
           }}
         >
-          The K-Beauty Trend Pipeline.
-          <br />
-          Before Your Feed Knows It Exists.
+          The K-Beauty Trend Pipeline.<br />Before Your Feed Knows It Exists.
         </h1>
 
         <div className="mt-20 flex flex-col items-center justify-center">
