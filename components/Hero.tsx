@@ -62,10 +62,11 @@ export default function Hero() {
         <p
           className="font-bold uppercase mb-4"
           style={{
-            fontSize: "clamp(9px, 2vw, 11px)",
+            fontSize: "clamp(8px, 1.5vw, 10px)",
             letterSpacing: "0.2em",
             textAlign: "center",
-            whiteSpace: "nowrap",
+            whiteSpace: "normal",
+            overflowWrap: "break-word",
             padding: "0 16px",
             color: "rgba(255,255,255,0.4)",
           }}

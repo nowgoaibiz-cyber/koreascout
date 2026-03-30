@@ -79,9 +79,6 @@ export default async function HomePage() {
           <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center gap-12 md:gap-20">
             {/* 좌측: 카피 */}
             <div className="w-full md:w-1/2 flex flex-col items-start">
-              <p className="text-[10px] font-black uppercase tracking-[0.35em] text-[#16A34A] mb-6">
-                EVERY WEEK, THE SAME QUESTION
-              </p>
               <h2
                 className="font-black text-white mb-0"
                 style={{
@@ -90,14 +87,14 @@ export default async function HomePage() {
                   lineHeight: 1.05,
                 }}
               >
+                Every week, the same question —<br />
                 <span className="text-[#16A34A]">&ldquo;What&apos;s next?&rdquo;</span><br />
-                We answer it<br />
-                before it sells out.
+                We answer it before it sells out.
               </h2>
             </div>
             {/* 우측: 영상 */}
             <div className="w-full md:w-1/2 flex justify-center md:justify-end">
-              <div className="relative w-full max-w-xs rounded-2xl overflow-hidden shadow-[0_0_40px_rgba(22,163,74,0.15)]">
+              <div className="relative w-full max-w-[480px] rounded-2xl overflow-hidden shadow-[0_0_40px_rgba(22,163,74,0.15)]">
                 <video
                   autoPlay
                   muted

@@ -16,7 +16,7 @@ export default function LandingPipelineSneakPeek() {
           <p className="text-sm font-bold tracking-[0.2em] uppercase text-accent mb-4">
             WHAT WE DO
           </p>
-          <h2 className="text-3xl md:text-4xl font-semibold text-ink-900 leading-[1.2] tracking-tight">
+          <h2 className="text-3xl md:text-5xl font-semibold text-ink-900 leading-[1.2] tracking-tight">
             We Scout What's Hot in Korea.<br />You Lead the Global Trend.
           </h2>
         </div>
