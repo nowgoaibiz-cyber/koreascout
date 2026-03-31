@@ -201,7 +201,7 @@ html {
 .s6-pill-cloud {
   position: relative;
   width: 200px;
-  height: 180px;
+  height: 200px;
 }
 .s6-pill {
   position: absolute;
@@ -358,7 +358,7 @@ html {
   }
   .s6-pill-cloud {
     width: 100%;
-    height: 160px;
+    height: 200px;
   }
 }
 

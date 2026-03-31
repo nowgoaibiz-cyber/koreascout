@@ -214,7 +214,7 @@ export default async function HomePage() {
                             : { background: "rgb(248 247 244 / 0.08)", color: "rgba(248,247,244,0.5)" }
                         }
                       >
-                        {card.alpha ? "🔒" : "🟢"} {card.badge}
+                        {card.badge}
                       </span>
                       <p className="text-[20px] font-bold text-white leading-tight pr-2">&ldquo;{card.q}&rdquo;</p>
                     </div>
