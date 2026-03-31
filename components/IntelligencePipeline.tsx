@@ -9,7 +9,7 @@ const PILLS = [
   { label: "Amazon",        top: "148px", left: "96px",  rot: "0.4deg",  delay: "1.5s", dur: "3.7s" },
 ] as const;
 
-const NOISE_ITEMS = ["Fake Viral (Low Engagement)", "Hazmat / Battery", "HS Code Blocked", "Margin Multiplier < 2.0×"] as const;
+const NOISE_ITEMS = ["Junk Trends", "Fake Viral (Low Engagement)", "Hazmat / Battery", "Margin Multiplier < 2.0×"] as const;
 
 const NOISE_LINES = ["Only real demand. Only real margin."] as const;
 
@@ -101,23 +101,14 @@ export default function IntelligencePipeline() {
         <div className="s6-step">
           <span className="s6-label">03. The Output</span>
           <div className="s6-output-num">10+</div>
-          <p className="s6-output-desc" style={{ marginBottom: "10px" }}>
-            Viral K-Trends.
-            <br />
-            Every week.
-          </p>
-          <div className="s6-badge" style={{ marginBottom: "10px" }}>
-            <div className="s6-badge-dot" />
-            <span>Standard — Ready to scout</span>
-          </div>
-          <p className="s6-output-desc" style={{ marginBottom: "10px" }}>
-            Export-ready winners.
+          <p className="s6-output-desc">
+            Verified winners.
             <br />
             Every week.
           </p>
           <div className="s6-badge">
             <div className="s6-badge-dot" />
-            <span>Alpha — Ready to source</span>
+            <span>Ready to scout & source</span>
           </div>
         </div>
       </div>

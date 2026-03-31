@@ -176,9 +176,9 @@ html {
   flex: 0 0 auto;
   width: 40px;
   display: flex;
-  align-items: flex-start;
-  justify-content: flex-start;
-  padding-top: 2px;
+  align-items: center;
+  justify-content: center;
+  padding-top: 0;
   color: rgba(10,9,8,0.18);
   font-size: 1.2rem;
   font-weight: 300;
