@@ -110,7 +110,134 @@ export default async function HomePage() {
         {/* ══ S4: TIME WIDGET ═══════════════════════════ */}
         <LandingTimeWidget />
 
-        {/* ══ S5: INTELLIGENCE ENGINE (섹션4 최종.png — 100% clone) ════════════════════════════ */}
+        {/* ══ S6: LAUNCH KIT — 섹션5 최종.png 100% 트윈 + Premium Interaction ═══════════════════ */}
+        <section className="bg-[#0A0908] py-32 px-6">
+          <div className="max-w-6xl mx-auto">
+            <p className="text-[10px] font-black uppercase tracking-[0.35em] text-white/50 text-center mb-4">
+              LAUNCH KIT
+            </p>
+            <h2
+              className="font-black text-center text-white mb-5"
+              style={{
+                fontSize: "clamp(2rem, 4.5vw, 3.5rem)",
+                fontWeight: 900,
+                letterSpacing: "-0.04em",
+                lineHeight: 1.05,
+                textWrap: "balance",
+              } as React.CSSProperties}
+            >
+              We bridge the Korea Gap.
+            </h2>
+            <div className="text-center mb-16 space-y-1">
+              <p className="text-base font-normal">
+                <span className="text-white/50">Language barrier?</span>{" "}
+                <span className="text-[#16A34A]">Eliminated.</span>
+              </p>
+              <p className="text-base font-normal">
+                <span className="text-white/50">Logistics fear?</span>{" "}
+                <span className="text-[#16A34A]">Pre-answered.</span>
+              </p>
+              <p className="text-base font-normal">
+                <span className="text-white/50">Sourcing legwork?</span>{" "}
+                <span className="text-[#16A34A]">Already handled.</span>
+              </p>
+              <p className="text-base font-normal text-white">You focus on scaling.</p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              {[
+                {
+                  alpha: false,
+                  q: "Should I source this?",
+                  items: [
+                    "Gap Index & Opportunity Analysis",
+                    "Global Market Saturation (6-Country Check)",
+                    "Platform Breakdown (YT/TT/IG/Reddit)",
+                    "Profit Multiplier & Price Benchmark",
+                    "SEO & Viral Keyword Matrix",
+                  ],
+                  cta: "Answers the WHY.",
+                  time: "SAVES 14 HRS",
+                },
+                {
+                  alpha: true,
+                  q: "How do I contact them?",
+                  items: [
+                    "Verified Factory Cost ($) & MOQ",
+                    "Direct Supplier Contact Intel",
+                    "Factory Sample Policy & Availability",
+                    "Production & Lead Time Data",
+                  ],
+                  cta: "Verified Korea Intel. Just hit send.",
+                  time: "SAVES 21 HRS",
+                },
+                {
+                  alpha: true,
+                  q: "Will customs flag this?",
+                  items: [
+                    "HS Code Guidance (Standard 6-digit)",
+                    "Compliance Requirement Analysis (MoCRA/CPNP)",
+                    "Hazmat & Shipping Specifications",
+                    "Technical Product Data Framework",
+                  ],
+                  cta: "We give your broker a 90% head start.",
+                  time: "SAVES 7 HRS",
+                },
+                {
+                  alpha: true,
+                  q: "How do I market this?",
+                  items: [
+                    "4K On-Site Sourcing Footage (Raw)",
+                    "Viral Video References",
+                  ],
+                  cta: "Day 1 ready to launch.",
+                  time: "SAVES 16 HRS",
+                },
+              ].map((card) => (
+                <div
+                  key={card.q}
+                  className={`group rounded-2xl p-8 bg-[#1A1916] flex flex-col border border-white/10 hover:scale-[1.02] origin-center ${card.alpha ? "border-l-2 border-l-[#16A34A]" : ""}`}
+                  style={{ transition: "transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1)" } as React.CSSProperties}
+                >
+                  <div className="flex items-start justify-between gap-4 mb-5">
+                    <p className="text-[24px] font-bold text-white leading-tight pr-2">&ldquo;{card.q}&rdquo;</p>
+                    <div className="relative w-5 h-5 shrink-0 mt-1" aria-hidden>
+                      <LockIcon className="absolute inset-0 w-5 h-5 text-[#16A34A] transition-opacity duration-500 group-hover:opacity-0" />
+                      <UnlockIcon className="absolute inset-0 w-5 h-5 text-[#16A34A] opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+                    </div>
+                  </div>
+                  <ul className="space-y-2 flex-1">
+                    {card.items.map((item) => (
+                      <li
+                        key={item}
+                        className="flex items-center gap-2 text-sm font-medium text-white/45 transition-colors duration-500 group-hover:text-white"
+                        style={{ transitionTimingFunction: "cubic-bezier(0.2, 0.8, 0.2, 1)" }}
+                      >
+                        <span className="text-[#16A34A]/70 shrink-0 group-hover:text-[#16A34A] transition-colors duration-500">–</span>
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
+                  <div className="mt-6 pt-4 border-t border-white/10 flex items-center justify-between">
+                    <p className="text-[14px] font-bold text-white">{card.cta}</p>
+                    <p className="text-[13px] font-black text-[#16A34A] uppercase tracking-[0.2em]">
+                      ⏱ {card.time}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <p className="mt-10 text-center text-[19px] font-normal text-[#16A34A]">
+              58 hours of manual research. Delivered in 1 second.
+            </p>
+          </div>
+        </section>
+
+        {/* ══ S6: THE INTELLIGENCE PIPELINE (Scout Engine) ═══════════════════════════════ */}
+        <IntelligencePipeline />
+
+        {/* ══ S7: INTELLIGENCE ENGINE (섹션4 최종.png — 100% clone) ════════════════════════════ */}
         <section className="bg-[#0A0908] py-32 px-6">
           <div className="max-w-6xl mx-auto">
             <h2
@@ -274,133 +401,6 @@ export default async function HomePage() {
             </div>
           </div>
         </section>
-
-        {/* ══ S6: LAUNCH KIT — 섹션5 최종.png 100% 트윈 + Premium Interaction ═══════════════════ */}
-        <section className="bg-[#0A0908] py-32 px-6">
-          <div className="max-w-6xl mx-auto">
-            <p className="text-[10px] font-black uppercase tracking-[0.35em] text-white/50 text-center mb-4">
-              LAUNCH KIT
-            </p>
-            <h2
-              className="font-black text-center text-white mb-5"
-              style={{
-                fontSize: "clamp(2rem, 4.5vw, 3.5rem)",
-                fontWeight: 900,
-                letterSpacing: "-0.04em",
-                lineHeight: 1.05,
-                textWrap: "balance",
-              } as React.CSSProperties}
-            >
-              We bridge the Korea Gap.
-            </h2>
-            <div className="text-center mb-16 space-y-1">
-              <p className="text-base font-normal">
-                <span className="text-white/50">Language barrier?</span>{" "}
-                <span className="text-[#16A34A]">Eliminated.</span>
-              </p>
-              <p className="text-base font-normal">
-                <span className="text-white/50">Logistics fear?</span>{" "}
-                <span className="text-[#16A34A]">Pre-answered.</span>
-              </p>
-              <p className="text-base font-normal">
-                <span className="text-white/50">Sourcing legwork?</span>{" "}
-                <span className="text-[#16A34A]">Already handled.</span>
-              </p>
-              <p className="text-base font-normal text-white">You focus on scaling.</p>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              {[
-                {
-                  alpha: false,
-                  q: "Should I source this?",
-                  items: [
-                    "Gap Index & Opportunity Analysis",
-                    "Global Market Saturation (6-Country Check)",
-                    "Platform Breakdown (YT/TT/IG/Reddit)",
-                    "Profit Multiplier & Price Benchmark",
-                    "SEO & Viral Keyword Matrix",
-                  ],
-                  cta: "Answers the WHY.",
-                  time: "SAVES 14 HRS",
-                },
-                {
-                  alpha: true,
-                  q: "How do I contact them?",
-                  items: [
-                    "Verified Factory Cost ($) & MOQ",
-                    "Direct Supplier Contact Intel",
-                    "Factory Sample Policy & Availability",
-                    "Production & Lead Time Data",
-                  ],
-                  cta: "Verified Korea Intel. Just hit send.",
-                  time: "SAVES 21 HRS",
-                },
-                {
-                  alpha: true,
-                  q: "Will customs flag this?",
-                  items: [
-                    "HS Code Guidance (Standard 6-digit)",
-                    "Compliance Requirement Analysis (MoCRA/CPNP)",
-                    "Hazmat & Shipping Specifications",
-                    "Technical Product Data Framework",
-                  ],
-                  cta: "We give your broker a 90% head start.",
-                  time: "SAVES 7 HRS",
-                },
-                {
-                  alpha: true,
-                  q: "How do I market this?",
-                  items: [
-                    "4K On-Site Sourcing Footage (Raw)",
-                    "Viral Video References",
-                  ],
-                  cta: "Day 1 ready to launch.",
-                  time: "SAVES 16 HRS",
-                },
-              ].map((card) => (
-                <div
-                  key={card.q}
-                  className={`group rounded-2xl p-8 bg-[#1A1916] flex flex-col border border-white/10 hover:scale-[1.02] origin-center ${card.alpha ? "border-l-2 border-l-[#16A34A]" : ""}`}
-                  style={{ transition: "transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1)" } as React.CSSProperties}
-                >
-                  <div className="flex items-start justify-between gap-4 mb-5">
-                    <p className="text-[24px] font-bold text-white leading-tight pr-2">&ldquo;{card.q}&rdquo;</p>
-                    <div className="relative w-5 h-5 shrink-0 mt-1" aria-hidden>
-                      <LockIcon className="absolute inset-0 w-5 h-5 text-[#16A34A] transition-opacity duration-500 group-hover:opacity-0" />
-                      <UnlockIcon className="absolute inset-0 w-5 h-5 text-[#16A34A] opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
-                    </div>
-                  </div>
-                  <ul className="space-y-2 flex-1">
-                    {card.items.map((item) => (
-                      <li
-                        key={item}
-                        className="flex items-center gap-2 text-sm font-medium text-white/45 transition-colors duration-500 group-hover:text-white"
-                        style={{ transitionTimingFunction: "cubic-bezier(0.2, 0.8, 0.2, 1)" }}
-                      >
-                        <span className="text-[#16A34A]/70 shrink-0 group-hover:text-[#16A34A] transition-colors duration-500">–</span>
-                        {item}
-                      </li>
-                    ))}
-                  </ul>
-                  <div className="mt-6 pt-4 border-t border-white/10 flex items-center justify-between">
-                    <p className="text-[14px] font-bold text-white">{card.cta}</p>
-                    <p className="text-[13px] font-black text-[#16A34A] uppercase tracking-[0.2em]">
-                      ⏱ {card.time}
-                    </p>
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            <p className="mt-10 text-center text-[19px] font-normal text-[#16A34A]">
-              58 hours of manual research. Delivered in 1 second.
-            </p>
-          </div>
-        </section>
-
-        {/* ══ S6: THE INTELLIGENCE PIPELINE (Scout Engine) ═══════════════════════════════ */}
-        <IntelligencePipeline />
 
         {/* ══ S8: PRICING (3-tier from pricing page, v5 copy) ═══════════════════════════════════ */}
         <section id="pricing-cards" className="bg-white py-24 px-6">

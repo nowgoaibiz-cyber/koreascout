@@ -5,10 +5,10 @@ import { useState } from "react";
 import { PRICING } from "@/src/config/pricing";
 
 const CREATOR_ROWS = [
-  { label: "Scroll KR TikTok / IG / YT for trending products", hrs: 8 },
-  { label: "Track Korean social buzz & reviews manually", hrs: 8 },
-  { label: "Research viral hooks & content angles", hrs: 6 },
-  { label: "SEO & keyword research", hrs: 6 },
+  { label: "Scroll KR TikTok & IG for trends", hrs: 8 },
+  { label: "Decode Korean buzz & reviews", hrs: 8 },
+  { label: "Guess the next global viral hit", hrs: 6 },
+  { label: "Hunt SEO keywords & viral hashtags", hrs: 6 },
 ];
 const CREATOR_TOTAL = CREATOR_ROWS.reduce((s, r) => s + r.hrs, 0); // 28
 
@@ -100,9 +100,9 @@ export default function LandingTimeWidget() {
             <div className="space-y-4">
               {rows.map((row) => (
                 <div key={row.label}>
-                  <div className="flex justify-between mb-1">
-                    <span className="text-sm font-medium text-[#6B6860]">{row.label}</span>
-                    <span className="text-base font-bold text-[#1A1916]">{row.hrs} hrs</span>
+                  <div className="flex justify-between items-start mb-1">
+                    <span className="text-sm font-medium text-[#6B6860] pr-2">{row.label}</span>
+                    <span className="text-base font-bold text-[#1A1916] shrink-0">{row.hrs} hrs</span>
                   </div>
                   <div className="h-1.5 bg-[#F8F7F4] rounded-full overflow-hidden">
                     {/* red-400/60: IRON RULE 예외 허용 구역 */}
@@ -139,9 +139,9 @@ export default function LandingTimeWidget() {
             <div className="space-y-4">
               {rows.map((row) => (
                 <div key={row.label}>
-                  <div className="flex justify-between mb-1">
-                    <span className="text-sm font-medium text-[#6B6860]">{row.label}</span>
-                    <span className="text-sm font-bold text-[#16A34A]">✓ included</span>
+                  <div className="flex justify-between items-start mb-1">
+                    <span className="text-sm font-medium text-[#6B6860] pr-2">{row.label}</span>
+                    <span className="text-sm font-bold text-[#16A34A] shrink-0">✓ included</span>
                   </div>
                   <div className="h-1.5 bg-white rounded-full overflow-hidden">
                     <div
