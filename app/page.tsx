@@ -134,61 +134,66 @@ export default async function HomePage() {
                 <span className="text-[#16A34A]">Eliminated.</span>
               </p>
               <p className="text-base font-normal">
-                <span className="text-white/50">Logistics fear?</span>{" "}
-                <span className="text-[#16A34A]">Pre-answered.</span>
+                <span className="text-white/50">Next viral trend?</span>{" "}
+                <span className="text-[#16A34A]">Pre-scouted.</span>
               </p>
               <p className="text-base font-normal">
-                <span className="text-white/50">Sourcing legwork?</span>{" "}
-                <span className="text-[#16A34A]">Already handled.</span>
+                <span className="text-white/50">Sourcing & logistics?</span>{" "}
+                <span className="text-[#16A34A]">Handled.</span>
               </p>
-              <p className="text-base font-normal text-white">You focus on scaling.</p>
+              <p className="text-base font-normal text-white">You just focus on growing.</p>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               {[
                 {
                   alpha: false,
-                  q: "Should I source this?",
+                  badge: "Standard & Alpha",
+                  q: "Is this the next viral hit?",
                   items: [
-                    "Gap Index & Opportunity Analysis",
-                    "Global Market Saturation (6-Country Check)",
-                    "Platform Breakdown (YT/TT/IG/Reddit)",
-                    "Profit Multiplier & Price Benchmark",
-                    "SEO & Viral Keyword Matrix",
+                    { text: "Gap Index & Opportunity Analysis", lock: false },
+                    { text: "Cross-Platform Vitality (TikTok · IG · YT)", lock: false },
+                    { text: "Social Buzz & Sentiment Analysis", lock: false },
+                    { text: "Margin Potential Multiplier", lock: false },
                   ],
                   cta: "Answers the WHY.",
                   time: "SAVES 14 HRS",
                 },
                 {
                   alpha: true,
-                  q: "How do I contact them?",
+                  badge: "Alpha Exclusive",
+                  q: "How do I buy it wholesale?",
                   items: [
-                    "Verified Factory Cost ($) & MOQ",
-                    "Direct Supplier Contact Intel",
-                    "Factory Sample Policy & Availability",
-                    "Production & Lead Time Data",
+                    { text: "Verified Factory Cost ($) & MOQ", lock: false },
+                    { text: "Direct Supplier Contact Intel", lock: false },
+                    { text: "Factory Sample Policy & Availability", lock: false },
+                    { text: "Production & Lead Time Data", lock: false },
                   ],
                   cta: "Verified Korea Intel. Just hit send.",
                   time: "SAVES 21 HRS",
                 },
                 {
                   alpha: true,
+                  badge: "Alpha Exclusive",
                   q: "Will customs flag this?",
                   items: [
-                    "HS Code Guidance (Standard 6-digit)",
-                    "Compliance Requirement Analysis (MoCRA/CPNP)",
-                    "Hazmat & Shipping Specifications",
-                    "Technical Product Data Framework",
+                    { text: "HS Code Guidance (Standard 6-digit)", lock: false },
+                    { text: "Compliance Requirement Analysis (MoCRA/CPNP)", lock: false },
+                    { text: "Hazmat & Shipping Specifications", lock: false },
+                    { text: "Technical Product Data Framework", lock: false },
                   ],
                   cta: "We give your broker a 90% head start.",
                   time: "SAVES 7 HRS",
                 },
                 {
-                  alpha: true,
-                  q: "How do I market this?",
+                  alpha: false,
+                  badge: "Standard & Alpha",
+                  q: "How do I make it go viral?",
                   items: [
-                    "4K On-Site Sourcing Footage (Raw)",
-                    "Viral Video References",
+                    { text: "Viral Hashtag Strategy", lock: false },
+                    { text: "Global SEO Actionable Keywords", lock: false },
+                    { text: "Rising Korean Keywords (KR)", lock: false },
+                    { text: "4K On-Site Sourcing Footage (Raw)", lock: true },
                   ],
                   cta: "Day 1 ready to launch.",
                   time: "SAVES 16 HRS",
@@ -199,8 +204,20 @@ export default async function HomePage() {
                   className={`group rounded-2xl p-8 bg-[#1A1916] flex flex-col border border-white/10 hover:scale-[1.02] origin-center ${card.alpha ? "border-l-2 border-l-[#16A34A]" : ""}`}
                   style={{ transition: "transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1)" } as React.CSSProperties}
                 >
-                  <div className="flex items-start justify-between gap-4 mb-5">
-                    <p className="text-[24px] font-bold text-white leading-tight pr-2">&ldquo;{card.q}&rdquo;</p>
+                  <div className="flex items-start justify-between gap-4 mb-3">
+                    <div className="flex flex-col gap-2">
+                      <span
+                        className="inline-flex items-center gap-1 text-[9px] font-black uppercase tracking-[0.2em] px-2.5 py-1 rounded-full w-fit"
+                        style={
+                          card.alpha
+                            ? { background: "rgb(22 163 74 / 0.12)", color: "#16A34A" }
+                            : { background: "rgb(248 247 244 / 0.08)", color: "rgba(248,247,244,0.5)" }
+                        }
+                      >
+                        {card.alpha ? "🔒" : "🟢"} {card.badge}
+                      </span>
+                      <p className="text-[20px] font-bold text-white leading-tight pr-2">&ldquo;{card.q}&rdquo;</p>
+                    </div>
                     <div className="relative w-5 h-5 shrink-0 mt-1" aria-hidden>
                       <LockIcon className="absolute inset-0 w-5 h-5 text-[#16A34A] transition-opacity duration-500 group-hover:opacity-0" />
                       <UnlockIcon className="absolute inset-0 w-5 h-5 text-[#16A34A] opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
@@ -209,12 +226,15 @@ export default async function HomePage() {
                   <ul className="space-y-2 flex-1">
                     {card.items.map((item) => (
                       <li
-                        key={item}
+                        key={item.text}
                         className="flex items-center gap-2 text-sm font-medium text-white/45 transition-colors duration-500 group-hover:text-white"
                         style={{ transitionTimingFunction: "cubic-bezier(0.2, 0.8, 0.2, 1)" }}
                       >
                         <span className="text-[#16A34A]/70 shrink-0 group-hover:text-[#16A34A] transition-colors duration-500">–</span>
-                        {item}
+                        {item.text}
+                        {item.lock && (
+                          <LockIcon className="w-3 h-3 text-[#16A34A]/60 shrink-0 ml-auto" />
+                        )}
                       </li>
                     ))}
                   </ul>
