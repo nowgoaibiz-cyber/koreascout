@@ -1,7 +1,16 @@
-// Server Component — "use client" 없음
+"use client";
 // red-400/60: IRON RULE 예외 — 수동 리서치 bar 전용 허용
 
+import { useState } from "react";
 import { PRICING } from "@/src/config/pricing";
+
+const CREATOR_ROWS = [
+  { label: "Scroll KR TikTok / IG / YT for trending products", hrs: 8 },
+  { label: "Track Korean social buzz & reviews manually", hrs: 8 },
+  { label: "Research viral hooks & content angles", hrs: 6 },
+  { label: "SEO & keyword research", hrs: 6 },
+];
+const CREATOR_TOTAL = CREATOR_ROWS.reduce((s, r) => s + r.hrs, 0); // 28
 
 const LEFT_ROWS = [
   { label: "Find trending product", hrs: 8 },
@@ -14,6 +23,21 @@ const LEFT_ROWS = [
 const TOTAL = LEFT_ROWS.reduce((s, r) => s + r.hrs, 0); // 58
 
 export default function LandingTimeWidget() {
+  type Mode = "creator" | "seller";
+  const [mode, setMode] = useState<Mode>("creator");
+
+  const isCreator = mode === "creator";
+  const rows = isCreator ? CREATOR_ROWS : LEFT_ROWS;
+  const total = isCreator ? CREATOR_TOTAL : TOTAL;
+  const rightLabel = isCreator ? "KoreaScout Standard" : "KoreaScout Alpha";
+  const rightPrice = isCreator
+    ? `${PRICING.CURRENCY}${PRICING.STANDARD.monthly}/month`
+    : `${PRICING.CURRENCY}${PRICING.ALPHA.monthly}/month`;
+  const bottomHrs = isCreator ? "28 hours" : "58 hours";
+  const bottomTagline = isCreator
+    ? " Stop searching, start filming."
+    : " The math is already done.";
+
   return (
     <section className="bg-[#F8F7F4] py-24 px-6">
       <div className="max-w-6xl mx-auto">
@@ -23,7 +47,7 @@ export default function LandingTimeWidget() {
           Time vs. Money
         </p>
         <h2
-          className="font-black text-center text-[#1A1916] mb-16"
+          className="font-black text-center text-[#1A1916] mb-8"
           style={{
             fontSize: "clamp(2rem, 4.5vw, 3.5rem)",
             fontWeight: 900,
@@ -36,6 +60,36 @@ export default function LandingTimeWidget() {
           <br />non-renewable resource.
         </h2>
 
+        {/* Toggle */}
+        <div className="flex justify-center mb-12">
+          <div
+            className="flex rounded-full p-1"
+            style={{ background: "#E8E6E1" }}
+          >
+            {(["creator", "seller"] as Mode[]).map((m) => (
+              <button
+                key={m}
+                onClick={() => setMode(m)}
+                className="px-6 py-2.5 rounded-full text-sm font-bold transition-all duration-200 whitespace-nowrap"
+                style={
+                  mode === m
+                    ? {
+                        background: "#0A0908",
+                        color: "#F8F7F4",
+                        boxShadow: "0 2px 8px 0 rgb(10 9 8 / 0.18)",
+                      }
+                    : {
+                        background: "transparent",
+                        color: "#9E9C98",
+                      }
+                }
+              >
+                {m === "creator" ? "🎬 I'm a Creator" : "🏪 I'm a Global Seller"}
+              </button>
+            ))}
+          </div>
+        </div>
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
           {/* LEFT — Manual (red-400/60 IRON RULE 예외 적용) */}
@@ -44,7 +98,7 @@ export default function LandingTimeWidget() {
             <p className="text-sm md:text-base font-bold uppercase tracking-widest
               text-[#9E9C98] mb-6 whitespace-nowrap">❌ Manual Research</p>
             <div className="space-y-4">
-              {LEFT_ROWS.map((row) => (
+              {rows.map((row) => (
                 <div key={row.label}>
                   <div className="flex justify-between mb-1">
                     <span className="text-sm font-medium text-[#6B6860]">{row.label}</span>
@@ -63,13 +117,13 @@ export default function LandingTimeWidget() {
             <div className="border-t border-[#E8E6E1] mt-6 pt-6 space-y-2">
               <div className="flex justify-between">
                 <span className="text-sm font-black text-[#1A1916]">Total / month</span>
-                <span className="text-sm font-black text-[#1A1916]">{TOTAL} hours</span>
+                <span className="text-sm font-black text-[#1A1916]">{total} hours</span>
               </div>
               {[40, 60, 80].map((rate) => (
                 <div key={rate} className="flex justify-between">
                   <span className="text-xs text-[#9E9C98]">@ ${rate}/hr</span>
                   <span className="text-xs font-bold text-[#6B6860]">
-                    ${(TOTAL * rate).toLocaleString()}/mo
+                    ${(total * rate).toLocaleString()}/mo
                   </span>
                 </div>
               ))}
@@ -81,9 +135,9 @@ export default function LandingTimeWidget() {
             border-l-[#16A34A] rounded-2xl p-8
             shadow-[0_4px_20px_0_rgb(22_163_74/0.08)]">
             <p className="text-sm md:text-base font-bold uppercase tracking-widest
-              text-[#16A34A] mb-6 whitespace-nowrap">✓ KoreaScout Alpha</p>
+              text-[#16A34A] mb-6 whitespace-nowrap">{`✓ ${rightLabel}`}</p>
             <div className="space-y-4">
-              {LEFT_ROWS.map((row) => (
+              {rows.map((row) => (
                 <div key={row.label}>
                   <div className="flex justify-between mb-1">
                     <span className="text-sm font-medium text-[#6B6860]">{row.label}</span>
@@ -105,12 +159,14 @@ export default function LandingTimeWidget() {
               </div>
               <div className="flex justify-between">
                 <span className="text-xs text-[#9E9C98]">Cost</span>
-                <span className="text-xs font-black text-[#1A1916]">{PRICING.CURRENCY}{PRICING.ALPHA.monthly}/month</span>
+                <span className="text-xs font-black text-[#1A1916]">{rightPrice}</span>
               </div>
-              <div className="flex justify-between">
-                <span className="text-xs text-[#9E9C98]">Your ROI</span>
-                <span className="text-xs font-black text-[#16A34A]">17× – 35×</span>
-              </div>
+              {!isCreator && (
+                <div className="flex justify-between">
+                  <span className="text-xs text-[#9E9C98]">Your ROI</span>
+                  <span className="text-xs font-black text-[#16A34A]">17× – 35×</span>
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -119,20 +175,22 @@ export default function LandingTimeWidget() {
           className="text-center mt-10 font-black text-[#1A1916] tracking-tighter"
           style={{ fontSize: "clamp(1.25rem,3vw,2rem)" }}
         >
-          58 hours vs. 60 seconds.
-          <span style={{ color: "#16A34A" }}> The math is already done.</span>
+          {bottomHrs} vs. 60 seconds.
+          <span style={{ color: "#16A34A" }}>{bottomTagline}</span>
         </p>
 
         {/* Disclaimer */}
-        <div className="mt-8 border border-[#E8E6E1] rounded-xl px-6 py-4 bg-white
-          max-w-3xl mx-auto">
-          <p className="text-xs font-medium text-[#9E9C98] leading-relaxed text-center">
-            † HS Code classifications, MOQ figures, and compliance data provided by
-            KoreaScout are pre-verified intelligence estimates designed to give your
-            customs broker a 90% head start — not a legal guarantee.
-            Always confirm with your licensed broker.
-          </p>
-        </div>
+        {!isCreator && (
+          <div className="mt-8 border border-[#E8E6E1] rounded-xl px-6 py-4 bg-white
+            max-w-3xl mx-auto">
+            <p className="text-xs font-medium text-[#9E9C98] leading-relaxed text-center">
+              † HS Code classifications, MOQ figures, and compliance data provided by
+              KoreaScout are pre-verified intelligence estimates designed to give your
+              customs broker a 90% head start — not a legal guarantee.
+              Always confirm with your licensed broker.
+            </p>
+          </div>
+        )}
       </div>
     </section>
   );
