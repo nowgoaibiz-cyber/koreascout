@@ -36,6 +36,25 @@ const FAQ_DATA: FaqCategory[] = [
     ],
   },
   {
+    id: "for-creators",
+    label: "For Creators",
+    subtitle: "I make content, not shipments. Is this for me?",
+    items: [
+      {
+        q: "I'm a content creator, not a seller. How does KoreaScout help me?",
+        a: "Standard gives you weekly verified K-Product trend intelligence — which items are exploding on Korean TikTok and Instagram right now, which hashtags are going viral, and what global audiences haven't seen yet. Instead of scrolling Korean social media for hours, you get the trend signal in 60 seconds. First to the trend = first to the views.",
+      },
+      {
+        q: "Will I get content ideas from KoreaScout, or just product data?",
+        a: "Standard delivers Cross-Platform Vitality scores (TikTok·IG·YT), Social Buzz analysis, Rising Korean Keywords, Viral Hashtag Strategy, and Global SEO Keywords — all based on real Korean demand data. You're not getting generic content ideas. You're getting data-backed proof that a specific product is about to trend globally.",
+      },
+      {
+        q: "I don't source products. Do I still need Alpha?",
+        a: "No. Standard at $79/mo is built exactly for creators. Alpha adds factory contacts, MOQ pricing, HS Codes, and logistics data — tools for sellers who want to source and ship. If your goal is to grow your channel, Standard is all you need.",
+      },
+    ],
+  },
+  {
     id: "sourcing-logistics",
     label: "Sourcing & Logistics",
     subtitle: "I don't speak Korean. How does this help me actually source?",
@@ -64,8 +83,8 @@ const FAQ_DATA: FaqCategory[] = [
         a: "This is a structural decision, not a marketing gimmick. Each Alpha product report includes direct factory contacts and MOQ pricing. If 10,000 sellers receive the same supplier contact simultaneously, the factory gets overwhelmed, MOQs increase, and pricing negotiation leverage disappears. 3,000 is the ceiling at which our intelligence retains its commercial value. When that ceiling is hit, Alpha closes. This protects your investment, not ours.",
       },
       {
-        q: "Why does Alpha cost $129/mo when Standard is $69/mo?",
-        a: "Standard gives you the full trend intelligence layer: Gap Index, Margin Multiplier, Platform Velocity, Growth Signal. That alone replaces 58 hours of manual sourcing research per month. Alpha adds the action layer: verified factory contacts, MOQ + EXW pricing, HS Code reference, compliance flags, 4K On-Site Sourcing Footage (Raw), SEO keywords, and a broker email draft. The $60 difference buys you a complete sourcing brief — ready to act on, not just read. If your average margin is $8/unit and you source 200 units from one Alpha-sourced product, that's $1,600 gross from a $129 subscription. The math works on the first product.",
+        q: "Why does Alpha cost $199/mo when Standard is $79/mo?",
+        a: "Standard gives you the full trend intelligence layer: Gap Index, Margin Multiplier, Platform Velocity, Growth Signal. That alone replaces 58 hours of manual sourcing research per month. Alpha adds the action layer: verified factory contacts, MOQ + EXW pricing, HS Code reference, compliance flags, 4K On-Site Sourcing Footage (Raw), SEO keywords, and a broker email draft. The $120 difference buys you a complete sourcing brief — ready to act on, not just read. If your average margin is $8/unit and you source 200 units from one Alpha-sourced product, that's $1,600 gross from a $199 subscription. The math works on the first product.",
       },
       {
         q: "Can I upgrade from Standard to Alpha later?",
@@ -88,7 +107,7 @@ const FAQ_DATA: FaqCategory[] = [
       },
       {
         q: "Why should I trust your data over doing my own research?",
-        a: "You can do your own research. It will take approximately 58 hours per month — cross-referencing Korean social platforms, translating product listings, verifying supplier reliability, checking HS codes, and estimating landed costs. KoreaScout compresses that into 60 seconds of reading. The question isn't whether you trust our data. It's whether your time is worth $69/month.",
+        a: "You can do your own research. It will take approximately 28–58 hours per month — cross-referencing Korean social platforms, translating product listings, verifying supplier reliability, checking HS codes, and estimating landed costs. KoreaScout compresses that into 60 seconds of reading. The question isn't whether you trust our data. It's whether your time is worth $79/month.",
       },
       {
         q: "What is your refund policy?",
