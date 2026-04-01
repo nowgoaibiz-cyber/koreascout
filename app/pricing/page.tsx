@@ -369,7 +369,7 @@ export default async function PricingPage() {
                 <p className="text-xs font-black uppercase tracking-[0.2em] text-[#9E9C98] text-center">
                   Standard
                 </p>
-                <p className="text-xs font-black uppercase tracking-[0.2em] text-[#16A34A] text-center pt-1">
+                <p className="text-xs font-black uppercase tracking-[0.2em] text-[#16A34A] text-center border-t-2 border-[#16A34A] pt-3">
                   Alpha
                 </p>
               </div>
