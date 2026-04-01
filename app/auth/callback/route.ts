@@ -7,14 +7,26 @@ export async function GET(request: Request) {
   const type = searchParams.get("type");
   const next = searchParams.get("next") ?? "/weekly";
 
+  // Force www domain to prevent cookie domain mismatch
+  const baseUrl = origin.includes("www.")
+    ? origin
+    : origin.replace("https://", "https://www.");
+
   if (code) {
     const supabase = await createClient();
-    await supabase.auth.exchangeCodeForSession(code);
+    const { error } = await supabase.auth.exchangeCodeForSession(code);
+
+    if (error) {
+      console.error("Auth Callback Error:", error.message);
+      return NextResponse.redirect(
+        `${baseUrl}/login?error=invalid_recovery_link`
+      );
+    }
   }
 
   if (type === "recovery") {
-    return NextResponse.redirect(`${origin}/reset-password`);
+    return NextResponse.redirect(`${baseUrl}/reset-password`);
   }
 
-  return NextResponse.redirect(`${origin}${next}`);
+  return NextResponse.redirect(`${baseUrl}${next}`);
 }

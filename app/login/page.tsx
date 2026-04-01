@@ -15,7 +15,11 @@ function LoginContent() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(
-    errorParam === "auth" ? "Authentication failed. Please try again." : null
+    errorParam === "auth"
+      ? "Authentication failed. Please try again."
+      : errorParam === "invalid_recovery_link"
+      ? "This password reset link has expired or is invalid. Please request a new one."
+      : null
   );
   const [loading, setLoading] = useState(false);
 

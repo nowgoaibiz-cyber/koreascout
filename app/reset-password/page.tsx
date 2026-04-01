@@ -4,13 +4,23 @@ import { createClient } from "@/lib/supabase/client";
 import { Logo } from "@/components/Logo";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function ResetPasswordPage() {
   const router = useRouter();
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [sessionChecked, setSessionChecked] = useState(false);
+  const [hasSession, setHasSession] = useState(false);
+
+  useEffect(() => {
+    const supabase = createClient();
+    supabase.auth.getSession().then(({ data }) => {
+      setHasSession(!!data.session);
+      setSessionChecked(true);
+    });
+  }, []);
 
   function isPasswordValid(p: string): boolean {
     if (p.length < 8) return false;
@@ -36,6 +46,45 @@ export default function ResetPasswordPage() {
     }
     router.push("/login");
     router.refresh();
+  }
+
+  if (!sessionChecked) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-[#1A1916]">
+        <p className="text-white text-sm">Verifying your link…</p>
+      </div>
+    );
+  }
+
+  if (!hasSession) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-[#1A1916] px-4">
+        <div className="w-full max-w-md">
+          <div className="bg-white p-8 sm:p-12 rounded-2xl shadow-2xl w-full text-center">
+            <Logo className="w-48 h-auto mx-auto mb-8" />
+            <h1 className="text-xl font-bold text-[#1A1916] mb-3">
+              Link Expired or Invalid
+            </h1>
+            <p className="text-sm text-gray-500 mb-8">
+              This password reset link has expired or has already been used.
+              Please request a new one.
+            </p>
+            <Link
+              href="/forgot-password"
+              className="block w-full bg-[#1A1916] text-white font-bold py-3 rounded-xl hover:bg-black transition-all text-center mb-4"
+            >
+              Request New Reset Link
+            </Link>
+            <Link
+              href="/login"
+              className="text-sm font-medium text-[#16A34A] hover:text-[#15803D]"
+            >
+              ← Back to sign in
+            </Link>
+          </div>
+        </div>
+      </div>
+    );
   }
 
   return (
