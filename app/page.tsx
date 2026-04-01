@@ -431,7 +431,7 @@ export default async function HomePage() {
             <h2
               className="font-black text-[#1A1916] text-center mb-4"
               style={{
-                fontSize: "clamp(2rem, 4.5vw, 3.5rem)",
+                fontSize: "clamp(1.75rem, 4.5vw, 3.5rem)",
                 fontWeight: 900,
                 letterSpacing: "-0.04em",
                 lineHeight: 1.05,
