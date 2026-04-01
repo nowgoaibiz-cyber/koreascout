@@ -116,13 +116,13 @@ export default async function PricingPage() {
       {/* S1: DARK HERO */}
       <section className="bg-[#1A1916] py-24 px-6">
         <div className="max-w-4xl mx-auto text-center">
-          <div className="flex flex-col items-center text-center w-full mb-12">
+          <div className="flex flex-col items-center text-center w-full mb-12 px-5">
             <p className="text-xs font-bold tracking-[0.3em] uppercase text-[#16A34A] mb-6">
               THE GLOBAL STANDARD FOR KOREAN PRODUCT INTELLIGENCE
             </p>
-            <h1 className="text-4xl md:text-6xl lg:text-7xl font-black tracking-tighter leading-[1.1] flex flex-col items-center">
-              <span className="text-[#F8F7F4] block whitespace-nowrap">The Price of Knowing Early.</span>
-              <span className="text-[#16A34A] block whitespace-nowrap">The Cost of Finding Out Late.</span>
+            <h1 className="text-4xl md:text-6xl lg:text-7xl font-black tracking-tighter leading-[1.1] flex flex-col items-center text-center max-w-full">
+              <span className="text-[#F8F7F4] block max-w-full">The Price of Knowing Early.</span>
+              <span className="text-[#16A34A] block max-w-full">The Cost of Finding Out Late.</span>
             </h1>
           </div>
           <p className="text-xl text-white/50 font-medium leading-relaxed max-w-2xl mx-auto">
@@ -348,14 +348,12 @@ export default async function PricingPage() {
       {/* S4: FEATURE BREAKDOWN (no emoji, text-base rows) */}
       <section className="bg-[#F8F7F4] py-24 px-6">
         <div className="max-w-4xl mx-auto">
-          <h2 className="font-black text-[#1A1916] tracking-tighter uppercase text-center mb-16 text-xl whitespace-nowrap">
+          <h2 className="font-black text-[#1A1916] tracking-tighter uppercase text-center mb-16 text-xl text-balance">
             What&apos;s Inside Every Report
           </h2>
           {FEATURE_GROUPS.map((group) => (
-            <div
-              key={group.label}
-              className="mb-8 bg-white rounded-2xl border border-[#E8E6E1] overflow-hidden"
-            >
+            <div key={group.label} className="mb-8 overflow-x-auto">
+              <div className="bg-white rounded-2xl border border-[#E8E6E1] overflow-hidden min-w-[500px]">
               <div className="px-6 py-5 border-b border-[#E8E6E1]">
                 <p className="text-sm font-black uppercase tracking-[0.25em] text-[#1A1916]">
                   {group.label}
@@ -382,25 +380,25 @@ export default async function PricingPage() {
                     i % 2 === 0 ? "bg-white" : "bg-[#F8F7F4]/50"
                   }`}
                 >
-                  <p className="text-base font-medium text-[#1A1916] pr-4 leading-snug">
+                  <p className="text-sm font-medium text-[#1A1916] pr-4 leading-snug">
                     {row.feature}
                   </p>
                   <p
-                    className={`text-base font-bold text-center ${
+                    className={`text-sm font-bold text-center ${
                       row.free === "✓" ? "text-[#16A34A]" : "text-[#9E9C98]"
                     }`}
                   >
                     {row.free}
                   </p>
                   <p
-                    className={`text-base font-bold text-center ${
+                    className={`text-sm font-bold text-center ${
                       row.standard === "✓" ? "text-[#16A34A]" : "text-[#9E9C98]"
                     }`}
                   >
                     {row.standard}
                   </p>
                   <p
-                    className={`text-base font-black text-center ${
+                    className={`text-sm font-black text-center ${
                       row.alpha === "✓" || row.alpha === "Full"
                         ? "text-[#16A34A]"
                         : "text-[#1A1916]"
@@ -410,6 +408,7 @@ export default async function PricingPage() {
                   </p>
                 </div>
               ))}
+              </div>
             </div>
           ))}
           <p className="text-[11px] md:text-xs text-[#8A8884] mt-6 italic text-center max-w-3xl mx-auto leading-relaxed">
