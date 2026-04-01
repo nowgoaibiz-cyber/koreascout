@@ -112,28 +112,34 @@ export function HeaderNavClient({
           </div>
         </div>
         {mobileMenuOpen && (
-          <div className="fixed left-0 right-0 top-[80px] z-40 w-full bg-[#0A0908] md:hidden">
-            <Link
-              href="/login"
-              className={MOBILE_DRAWER_LINK}
+          <div className="fixed inset-0 z-40 bg-[#0A0908] md:hidden flex flex-col pt-[80px]">
+            <div
+              className="absolute inset-0"
               onClick={() => setMobileMenuOpen(false)}
-            >
-              Weekly Report
-            </Link>
-            <Link
-              href="/pricing"
-              className={MOBILE_DRAWER_LINK}
-              onClick={() => setMobileMenuOpen(false)}
-            >
-              Pricing
-            </Link>
-            <Link
-              href="/login"
-              className="block py-4 px-6 text-base font-bold text-[#16A34A] border-b border-[#F8F7F4]/10"
-              onClick={() => setMobileMenuOpen(false)}
-            >
-              Login
-            </Link>
+            />
+            <div className="relative">
+              <Link
+                href="/login"
+                className={MOBILE_DRAWER_LINK}
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Weekly Report
+              </Link>
+              <Link
+                href="/pricing"
+                className={MOBILE_DRAWER_LINK}
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Pricing
+              </Link>
+              <Link
+                href="/login"
+                className="block py-4 px-6 text-base font-bold text-[#16A34A] border-b border-[#F8F7F4]/10"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Login
+              </Link>
+            </div>
           </div>
         )}
       </div>
@@ -175,42 +181,48 @@ export function HeaderNavClient({
         </div>
       </div>
       {mobileMenuOpen && (
-        <div className="fixed left-0 right-0 top-[80px] z-40 w-full bg-[#0A0908] md:hidden">
-          <Link
-            href="/weekly"
-            className={MOBILE_DRAWER_LINK}
+        <div className="fixed inset-0 z-40 bg-[#0A0908] md:hidden flex flex-col pt-[80px]">
+          <div
+            className="absolute inset-0"
             onClick={() => setMobileMenuOpen(false)}
-          >
-            Weekly Report
-          </Link>
-          {tier === "free" && (
-            <Link
-              href="/pricing"
-              className={MOBILE_DRAWER_LINK}
-              onClick={() => setMobileMenuOpen(false)}
-            >
-              Pricing
-            </Link>
-          )}
-          {tier === "standard" && (
-            <Link
-              href="/pricing"
-              className={MOBILE_DRAWER_LINK}
-              onClick={() => setMobileMenuOpen(false)}
-            >
-              Upgrade
-            </Link>
-          )}
-          <Link
-            href="/account"
-            className={MOBILE_DRAWER_LINK}
-            onClick={() => setMobileMenuOpen(false)}
-          >
-            Account
-          </Link>
-          <LogoutButton
-            className="block w-full text-left py-4 px-6 text-base font-bold text-[#1A1916] border-b border-[#E8E6E1]"
           />
+          <div className="relative">
+            <Link
+              href="/weekly"
+              className={MOBILE_DRAWER_LINK}
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              Weekly Report
+            </Link>
+            {tier === "free" && (
+              <Link
+                href="/pricing"
+                className={MOBILE_DRAWER_LINK}
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Pricing
+              </Link>
+            )}
+            {tier === "standard" && (
+              <Link
+                href="/pricing"
+                className={MOBILE_DRAWER_LINK}
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Upgrade
+              </Link>
+            )}
+            <Link
+              href="/account"
+              className={MOBILE_DRAWER_LINK}
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              Account
+            </Link>
+            <LogoutButton
+              className="block w-full text-left py-4 px-6 text-base font-bold text-[#1A1916] border-b border-[#E8E6E1]"
+            />
+          </div>
         </div>
       )}
     </div>
