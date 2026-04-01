@@ -49,6 +49,16 @@ function variantIdToTier(variantId: string | number): "standard" | "alpha" | nul
   return null;
 }
 
+function parseDateSafe(value: unknown): string | null {
+  if (!value || typeof value !== "string") return null;
+  try {
+    const d = new Date(value);
+    return isNaN(d.getTime()) ? null : d.toISOString();
+  } catch {
+    return null;
+  }
+}
+
 export async function POST(request: Request) {
   try {
     const signature = (
@@ -135,6 +145,8 @@ export async function POST(request: Request) {
 
       const supabase = createServiceRoleClient();
       const now = new Date().toISOString();
+      const subscriptionStartAt = parseDateSafe(attrs?.starts_at) ?? parseDateSafe(attrs?.created_at) ?? null;
+      const subscriptionResetAt = parseDateSafe(attrs?.renews_at) ?? null;
 
       if (profileId) {
         const { error } = await supabase
@@ -143,6 +155,8 @@ export async function POST(request: Request) {
             tier,
             ls_subscription_id: data?.id ?? null,
             tier_updated_at: now,
+            ...(subscriptionStartAt && { subscription_start_at: subscriptionStartAt }),
+            ...(subscriptionResetAt && { subscription_reset_at: subscriptionResetAt }),
           })
           .eq("id", profileId);
 
@@ -162,6 +176,8 @@ export async function POST(request: Request) {
               tier,
               ls_subscription_id: data?.id ?? null,
               tier_updated_at: now,
+              ...(subscriptionStartAt && { subscription_start_at: subscriptionStartAt }),
+              ...(subscriptionResetAt && { subscription_reset_at: subscriptionResetAt }),
             })
             .eq("email", userEmail);
 
