@@ -14,10 +14,28 @@ export function ManageBillingButton({
 }) {
   const [open, setOpen] = useState(false);
   const [isAgreed, setIsAgreed] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     if (open) setIsAgreed(false);
   }, [open]);
+
+  async function handleProceedToCancel() {
+    setIsLoading(true);
+    try {
+      const res = await fetch("/api/billing/portal");
+      const data = await res.json();
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        alert("Unable to open billing portal. Please contact support.");
+      }
+    } catch {
+      alert("Something went wrong. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
+  }
 
   return (
     <>
@@ -96,15 +114,16 @@ export function ManageBillingButton({
               </button>
               {!isAgreed ? (
                 <span className="text-base text-gray-400 font-medium mt-8 text-center block opacity-30 cursor-not-allowed pb-6">
-                  Proceed to cancel (Phase 4).
+                  Proceed to cancel
                 </span>
               ) : (
                 <button
                   type="button"
-                  onClick={() => setOpen(false)}
-                  className="text-base font-medium text-gray-400 hover:text-gray-600 hover:underline transition-all mt-8 text-center block cursor-pointer pb-6"
+                  onClick={handleProceedToCancel}
+                  disabled={isLoading}
+                  className="text-base font-medium text-gray-400 hover:text-gray-600 hover:underline transition-all mt-8 text-center block cursor-pointer pb-6 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  Proceed to cancel (Phase 4).
+                  {isLoading ? "Opening portal…" : "Proceed to cancel"}
                 </button>
               )}
             </div>
