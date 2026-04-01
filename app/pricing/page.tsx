@@ -117,10 +117,10 @@ export default async function PricingPage() {
       <section className="bg-[#1A1916] py-24 px-6">
         <div className="max-w-4xl mx-auto text-center">
           <div className="flex flex-col items-center text-center w-full mb-12 px-4 md:px-8">
-            <p className="text-xs font-bold tracking-[0.3em] uppercase text-[#16A34A] mb-6">
+            <p className="text-xs font-bold tracking-[0.15em] uppercase text-[#16A34A] mb-6">
               THE GLOBAL STANDARD FOR KOREAN PRODUCT INTELLIGENCE
             </p>
-            <h1 className="text-3xl md:text-5xl lg:text-6xl font-black tracking-tighter leading-[1.1] flex flex-col items-center text-center max-w-full">
+            <h1 className="text-2xl md:text-5xl lg:text-6xl font-black tracking-tighter leading-[1.1] flex flex-col items-center text-center max-w-full">
               <span className="text-[#F8F7F4] block max-w-full">The Price of Knowing Early.</span>
               <span className="text-[#16A34A] block max-w-full">The Cost of Finding Out Late.</span>
             </h1>
@@ -352,14 +352,14 @@ export default async function PricingPage() {
             What&apos;s Inside Every Report
           </h2>
           {FEATURE_GROUPS.map((group) => (
-            <div key={group.label} className="mb-8 overflow-x-auto">
-              <div className="bg-white rounded-2xl border border-[#E8E6E1] overflow-hidden min-w-[500px]">
-              <div className="px-6 py-5 border-b border-[#E8E6E1]">
+            <div key={group.label} className="mb-8">
+              <div className="bg-white rounded-2xl border border-[#E8E6E1] overflow-hidden">
+              <div className="px-3 py-3 border-b border-[#E8E6E1]">
                 <p className="text-sm font-black uppercase tracking-[0.25em] text-[#1A1916]">
                   {group.label}
                 </p>
               </div>
-              <div className="grid grid-cols-4 px-6 py-3 bg-[#F8F7F4] border-b border-[#E8E6E1]">
+              <div className="grid grid-cols-4 px-2 py-3 bg-[#F8F7F4] border-b border-[#E8E6E1]">
                 <p className="text-xs font-black uppercase tracking-[0.2em] text-[#9E9C98]">
                   Feature
                 </p>
@@ -376,22 +376,22 @@ export default async function PricingPage() {
               {group.rows.map((row, i) => (
                 <div
                   key={row.feature}
-                  className={`grid grid-cols-4 px-6 py-4 items-center border-b border-[#E8E6E1] last:border-0 ${
+                  className={`grid grid-cols-4 px-2 py-4 items-center border-b border-[#E8E6E1] last:border-0 ${
                     i % 2 === 0 ? "bg-white" : "bg-[#F8F7F4]/50"
                   }`}
                 >
-                  <p className="text-sm font-medium text-[#1A1916] pr-4 leading-snug">
+                  <p className="text-xs font-medium text-[#1A1916] pr-1 leading-snug">
                     {row.feature}
                   </p>
                   <p
-                    className={`text-sm font-bold text-center ${
+                    className={`text-xs font-bold text-center ${
                       row.free === "✓" ? "text-[#16A34A]" : "text-[#9E9C98]"
                     }`}
                   >
                     {row.free}
                   </p>
                   <p
-                    className={`text-sm font-bold text-center ${
+                    className={`text-xs font-bold text-center ${
                       row.standard === "✓" ? "text-[#16A34A]" : "text-[#9E9C98]"
                     }`}
                   >
