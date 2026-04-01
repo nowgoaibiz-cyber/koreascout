@@ -360,13 +360,13 @@ export default async function PricingPage() {
                 </p>
               </div>
               <div className="grid grid-cols-4 px-2 py-3 bg-[#F8F7F4] border-b border-[#E8E6E1]">
-                <p className="text-xs font-black uppercase tracking-[0.2em] text-[#9E9C98]">
+                <p className="text-xs font-black uppercase tracking-[0.2em] text-[#9E9C98] border-t-2 border-transparent pt-3">
                   Feature
                 </p>
-                <p className="text-xs font-black uppercase tracking-[0.2em] text-[#9E9C98] text-center">
+                <p className="text-xs font-black uppercase tracking-[0.2em] text-[#9E9C98] text-center border-t-2 border-transparent pt-3">
                   Free
                 </p>
-                <p className="text-xs font-black uppercase tracking-[0.2em] text-[#9E9C98] text-center">
+                <p className="text-xs font-black uppercase tracking-[0.2em] text-[#9E9C98] text-center border-t-2 border-transparent pt-3">
                   Standard
                 </p>
                 <p className="text-xs font-black uppercase tracking-[0.2em] text-[#16A34A] text-center border-t-2 border-[#16A34A] pt-3">
