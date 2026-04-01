@@ -5,6 +5,7 @@ import { useState } from "react";
 import type { User } from "@supabase/supabase-js";
 import { LogoutButton } from "@/components/LogoutButton";
 import { PRICING } from "@/src/config/pricing";
+import { Logo } from "@/components/Logo";
 
 const NAV_TRANSITION =
   "color 0.4s cubic-bezier(0.4,0,0.2,1), background-color 0.4s cubic-bezier(0.4,0,0.2,1), border-color 0.4s cubic-bezier(0.4,0,0.2,1)";
@@ -80,6 +81,8 @@ export function HeaderNavClient({
             className="fixed inset-0 z-50 bg-[#F8F7F4] md:hidden flex flex-col"
             style={{
               animation: "slideDown 0.25s cubic-bezier(0.4,0,0.2,1) forwards",
+              backgroundColor: "#F8F7F4",
+              isolation: "isolate",
             }}
           >
             <style>{`
@@ -91,7 +94,7 @@ export function HeaderNavClient({
 
             {/* Header row */}
             <div className="flex items-center justify-between px-6 h-[80px] border-b border-[#E8E6E1] shrink-0">
-              <span className="font-black text-[#0A0908] text-xl tracking-tight">KoreaScout</span>
+              <Logo className="h-8 w-auto object-contain" style={{ filter: "none" }} />
               <button
                 onClick={() => setMobileMenuOpen(false)}
                 className="p-2 text-[#1A1916]"
@@ -154,6 +157,8 @@ export function HeaderNavClient({
           className="fixed inset-0 z-50 bg-[#F8F7F4] md:hidden flex flex-col"
           style={{
             animation: "slideDown 0.25s cubic-bezier(0.4,0,0.2,1) forwards",
+            backgroundColor: "#F8F7F4",
+            isolation: "isolate",
           }}
         >
           <style>{`
@@ -165,7 +170,7 @@ export function HeaderNavClient({
 
           {/* Header row */}
           <div className="flex items-center justify-between px-6 h-[80px] border-b border-[#E8E6E1] shrink-0">
-            <span className="font-black text-[#0A0908] text-xl tracking-tight">KoreaScout</span>
+            <Logo className="h-8 w-auto object-contain" style={{ filter: "none" }} />
             <button
               onClick={() => setMobileMenuOpen(false)}
               className="p-2 text-[#1A1916]"
