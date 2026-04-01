@@ -116,16 +116,16 @@ export default async function PricingPage() {
       {/* S1: DARK HERO */}
       <section className="bg-[#1A1916] py-24 px-6">
         <div className="max-w-4xl mx-auto text-center">
-          <div className="flex flex-col items-center text-center w-full mb-12 px-5">
+          <div className="flex flex-col items-center text-center w-full mb-12 px-4 md:px-8">
             <p className="text-xs font-bold tracking-[0.3em] uppercase text-[#16A34A] mb-6">
               THE GLOBAL STANDARD FOR KOREAN PRODUCT INTELLIGENCE
             </p>
-            <h1 className="text-4xl md:text-6xl lg:text-7xl font-black tracking-tighter leading-[1.1] flex flex-col items-center text-center max-w-full">
+            <h1 className="text-3xl md:text-5xl lg:text-6xl font-black tracking-tighter leading-[1.1] flex flex-col items-center text-center max-w-full">
               <span className="text-[#F8F7F4] block max-w-full">The Price of Knowing Early.</span>
               <span className="text-[#16A34A] block max-w-full">The Cost of Finding Out Late.</span>
             </h1>
           </div>
-          <p className="text-xl text-white/50 font-medium leading-relaxed max-w-2xl mx-auto">
+          <p className="text-base md:text-lg text-white/50 font-medium leading-relaxed max-w-2xl mx-auto px-4">
             Weekly verified intelligence on Korea&apos;s fastest-moving products —
             before your competitors find them.
           </p>
