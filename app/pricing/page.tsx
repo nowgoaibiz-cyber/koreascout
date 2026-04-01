@@ -117,7 +117,7 @@ export default async function PricingPage() {
       <section className="bg-[#1A1916] py-24 px-6">
         <div className="max-w-4xl mx-auto text-center">
           <div className="flex flex-col items-center text-center w-full mb-12 px-4 md:px-8">
-            <p className="text-xs font-bold tracking-[0.15em] uppercase text-[#16A34A] mb-6">
+            <p className="text-xs font-bold tracking-[0.08em] uppercase text-[#16A34A] mb-6">
               THE GLOBAL STANDARD FOR KOREAN PRODUCT INTELLIGENCE
             </p>
             <h1 className="text-2xl md:text-5xl lg:text-6xl font-black tracking-tighter leading-[1.1] flex flex-col items-center text-center max-w-full">
@@ -125,7 +125,7 @@ export default async function PricingPage() {
               <span className="text-[#16A34A] block max-w-full">The Cost of Finding Out Late.</span>
             </h1>
           </div>
-          <p className="text-base md:text-lg text-white/50 font-medium leading-relaxed max-w-2xl mx-auto px-4">
+          <p className="text-sm md:text-base text-white/50 font-medium leading-relaxed max-w-2xl mx-auto px-4">
             Weekly verified intelligence on Korea&apos;s fastest-moving products —
             before your competitors find them.
           </p>
@@ -369,7 +369,7 @@ export default async function PricingPage() {
                 <p className="text-xs font-black uppercase tracking-[0.2em] text-[#9E9C98] text-center">
                   Standard
                 </p>
-                <p className="text-xs font-black uppercase tracking-[0.2em] text-[#16A34A] text-center border-t-2 border-[#16A34A] -mt-3 pt-3">
+                <p className="text-xs font-black uppercase tracking-[0.2em] text-[#16A34A] text-center pt-1">
                   Alpha
                 </p>
               </div>
