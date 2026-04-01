@@ -26,7 +26,7 @@ function getPrimaryClass(isTransparent: boolean) {
 }
 
 const MOBILE_DRAWER_LINK =
-  "block py-4 px-6 text-base font-bold text-[#1A1916] border-b border-[#E8E6E1]";
+  "block py-4 px-6 text-base font-bold text-[#F8F7F4] border-b border-[#F8F7F4]/10";
 
 function MobileMenuIcon({ open }: { open: boolean }) {
   if (open) {
@@ -112,7 +112,7 @@ export function HeaderNavClient({
           </div>
         </div>
         {mobileMenuOpen && (
-          <div className="fixed left-0 right-0 top-[80px] z-40 w-full bg-[#F8F7F4] md:hidden">
+          <div className="fixed left-0 right-0 top-[80px] z-40 w-full bg-[#0A0908] md:hidden">
             <Link
               href="/login"
               className={MOBILE_DRAWER_LINK}
@@ -129,7 +129,7 @@ export function HeaderNavClient({
             </Link>
             <Link
               href="/login"
-              className="block py-4 px-6 text-base font-bold text-[#16A34A] border-b border-[#E8E6E1]"
+              className="block py-4 px-6 text-base font-bold text-[#16A34A] border-b border-[#F8F7F4]/10"
               onClick={() => setMobileMenuOpen(false)}
             >
               Login
@@ -175,7 +175,7 @@ export function HeaderNavClient({
         </div>
       </div>
       {mobileMenuOpen && (
-        <div className="fixed left-0 right-0 top-[80px] z-40 w-full bg-[#F8F7F4] md:hidden">
+        <div className="fixed left-0 right-0 top-[80px] z-40 w-full bg-[#0A0908] md:hidden">
           <Link
             href="/weekly"
             className={MOBILE_DRAWER_LINK}
