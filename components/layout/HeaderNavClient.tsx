@@ -105,9 +105,11 @@ export function HeaderNavClient({
               Pricing
             </Link>
           </div>
-          <Link href="/login" className={primaryClass} style={transitionStyle}>
-            Login
-          </Link>
+          <div className="hidden md:block">
+            <Link href="/login" className={primaryClass} style={transitionStyle}>
+              Login
+            </Link>
+          </div>
         </div>
         {mobileMenuOpen && (
           <div className="fixed left-0 right-0 top-[80px] z-40 w-full bg-[#F8F7F4] md:hidden">
@@ -124,6 +126,13 @@ export function HeaderNavClient({
               onClick={() => setMobileMenuOpen(false)}
             >
               Pricing
+            </Link>
+            <Link
+              href="/login"
+              className="block py-4 px-6 text-base font-bold text-[#16A34A] border-b border-[#E8E6E1]"
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              Login
             </Link>
           </div>
         )}
@@ -161,7 +170,9 @@ export function HeaderNavClient({
             Account
           </Link>
         </div>
-        <LogoutButton className={primaryClass} style={transitionStyle} />
+        <div className="hidden md:block">
+          <LogoutButton className={primaryClass} style={transitionStyle} />
+        </div>
       </div>
       {mobileMenuOpen && (
         <div className="fixed left-0 right-0 top-[80px] z-40 w-full bg-[#F8F7F4] md:hidden">
@@ -197,6 +208,9 @@ export function HeaderNavClient({
           >
             Account
           </Link>
+          <LogoutButton
+            className="block w-full text-left py-4 px-6 text-base font-bold text-[#1A1916] border-b border-[#E8E6E1]"
+          />
         </div>
       )}
     </div>
