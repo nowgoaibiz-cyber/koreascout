@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
 import type { User } from "@supabase/supabase-js";
 import { LogoutButton } from "@/components/LogoutButton";
 import { PRICING } from "@/src/config/pricing";
@@ -38,12 +37,13 @@ export function HeaderNavClient({
   user,
   tier,
   isTransparent,
+  onMenuOpen,
 }: {
   user: User | null;
   tier: string;
   isTransparent: boolean;
+  onMenuOpen: () => void;
 }) {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const ghostClass = getGhostClass(isTransparent);
   const primaryClass = getPrimaryClass(isTransparent);
 
@@ -56,9 +56,8 @@ export function HeaderNavClient({
           <button
             type="button"
             className="inline-flex items-center justify-center p-2 md:hidden"
-            onClick={() => setMobileMenuOpen((o) => !o)}
-            aria-expanded={mobileMenuOpen}
-            aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
+            onClick={onMenuOpen}
+            aria-label="Menu"
           >
             <MobileMenuIcon />
           </button>
@@ -76,44 +75,6 @@ export function HeaderNavClient({
             </Link>
           </div>
         </div>
-        {mobileMenuOpen && (
-          <div
-            className="fixed inset-0 z-50 bg-[#F8F7F4] md:hidden flex flex-col"
-            style={{
-              animation: "slideDown 0.25s cubic-bezier(0.4,0,0.2,1) forwards",
-              backgroundColor: "#F8F7F4",
-              isolation: "isolate",
-            }}
-          >
-            <style>{`
-      @keyframes slideDown {
-        from { opacity: 0; transform: translateY(-16px); }
-        to { opacity: 1; transform: translateY(0); }
-      }
-    `}</style>
-
-            {/* Header row */}
-            <div className="flex items-center justify-between px-6 h-[80px] border-b border-[#E8E6E1] shrink-0">
-              <Logo className="h-8 w-auto object-contain" style={{ filter: "none" }} />
-              <button
-                onClick={() => setMobileMenuOpen(false)}
-                className="p-2 text-[#1A1916]"
-                aria-label="Close menu"
-              >
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                  <path d="M6 6L18 18M18 6L6 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
-                </svg>
-              </button>
-            </div>
-
-            {/* Links */}
-            <div className="flex flex-col px-6 pt-8 gap-0">
-              <Link href="/login" className="block py-5 text-2xl font-black text-[#1A1916] border-b border-[#E8E6E1] tracking-tight" onClick={() => setMobileMenuOpen(false)}>Weekly Report</Link>
-              <Link href="/pricing" className="block py-5 text-2xl font-black text-[#1A1916] border-b border-[#E8E6E1] tracking-tight" onClick={() => setMobileMenuOpen(false)}>Pricing</Link>
-              <Link href="/login" className="block py-5 text-2xl font-black text-[#16A34A] border-b border-[#E8E6E1] tracking-tight" onClick={() => setMobileMenuOpen(false)}>Login</Link>
-            </div>
-          </div>
-        )}
       </div>
     );
   }
@@ -124,9 +85,8 @@ export function HeaderNavClient({
         <button
           type="button"
           className="inline-flex items-center justify-center p-2 md:hidden"
-          onClick={() => setMobileMenuOpen((o) => !o)}
-          aria-expanded={mobileMenuOpen}
-          aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
+          onClick={onMenuOpen}
+          aria-label="Menu"
         >
           <MobileMenuIcon />
         </button>
@@ -152,76 +112,64 @@ export function HeaderNavClient({
           <LogoutButton className={primaryClass} style={transitionStyle} />
         </div>
       </div>
-      {mobileMenuOpen && (
-        <div
-          className="fixed inset-0 z-50 bg-[#F8F7F4] md:hidden flex flex-col"
-          style={{
-            animation: "slideDown 0.25s cubic-bezier(0.4,0,0.2,1) forwards",
-            backgroundColor: "#F8F7F4",
-            isolation: "isolate",
-          }}
-        >
-          <style>{`
-      @keyframes slideDown {
-        from { opacity: 0; transform: translateY(-16px); }
-        to { opacity: 1; transform: translateY(0); }
-      }
-    `}</style>
+    </div>
+  );
+}
 
-          {/* Header row */}
-          <div className="flex items-center justify-between px-6 h-[80px] border-b border-[#E8E6E1] shrink-0">
-            <Logo className="h-8 w-auto object-contain" style={{ filter: "none" }} />
-            <button
-              onClick={() => setMobileMenuOpen(false)}
-              className="p-2 text-[#1A1916]"
-              aria-label="Close menu"
-            >
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                <path d="M6 6L18 18M18 6L6 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
-              </svg>
-            </button>
-          </div>
+export function MobileDrawer({
+  user,
+  tier,
+  open,
+  onClose,
+}: {
+  user: User | null;
+  tier: string;
+  open: boolean;
+  onClose: () => void;
+}) {
+  if (!open) return null;
 
-          {/* Links */}
-          <div className="flex flex-col px-6 pt-8 gap-0">
-            <Link
-              href="/weekly"
-              className="block py-5 text-2xl font-black text-[#1A1916] border-b border-[#E8E6E1] tracking-tight"
-              onClick={() => setMobileMenuOpen(false)}
-            >
-              Weekly Report
-            </Link>
-            {tier === "free" && (
-              <Link
-                href="/pricing"
-                className="block py-5 text-2xl font-black text-[#1A1916] border-b border-[#E8E6E1] tracking-tight"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                Pricing
-              </Link>
-            )}
-            {tier === "standard" && (
-              <Link
-                href="/pricing"
-                className="block py-5 text-2xl font-black text-[#1A1916] border-b border-[#E8E6E1] tracking-tight"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                Upgrade
-              </Link>
-            )}
-            <Link
-              href="/account"
-              className="block py-5 text-2xl font-black text-[#1A1916] border-b border-[#E8E6E1] tracking-tight"
-              onClick={() => setMobileMenuOpen(false)}
-            >
-              Account
-            </Link>
-            <LogoutButton
-              className="block w-full text-left py-5 text-2xl font-black text-[#1A1916] border-b border-[#E8E6E1] tracking-tight"
-            />
-          </div>
+  if (!user) {
+    return (
+      <div
+        className="fixed inset-0 z-[200] flex flex-col bg-[#F8F7F4]"
+        style={{ animation: "slideDown 0.25s cubic-bezier(0.4,0,0.2,1) forwards" }}
+      >
+        <style>{`@keyframes slideDown { from { opacity:0; transform:translateY(-16px);} to { opacity:1; transform:translateY(0);} }`}</style>
+        <div className="flex items-center justify-between px-6 h-[80px] border-b border-[#E8E6E1] shrink-0">
+          <Logo className="h-7 w-auto object-contain" style={{ filter: "none" }} />
+          <button onClick={onClose} className="p-2 text-[#1A1916]" aria-label="Close menu">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M6 6L18 18M18 6L6 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/></svg>
+          </button>
         </div>
-      )}
+        <div className="flex flex-col px-6 pt-8">
+          <Link href="/login" className="block py-5 text-2xl font-black text-[#1A1916] border-b border-[#E8E6E1] tracking-tight" onClick={onClose}>Weekly Report</Link>
+          <Link href="/pricing" className="block py-5 text-2xl font-black text-[#1A1916] border-b border-[#E8E6E1] tracking-tight" onClick={onClose}>Pricing</Link>
+          <Link href="/login" className="block py-5 text-2xl font-black text-[#16A34A] border-b border-[#E8E6E1] tracking-tight" onClick={onClose}>Login</Link>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div
+      className="fixed inset-0 z-[200] flex flex-col bg-[#F8F7F4]"
+      style={{ animation: "slideDown 0.25s cubic-bezier(0.4,0,0.2,1) forwards" }}
+    >
+      <style>{`@keyframes slideDown { from { opacity:0; transform:translateY(-16px);} to { opacity:1; transform:translateY(0);} }`}</style>
+      <div className="flex items-center justify-between px-6 h-[80px] border-b border-[#E8E6E1] shrink-0">
+        <Logo className="h-7 w-auto object-contain" style={{ filter: "none" }} />
+        <button onClick={onClose} className="p-2 text-[#1A1916]" aria-label="Close menu">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M6 6L18 18M18 6L6 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/></svg>
+        </button>
+      </div>
+      <div className="flex flex-col px-6 pt-8">
+        <Link href="/weekly" className="block py-5 text-2xl font-black text-[#1A1916] border-b border-[#E8E6E1] tracking-tight" onClick={onClose}>Weekly Report</Link>
+        {tier === "free" && <Link href="/pricing" className="block py-5 text-2xl font-black text-[#1A1916] border-b border-[#E8E6E1] tracking-tight" onClick={onClose}>Pricing</Link>}
+        {tier === "standard" && <Link href="/pricing" className="block py-5 text-2xl font-black text-[#1A1916] border-b border-[#E8E6E1] tracking-tight" onClick={onClose}>Upgrade</Link>}
+        <Link href="/account" className="block py-5 text-2xl font-black text-[#1A1916] border-b border-[#E8E6E1] tracking-tight" onClick={onClose}>Account</Link>
+        <LogoutButton className="block w-full text-left py-5 text-2xl font-black text-[#1A1916] border-b border-[#E8E6E1] tracking-tight" />
+      </div>
     </div>
   );
 }

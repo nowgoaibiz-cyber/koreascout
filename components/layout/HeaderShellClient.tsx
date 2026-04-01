@@ -1,11 +1,11 @@
 "use client";
 
-import { useSyncExternalStore } from "react";
+import { useState, useSyncExternalStore } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type { User } from "@supabase/supabase-js";
 import { Logo } from "@/components/Logo";
-import { HeaderNavClient } from "./HeaderNavClient";
+import { HeaderNavClient, MobileDrawer } from "./HeaderNavClient";
 
 const THRESHOLD_ACTIVATE = 150;
 const THRESHOLD_DEACTIVATE = 120;
@@ -48,6 +48,7 @@ function subscribeToScroll(callback: () => void) {
 }
 
 export function HeaderShellClient({ user, tier }: { user: User | null; tier: string }) {
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const pathname = usePathname();
   const isHomeRoute = pathname === "/";
   const isScrolled = useSyncExternalStore(
@@ -58,6 +59,7 @@ export function HeaderShellClient({ user, tier }: { user: User | null; tier: str
   const isTransparent = isHomeRoute && !isScrolled;
 
   return (
+    <>
     <header
       className={`fixed top-0 left-0 w-full z-50 h-[80px] flex flex-col justify-center ${
         isTransparent
@@ -80,7 +82,7 @@ export function HeaderShellClient({ user, tier }: { user: User | null; tier: str
           aria-label="KoreaScout home"
         >
           <Logo
-            className="h-full w-auto object-contain"
+            className="h-7 md:h-full w-auto object-contain"
             style={{
               filter: isTransparent ? "brightness(0) invert(1)" : "none",
               transition: "filter 0.4s cubic-bezier(0.4, 0, 0.2, 1)",
@@ -88,8 +90,20 @@ export function HeaderShellClient({ user, tier }: { user: User | null; tier: str
           />
         </Link>
 
-        <HeaderNavClient user={user} tier={tier} isTransparent={isTransparent} />
+        <HeaderNavClient
+          user={user}
+          tier={tier}
+          isTransparent={isTransparent}
+          onMenuOpen={() => setMobileMenuOpen(true)}
+        />
       </div>
     </header>
+    <MobileDrawer
+      user={user}
+      tier={tier}
+      open={mobileMenuOpen}
+      onClose={() => setMobileMenuOpen(false)}
+    />
+    </>
   );
 }
