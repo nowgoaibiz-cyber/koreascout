@@ -23,7 +23,8 @@ export async function GET(request: NextRequest) {
     const { data, error } = await supabase
       .from("scout_final_reports")
       .select("id, product_name, week_id, market_viability, status, created_at")
-      .order("market_viability", { ascending: false }); // newest first for Admin List View
+      .order("market_viability", { ascending: false })
+      .order("naver_product_name", { ascending: true }); // newest first for Admin List View
 
     if (error) {
       console.error("[GET /api/admin/reports] Supabase error:", error.message, error);

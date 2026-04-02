@@ -110,7 +110,8 @@ export default async function ProductListPage({
     .select("id, product_name, translated_name, image_url, category, viability_reason, market_viability, is_teaser")
     .eq("week_id", weekId)
     .eq("status", "published")
-    .order("market_viability", { ascending: false });
+    .order("market_viability", { ascending: false })
+    .order("naver_product_name", { ascending: true });
 
   const productIds = (products ?? []).map((p) => p.id);
   const { data: favorites } = await supabase
