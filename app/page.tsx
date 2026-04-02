@@ -90,12 +90,6 @@ export default async function HomePage() {
                 <span className="text-[#16A34A]">&ldquo;What&apos;s next?&rdquo;</span><br />
                 We answer it before&nbsp;it sells out.
               </h2>
-              <p
-                className="whitespace-nowrap mt-1 text-[#F8F7F4] font-black"
-                style={{ fontSize: "clamp(1.5rem, 2.5vw, 2.25rem)", fontWeight: 900, letterSpacing: "-0.04em", lineHeight: 1.05 }}
-              >
-                First to the hype. First to the arbitrage.
-              </p>
             </div>
             {/* 우측: 영상 */}
             <div className="w-full md:w-1/2 flex justify-center md:justify-start">
