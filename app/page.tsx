@@ -91,7 +91,7 @@ export default async function HomePage() {
                 We answer it before&nbsp;it sells out.
               </h2>
               <p
-                className="whitespace-nowrap mt-3 text-[#16A34A]"
+                className="whitespace-nowrap mt-3 text-sm text-[#F8F7F4]"
                 style={{
                   fontSize: "clamp(0.875rem, 1.8vw, 1.125rem)",
                   fontWeight: 500,
