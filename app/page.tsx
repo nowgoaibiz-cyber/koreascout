@@ -91,8 +91,8 @@ export default async function HomePage() {
                 We answer it before&nbsp;it sells out.
               </h2>
               <p
-                className="whitespace-nowrap mt-3 text-[#F8F7F4] font-black"
-                style={{ fontSize: "clamp(1.1rem, 2.5vw, 1.5rem)", fontWeight: 900, letterSpacing: "-0.04em", lineHeight: 1.1 }}
+                className="whitespace-nowrap mt-1 text-[#F8F7F4] font-black"
+                style={{ fontSize: "clamp(1.4rem, 3.2vw, 2.5rem)", fontWeight: 900, letterSpacing: "-0.04em", lineHeight: 1.1 }}
               >
                 First to the hype. First to the arbitrage.
               </p>
