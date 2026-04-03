@@ -9,11 +9,13 @@ import { HazmatCheckboxes } from "@/components/admin/HazmatCheckboxes";
 import { AiPageLinksHelper } from "@/components/admin/AiPageLinksHelper";
 
 type SaveStatus = "idle" | "saved" | "error";
-type OpenSections = { s1: boolean; s2: boolean; s3: boolean; s4: boolean; s5: boolean; s6: boolean; s7: boolean };
+type OpenSections = { s1: boolean; s2: boolean; s2b: boolean; s3: boolean; s4: boolean; s5: boolean; s6: boolean; s7: boolean };
 type DiffItem = { field: string; fieldKo: string; before: string; after: string };
 
 const EXPORT_STATUS_OPTIONS = ["Green", "Yellow", "Red"];
 const COMPETITION_OPTIONS = ["Low", "Medium", "High"];
+const GAP_STATUS_OPTIONS = ["Blue Ocean", "Emerging", "Competitive", "Saturated"] as const;
+const GO_VERDICT_OPTIONS = ["GO", "WATCH", "NO-GO"] as const;
 
 /** Korean labels for every DB field (for diff modal & edit history) */
 const FIELD_LABELS_KO: Record<string, string> = {
@@ -153,6 +155,7 @@ export default function AdminEditPage() {
   const [openSections, setOpenSections] = useState<OpenSections>({
     s1: false,
     s2: false,
+    s2b: false,
     s3: false,
     s4: false,
     s5: false,
@@ -617,6 +620,78 @@ export default function AdminEditPage() {
                   onChange={(e) => setFormData((p) => ({ ...p!, growth_signal: e.target.value }))}
                   className={inputClass}
                   placeholder="e.g. Stable, Rising, Viral"
+                />
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Opportunity Status — Trend Signal area (editable) */}
+        <div className="bg-white rounded-2xl border border-[#E8E6E1] shadow-[0_1px_3px_0_rgb(26_25_22/0.06)] overflow-hidden">
+          <button
+            type="button"
+            onClick={() => toggleSection("s2b")}
+            className="w-full flex items-center justify-between px-6 py-4 hover:bg-[#F8F7F4] transition-colors"
+          >
+            <span className="text-sm font-semibold text-[#1A1916]">Opportunity Status</span>
+            <span className="text-[#9E9C98] text-xs">{openSections.s2b ? "▼" : "▶"}</span>
+          </button>
+          {openSections.s2b && (
+            <div className="px-6 pb-6 flex flex-col gap-5 border-t border-[#E8E6E1]">
+              <div className="flex flex-col gap-1.5">
+                <label className={labelClass}>GAP STATUS (갭 상태)</label>
+                <select
+                  value={formData.gap_status ?? ""}
+                  onChange={(e) => setFormData((p) => ({ ...p!, gap_status: e.target.value }))}
+                  className={inputClass}
+                >
+                  <option value="">—</option>
+                  {formData.gap_status &&
+                    !GAP_STATUS_OPTIONS.includes(
+                      formData.gap_status as (typeof GAP_STATUS_OPTIONS)[number]
+                    ) && (
+                      <option value={formData.gap_status}>{formData.gap_status}</option>
+                    )}
+                  {GAP_STATUS_OPTIONS.map((opt) => (
+                    <option key={opt} value={opt}>
+                      {opt}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <label className={labelClass}>GO VERDICT (최종 판정)</label>
+                <select
+                  value={formData.go_verdict ?? ""}
+                  onChange={(e) =>
+                    setFormData((p) => ({
+                      ...p!,
+                      go_verdict: e.target.value === "" ? null : e.target.value,
+                    }))
+                  }
+                  className={inputClass}
+                >
+                  <option value="">—</option>
+                  {formData.go_verdict &&
+                    !GO_VERDICT_OPTIONS.includes(
+                      formData.go_verdict as (typeof GO_VERDICT_OPTIONS)[number]
+                    ) && (
+                      <option value={formData.go_verdict}>{formData.go_verdict}</option>
+                    )}
+                  {GO_VERDICT_OPTIONS.map((opt) => (
+                    <option key={opt} value={opt}>
+                      {opt}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <label className={labelClass}>OPPORTUNITY REASONING (기회 근거)</label>
+                <textarea
+                  rows={4}
+                  value={formData.opportunity_reasoning ?? ""}
+                  onChange={(e) => setFormData((p) => ({ ...p!, opportunity_reasoning: e.target.value }))}
+                  className={`${inputClass} resize-none`}
                 />
               </div>
             </div>
