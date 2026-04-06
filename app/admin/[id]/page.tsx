@@ -9,7 +9,7 @@ import { HazmatCheckboxes } from "@/components/admin/HazmatCheckboxes";
 import { AiPageLinksHelper } from "@/components/admin/AiPageLinksHelper";
 
 type SaveStatus = "idle" | "saved" | "error";
-type OpenSections = { s1: boolean; s2: boolean; s2b: boolean; s3: boolean; s4: boolean; s5: boolean; s6: boolean; s7: boolean };
+type OpenSections = { s1: boolean; s2: boolean; s3: boolean; s4: boolean; s5: boolean; s6: boolean; s7: boolean };
 type DiffItem = { field: string; fieldKo: string; before: string; after: string };
 
 const EXPORT_STATUS_OPTIONS = ["Green", "Yellow", "Red"];
@@ -155,13 +155,45 @@ export default function AdminEditPage() {
   const [openSections, setOpenSections] = useState<OpenSections>({
     s1: false,
     s2: false,
-    s2b: false,
     s3: false,
     s4: false,
     s5: false,
-    s6: true,
-    s7: true,
+    s6: false,
+    s7: false,
   });
+
+  const serializeSourcingTip = (steps: string[]): string => {
+    const headers = [
+      "Marketing Strategy",
+      "Price / Margin Strategy",
+      "B2B Sourcing Strategy",
+      "Customs / Compliance Strategy",
+      "Logistics / Shipping Strategy",
+    ];
+    return steps
+      .map((content, i) => `[${headers[i]}]\n${content}`)
+      .filter((_, i) => steps[i]?.trim())
+      .join("\n\n");
+  };
+
+  const parseTipToSteps = (raw: string | null | undefined): string[] => {
+    if (!raw) return ["", "", "", "", ""];
+    const regex = /(?:^|\n)\s*\[([^\n]*?)\]/g;
+    const matches: { title: string; index: number }[] = [];
+    let m;
+    while ((m = regex.exec(raw)) !== null) {
+      matches.push({ title: m[1].trim(), index: m.index });
+    }
+    if (matches.length === 0) return [raw.trim(), "", "", "", ""];
+    const steps: string[] = [];
+    for (let i = 0; i < 5; i++) {
+      if (!matches[i]) { steps.push(""); continue; }
+      const start = raw.indexOf("]", matches[i].index) + 1;
+      const end = matches[i + 1] ? matches[i + 1].index : raw.length;
+      steps.push(raw.slice(start, end).trim());
+    }
+    return steps;
+  };
 
   useEffect(() => {
     if (!id) return;
@@ -505,24 +537,64 @@ export default function AdminEditPage() {
               </div>
               <div className="flex flex-col gap-1.5">
                 <label className={labelClass}>Image URL (이미지URL)</label>
+                {formData.image_url && (
+                  <div className="rounded-xl overflow-hidden border border-[#E8E6E1] w-32 h-32 flex items-center justify-center bg-[#F8F7F4]">
+                    <img
+                      src={formData.image_url}
+                      alt="product"
+                      className="object-contain w-full h-full"
+                      onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
+                    />
+                  </div>
+                )}
                 <input
+                  type="text"
                   value={formData.image_url ?? ""}
                   onChange={(e) => setFormData((p) => ({ ...p!, image_url: e.target.value }))}
                   className={inputClass}
+                  placeholder="이미지 URL을 붙여넣으세요"
                 />
+                <p className="text-xs text-[#9E9C98]">⚠️ 이미지가 깨진 경우 네이버 상품 페이지에서 이미지 URL을 복사해 교체하세요.</p>
               </div>
               <div className="flex flex-col gap-1.5">
                 <label className={labelClass}>AI Image URL (AI이미지URL)</label>
+                {formData.ai_image_url && (
+                  <div className="rounded-xl overflow-hidden border border-[#E8E6E1] w-32 h-32 flex items-center justify-center bg-[#F8F7F4]">
+                    <img
+                      src={formData.ai_image_url}
+                      alt="ai product"
+                      className="object-contain w-full h-full"
+                      onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
+                    />
+                  </div>
+                )}
                 <input
+                  type="text"
                   value={formData.ai_image_url ?? ""}
                   onChange={(e) => setFormData((p) => ({ ...p!, ai_image_url: e.target.value }))}
                   className={inputClass}
-                  placeholder="AI-generated image URL"
+                  placeholder="AI 생성 이미지 URL"
                 />
               </div>
               <div className="flex flex-col gap-1.5">
                 <label className={labelClass}>GO Verdict (GO판정) <span className="text-[#9E9C98] normal-case font-normal">(자동)</span></label>
-                <div className={readOnlyClass}>{formData.go_verdict ?? "—"}</div>
+                <select
+                  value={formData.go_verdict ?? ""}
+                  onChange={(e) =>
+                    setFormData((p) => ({
+                      ...p!,
+                      go_verdict: e.target.value === "" ? null : e.target.value,
+                    }))
+                  }
+                  className={inputClass}
+                >
+                  <option value="">—</option>
+                  {GO_VERDICT_OPTIONS.map((opt) => (
+                    <option key={opt} value={opt}>
+                      {opt}
+                    </option>
+                  ))}
+                </select>
               </div>
               <div className="flex flex-col gap-1.5">
                 <label className={labelClass}>Composite Score (종합점수) <span className="text-[#9E9C98] normal-case font-normal">(자동)</span></label>
@@ -589,22 +661,6 @@ export default function AdminEditPage() {
                 </select>
               </div>
               <div className="flex flex-col gap-1.5">
-                <label className={labelClass}>WoW Growth (WoW성장률)</label>
-                <input
-                  value={formData.wow_rate ?? ""}
-                  onChange={(e) => setFormData((p) => ({ ...p!, wow_rate: e.target.value }))}
-                  className={inputClass}
-                />
-              </div>
-              <div className="flex flex-col gap-1.5">
-                <label className={labelClass}>MoM Growth (MoM성장률)</label>
-                <input
-                  value={formData.mom_growth ?? ""}
-                  onChange={(e) => setFormData((p) => ({ ...p!, mom_growth: e.target.value }))}
-                  className={inputClass}
-                />
-              </div>
-              <div className="flex flex-col gap-1.5">
                 <label className={labelClass}>Growth Evidence (성장근거)</label>
                 <textarea
                   rows={3}
@@ -622,24 +678,9 @@ export default function AdminEditPage() {
                   placeholder="e.g. Stable, Rising, Viral"
                 />
               </div>
-            </div>
-          )}
-        </div>
-
-        {/* Opportunity Status — Trend Signal area (editable) */}
-        <div className="bg-white rounded-2xl border border-[#E8E6E1] shadow-[0_1px_3px_0_rgb(26_25_22/0.06)] overflow-hidden">
-          <button
-            type="button"
-            onClick={() => toggleSection("s2b")}
-            className="w-full flex items-center justify-between px-6 py-4 hover:bg-[#F8F7F4] transition-colors"
-          >
-            <span className="text-sm font-semibold text-[#1A1916]">Opportunity Status</span>
-            <span className="text-[#9E9C98] text-xs">{openSections.s2b ? "▼" : "▶"}</span>
-          </button>
-          {openSections.s2b && (
-            <div className="px-6 pb-6 flex flex-col gap-5 border-t border-[#E8E6E1]">
+              {/* gap_status — moved from Opportunity Status */}
               <div className="flex flex-col gap-1.5">
-                <label className={labelClass}>GAP STATUS (갭 상태)</label>
+                <label className={labelClass}>GAP STATUS / Opportunity Status (갭 상태)</label>
                 <select
                   value={formData.gap_status ?? ""}
                   onChange={(e) => setFormData((p) => ({ ...p!, gap_status: e.target.value }))}
@@ -659,31 +700,35 @@ export default function AdminEditPage() {
                   ))}
                 </select>
               </div>
+              {/* platform_scores — moved from Social Proof */}
               <div className="flex flex-col gap-1.5">
-                <label className={labelClass}>GO VERDICT (최종 판정)</label>
-                <select
-                  value={formData.go_verdict ?? ""}
-                  onChange={(e) =>
-                    setFormData((p) => ({
-                      ...p!,
-                      go_verdict: e.target.value === "" ? null : e.target.value,
-                    }))
-                  }
+                <label className={labelClass}>Platform Scores JSON (플랫폼점수)</label>
+                <textarea
+                  rows={6}
+                  value={typeof formData.platform_scores === "string" ? formData.platform_scores : JSON.stringify(formData.platform_scores ?? {}, null, 2)}
+                  onChange={(e) => {
+                    try {
+                      const parsed = JSON.parse(e.target.value);
+                      setFormData((p) => ({ ...p!, platform_scores: parsed }));
+                    } catch {
+                      setFormData((p) => ({
+                        ...p!,
+                        platform_scores: e.target.value as unknown as ScoutFinalReportsRow["platform_scores"],
+                      }));
+                    }
+                  }}
+                  className={`${inputClass} resize-none font-mono text-xs`}
+                />
+              </div>
+              {/* new_content_volume — moved from Market Intelligence */}
+              <div className="flex flex-col gap-1.5">
+                <label className={labelClass}>New Content Volume (신규콘텐츠량)</label>
+                <input
+                  type="text"
+                  value={formData.new_content_volume ?? ""}
+                  onChange={(e) => setFormData((p) => ({ ...p!, new_content_volume: e.target.value }))}
                   className={inputClass}
-                >
-                  <option value="">—</option>
-                  {formData.go_verdict &&
-                    !GO_VERDICT_OPTIONS.includes(
-                      formData.go_verdict as (typeof GO_VERDICT_OPTIONS)[number]
-                    ) && (
-                      <option value={formData.go_verdict}>{formData.go_verdict}</option>
-                    )}
-                  {GO_VERDICT_OPTIONS.map((opt) => (
-                    <option key={opt} value={opt}>
-                      {opt}
-                    </option>
-                  ))}
-                </select>
+                />
               </div>
               <div className="flex flex-col gap-1.5">
                 <label className={labelClass}>OPPORTUNITY REASONING (기회 근거)</label>
@@ -744,20 +789,30 @@ export default function AdminEditPage() {
                 />
               </div>
               <div className="flex flex-col gap-1.5">
-                <label className={labelClass}>New Content Volume (신규콘텐츠량)</label>
-                <input
-                  value={formData.new_content_volume ?? ""}
-                  onChange={(e) => setFormData((p) => ({ ...p!, new_content_volume: e.target.value }))}
-                  className={inputClass}
-                />
-              </div>
-              <div className="flex flex-col gap-1.5">
                 <label className={labelClass}>Search Volume (검색볼륨)</label>
                 <input
                   value={formData.search_volume ?? ""}
                   onChange={(e) => setFormData((p) => ({ ...p!, search_volume: e.target.value }))}
                   className={inputClass}
                   placeholder="e.g. Rising (18,100/mo)"
+                />
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <label className={labelClass}>MoM Growth (MoM성장률)</label>
+                <input
+                  type="text"
+                  value={formData.mom_growth ?? ""}
+                  onChange={(e) => setFormData((p) => ({ ...p!, mom_growth: e.target.value }))}
+                  className={inputClass}
+                />
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <label className={labelClass}>WoW Growth (WoW성장률)</label>
+                <input
+                  type="text"
+                  value={formData.wow_rate ?? ""}
+                  onChange={(e) => setFormData((p) => ({ ...p!, wow_rate: e.target.value }))}
+                  className={inputClass}
                 />
               </div>
               <div className="flex flex-col gap-1.5">
@@ -768,21 +823,6 @@ export default function AdminEditPage() {
                   className={inputClass}
                   placeholder="e.g. Amazon US, TikTok Shop"
                 />
-              </div>
-              <div className="flex flex-col gap-1.5">
-                <label className={labelClass}>Global Prices (글로벌가격)</label>
-                <div className="bg-[#F8F7F4] rounded-xl border border-[#E8E6E1] p-4">
-                  <GlobalPricesHelper
-                    value={
-                      typeof formData.global_prices === "string"
-                        ? formData.global_prices
-                        : formData.global_prices != null
-                          ? JSON.stringify(formData.global_prices)
-                          : null
-                    }
-                    onChange={(s) => setFormData((p) => ({ ...p!, global_prices: s as unknown as ScoutFinalReportsRow["global_prices"] }))}
-                  />
-                </div>
               </div>
             </div>
           )}
@@ -880,23 +920,6 @@ export default function AdminEditPage() {
                 />
               </div>
               <div className="flex flex-col gap-1.5">
-                <label className={labelClass}>Gap Status (갭상태)</label>
-                <input
-                  value={formData.gap_status ?? ""}
-                  onChange={(e) => setFormData((p) => ({ ...p!, gap_status: e.target.value }))}
-                  className={inputClass}
-                />
-              </div>
-              <div className="flex flex-col gap-1.5">
-                <label className={labelClass}>Opportunity Reasoning (기회논리)</label>
-                <textarea
-                  rows={3}
-                  value={formData.opportunity_reasoning ?? ""}
-                  onChange={(e) => setFormData((p) => ({ ...p!, opportunity_reasoning: e.target.value }))}
-                  className={`${inputClass} resize-none`}
-                />
-              </div>
-              <div className="flex flex-col gap-1.5">
                 <label className={labelClass}>Rising Keywords (상승키워드)</label>
                 <div className="grid grid-cols-5 gap-2">
                   {ensureLength5(formData.rising_keywords).map((kw, i) => (
@@ -950,42 +973,27 @@ export default function AdminEditPage() {
                   ))}
                 </div>
               </div>
-              <div className="flex flex-col gap-1.5">
-                <label className={labelClass}>Platform Scores (플랫폼점수) (JSON)</label>
-                <textarea
-                  rows={4}
-                  value={
-                    typeof formData.platform_scores === "string"
-                      ? formData.platform_scores
-                      : formData.platform_scores != null
-                        ? JSON.stringify(formData.platform_scores, null, 2)
-                        : ""
-                  }
-                  onChange={(e) => {
-                    const s = e.target.value.trim();
-                    if (!s) {
-                      setFormData((p) => ({ ...p!, platform_scores: null }));
-                      return;
-                    }
-                    try {
-                      JSON.parse(s);
-                      setFormData((p) => ({ ...p!, platform_scores: s as unknown as ScoutFinalReportsRow["platform_scores"] }));
-                    } catch {
-                      setFormData((p) => ({ ...p!, platform_scores: s as unknown as ScoutFinalReportsRow["platform_scores"] }));
-                    }
-                  }}
-                  className={`${inputClass} resize-none font-mono text-xs`}
-                />
-              </div>
-              <div className="flex flex-col gap-1.5">
-                <label className={labelClass}>Sourcing Tip (소싱팁)</label>
-                <textarea
-                  rows={6}
-                  value={formData.sourcing_tip ?? ""}
-                  onChange={(e) => setFormData((p) => ({ ...p!, sourcing_tip: e.target.value }))}
-                  className={`${inputClass} resize-none`}
-                  placeholder="AI-generated. Edit to fix hallucinations."
-                />
+              {/* Scout Strategy Report - Steps 1-3 */}
+              <div className="flex flex-col gap-3 border border-[#E8E6E1] rounded-xl p-4">
+                <p className="text-sm font-semibold text-[#1A1916]">📋 Scout Strategy Report (Steps 1–3)</p>
+                {["Marketing Strategy", "Price / Margin Strategy", "B2B Sourcing Strategy"].map((header, i) => {
+                  const steps = parseTipToSteps(formData.sourcing_tip);
+                  return (
+                    <div key={i} className="flex flex-col gap-1.5">
+                      <label className={labelClass}>Step {i + 1}: {header}</label>
+                      <textarea
+                        rows={4}
+                        value={steps[i] ?? ""}
+                        onChange={(e) => {
+                          const current = parseTipToSteps(formData.sourcing_tip);
+                          current[i] = e.target.value;
+                          setFormData((p) => ({ ...p!, sourcing_tip: serializeSourcingTip(current) }));
+                        }}
+                        className={`${inputClass} resize-none`}
+                      />
+                    </div>
+                  );
+                })}
               </div>
               <div className="flex flex-col gap-1.5">
                 <label className={labelClass}>Trend Entry Strategy (진입전략)</label>
@@ -1164,6 +1172,28 @@ export default function AdminEditPage() {
                   className={`${inputClass} resize-none`}
                 />
               </div>
+              {/* Compliance & Logistics Strategy - Steps 4-5 */}
+              <div className="flex flex-col gap-3 border border-[#E8E6E1] rounded-xl p-4">
+                <p className="text-sm font-semibold text-[#1A1916]">📦 Compliance & Logistics Strategy (Steps 4–5)</p>
+                {["Customs / Compliance Strategy", "Logistics / Shipping Strategy"].map((header, i) => {
+                  const steps = parseTipToSteps(formData.sourcing_tip);
+                  return (
+                    <div key={i} className="flex flex-col gap-1.5">
+                      <label className={labelClass}>Step {i + 4}: {header}</label>
+                      <textarea
+                        rows={4}
+                        value={steps[i + 3] ?? ""}
+                        onChange={(e) => {
+                          const current = parseTipToSteps(formData.sourcing_tip);
+                          current[i + 3] = e.target.value;
+                          setFormData((p) => ({ ...p!, sourcing_tip: serializeSourcingTip(current) }));
+                        }}
+                        className={`${inputClass} resize-none`}
+                      />
+                    </div>
+                  );
+                })}
+              </div>
             </div>
           )}
         </div>
@@ -1269,25 +1299,9 @@ export default function AdminEditPage() {
                   <option value="false">No (불가)</option>
                 </select>
               </div>
-            </div>
-          )}
-        </div>
-
-        <div className="rounded-2xl border-2 border-[#16A34A] bg-white shadow-[0_1px_3px_0_rgb(26_25_22/0.06)] overflow-hidden">
-          <button
-            type="button"
-            onClick={() => toggleSection("s7")}
-            className="w-full flex items-center justify-between px-6 py-4 hover:bg-[#F8F7F4] transition-colors"
-          >
-            <div className="flex items-center gap-3">
-              <span className="text-xs font-bold text-white bg-[#16A34A] px-2 py-0.5 rounded-md uppercase tracking-widest">CEO</span>
-              <span className="text-sm font-semibold text-[#1A1916]">CEO Direct Input Zone</span>
-              <span className="text-xs text-[#9E9C98]">— 대표님 직접 입력 전용</span>
-            </div>
-            <span className="text-[#9E9C98] text-xs">{openSections.s7 ? "▼" : "▶"}</span>
-          </button>
-          {openSections.s7 && (
-            <div className="px-6 pb-6 flex flex-col gap-5 border-t-2 border-[#16A34A]">
+              <div className="border-t border-[#E8E6E1] pt-5">
+                <p className="text-sm font-semibold text-[#1A1916] mb-4">🎯 CEO Direct Input</p>
+              </div>
               <p className="text-xs text-[#9E9C98] pt-4">이 구역은 대표님이 브랜드와 직접 협의하거나 발품 팔아 확인한 정보만 입력합니다. Make.com이 자동으로 채우지 않습니다.</p>
 
               <p className="text-xs font-semibold text-[#16A34A] uppercase tracking-widest pt-2">B2B 소싱 원가 & 조건</p>
@@ -1392,6 +1406,35 @@ export default function AdminEditPage() {
                     onChange={(s) => setFormData((p) => ({ ...p!, ai_detail_page_links: s as unknown as ScoutFinalReportsRow["ai_detail_page_links"] }))}
                   />
                 </div>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Section 7 — Global Prices (맨 마지막) */}
+        <div className="bg-white rounded-2xl border border-[#E8E6E1] shadow-[0_1px_3px_0_rgb(26_25_22/0.06)] overflow-hidden">
+          <button
+            type="button"
+            onClick={() => toggleSection("s7")}
+            className="w-full flex items-center justify-between px-6 py-4 hover:bg-[#F8F7F4] transition-colors"
+          >
+            <span className="text-sm font-semibold text-[#1A1916]">🌍 Global Market Prices</span>
+            <span className="text-[#9E9C98] text-xs">{openSections.s7 ? "▼" : "▶"}</span>
+          </button>
+          {openSections.s7 && (
+            <div className="px-6 pb-6 flex flex-col gap-5 border-t border-[#E8E6E1]">
+              <div className="flex flex-col gap-1.5">
+                <label className={labelClass}>Global Prices (글로벌가격 — US/UK/EU/JP/SEA/UAE)</label>
+                <GlobalPricesHelper
+                  value={
+                    typeof formData.global_prices === "string"
+                      ? formData.global_prices
+                      : formData.global_prices != null
+                        ? JSON.stringify(formData.global_prices)
+                        : null
+                  }
+                  onChange={(s) => setFormData((p) => ({ ...p!, global_prices: s as unknown as ScoutFinalReportsRow["global_prices"] }))}
+                />
               </div>
             </div>
           )}
