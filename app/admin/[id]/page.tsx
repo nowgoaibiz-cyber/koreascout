@@ -462,6 +462,47 @@ export default function AdminEditPage() {
                 </div>
               </div>
               <div className="flex flex-col gap-1.5">
+                <label className={labelClass}>Image URL (이미지URL)</label>
+                {formData.image_url && (
+                  <div className="rounded-xl overflow-hidden border border-[#E8E6E1] w-48 h-48 flex items-center justify-center bg-[#F8F7F4]">
+                    <img
+                      src={formData.image_url}
+                      alt="product"
+                      className="object-contain w-full h-full"
+                      onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
+                    />
+                  </div>
+                )}
+                <input
+                  type="text"
+                  value={formData.image_url ?? ""}
+                  onChange={(e) => setFormData((p) => ({ ...p!, image_url: e.target.value }))}
+                  className={inputClass}
+                  placeholder="이미지 URL을 붙여넣으세요"
+                />
+                <p className="text-xs text-[#9E9C98]">⚠️ 이미지가 깨진 경우 네이버 상품 페이지에서 이미지 URL을 복사해 교체하세요.</p>
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <label className={labelClass}>AI Image URL (AI이미지URL)</label>
+                {formData.ai_image_url && (
+                  <div className="rounded-xl overflow-hidden border border-[#E8E6E1] w-48 h-48 flex items-center justify-center bg-[#F8F7F4]">
+                    <img
+                      src={formData.ai_image_url}
+                      alt="ai product"
+                      className="object-contain w-full h-full"
+                      onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
+                    />
+                  </div>
+                )}
+                <input
+                  type="text"
+                  value={formData.ai_image_url ?? ""}
+                  onChange={(e) => setFormData((p) => ({ ...p!, ai_image_url: e.target.value }))}
+                  className={inputClass}
+                  placeholder="AI 생성 이미지 URL"
+                />
+              </div>
+              <div className="flex flex-col gap-1.5">
                 <label className={labelClass}>Product Name (제품명)</label>
                 <input
                   value={formData.product_name ?? ""}
@@ -533,47 +574,6 @@ export default function AdminEditPage() {
                   value={formData.viability_reason ?? ""}
                   onChange={(e) => setFormData((p) => ({ ...p!, viability_reason: e.target.value }))}
                   className={`${inputClass} resize-none`}
-                />
-              </div>
-              <div className="flex flex-col gap-1.5">
-                <label className={labelClass}>Image URL (이미지URL)</label>
-                {formData.image_url && (
-                  <div className="rounded-xl overflow-hidden border border-[#E8E6E1] w-32 h-32 flex items-center justify-center bg-[#F8F7F4]">
-                    <img
-                      src={formData.image_url}
-                      alt="product"
-                      className="object-contain w-full h-full"
-                      onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
-                    />
-                  </div>
-                )}
-                <input
-                  type="text"
-                  value={formData.image_url ?? ""}
-                  onChange={(e) => setFormData((p) => ({ ...p!, image_url: e.target.value }))}
-                  className={inputClass}
-                  placeholder="이미지 URL을 붙여넣으세요"
-                />
-                <p className="text-xs text-[#9E9C98]">⚠️ 이미지가 깨진 경우 네이버 상품 페이지에서 이미지 URL을 복사해 교체하세요.</p>
-              </div>
-              <div className="flex flex-col gap-1.5">
-                <label className={labelClass}>AI Image URL (AI이미지URL)</label>
-                {formData.ai_image_url && (
-                  <div className="rounded-xl overflow-hidden border border-[#E8E6E1] w-32 h-32 flex items-center justify-center bg-[#F8F7F4]">
-                    <img
-                      src={formData.ai_image_url}
-                      alt="ai product"
-                      className="object-contain w-full h-full"
-                      onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
-                    />
-                  </div>
-                )}
-                <input
-                  type="text"
-                  value={formData.ai_image_url ?? ""}
-                  onChange={(e) => setFormData((p) => ({ ...p!, ai_image_url: e.target.value }))}
-                  className={inputClass}
-                  placeholder="AI 생성 이미지 URL"
                 />
               </div>
               <div className="flex flex-col gap-1.5">
@@ -1198,6 +1198,35 @@ export default function AdminEditPage() {
           )}
         </div>
 
+        {/* Section 7 — Global Market Prices (before Launch Kit) */}
+        <div className="bg-white rounded-2xl border border-[#E8E6E1] shadow-[0_1px_3px_0_rgb(26_25_22/0.06)] overflow-hidden">
+          <button
+            type="button"
+            onClick={() => toggleSection("s7")}
+            className="w-full flex items-center justify-between px-6 py-4 hover:bg-[#F8F7F4] transition-colors"
+          >
+            <span className="text-sm font-semibold text-[#1A1916]">🌍 Global Market Prices</span>
+            <span className="text-[#9E9C98] text-xs">{openSections.s7 ? "▼" : "▶"}</span>
+          </button>
+          {openSections.s7 && (
+            <div className="px-6 pb-6 flex flex-col gap-5 border-t border-[#E8E6E1]">
+              <div className="flex flex-col gap-1.5">
+                <label className={labelClass}>Global Prices (글로벌가격 — US/UK/EU/JP/SEA/UAE)</label>
+                <GlobalPricesHelper
+                  value={
+                    typeof formData.global_prices === "string"
+                      ? formData.global_prices
+                      : formData.global_prices != null
+                        ? JSON.stringify(formData.global_prices)
+                        : null
+                  }
+                  onChange={(s) => setFormData((p) => ({ ...p!, global_prices: s as unknown as ScoutFinalReportsRow["global_prices"] }))}
+                />
+              </div>
+            </div>
+          )}
+        </div>
+
         {/* Section 6 — Launch & Execution Kit (default open) */}
         <div className="bg-white rounded-2xl border border-[#E8E6E1] shadow-[0_1px_3px_0_rgb(26_25_22/0.06)] overflow-hidden">
           <button
@@ -1406,35 +1435,6 @@ export default function AdminEditPage() {
                     onChange={(s) => setFormData((p) => ({ ...p!, ai_detail_page_links: s as unknown as ScoutFinalReportsRow["ai_detail_page_links"] }))}
                   />
                 </div>
-              </div>
-            </div>
-          )}
-        </div>
-
-        {/* Section 7 — Global Prices (맨 마지막) */}
-        <div className="bg-white rounded-2xl border border-[#E8E6E1] shadow-[0_1px_3px_0_rgb(26_25_22/0.06)] overflow-hidden">
-          <button
-            type="button"
-            onClick={() => toggleSection("s7")}
-            className="w-full flex items-center justify-between px-6 py-4 hover:bg-[#F8F7F4] transition-colors"
-          >
-            <span className="text-sm font-semibold text-[#1A1916]">🌍 Global Market Prices</span>
-            <span className="text-[#9E9C98] text-xs">{openSections.s7 ? "▼" : "▶"}</span>
-          </button>
-          {openSections.s7 && (
-            <div className="px-6 pb-6 flex flex-col gap-5 border-t border-[#E8E6E1]">
-              <div className="flex flex-col gap-1.5">
-                <label className={labelClass}>Global Prices (글로벌가격 — US/UK/EU/JP/SEA/UAE)</label>
-                <GlobalPricesHelper
-                  value={
-                    typeof formData.global_prices === "string"
-                      ? formData.global_prices
-                      : formData.global_prices != null
-                        ? JSON.stringify(formData.global_prices)
-                        : null
-                  }
-                  onChange={(s) => setFormData((p) => ({ ...p!, global_prices: s as unknown as ScoutFinalReportsRow["global_prices"] }))}
-                />
               </div>
             </div>
           )}

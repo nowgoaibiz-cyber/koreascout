@@ -3,28 +3,28 @@
 import { useState, useEffect } from "react";
 
 type HazmatState = {
-  is_liquid: boolean;
-  is_powder: boolean;
-  is_battery: boolean;
-  is_aerosol: boolean;
+  contains_liquid: boolean;
+  contains_powder: boolean;
+  contains_battery: boolean;
+  contains_aerosol: boolean;
 };
 
 function parseValue(value: string | null): HazmatState {
   const def: HazmatState = {
-    is_liquid: false,
-    is_powder: false,
-    is_battery: false,
-    is_aerosol: false,
+    contains_liquid: false,
+    contains_powder: false,
+    contains_battery: false,
+    contains_aerosol: false,
   };
   if (!value?.trim()) return def;
   try {
     const p = JSON.parse(value);
     if (typeof p !== "object" || p === null) return def;
     return {
-      is_liquid: Boolean(p.is_liquid),
-      is_powder: Boolean(p.is_powder),
-      is_battery: Boolean(p.is_battery),
-      is_aerosol: Boolean(p.is_aerosol),
+      contains_liquid: Boolean(p.contains_liquid),
+      contains_powder: Boolean(p.contains_powder),
+      contains_battery: Boolean(p.contains_battery),
+      contains_aerosol: Boolean(p.contains_aerosol),
     };
   } catch {
     return def;
@@ -49,19 +49,19 @@ export function HazmatCheckboxes({
     setState(newState);
     onChange(
       JSON.stringify({
-        is_liquid: newState.is_liquid,
-        is_powder: newState.is_powder,
-        is_battery: newState.is_battery,
-        is_aerosol: newState.is_aerosol,
+        contains_liquid: newState.contains_liquid,
+        contains_powder: newState.contains_powder,
+        contains_battery: newState.contains_battery,
+        contains_aerosol: newState.contains_aerosol,
       })
     );
   }
 
   const items: { key: keyof HazmatState; icon: string; label: string }[] = [
-    { key: "is_liquid", icon: "💧", label: "Liquid" },
-    { key: "is_powder", icon: "🧪", label: "Powder" },
-    { key: "is_battery", icon: "🔋", label: "Battery" },
-    { key: "is_aerosol", icon: "💨", label: "Aerosol" },
+    { key: "contains_liquid", icon: "💧", label: "Liquid" },
+    { key: "contains_powder", icon: "🧪", label: "Powder" },
+    { key: "contains_battery", icon: "🔋", label: "Battery" },
+    { key: "contains_aerosol", icon: "💨", label: "Aerosol" },
   ];
 
   return (
