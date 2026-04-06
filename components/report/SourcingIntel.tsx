@@ -122,6 +122,13 @@ export function SourcingIntel({
                 {report.shipping_tier ? describeShippingTier(report.shipping_tier).description : "—"}
               </p>
             </LockedValue>
+            <div className="mt-4 flex items-start gap-2 bg-white border border-[#E8E6E1] rounded-xl px-5 py-4">
+              <span className="text-base mt-0.5">📦</span>
+              <p className="text-xs text-[#6B6860] leading-relaxed">
+                <span className="font-bold text-[#1A1916]">Logistics Data Notice — </span>
+                Weights and dimensions reflect standard export packaging estimates (product + protective materials + outer carton). Final shipping costs vary by carrier and consolidation method — use as a baseline for landed cost calculations.
+              </p>
+            </div>
           </div>
 
           <div className="border-t border-[#E8E6E1] pt-8 mt-4">
