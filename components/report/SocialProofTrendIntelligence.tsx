@@ -141,7 +141,7 @@ export function SocialProofTrendIntelligence({
               {risingKw.length > 0 ? risingKw.map((kw) => (
                 <span
                   key={kw}
-                  className="flex-1 min-w-max text-center bg-[#DCFCE7] text-[#16A34A] rounded-full px-6 py-3 text-sm font-bold tracking-tight hover:bg-[#BBF7D0] transition-colors cursor-default"
+                  className="text-center bg-[#DCFCE7] text-[#16A34A] rounded-full px-6 py-3 text-sm font-bold tracking-tight hover:bg-[#BBF7D0] transition-colors cursor-default"
                 >
                   ↗ {kw}
                 </span>
@@ -157,7 +157,7 @@ export function SocialProofTrendIntelligence({
               {seoKw.length > 0 ? seoKw.map((kw) => (
                 <span
                   key={kw}
-                  className="flex-1 min-w-max text-center bg-white border border-[#E8E6E1] text-[#1A1916] rounded-full px-6 py-3 text-sm font-bold tracking-tight hover:bg-[#F1F0ED] transition-colors cursor-default"
+                  className="text-center bg-white border border-[#E8E6E1] text-[#1A1916] rounded-full px-6 py-3 text-sm font-bold tracking-tight hover:bg-[#F1F0ED] transition-colors cursor-default"
                 >
                   {kw}
                 </span>
@@ -173,7 +173,7 @@ export function SocialProofTrendIntelligence({
               {viralHt.length > 0 ? viralHt.map((ht) => (
                 <span
                   key={ht}
-                  className="flex-1 min-w-max text-center bg-white border border-[#E8E6E1] text-[#1A1916] rounded-full px-6 py-3 text-sm font-black hover:bg-[#F1F0ED] transition-colors cursor-default"
+                  className="text-center bg-white border border-[#E8E6E1] text-[#1A1916] rounded-full px-6 py-3 text-sm font-black hover:bg-[#F1F0ED] transition-colors cursor-default"
                 >
                   #{ht.startsWith("#") ? ht.slice(1) : ht}
                 </span>
