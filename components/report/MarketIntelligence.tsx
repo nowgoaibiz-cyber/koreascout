@@ -202,7 +202,9 @@ export function MarketIntelligence({
   const hasProfitBlock = profitMultiplier || estimatedCost || globalValuation;
 
   const searchVolume = report.search_volume?.trim() || null;
-  const momGrowth = (report.mom_growth?.trim() && report.mom_growth.trim() !== "N/A" && report.mom_growth.trim() !== "n/a")
+  const momGrowth = (report.mom_growth?.trim() &&
+    report.mom_growth.trim() !== "N/A" &&
+    report.mom_growth.trim() !== "n/a")
     ? report.mom_growth.trim()
     : null;
   const wowRate = report.wow_rate?.trim() || null;
