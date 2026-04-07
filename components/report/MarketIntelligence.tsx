@@ -317,6 +317,9 @@ export function MarketIntelligence({
                   <p className="text-base italic text-[#6B6860]">
                     ● Untapped = No established sellers detected. <span className="text-sm">* Data may vary based on real-time market changes.</span>
                   </p>
+                  <p className="text-[11px] text-[#9E9C98] mt-1">
+                    💱 All prices are shown in USD, converted from local currency at the exchange rate on the date of research. Prices may vary due to currency fluctuations.
+                  </p>
                   <ScrollToIdButton sectionId="global-market-proof" className="text-base font-bold text-[#16A34A] hover:underline transition-colors block mt-[0.6cm]">
                     Analyze Pricing Sources &amp; Entry Points ↓
                   </ScrollToIdButton>

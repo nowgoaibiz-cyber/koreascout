@@ -8,6 +8,7 @@ type ListingItem = {
   price_usd?: number;
   url?: string;
   sold_out?: boolean;
+  is_official?: boolean;
   [k: string]: unknown;
 };
 
@@ -73,6 +74,7 @@ function normalizeListing(l: unknown, source?: "sea" | "shopee_lazada"): Listing
       price_usd,
       url: typeof o.url === "string" ? o.url : "",
       sold_out,
+      is_official: o.is_official === true,
     };
     if (source) item.source = source;
     return item;
@@ -400,6 +402,20 @@ export function GlobalPricesHelper({
                       className="rounded border-[#E8E6E1] text-[#16A34A] focus:ring-[#16A34A]"
                     />
                     Sold Out
+                  </label>
+                  <label className="flex items-center gap-1 text-xs text-[#16A34A] whitespace-nowrap cursor-pointer flex-shrink-0">
+                    <input
+                      type="checkbox"
+                      checked={listing.is_official === true}
+                      onChange={(e) =>
+                        setListing(regionKey, originalIndex, {
+                          ...listing,
+                          is_official: e.target.checked,
+                        })
+                      }
+                      className="appearance-none w-4 h-4 rounded border border-[#E8E6E1] bg-white checked:bg-[#16A34A] checked:border-[#16A34A] focus:border-[#16A34A] outline-none"
+                    />
+                    Official
                   </label>
                   <button
                     type="button"

@@ -199,13 +199,32 @@ export function parseGlobalPricesForGrid(
       const data = flat[r.key];
       const priceUsd = data?.price_usd;
       const priceOrig = data?.price_original != null ? String(data.price_original).replace(/[$,]/g, "") : "";
-      const num = priceUsd != null ? priceUsd : priceOrig ? parseFloat(priceOrig) : NaN;
+      // Auto-derive price from listings if region price_usd is 0 or missing
+      let effectivePriceUsd = priceUsd;
+      if ((effectivePriceUsd == null || effectivePriceUsd === 0) && data?.listings?.length) {
+        const activePrices = (data.listings as Array<{ price_usd?: number | null; sold_out?: boolean }>)
+          .filter(l => !l.sold_out && typeof l.price_usd === "number" && l.price_usd > 0)
+          .map(l => l.price_usd as number);
+        if (activePrices.length > 0) {
+          effectivePriceUsd = Math.min(...activePrices);
+        }
+      }
+      // Auto-derive official_url from listings if not set
+      let effectiveOfficialUrl = data?.official_url ?? null;
+      if (!effectiveOfficialUrl && data?.listings?.length) {
+        const officialListing = (data.listings as Array<{ url?: string | null; is_official?: boolean }>)
+          .find(l => l.is_official === true);
+        if (officialListing?.url) effectiveOfficialUrl = officialListing.url;
+      }
+      const num = effectivePriceUsd != null && effectivePriceUsd > 0
+        ? effectivePriceUsd
+        : priceOrig ? parseFloat(priceOrig) : NaN;
       const isBlueOcean = Number.isNaN(num) || num === 0;
       const priceDisplay = !isBlueOcean
         ? (typeof data?.price_original === "string"
             ? data.price_original
-            : priceUsd != null
-              ? `$${priceUsd}`
+            : effectivePriceUsd != null && effectivePriceUsd > 0
+              ? `$${effectivePriceUsd}`
               : priceOrig
                 ? `$${priceOrig}`
                 : null)
@@ -221,7 +240,7 @@ export function parseGlobalPricesForGrid(
         review_data,
         seller_type,
         url: data?.url ?? null,
-        official_url: data?.official_url ?? null,
+        official_url: effectiveOfficialUrl,
         official_price_usd: (() => {
           if (!data?.official_url || !data?.listings) return null;
           const found = (data.listings as Array<{ url?: string | null; price_usd?: number | null }>)
