@@ -151,10 +151,25 @@ export function MarketIntelligence({
   const profitMultiplier = parseFloat(String(report.profit_multiplier ?? "0").replace(/[^0-9.]/g, "")) || 1;
   const rows = parseGlobalPricesForGrid(report.global_prices, report.global_price as string | Record<string, unknown> | null | undefined);
 
+  // 전체 listings 가격 수집 (지역 최저가가 아닌 모든 listings)
+  const allListingPrices: number[] = [];
+  rows.forEach((r) => {
+    if (r.listings && Array.isArray(r.listings)) {
+      r.listings.forEach((l: { price_usd?: number | null; sold_out?: boolean }) => {
+        if (!l.sold_out && typeof l.price_usd === "number" && l.price_usd > 0) {
+          allListingPrices.push(l.price_usd);
+        }
+      });
+    }
+  });
+
+  // listings 없으면 지역 최저가 폴백
   const pricedRows = rows.filter((r) => !r.isBlueOcean && r.priceDisplay);
-  const parsedPrices = pricedRows
+  const regionPrices = pricedRows
     .map((r) => parseFloat(r.priceDisplay?.replace(/[^0-9.]/g, "") ?? ""))
     .filter((n) => !isNaN(n) && n > 0);
+
+  const parsedPrices = allListingPrices.length > 0 ? allListingPrices : regionPrices;
 
   function calcMedian(nums: number[]): number {
     const sorted = [...nums].sort((a, b) => a - b);
@@ -187,7 +202,9 @@ export function MarketIntelligence({
   const hasProfitBlock = profitMultiplier || estimatedCost || globalValuation;
 
   const searchVolume = report.search_volume?.trim() || null;
-  const momGrowth = report.mom_growth?.trim() || null;
+  const momGrowth = (report.mom_growth?.trim() && report.mom_growth.trim() !== "N/A" && report.mom_growth.trim() !== "n/a")
+    ? report.mom_growth.trim()
+    : null;
   const wowRate = report.wow_rate?.trim() || null;
   const hasSearchGrowth = searchVolume || momGrowth || wowRate;
 
