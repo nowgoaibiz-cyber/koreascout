@@ -235,8 +235,41 @@ export function GlobalPricesHelper({
         next[index] = listing;
         return next;
       });
+      // Official 체크 시 region official_url 자동 반영
+      setData((prev) => {
+        const next = JSON.parse(JSON.stringify(prev)) as GlobalPricesLike;
+
+        // 해당 region의 official_url 업데이트
+        const setOfficialUrl = (regionObj: Record<string, unknown> | undefined, url: string | null) => {
+          if (regionObj) regionObj.official_url = url;
+        };
+
+        if (listing.is_official && listing.url) {
+          // Official 체크 ON → 이 URL을 official_url로 설정
+          if (regionKey === "us") setOfficialUrl(next.us_uk_eu?.us as Record<string, unknown>, listing.url);
+          else if (regionKey === "gb") setOfficialUrl(next.us_uk_eu?.uk as Record<string, unknown>, listing.url);
+          else if (regionKey === "eu") setOfficialUrl(next.us_uk_eu?.eu as Record<string, unknown>, listing.url);
+          else if (regionKey === "jp") setOfficialUrl(next.jp_sea?.jp as Record<string, unknown>, listing.url);
+          else if (regionKey === "sea") setOfficialUrl(next.jp_sea?.sea as Record<string, unknown>, listing.url);
+          else if (regionKey === "uae") setOfficialUrl(next.uae?.uae as Record<string, unknown>, listing.url);
+        } else if (!listing.is_official) {
+          // Official 체크 OFF → 다른 Official 체크된 listing이 없으면 official_url 제거
+          const updatedListings = getRegionListings(next, regionKey);
+          const hasOtherOfficial = updatedListings.some((l, i) => i !== index && l.is_official);
+          if (!hasOtherOfficial) {
+            if (regionKey === "us") setOfficialUrl(next.us_uk_eu?.us as Record<string, unknown>, null);
+            else if (regionKey === "gb") setOfficialUrl(next.us_uk_eu?.uk as Record<string, unknown>, null);
+            else if (regionKey === "eu") setOfficialUrl(next.us_uk_eu?.eu as Record<string, unknown>, null);
+            else if (regionKey === "jp") setOfficialUrl(next.jp_sea?.jp as Record<string, unknown>, null);
+            else if (regionKey === "sea") setOfficialUrl(next.jp_sea?.sea as Record<string, unknown>, null);
+            else if (regionKey === "uae") setOfficialUrl(next.uae?.uae as Record<string, unknown>, null);
+          }
+        }
+        onChange(JSON.stringify(next));
+        return next;
+      });
     },
-    [updateRegionListings]
+    [updateRegionListings, getRegionListings, onChange]
   );
 
   const addListing = useCallback(

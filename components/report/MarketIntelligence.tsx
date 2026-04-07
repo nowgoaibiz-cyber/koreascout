@@ -156,13 +156,29 @@ export function MarketIntelligence({
     .map((r) => parseFloat(r.priceDisplay?.replace(/[^0-9.]/g, "") ?? ""))
     .filter((n) => !isNaN(n) && n > 0);
 
+  function calcMedian(nums: number[]): number {
+    const sorted = [...nums].sort((a, b) => a - b);
+    const mid = Math.floor(sorted.length / 2);
+    return sorted.length % 2 !== 0
+      ? sorted[mid]
+      : (sorted[mid - 1] + sorted[mid]) / 2;
+  }
+
+  function calcTrimmedMedian(nums: number[]): number {
+    if (nums.length <= 2) return calcMedian(nums);
+    const sorted = [...nums].sort((a, b) => a - b);
+    const trimCount = Math.floor(sorted.length * 0.15);
+    const trimmed = sorted.slice(trimCount, sorted.length - trimCount);
+    return calcMedian(trimmed.length > 0 ? trimmed : sorted);
+  }
+
   let globalValuation: number | null = null;
   const globalValuationLabel = "Avg. Global Retail";
 
   if (parsedPrices.length === 1) {
     globalValuation = parsedPrices[0];
   } else if (parsedPrices.length >= 2) {
-    globalValuation = parsedPrices.reduce((a, b) => a + b, 0) / parsedPrices.length;
+    globalValuation = calcTrimmedMedian(parsedPrices);
   } else if (estimatedCost && profitMultiplier) {
     globalValuation = estimatedCost * profitMultiplier;
   }

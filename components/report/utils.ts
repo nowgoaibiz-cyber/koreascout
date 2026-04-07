@@ -120,6 +120,8 @@ export type RegionPriceRow = {
   official_url?: string | null;
   official_price_usd?: number | null;
   official_platform?: string | null;
+  /** Trimmed-median global retail summary; set by parseGlobalPricesForGrid when applicable. */
+  globalRetailValuation?: number | null;
   price_local?: number | null;
   currency?: string | null;
   listings?: Array<{
@@ -134,9 +136,55 @@ export type RegionPriceRow = {
 
 export function parseGlobalPricesForGrid(
   globalPrices: unknown,
-  globalPriceText: string | Record<string, unknown> | null | undefined
+  globalPriceText: string | Record<string, unknown> | null | undefined,
+  valuationContext?: { estimatedCost?: number | null; profitMultiplier?: number | null } | null
 ): RegionPriceRow[] {
   const out: RegionPriceRow[] = [];
+
+  function attachGlobalValuation(rows: RegionPriceRow[]) {
+    // Helper: 중위값 계산
+    function calcMedian(nums: number[]): number {
+      const sorted = [...nums].sort((a, b) => a - b);
+      const mid = Math.floor(sorted.length / 2);
+      return sorted.length % 2 !== 0
+        ? sorted[mid]
+        : (sorted[mid - 1] + sorted[mid]) / 2;
+    }
+
+    // Helper: 덤핑/이상값 제거 후 중위값 (상하위 15% 제거)
+    function calcTrimmedMedian(nums: number[]): number {
+      if (nums.length <= 2) return calcMedian(nums);
+      const sorted = [...nums].sort((a, b) => a - b);
+      const trimCount = Math.floor(sorted.length * 0.15);
+      const trimmed = sorted.slice(trimCount, sorted.length - trimCount);
+      return calcMedian(trimmed.length > 0 ? trimmed : sorted);
+    }
+
+    const pricedRows = rows.filter((r) => !r.isBlueOcean && r.priceDisplay);
+    const parsedPrices = pricedRows
+      .map((r) => parseFloat(r.priceDisplay?.replace(/[^0-9.]/g, "") ?? ""))
+      .filter((n) => !isNaN(n) && n > 0);
+
+    const estimatedCost = valuationContext?.estimatedCost ?? null;
+    const profitMultiplier =
+      valuationContext?.profitMultiplier != null
+        ? parseFloat(String(valuationContext.profitMultiplier).replace(/[^0-9.]/g, "")) || 1
+        : null;
+
+    let globalValuation: number | null = null;
+
+    if (parsedPrices.length === 1) {
+      globalValuation = parsedPrices[0];
+    } else if (parsedPrices.length >= 2) {
+      globalValuation = calcTrimmedMedian(parsedPrices);
+    } else if (estimatedCost && profitMultiplier) {
+      globalValuation = estimatedCost * profitMultiplier;
+    }
+
+    for (const row of rows) {
+      row.globalRetailValuation = globalValuation;
+    }
+  }
   let parsed: Record<string, { price_usd?: number; price_original?: string | number; platform?: string }> | null = null;
   if (globalPrices != null) {
     try {
@@ -242,15 +290,15 @@ export function parseGlobalPricesForGrid(
         url: data?.url ?? null,
         official_url: effectiveOfficialUrl,
         official_price_usd: (() => {
-          if (!data?.official_url || !data?.listings) return null;
+          if (!effectiveOfficialUrl || !data?.listings) return null;
           const found = (data.listings as Array<{ url?: string | null; price_usd?: number | null }>)
-            .find(l => l.url === data.official_url);
+            .find(l => l.url === effectiveOfficialUrl);
           return (found?.price_usd && found.price_usd > 0) ? found.price_usd : null;
         })(),
         official_platform: (() => {
-          if (!data?.official_url || !data?.listings) return null;
+          if (!effectiveOfficialUrl || !data?.listings) return null;
           const found = (data.listings as Array<{ url?: string | null; platform?: string | null }>)
-            .find(l => l.url === data.official_url);
+            .find(l => l.url === effectiveOfficialUrl);
           return found?.platform ?? null;
         })(),
         price_local: data?.price_local ?? null,
@@ -258,6 +306,7 @@ export function parseGlobalPricesForGrid(
         listings: (data?.listings ?? null) as RegionPriceRow["listings"],
       });
     }
+    attachGlobalValuation(out);
     return out;
   }
   if (typeof globalPriceText === "string" && globalPriceText.trim()) {
@@ -284,6 +333,7 @@ export function parseGlobalPricesForGrid(
           isBlueOcean,
         });
       }
+      attachGlobalValuation(out);
       return out;
     }
   }
@@ -303,7 +353,26 @@ export function parseGlobalPricesForGrid(
       });
     }
   }
-  return out.length > 0 ? out : GLOBAL_REGIONS.map((r) => ({ flag: r.flag, label: r.label, priceDisplay: null, platform: null, isBlueOcean: true, url: null, official_url: null, official_price_usd: null, official_platform: null, price_local: null, currency: null, listings: null }));
+  if (out.length > 0) {
+    attachGlobalValuation(out);
+    return out;
+  }
+  const fallback = GLOBAL_REGIONS.map((r) => ({
+    flag: r.flag,
+    label: r.label,
+    priceDisplay: null,
+    platform: null,
+    isBlueOcean: true,
+    url: null,
+    official_url: null,
+    official_price_usd: null,
+    official_platform: null,
+    price_local: null,
+    currency: null,
+    listings: null,
+  }));
+  attachGlobalValuation(fallback);
+  return fallback;
 }
 
 export function parseGlobalPrices(
