@@ -15,7 +15,7 @@ type DiffItem = { field: string; fieldKo: string; before: string; after: string 
 const EXPORT_STATUS_OPTIONS = ["Green", "Yellow", "Red"];
 const COMPETITION_OPTIONS = ["Low", "Medium", "High"];
 const GAP_STATUS_OPTIONS = ["Blue Ocean", "Emerging", "Competitive", "Saturated"] as const;
-const GO_VERDICT_OPTIONS = ["GO", "WATCH", "NO-GO"] as const;
+const GO_VERDICT_OPTIONS = ["GO", "CAUTIOUS GO", "WATCH", "NO GO"] as const;
 
 /** Korean labels for every DB field (for diff modal & edit history) */
 const FIELD_LABELS_KO: Record<string, string> = {
@@ -171,8 +171,7 @@ export default function AdminEditPage() {
       "Logistics / Shipping Strategy",
     ];
     return steps
-      .map((content, i) => `[${headers[i]}]\n${content}`)
-      .filter((_, i) => steps[i]?.trim())
+      .map((content, i) => `[${headers[i]}]\n${content ?? ""}`)
       .join("\n\n");
   };
 
@@ -577,7 +576,7 @@ export default function AdminEditPage() {
                 />
               </div>
               <div className="flex flex-col gap-1.5">
-                <label className={labelClass}>GO Verdict (GO판정) <span className="text-[#9E9C98] normal-case font-normal">(자동)</span></label>
+                <label className={labelClass}>GO Verdict (GO판정)</label>
                 <select
                   value={formData.go_verdict ?? ""}
                   onChange={(e) =>

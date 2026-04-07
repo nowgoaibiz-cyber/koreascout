@@ -67,7 +67,7 @@ function normalizeListing(l: unknown, source?: "sea" | "shopee_lazada"): Listing
   if (l && typeof l === "object" && !Array.isArray(l)) {
     const o = l as Record<string, unknown>;
     const price_usd = typeof o.price_usd === "number" ? o.price_usd : 0;
-    const sold_out = o.sold_out === true || price_usd === 0;
+    const sold_out = o.sold_out === true;
     const item: ListingItem = {
       platform: typeof o.platform === "string" ? o.platform : "",
       price_usd,
@@ -240,7 +240,7 @@ export function GlobalPricesHelper({
   const addListing = useCallback(
     (regionKey: string) => {
       updateRegionListings(regionKey, (list) => {
-        const newItem: ListingItem = { platform: "", price_usd: 0, url: "", sold_out: true };
+        const newItem: ListingItem = { platform: "", price_usd: 0, url: "", sold_out: false };
         if (regionKey === "sea") (newItem as ListingItem & { source?: string }).source = "sea";
         return [...list, newItem];
       });
