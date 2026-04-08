@@ -151,6 +151,14 @@ export function MarketIntelligence({
   const profitMultiplier = parseFloat(String(report.profit_multiplier ?? "0").replace(/[^0-9.]/g, "")) || 1;
   const rows = parseGlobalPricesForGrid(report.global_prices, report.global_price as string | Record<string, unknown> | null | undefined);
 
+  const strategicTargetRaw = report.global_price
+    ? parseFloat(String(report.global_price).replace(/[^0-9.]/g, ""))
+    : null;
+  const strategicTarget =
+    strategicTargetRaw != null && !isNaN(strategicTargetRaw) && strategicTargetRaw > 0
+      ? strategicTargetRaw
+      : null;
+
   // 전체 listings 가격 수집 (지역 최저가가 아닌 모든 listings)
   const allListingPrices: number[] = [];
   rows.forEach((r) => {
@@ -242,7 +250,7 @@ export function MarketIntelligence({
               </p>
             </div>
 
-            <div className="grid grid-cols-2">
+            <div className={strategicTarget ? "grid grid-cols-3" : "grid grid-cols-2"}>
               <div className="pr-8 border-r border-[#E8E6E1]">
                 <p className="text-lg font-bold text-[#6B6860] uppercase tracking-widest" style={{ marginTop: "0.8cm" }}>
                   Est. Wholesale
@@ -266,7 +274,7 @@ export function MarketIntelligence({
                   )}
                 </div>
               </div>
-              <div className="pl-8">
+              <div className={strategicTarget ? "px-8 border-r border-[#E8E6E1]" : "pl-8"}>
                 <p className="text-lg font-bold text-[#6B6860] uppercase tracking-widest" style={{ marginTop: "0.8cm" }}>
                   Global Valuation
                 </p>
@@ -287,6 +295,28 @@ export function MarketIntelligence({
                   </div>
                 )}
               </div>
+              {strategicTarget && (
+                <div className="pl-8">
+                  <p
+                    className="text-lg font-bold text-[#6B6860] uppercase tracking-widest"
+                    style={{ marginTop: "0.8cm" }}
+                  >
+                    Strategic Target Price
+                  </p>
+                  <p
+                    className="text-5xl font-extrabold text-[#1A1916] tracking-tighter"
+                    style={{ marginTop: "0.4cm" }}
+                  >
+                    ~${strategicTarget.toFixed(2)}
+                  </p>
+                  <div className="mt-2">
+                    <p className="text-sm font-semibold text-[#6B6860]">Analyst Target</p>
+                    <p className="text-xs italic text-[#9E9C98] mt-0.5">
+                      Set by KoreaScout analyst.
+                    </p>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         )}

@@ -27,7 +27,11 @@ export function GroupBBrokerSection({
         HS Code &amp; Broker Weapon
       </p>
 
-      <div className="grid grid-cols-2 gap-6">
+      <div
+        className={
+          isEmailOpen ? "flex flex-col gap-4" : "grid grid-cols-2 gap-6"
+        }
+      >
         <div>
           <p className="text-sm font-bold text-[#6B6860] tracking-widest mb-4">HS Code</p>
           <LockedValue locked={!canSeeAlpha} tier="alpha" minHeight="80px">
