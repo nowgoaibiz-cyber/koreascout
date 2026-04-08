@@ -374,7 +374,20 @@ export function MarketIntelligence({
                     <div className="mb-16">
                       <p className="text-sm font-bold text-[#6B6860] tracking-widest mb-4">SEARCH VOLUME</p>
                       <LockedValue locked={!canSeeStandard} tier="standard">
-                        <p className="text-4xl font-extrabold text-[#1A1916]">{searchVolume}</p>
+                        {(() => {
+                          const parenIdx = searchVolume.indexOf('(');
+                          if (parenIdx > 0) {
+                            const mainPart = searchVolume.slice(0, parenIdx).trim();
+                            const subPart = searchVolume.slice(parenIdx + 1).replace(/\)$/, '').trim();
+                            return (
+                              <div>
+                                <p className="text-4xl font-extrabold text-[#1A1916]">{mainPart}</p>
+                                <p className="text-sm text-[#6B6860] mt-2 leading-relaxed">{subPart}</p>
+                              </div>
+                            );
+                          }
+                          return <p className="text-4xl font-extrabold text-[#1A1916]">{searchVolume}</p>;
+                        })()}
                       </LockedValue>
                     </div>
                   )}
@@ -382,7 +395,7 @@ export function MarketIntelligence({
                     <div className="mb-16">
                       <p className="text-sm font-bold text-[#6B6860] tracking-widest mb-4">MoM GROWTH</p>
                       <LockedValue locked={!canSeeStandard} tier="standard">
-                        {momGrowth.length <= 10 ? (
+                        {momGrowth.length <= 20 ? (
                           <p className={`text-4xl font-extrabold ${isPositiveGrowth(momGrowth) ? "text-[#16A34A]" : "text-[#DC2626]"}`}>
                             {momGrowth} <span className="text-3xl">{isPositiveGrowth(momGrowth) ? "↑" : "↓"}</span>
                           </p>
@@ -398,7 +411,7 @@ export function MarketIntelligence({
                     <div className="mb-16">
                       <p className="text-sm font-bold text-[#6B6860] tracking-widest mb-4">WoW GROWTH</p>
                       <LockedValue locked={!canSeeStandard} tier="standard">
-                        {wowRate.length <= 10 ? (
+                        {wowRate.length <= 20 ? (
                           <p className={`text-4xl font-extrabold ${isPositiveGrowth(wowRate) ? "text-[#16A34A]" : "text-[#DC2626]"}`}>
                             {wowRate} <span className="text-3xl">{isPositiveGrowth(wowRate) ? "↑" : "↓"}</span>
                           </p>
