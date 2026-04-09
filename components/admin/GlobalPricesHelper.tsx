@@ -67,11 +67,11 @@ function getRegionData(data: GlobalPricesLike, regionKey: string): RegionDataLik
 function normalizeListing(l: unknown, source?: "sea" | "shopee_lazada"): ListingItem {
   if (l && typeof l === "object" && !Array.isArray(l)) {
     const o = l as Record<string, unknown>;
-    const price_usd = typeof o.price_usd === "number" ? o.price_usd : 0;
-    const sold_out = o.sold_out === true;
+    const price_usd_val = typeof o.price_usd === "number" ? o.price_usd : 0;
+    const sold_out = o.sold_out === true || price_usd_val === 0;
     const item: ListingItem = {
       platform: typeof o.platform === "string" ? o.platform : "",
-      price_usd,
+      price_usd: price_usd_val,
       url: typeof o.url === "string" ? o.url : "",
       sold_out,
       is_official: o.is_official === true,
