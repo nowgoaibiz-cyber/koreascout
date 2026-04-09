@@ -151,8 +151,8 @@ export function MarketIntelligence({
   const profitMultiplier = parseFloat(String(report.profit_multiplier ?? "0").replace(/[^0-9.]/g, "")) || 1;
   const rows = parseGlobalPricesForGrid(report.global_prices, report.global_price as string | Record<string, unknown> | null | undefined);
 
-  const strategicTargetRaw = report.global_price
-    ? parseFloat(String(report.global_price).replace(/[^0-9.]/g, ""))
+  const strategicTargetRaw = (report as unknown as Record<string, unknown>).strategy_price
+    ? parseFloat(String((report as unknown as Record<string, unknown>).strategy_price).replace(/[^0-9.]/g, ""))
     : null;
   const strategicTarget =
     strategicTargetRaw != null && !isNaN(strategicTargetRaw) && strategicTargetRaw > 0

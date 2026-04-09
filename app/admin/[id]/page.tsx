@@ -232,7 +232,7 @@ export default function AdminEditPage() {
     "market_viability", "competition_level", "gap_status", "gap_index", "billable_weight_g",
     "go_verdict", "composite_score", "growth_signal", "search_volume", "best_platform", "trend_entry_strategy",
     "shipping_tier", "key_risk_ingredient", "hazmat_summary", "global_site_url", "b2b_inquiry_url", "can_oem", "ai_image_url",
-    "wow_rate", "mom_growth", "growth_evidence", "profit_multiplier", "global_price", "top_selling_point", "common_pain_point",
+    "wow_rate", "mom_growth", "growth_evidence", "profit_multiplier", "strategy_price", "top_selling_point", "common_pain_point",
     "new_content_volume", "global_prices", "buzz_summary", "kr_local_score", "global_trend_score", "kr_evidence",
     "global_evidence", "kr_source_used", "opportunity_reasoning", "rising_keywords", "seo_keywords", "viral_hashtags",
     "platform_scores", "sourcing_tip", "hs_code", "hs_description", "status_reason", "composition_info", "spec_summary",
@@ -777,14 +777,14 @@ export default function AdminEditPage() {
                   type="number"
                   step="0.01"
                   value={
-                    formData.global_price != null
-                      ? String(formData.global_price)
+                    (formData as Record<string, unknown>).strategy_price != null
+                      ? String((formData as Record<string, unknown>).strategy_price)
                       : ""
                   }
                   onChange={(e) =>
                     setFormData((p) => ({
                       ...p!,
-                      global_price: e.target.value === "" ? null : e.target.value,
+                      strategy_price: e.target.value === "" ? null : e.target.value,
                     }))
                   }
                   placeholder="예: 18.50 — 비우면 자동계산 표시"
