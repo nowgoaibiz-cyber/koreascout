@@ -6,6 +6,7 @@ import { ExpandableText } from "@/components/ExpandableText";
 import { LockedValue } from "@/components/ui/LockedValue";
 import { AlertTriangle, ArrowRight, CheckCircle, ShieldCheck, XCircle } from "lucide-react";
 import type { ScoutFinalReportsRow } from "@/types/database";
+import type { ReactNode } from "react";
 import { describeShippingTier, parseSourcingStrategy } from "./utils";
 
 export function SourcingIntel({
@@ -36,6 +37,34 @@ export function SourcingIntel({
     if (s === "Yellow") return { icon: "⚠", label: "Conditional Export", color: "text-[#D97706]", bg: "bg-[#FEF3C7]", border: "border-[#FDE68A]" };
     return { icon: "✗", label: "Export Restricted", color: "text-[#DC2626]", bg: "bg-[#FEE2E2]", border: "border-[#FECACA]" };
   })();
+
+  function renderWithLinks(text: string): ReactNode[] {
+    const linkRegex = /\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g;
+    const parts: ReactNode[] = [];
+    let lastIndex = 0;
+    let match: RegExpExecArray | null;
+    while ((match = linkRegex.exec(text)) !== null) {
+      if (match.index > lastIndex) {
+        parts.push(text.slice(lastIndex, match.index));
+      }
+      parts.push(
+        <a
+          key={match.index}
+          href={match[2]}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-[#16A34A] underline hover:text-[#15803D] transition-colors"
+        >
+          {match[1]}
+        </a>
+      );
+      lastIndex = match.index + match[0].length;
+    }
+    if (lastIndex < text.length) {
+      parts.push(text.slice(lastIndex));
+    }
+    return parts.length > 0 ? parts : [text];
+  }
 
   return (
     <section
@@ -205,7 +234,7 @@ export function SourcingIntel({
                         </p>
                         <p className="text-base font-extrabold text-[#1A1916] mb-3">{step.label}</p>
                         <p className="text-lg text-[#1A1916] leading-relaxed whitespace-pre-line">
-                          {step.content}
+                          {renderWithLinks(step.content)}
                         </p>
                       </div>
                     </div>

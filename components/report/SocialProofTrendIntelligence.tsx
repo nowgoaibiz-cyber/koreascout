@@ -3,6 +3,7 @@
 import { LockedValue } from "@/components/ui/LockedValue";
 import { Globe } from "lucide-react";
 import type { ScoutFinalReportsRow } from "@/types/database";
+import type { ReactNode } from "react";
 import { normalizeToArray, parseSourcingStrategy } from "./utils";
 
 export function SocialProofTrendIntelligence({
@@ -24,6 +25,34 @@ export function SocialProofTrendIntelligence({
 
   const allSteps = parseSourcingStrategy(report.sourcing_tip);
   const steps = allSteps.slice(0, 3);
+
+  function renderWithLinks(text: string): ReactNode[] {
+    const linkRegex = /\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g;
+    const parts: ReactNode[] = [];
+    let lastIndex = 0;
+    let match: RegExpExecArray | null;
+    while ((match = linkRegex.exec(text)) !== null) {
+      if (match.index > lastIndex) {
+        parts.push(text.slice(lastIndex, match.index));
+      }
+      parts.push(
+        <a
+          key={match.index}
+          href={match[2]}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-[#16A34A] underline hover:text-[#15803D] transition-colors"
+        >
+          {match[1]}
+        </a>
+      );
+      lastIndex = match.index + match[0].length;
+    }
+    if (lastIndex < text.length) {
+      parts.push(text.slice(lastIndex));
+    }
+    return parts.length > 0 ? parts : [text];
+  }
 
   return (
     <section
@@ -212,7 +241,7 @@ export function SocialProofTrendIntelligence({
                   </p>
                   <LockedValue locked={!canSeeAlpha} tier="alpha" minHeight="80px">
                     <p className="text-lg text-[#1A1916] leading-relaxed mb-16 font-medium whitespace-pre-line">
-                      {step?.content || "—"}
+                      {step?.content ? renderWithLinks(step.content) : "—"}
                     </p>
                   </LockedValue>
                 </div>
