@@ -139,6 +139,9 @@ function setRegionListings(
   regionKey: string,
   listings: ListingItem[]
 ): GlobalPricesLike {
+  const activePrices = listings
+    .filter((l) => !l.sold_out && (l.price_usd ?? 0) > 0)
+    .map((l) => l.price_usd as number);
   const next = JSON.parse(JSON.stringify(data)) as GlobalPricesLike;
   if (regionKey === "sea") {
     const seaListings = listings
@@ -150,6 +153,12 @@ function setRegionListings(
     if (!next.jp_sea) next.jp_sea = {};
     if (!next.jp_sea.sea) next.jp_sea.sea = {};
     next.jp_sea.sea.listings = seaListings;
+    if (activePrices.length === 0) {
+      next.jp_sea.sea.price_usd = 0;
+      next.jp_sea.sea.url = null;
+    } else {
+      next.jp_sea.sea.price_usd = Math.min(...activePrices);
+    }
     if (!next.shopee_lazada) next.shopee_lazada = {};
     next.shopee_lazada.listings = shopeeListings;
     return next;
@@ -163,30 +172,60 @@ function setRegionListings(
     if (!next.us_uk_eu) next.us_uk_eu = {};
     if (!next.us_uk_eu.us) next.us_uk_eu.us = {};
     next.us_uk_eu.us.listings = listings.map(stripSource);
+    if (activePrices.length === 0) {
+      next.us_uk_eu.us.price_usd = 0;
+      next.us_uk_eu.us.url = null;
+    } else {
+      next.us_uk_eu.us.price_usd = Math.min(...activePrices);
+    }
     return next;
   }
   if (regionKey === "gb") {
     if (!next.us_uk_eu) next.us_uk_eu = {};
     if (!next.us_uk_eu.uk) next.us_uk_eu.uk = {};
     next.us_uk_eu.uk.listings = listings.map(stripSource);
+    if (activePrices.length === 0) {
+      next.us_uk_eu.uk.price_usd = 0;
+      next.us_uk_eu.uk.url = null;
+    } else {
+      next.us_uk_eu.uk.price_usd = Math.min(...activePrices);
+    }
     return next;
   }
   if (regionKey === "eu") {
     if (!next.us_uk_eu) next.us_uk_eu = {};
     if (!next.us_uk_eu.eu) next.us_uk_eu.eu = {};
     next.us_uk_eu.eu.listings = listings.map(stripSource);
+    if (activePrices.length === 0) {
+      next.us_uk_eu.eu.price_usd = 0;
+      next.us_uk_eu.eu.url = null;
+    } else {
+      next.us_uk_eu.eu.price_usd = Math.min(...activePrices);
+    }
     return next;
   }
   if (regionKey === "jp") {
     if (!next.jp_sea) next.jp_sea = {};
     if (!next.jp_sea.jp) next.jp_sea.jp = {};
     next.jp_sea.jp.listings = listings.map(stripSource);
+    if (activePrices.length === 0) {
+      next.jp_sea.jp.price_usd = 0;
+      next.jp_sea.jp.url = null;
+    } else {
+      next.jp_sea.jp.price_usd = Math.min(...activePrices);
+    }
     return next;
   }
   if (regionKey === "uae") {
     if (!next.uae) next.uae = {};
     if (!next.uae.uae) next.uae.uae = {};
     next.uae.uae.listings = listings.map(stripSource);
+    if (activePrices.length === 0) {
+      next.uae.uae.price_usd = 0;
+      next.uae.uae.url = null;
+    } else {
+      next.uae.uae.price_usd = Math.min(...activePrices);
+    }
     return next;
   }
   return next;
