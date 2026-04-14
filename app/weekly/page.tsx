@@ -3,6 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import { getAuthTier } from "@/lib/auth-server";
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import Script from "next/script";
 import { ChevronLeft, ChevronRight, FileText, Lock } from "lucide-react";
 import { MonthAccordion } from "./MonthAccordion";
 
@@ -168,6 +169,55 @@ export default async function WeeklyHubPage() {
 
   return (
     <div className="min-h-screen bg-[#F8F7F4]">
+      <div
+        id="prelaunch-popup"
+        className="fixed inset-0 z-[1000] hidden items-center justify-center bg-black/40 backdrop-blur-sm p-4"
+        aria-hidden="true"
+      >
+        <div className="bg-[#0A0908] border border-[#1A1916] rounded-2xl shadow-xl w-full max-w-sm mx-auto p-6">
+          <h2 className="text-[#F8F7F4] font-bold text-xl">
+            🔍 Beta Launch: April 25
+          </h2>
+          <p className="mt-4 text-[#9E9C98] text-sm leading-relaxed whitespace-pre-line">
+            {"KoreaScout is in the final stages of curating this week's K-beauty intelligence reports.\n\nBeta access opens April 25, 2026."}
+          </p>
+          <button
+            id="prelaunch-popup-close"
+            type="button"
+            className="mt-6 bg-[#16A34A] text-white rounded-xl px-6 py-3 hover:bg-[#15803D] transition-colors"
+          >
+            Got it
+          </button>
+        </div>
+      </div>
+      <Script id="weekly-prelaunch-popup" strategy="afterInteractive">
+        {`
+          (function () {
+            var cutoff = new Date('2026-04-25');
+            if (new Date() >= cutoff) return;
+            var tier = ${JSON.stringify(tier)};
+            if (!tier) return;
+            var key = 'ks:prelaunch:dismissed';
+            if (window.localStorage.getItem(key) === '1') return;
+            var popup = document.getElementById('prelaunch-popup');
+            var close = document.getElementById('prelaunch-popup-close');
+            if (!popup || !close) return;
+            popup.classList.remove('hidden');
+            popup.classList.add('flex');
+            popup.setAttribute('aria-hidden', 'false');
+            var dismiss = function () {
+              window.localStorage.setItem(key, '1');
+              popup.classList.remove('flex');
+              popup.classList.add('hidden');
+              popup.setAttribute('aria-hidden', 'true');
+            };
+            close.addEventListener('click', dismiss, { once: true });
+            popup.addEventListener('click', function (e) {
+              if (e.target === popup) dismiss();
+            });
+          })();
+        `}
+      </Script>
       {/* 1. DARK HERO — section label + tier badge only */}
       <section className="bg-[#1A1916] pt-24 pb-6 px-6">
         <div className="max-w-5xl mx-auto">
