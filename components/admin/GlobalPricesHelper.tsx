@@ -231,6 +231,45 @@ function setRegionListings(
   return next;
 }
 
+function setRegionSellerType(
+  data: GlobalPricesLike,
+  regionKey: string,
+  sellerType: string
+): GlobalPricesLike {
+  const next = JSON.parse(JSON.stringify(data)) as GlobalPricesLike;
+  if (regionKey === "us") {
+    if (!next.us_uk_eu) next.us_uk_eu = {};
+    if (!next.us_uk_eu.us) next.us_uk_eu.us = {};
+    next.us_uk_eu.us.seller_type = sellerType;
+  } else if (regionKey === "gb") {
+    if (!next.us_uk_eu) next.us_uk_eu = {};
+    if (!next.us_uk_eu.uk) next.us_uk_eu.uk = {};
+    next.us_uk_eu.uk.seller_type = sellerType;
+  } else if (regionKey === "eu") {
+    if (!next.us_uk_eu) next.us_uk_eu = {};
+    if (!next.us_uk_eu.eu) next.us_uk_eu.eu = {};
+    next.us_uk_eu.eu.seller_type = sellerType;
+  } else if (regionKey === "jp") {
+    if (!next.jp_sea) next.jp_sea = {};
+    if (!next.jp_sea.jp) next.jp_sea.jp = {};
+    next.jp_sea.jp.seller_type = sellerType;
+  } else if (regionKey === "sea") {
+    if (!next.jp_sea) next.jp_sea = {};
+    if (!next.jp_sea.sea) next.jp_sea.sea = {};
+    next.jp_sea.sea.seller_type = sellerType;
+  } else if (regionKey === "uae") {
+    if (!next.uae) next.uae = {};
+    if (!next.uae.uae) next.uae.uae = {};
+    next.uae.uae.seller_type = sellerType;
+  }
+  return next;
+}
+
+function getRegionSellerType(data: GlobalPricesLike, regionKey: string): string {
+  const region = getRegionData(data, regionKey);
+  return (region?.seller_type as string) ?? "";
+}
+
 export function GlobalPricesHelper({
   value,
   onChange,
@@ -382,6 +421,21 @@ export function GlobalPricesHelper({
             </button>
 
             {/* Listings — expand when open */}
+            {openRegions[regionKey] !== false && (
+              <div className="flex items-center gap-2 px-4 py-2 border-b border-[#E8E6E1] bg-[#FAFAF9]">
+                <span className="text-xs text-[#9E9C98] whitespace-nowrap w-[100px]">Seller Type</span>
+                <input
+                  type="text"
+                  placeholder="e.g. 3rd Party Reseller"
+                  value={getRegionSellerType(data, regionKey)}
+                  onChange={(e) => {
+                    const next = setRegionSellerType(data, regionKey, e.target.value);
+                    emit(next);
+                  }}
+                  className={`${inputCls} flex-1`}
+                />
+              </div>
+            )}
             {openRegions[regionKey] !== false && sorted.map((listing, idx) => {
               const price = listing.price_usd ?? 0;
               const isBest = hasAnyPrice && idx === bestIdx;
