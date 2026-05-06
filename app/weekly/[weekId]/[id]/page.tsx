@@ -140,7 +140,7 @@ export default async function ProductDetailPage({
   ];
 
   return (
-    <div className="flex min-h-screen bg-[#F8F7F4]">
+    <div className="flex min-h-screen bg-[#F8F7F4] overflow-x-hidden">
       {userEmail && (
         <ZombieWatermark email={userEmail} />
       )}
@@ -148,7 +148,7 @@ export default async function ProductDetailPage({
         <ClientLeftNav sections={sections} userEmail={userEmail} tier={tier as "free" | "standard" | "alpha"} />
       </div>
       <div className="flex-1 pl-0 md:pl-56">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 pt-6 sm:pt-10 pb-20">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 pt-6 sm:pt-10 pb-20 bg-[#F8F7F4]">
           <div className="space-y-6 mt-10">
             <Link href={`/weekly/${weekId}`} className="text-base font-medium text-[#6B6860] hover:text-[#1A1916] transition-colors inline-block">
               ← Back to week
