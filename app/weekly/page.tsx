@@ -310,10 +310,10 @@ export default async function WeeklyHubPage() {
             )}
 
             {sampleProduct && (
-              <div className="max-w-3xl mx-auto px-4 mb-8">
+              <div className="max-w-3xl mx-auto px-4 mb-12">
                 <p className="text-xs font-semibold tracking-widest text-[#16A34A] mb-3">SAMPLE REPORT</p>
                 <Link
-                  href={`/weekly/${sampleProduct.week_id}/${sampleProduct.id}`}
+                  href="/sample-report"
                   className="block bg-white rounded-2xl border border-[#16A34A] p-6 hover:shadow-md transition-all"
                 >
                   <div className="flex items-center gap-4">
