@@ -45,10 +45,7 @@ export default function HeroCTA() {
         {loading ? (
           <span>Loading...</span>
         ) : (
-          <>
-            <span>View Weekly Report</span>
-            <span>→</span>
-          </>
+          <span>Scout Now →</span>
         )}
       </button>
     </div>

@@ -142,6 +142,53 @@ function toDisplayVal(v: unknown): string {
   return String(v);
 }
 
+function SampleToggle({ reportId }: { reportId: string }) {
+  const [isSample, setIsSample] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    (async () => {
+      const res = await fetch("/api/admin/site-config?key=sample_product_id", {
+        credentials: "include",
+      });
+      if (!res.ok) return;
+      const data = await res.json();
+      setIsSample(data.value === reportId);
+    })();
+  }, [reportId]);
+
+  async function toggle() {
+    setLoading(true);
+    try {
+      const newValue = isSample ? null : reportId;
+      const res = await fetch("/api/admin/site-config", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ key: "sample_product_id", value: newValue }),
+      });
+      if (res.ok) setIsSample(!isSample);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  return (
+    <button
+      type="button"
+      onClick={toggle}
+      disabled={loading}
+      className={`text-sm font-semibold px-4 py-1.5 rounded-lg transition-colors disabled:opacity-60 ${
+        isSample
+          ? "bg-[#16A34A] text-white hover:bg-[#15803D]"
+          : "bg-[#F2F1EE] text-[#6B6860] hover:bg-[#E8E6E1]"
+      }`}
+    >
+      {isSample ? "✓ Sample Report" : "Set as Sample"}
+    </button>
+  );
+}
+
 export default function AdminEditPage() {
   const params = useParams();
   const router = useRouter();
@@ -363,6 +410,8 @@ export default function AdminEditPage() {
         <span className="text-sm font-semibold text-[#1A1916] truncate max-w-[200px] mx-2">
           {formData.product_name ?? "—"}
         </span>
+        {/* Sample Report Toggle */}
+        <SampleToggle reportId={id} />
         <div className="flex items-center gap-2">
           {saveStatus === "saved" && (
             <span className="text-xs text-[#16A34A]">Saved!</span>

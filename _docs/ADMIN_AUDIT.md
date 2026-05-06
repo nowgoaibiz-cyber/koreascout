@@ -1,430 +1,2601 @@
-# Admin · 고객 PDP 정렬 감사 보고서
+# Admin code audit (verbatim snapshot)
 
-**생성일:** 2026-04-06  
-**범위:** 읽기 전용 코드 스캔. `scout_final_reports` 기준 필드·섹션 매핑.  
-**목적:** 고객용 주간 상품 상세(`/weekly/[weekId]/[id]`)의 시각적 읽기 순서에 맞춰 관리자 편집(`/admin/[id]`) 필드 순서를 재설계하기 위한 근거 자료.
+Paths under repo root. All sections are EXACT file contents from disk.
 
----
+## File list
 
-## STEP 1 — 관련 파일 인벤토리
-
-### 1.1 관리자 상품 상세
-
-| 역할 | 경로 | 비고 |
-|------|------|------|
-| 페이지 (동적 `[id]`) | `app/admin/[id]/page.tsx` | 전체 폼·접이 섹션·헤더 상태·저장 모달 |
-| 가져온 컴포넌트 | `components/admin/GlobalPricesHelper.tsx` | `global_prices` JSON 편집 (L773–785 근처에서 사용) |
-| | `components/admin/HazmatCheckboxes.tsx` | `hazmat_status` JSON 불리언 4종 |
-| | `components/admin/AiPageLinksHelper.tsx` | `ai_detail_page_links` URL 배열 (최대 5) |
-| API (데이터) | `app/api/admin/reports/[id]/route.ts` | (본 감사에서 페이지만 상세 추적; PATCH는 동일 리포트 ID) |
-
-**`app/admin/[id]/page.tsx` import 블록 (라인 참조):**
-
-- L6–9: `GlobalPricesHelper`, `HazmatCheckboxes`, `AiPageLinksHelper`
-
-### 1.2 고객용 상품 상세
-
-| 역할 | 경로 | 라인(대략) |
-|------|------|------------|
-| 페이지 | `app/weekly/[weekId]/[id]/page.tsx` | L1–226 |
-| 좌측 사이드바 네비 | `components/layout/ClientLeftNav.tsx` | L25–118 (`sections` prop으로 라벨 전달) |
-| 섹션 데이터 정의 | 동일 `page.tsx` 내 `sections` 배열 | L133–140 |
-
-**`app/weekly/[weekId]/[id]/page.tsx` import·컴포넌트 트리 순서:**
-
-| 순서 | import / 사용 | 소스 파일 |
-|------|-----------------|-----------|
-| 1 | `ClientLeftNav` | `components/layout/ClientLeftNav.tsx` |
-| 2 | `ProductIdentity` | `components/ProductIdentity.tsx` |
-| 3 | `TrendSignalDashboard` | `components/report/TrendSignalDashboard.tsx` (`components/report/index.ts` L1 재export) |
-| 4 | `MarketIntelligence` | `components/report/MarketIntelligence.tsx` |
-| 5 | `SocialProofTrendIntelligence` | `components/report/SocialProofTrendIntelligence.tsx` |
-| 6 | `SourcingIntel` (조건부) | `components/report/SourcingIntel.tsx` |
-| 7 | `SupplierContact` (`id="section-6"` 래퍼) | `components/report/SupplierContact.tsx` |
-| 기타 | `ZombieWatermark`, `EXPORT_STATUS_DISPLAY` | `components/report/constants` 등 |
-
-**조건부 렌더:** `hasLogistics`가 true일 때만 `SourcingIntel` 표시 (`page.tsx` L109–122, L179).
-
-**하위·연관 (고객 Export 섹션):** `SourcingIntel` 내부에서 `GroupBBrokerSection` (`components/GroupBBrokerSection.tsx`) 사용.
+| Path |
+|------|
+| `app/admin/page.tsx` |
+| `app/admin/login/page.tsx` |
+| `app/admin/[id]/page.tsx` |
+| `components/admin/HazmatCheckboxes.tsx` |
+| `components/admin/AiPageLinksHelper.tsx` |
+| `components/admin/GlobalPricesHelper.tsx` |
 
 ---
 
-## STEP 2 — 고객 페이지: 시각적 섹션·필드 순서 (위→아래, 좌→우)
+## 1. `app/admin/page.tsx` (full file)
 
-아래는 **실제 DOM/레이아웃 순서**를 기준으로 함. DB 컬럼명은 코드에서 확인된 것만 표기.
+```tsx
+"use client";
 
-### Product Identity (`section-1`, 사이드바: "Product Identity")
+import { useEffect, useState, useMemo } from "react";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
 
-- **히어로 행 (좌: 이미지 | 우: 메타+텍스트)**
-  - **이미지:** `image_url`
-  - **배지 행 (좌→우):** `category`, `export_status` (표시명은 `EXPORT_STATUS_DISPLAY`)
-  - **제목:** `translated_name` 없으면 `product_name`
-  - **부제:** `product_name` (있을 때)
-  - **판정·점수:** `go_verdict`, `composite_score` (`ProductIdentity.tsx` L162–187)
-- **가격 블록**
-  - **KRW / USD:** `kr_price` (USD는 Frankfurter API 환율로 클라이언트 계산, DB의 `kr_price_usd`와 별개)
-  - **Est. Wholesale:** `estimated_cost_usd`
-- **카피:** Alpha 유도 CTA → 앵커 `#section-6` (필드 아님)
-- **Why It's Trending:** `viability_reason`
+type ReportRow = {
+  id: string;
+  product_name: string | null;
+  week_id: string;
+  market_viability: number | null;
+  status: string | null;
+  created_at: string;
+};
 
-**이 섹션에서 고객 UI에 직접 안 나오지만 DB에 있는 정체성 필드 (동일 파일/페이지 다른 곳에서 쓰일 수 있음):** `naver_product_name`, `naver_link`, `ai_image_url` 등은 아래 Admin 인벤토리 참고.
+function formatWeek(weekId: string): string {
+  const m = weekId.match(/^(\d{4})-W?(\d+)$/i);
+  if (m) return `W${m[2]}-${m[1]}`;
+  return weekId;
+}
 
----
+export default function AdminPage() {
+  const router = useRouter();
+  const [list, setList] = useState<ReportRow[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [weekFilter, setWeekFilter] = useState<string>("");
+  const [statusFilter, setStatusFilter] = useState<string>("");
 
-### Trend Signals (`section-2`, 사이드바: "Trend Signals")
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const res = await fetch("/api/admin/reports", { credentials: "include" });
+        if (!res.ok) return;
+        const data = await res.json();
+        if (!cancelled) setList(Array.isArray(data) ? data : []);
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    })();
+    return () => { cancelled = true; };
+  }, []);
 
-- **인트로** (정적 카피, DB 없음)
-- **3열 그리드 (좌→우):**
-  - **Market Score:** `market_viability`
-  - **Competition Level:** `competition_level`
-  - **Opportunity Status:** `gap_status` (라벨 문구 "Opportunity Status", `TrendSignalDashboard.tsx` L71–77)
-- **Platform Breakdown:** `platform_scores` (TikTok / Instagram / YouTube / Reddit 등 파싱)
-- **Growth Momentum**
-  - **강조 숫자/라벨:** `growth_signal`
-  - **본문:** `growth_evidence`, `new_content_volume`
-- **푸터** (정적 소스 나열)
+  const weeks = useMemo(() => {
+    const set = new Set(list.map((r) => r.week_id).filter(Boolean));
+    return Array.from(set).sort((a, b) => b.localeCompare(a));
+  }, [list]);
 
----
+  const filtered = useMemo(() => {
+    return list.filter((row) => {
+      if (weekFilter && row.week_id !== weekFilter) return false;
+      if (statusFilter === "Draft") return row.status !== "published";
+      if (statusFilter === "Live") return row.status === "published";
+      return true;
+    });
+  }, [list, weekFilter, statusFilter]);
 
-### Market Intelligence (`section-3`, 사이드바: "Market Intelligence")
+  async function handleLogout() {
+    await fetch("/api/admin/logout", {
+      method: "POST",
+      credentials: "include",
+      redirect: "manual",
+    });
+    window.location.href = "/admin/login";
+  }
 
-- **마진·밸류에이션 블록 (있을 때만):** `profit_multiplier`, `estimated_cost_usd`, `global_prices` 파싱 결과 및/또는 추정식 (`MarketIntelligence.tsx` L150–256)
-- **Global Market Availability**
-  - **Best Entry:** `best_platform`
-  - **6개 전략 시장 그리드:** `global_prices` (+ 레거시 `global_price`는 `parseGlobalPricesForGrid`에서 보조)
-- **Search & Growth (그리드 왼쪽 열):** `search_volume`, `mom_growth`, `wow_rate`
-- **Analyst Brief (그리드 오른쪽 열):** `top_selling_point` (Competitive Edge), `common_pain_point` (Risk Factor)
-- **푸터** (정적)
+  return (
+    <div className="bg-[#F8F7F4] min-h-screen">
+      <header className="bg-white border-b border-[#E8E6E1] px-6 py-4 flex items-center justify-between">
+        <span className="text-lg font-bold text-[#1A1916]">KoreaScout Admin</span>
+        <button
+          type="button"
+          onClick={handleLogout}
+          className="text-sm text-[#9E9C98] hover:text-[#1A1916] transition-colors"
+        >
+          Logout
+        </button>
+      </header>
 
-**앵커 이슈:** `MarketIntelligence.tsx` L320에 `ScrollToIdButton sectionId="global-market-proof"` 가 있으나, 현재 `SupplierContact.tsx`에는 `id="global-market-proof"` 요소가 **없음** (grep 기준). 스크롤 타깃 불일치 가능.
+      <div className="px-6 py-3 flex items-center gap-4">
+        <select
+          value={weekFilter}
+          onChange={(e) => setWeekFilter(e.target.value)}
+          className="bg-white border border-[#E8E6E1] rounded-md px-3 py-2 text-sm text-[#1A1916] focus:border-[#16A34A] outline-none"
+        >
+          <option value="">All Weeks</option>
+          {weeks.map((w) => (
+            <option key={w} value={w}>
+              {formatWeek(w)}
+            </option>
+          ))}
+        </select>
+        <select
+          value={statusFilter}
+          onChange={(e) => setStatusFilter(e.target.value)}
+          className="bg-white border border-[#E8E6E1] rounded-md px-3 py-2 text-sm text-[#1A1916] focus:border-[#16A34A] outline-none"
+        >
+          <option value="">All</option>
+          <option value="Draft">Draft</option>
+          <option value="Live">Live</option>
+        </select>
+      </div>
 
----
-
-### Social Proof (`section-4`, 사이드바: "Social Proof", H2는 "Social Proof & Trend Intelligence")
-
-- **Social Buzz:** `buzz_summary`
-- **Market Gap Analysis**
-  - **Korean Traction (좌):** `kr_local_score`, `kr_evidence`, `kr_source_used`
-  - **Global Presence (우):** `global_trend_score`, `global_evidence`
-- **Gap Index:** `gap_index`, `gap_status` (배지), `trend_entry_strategy`, `opportunity_reasoning`
-- **Trending Signals:** `rising_keywords`, `seo_keywords`, `viral_hashtags`
-- **Scout Strategy Report:** `sourcing_tip` 파싱 후 Step 1–3 (마케팅/가격/B2B 소싱)
-- **푸터** (정적)
-
----
-
-### Export & Logistics (`section-5`, 사이드바: "Export & Logistics", H2: "Export & Logistics Intel")
-
-- **Export Readiness:** `export_status`, `status_reason`
-- **HS Code & Broker Weapon:** `hs_code`, `hs_description` (+ `BrokerEmailDraft`가 `report` 전달)
-- **Logistics Dashboard:** `actual_weight_g`, `volumetric_weight_g`, `dimensions_cm`, `billable_weight_g`, `shipping_tier`, `hazmat_status`, `required_certificates`, `composition_info`, `spec_summary`, `hazmat_summary`
-- **Compliance & Logistics Strategy:** `sourcing_tip` 파싱 Step 4–5, `shipping_notes` (조건부 표시)
-
----
-
-### Launch Kit (`section-6`, 사이드바: "Launch Kit", H2: "Launch & Execution Kit")
-
-`SupplierContact.tsx` — 래퍼는 `page.tsx`에서 `<div id="section-6">` (L181–183).
-
-- **Financial Briefing:** `verified_cost_usd`, `verified_cost_note`(undisclosed 처리), `verified_at`, `moq`, `lead_time`, `can_oem`
-- **Supplier & Brand Intel:** `m_name`, `corporate_scale`, `contact_email`, `contact_phone`, `m_homepage`, `wholesale_link`, `global_site_url`, `b2b_inquiry_url`, `translated_name`(헤더 일부), `sample_policy`, `export_cert_note`
-- **Global Market Proof:** `global_prices`에서 URL/리스팅 파생 UI
-- **Creative Assets:** `viral_video_url`, `video_url`, `ai_detail_page_links`, `marketing_assets_url`, `ai_image_url`
-
----
-
-### 페이지 하단 (사이드바에 없음)
-
-- 이전/다음 제품, 주간 목록 링크, 티어 업셀 (`page.tsx` L185–219) — DB 컬럼 편집 필드 아님.
-
----
-
-## STEP 3 — 관리자 페이지: 접이 섹션별 완전 필드 목록
-
-파일: `app/admin/[id]/page.tsx`.  
-헤더 전역: **Status** `status` (select published/hidden), **Save** — L342–365.  
-**수정 이력** 테이블은 `edit_history` JSON 표시 (L1400–1449); 별도 폼 필드는 아님.
-
-### 헤더 (Sticky, 접이 아님)
-
-| Field Label | DB Column | Field Type | Notes |
-|-------------|-----------|------------|-------|
-| Status (상태) | `status` | select | `published` / `hidden`; published 시 `published_at` 자동 (L347–352) |
-
----
-
-### Product Identity (L414–549)
-
-| Field Label | DB Column | Field Type | Notes |
-|-------------|-----------|------------|-------|
-| id (자동) | `id` | read-only | |
-| Product Name | `product_name` | text | |
-| Naver Product Name | `naver_product_name` | text | |
-| Translated Name | `translated_name` | text | |
-| Category | `category` | text | |
-| KR Price (₩) | `kr_price` | text | |
-| USD Price (자동) | `kr_price_usd` | read-only | PATCH에서 삭제됨 L234 |
-| Est. Wholesale Cost (자동) | `estimated_cost_usd` | read-only | PATCH에서 삭제됨 L235 |
-| Export Status | `export_status` | select | Green / Yellow / Red |
-| Viability Summary | `viability_reason` | textarea | |
-| Image URL | `image_url` | text (url) | |
-| AI Image URL | `ai_image_url` | text (url) | |
-| GO Verdict (자동) | `go_verdict` | read-only 표시 | **동일 컬럼이 Opportunity Status에서 select로도 편집됨 → 불일치** |
-| Composite Score (자동) | `composite_score` | read-only | |
-| Naver Link | `naver_link` | text (url) | |
-| Week ID | `week_id` | text | |
-
----
-
-### Trend Signal Dashboard (L551–627)
-
-| Field Label | DB Column | Field Type | Notes |
-|-------------|-----------|------------|-------|
-| Market Score (0–100) | `market_viability` | number | |
-| Competition Level | `competition_level` | select | Low / Medium / High |
-| WoW Growth | `wow_rate` | text | 고객 PDP에서는 **Market Intelligence** Search & Growth에 표시 |
-| MoM Growth | `mom_growth` | text | 동일 |
-| Growth Evidence | `growth_evidence` | textarea | 고객 **Trend** Growth Momentum |
-| Growth Signal | `growth_signal` | text | 고객 **Trend** Growth Momentum |
-
----
-
-### Opportunity Status (L629–699) — 별도 접이 블록
-
-| Field Label | DB Column | Field Type | Notes |
-|-------------|-----------|------------|-------|
-| GAP STATUS | `gap_status` | select | Blue Ocean / Emerging / Competitive / Saturated |
-| GO VERDICT | `go_verdict` | select | GO / WATCH / NO-GO; Product Identity의 읽기 전용과 충돌 가능 |
-| OPPORTUNITY REASONING | `opportunity_reasoning` | textarea | 고객 **Social Proof** Gap Index 하단 카피 |
-
-**고객 UI 매핑:** `gap_status`는 **Trend Signals** 3번째 카드 제목 "Opportunity Status"에 직접 표시 (`TrendSignalDashboard.tsx` L71). `go_verdict`는 **Product Identity** 히어로 (`ProductIdentity.tsx`).
-
----
-
-### Market Intelligence (L701–789)
-
-| Field Label | DB Column | Field Type | Notes |
-|-------------|-----------|------------|-------|
-| Profit Multiplier | `profit_multiplier` | number (step 0.1, 문자열 저장) | |
-| Winning Feature | `top_selling_point` | textarea | |
-| Pain Point | `common_pain_point` | textarea | |
-| New Content Volume | `new_content_volume` | text | 고객 **Trend** Growth Momentum에도 사용 |
-| Search Volume | `search_volume` | text | |
-| Best Platform | `best_platform` | text | |
-| Global Prices | `global_prices` | JSON (헬퍼 내 text/number/url/checkbox) | `GlobalPricesHelper` — 지역별 listing 행 |
-
----
-
-### Social Proof & Trend Intelligence (L791–1002)
-
-| Field Label | DB Column | Field Type | Notes |
-|-------------|-----------|------------|-------|
-| Buzz Summary | `buzz_summary` | textarea | |
-| KR Local Score | `kr_local_score` | number | onChange 시 `gap_index` 자동 |
-| Global Trend Score | `global_trend_score` | number | onChange 시 `gap_index` 자동 |
-| Gap Index (자동) | `gap_index` | read-only | |
-| KR Evidence | `kr_evidence` | textarea | |
-| Global Evidence | `global_evidence` | textarea | |
-| KR Source Used | `kr_source_used` | text | |
-| Gap Status | `gap_status` | text | **`gap_status` select와 중복 편집 경로** |
-| Opportunity Reasoning | `opportunity_reasoning` | textarea | Opportunity Status와 **중복** |
-| Rising Keywords ×5 | `rising_keywords` | text×5 | 배열로 저장 |
-| SEO Keywords ×5 | `seo_keywords` | text×5 | |
-| Viral Hashtags ×5 | `viral_hashtags` | text×5 | |
-| Platform Scores (JSON) | `platform_scores` | textarea (JSON) | 고객 **Trend** Platform Breakdown |
-| Sourcing Tip | `sourcing_tip` | textarea | 고객 Social(1–3단계) + Export(4–5단계) 파싱 |
-| Trend Entry Strategy | `trend_entry_strategy` | textarea | 고객 **Social** Gap Index "Entry Strategy" |
+      <div className="mx-6 bg-white rounded-2xl border border-[#E8E6E1] shadow-[0_1px_3px_0_rgb(26_25_22/0.06)] overflow-hidden">
+        {loading ? (
+          <div className="p-8 text-center text-[#6B6860] text-sm">Loading…</div>
+        ) : (
+          <table className="w-full">
+            <thead>
+              <tr className="bg-[#F8F7F4] border-b border-[#E8E6E1]">
+                <th className="text-left text-xs font-semibold text-[#9E9C98] uppercase tracking-widest px-4 py-3">ID</th>
+                <th className="text-left text-xs font-semibold text-[#9E9C98] uppercase tracking-widest px-4 py-3">Week</th>
+                <th className="text-left text-xs font-semibold text-[#9E9C98] uppercase tracking-widest px-4 py-3">Product Name</th>
+                <th className="text-left text-xs font-semibold text-[#9E9C98] uppercase tracking-widest px-4 py-3">Score</th>
+                <th className="text-left text-xs font-semibold text-[#9E9C98] uppercase tracking-widest px-4 py-3">Status</th>
+                <th className="text-left text-xs font-semibold text-[#9E9C98] uppercase tracking-widest px-4 py-3">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filtered.map((row) => (
+                <tr
+                  key={row.id}
+                  onClick={() => router.push(`/admin/${row.id}`)}
+                  className="border-b border-[#E8E6E1] hover:bg-[#F8F7F4] cursor-pointer transition-colors"
+                >
+                  <td className="px-4 py-3 font-mono text-xs text-[#9E9C98]">
+                    {row.id.slice(0, 6)}
+                  </td>
+                  <td className="px-4 py-3">
+                    <span className="bg-[#F2F1EE] text-[#6B6860] text-xs font-medium px-2 py-0.5 rounded">
+                      {formatWeek(row.week_id)}
+                    </span>
+                  </td>
+                  <td className="px-4 py-3 text-sm font-medium text-[#1A1916]">
+                    {row.product_name ?? "—"}
+                  </td>
+                  <td className="px-4 py-3 text-sm text-[#3D3B36] font-mono">
+                    {row.market_viability != null ? row.market_viability : "—"}
+                  </td>
+                  <td className="px-4 py-3">
+                    <span
+                      className={
+                        row.status === "published"
+                          ? "bg-[#DCFCE7] text-[#16A34A] text-xs font-medium px-2.5 py-1 rounded-full"
+                          : "bg-[#FEE2E2] text-[#DC2626] text-xs font-medium px-2.5 py-1 rounded-full"
+                      }
+                    >
+                      {row.status === "published" ? "Live" : "Draft"}
+                    </span>
+                  </td>
+                  <td className="px-4 py-3">
+                    <Link
+                      href={`/admin/${row.id}`}
+                      onClick={(e) => e.stopPropagation()}
+                      className="text-xs text-[#16A34A] hover:text-[#15803D] font-medium transition-colors"
+                    >
+                      Edit →
+                    </Link>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
+        {!loading && filtered.length === 0 && (
+          <div className="p-8 text-center text-[#6B6860] text-sm">
+            No reports match the filters.
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+```
 
 ---
 
-### Export & Logistics Intel (L1004–1169)
+## 2. `app/admin/login/page.tsx` (full file)
 
-| Field Label | DB Column | Field Type | Notes |
-|-------------|-----------|------------|-------|
-| HS Code | `hs_code` | text | |
-| HS Description | `hs_description` | text | |
-| Status Reason | `status_reason` | textarea | |
-| Composition Info | `composition_info` | textarea | |
-| Spec Summary | `spec_summary` | textarea | |
-| Actual Weight (g) | `actual_weight_g` | number | `billable_weight_g` 연동 |
-| Volumetric Weight (g) | `volumetric_weight_g` | number | 동일 |
-| Billable Weight (g) (자동) | `billable_weight_g` | read-only | |
-| Dimensions (cm) | `dimensions_cm` | text | |
-| Hazmat Status | `hazmat_status` | JSON via checkboxes | Liquid/Powder/Battery/Aerosol |
-| Required Certificates | `required_certificates` | text | 콤마 구분 |
-| Shipping Notes | `shipping_notes` | textarea | |
-| Shipping Tier | `shipping_tier` | text | |
-| Key Risk Ingredient | `key_risk_ingredient` | text | |
-| Hazmat Summary | `hazmat_summary` | textarea | |
+```tsx
+"use client";
 
-**참고:** 고객 페이지에서 `export_status`는 **Export Readiness**에 쓰이나, Admin에서는 **Product Identity**에 있음.
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 
----
+export default function AdminLoginPage() {
+  const router = useRouter();
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
-### Launch & Execution Kit (L1171–1274)
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setError("");
+    setLoading(true);
+    try {
+      const res = await fetch("/api/admin/auth", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ password }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        setError(data?.error ?? "Incorrect password. Try again.");
+        return;
+      }
+      router.push("/admin");
+    } catch {
+      setError("Something went wrong. Try again.");
+    } finally {
+      setLoading(false);
+    }
+  }
 
-| Field Label | DB Column | Field Type | Notes |
-|-------------|-----------|------------|-------|
-| Manufacturer Name | `m_name` | text | |
-| Corporate Scale | `corporate_scale` | text | |
-| Contact Email | `contact_email` | email | |
-| Contact Phone | `contact_phone` | tel | |
-| Manufacturer Website | `m_homepage` | url | |
-| Wholesale Portal | `wholesale_link` | url | |
-| Global Site URL | `global_site_url` | url | |
-| B2B Inquiry URL | `b2b_inquiry_url` | url | |
-| Can OEM | `can_oem` | select (null/true/false) | |
-
----
-
-### CEO Direct Input Zone (L1276–1398)
-
-| Field Label | DB Column | Field Type | Notes |
-|-------------|-----------|------------|-------|
-| Verified Cost (USD) | `verified_cost_usd` | text | |
-| Verified Cost Note | `verified_cost_note` | text | |
-| Verified At | `verified_at` | date input | ISO로 저장 시 slice 사용 L1316 |
-| MOQ | `moq` | text | |
-| Lead Time | `lead_time` | text | |
-| Sample Policy | `sample_policy` | text | |
-| Export Cert Note | `export_cert_note` | text | |
-| Viral Video URL | `viral_video_url` | text | |
-| Video URL | `video_url` | text | |
-| Marketing Assets URL | `marketing_assets_url` | text | |
-| AI Detail Page Links | `ai_detail_page_links` | `AiPageLinksHelper` | URL 배열 JSON |
-
----
-
-### 하위 컴포넌트 세부 (필드 매핑)
-
-**`components/admin/GlobalPricesHelper.tsx`**
-
-- 컬럼: `global_prices` (통째 JSON 문자열로 `onChange`).
-- UI: 지역 US, UK(내부 키 `gb`), EU, JP, SEA, UAE별 listing 행 — 각 행 **Platform** (text), **price_usd** (number), **URL** (url), **Sold Out** (checkbox).  
-- **Show Raw JSON** 읽기 전용 textarea (L444–451).
-
-**`components/admin/HazmatCheckboxes.tsx`**
-
-- 컬럼: `hazmat_status` — `is_liquid`, `is_powder`, `is_battery`, `is_aerosol` 불리언 JSON.
-
-**`components/admin/AiPageLinksHelper.tsx`**
-
-- 컬럼: `ai_detail_page_links` — 최대 5 URL `input type="url"`.
-
----
-
-## STEP 4 — 갭 분석
-
-### 4.1 Admin에서 고객 섹션과 어긋난 배치 (misplaced)
-
-| Admin 위치 | 필드 | 고객에서 실제 위치 | 비고 |
-|------------|------|-------------------|------|
-| Product Identity | `export_status` | Export & Logistics — Export Readiness | 뱃지는 Identity에도 보이나 “수출 준비” 서술은 Export 섹션 |
-| Trend Signal Dashboard | `wow_rate`, `mom_growth` | Market Intelligence — Search & Growth | |
-| Market Intelligence | `new_content_volume` | Trend — Growth Momentum | |
-| Market Intelligence | `global_prices` | Market Intelligence 그리드 + Launch Kit — Global Market Proof | 한 컬럼이 두 UX 블록에 재사용 |
-| Social Proof | `platform_scores` | Trend — Platform Breakdown | |
-| Social Proof | `gap_status` (text), Opportunity Status (`gap_status` select) | Trend 카드 + Social Gap Index 배지 | 이중 편집 + 타입 불일치 위험 |
-| Social Proof | `opportunity_reasoning` ×2 | Social — Gap Index | 동일 필드가 두 블록에 입력됨 |
-| Launch Kit 섹션 vs CEO Zone | 제조사·URL·OEM이 “Launch”에, 검증 원가·미디어가 “CEO”에 분리 | 고객 Launch Kit은 한 시트에 통합 | 리디자인 시 Launch Kit 단일 그룹 권장 |
-
-### 4.2 `ScoutFinalReportsRow`에 있으나 Admin 폼에 없는 컬럼 (또는 저장 diff에 없음)
-
-`types/database.ts` 기준, Admin `formKeys` (L198–211) 및 화면에 없는 주요 컬럼:
-
-| 컬럼 | 용도 (타입 주석) |
-|------|------------------|
-| `summary` | 요약 텍스트 |
-| `consumer_insight` | 소비자 인사이트 |
-| `global_price` | 레거시 JSON; PDP는 `global_prices`+`global_price` 병행 파싱 (`MarketIntelligence` L152) |
-| `manufacturer_check` | 제조사 검증 |
-| `competitor_analysis_pdf` | PDF 링크 |
-| `free_list_at` | 무료 공개 시각 (RLS/티저) |
-| `is_premium` | 플래그 |
-| `is_teaser` | 티저 여부 |
-| `sourcing_tip_logistics` | 로지스틱 전용 팁 (타입에 존재; 실제 파이프라인 사용 여부는 별도 확인) |
-| `edit_history` | Admin이 저장 시 갱신; 편집 필드는 아님 |
-
-*참고:* `id`, `created_at`, `kr_price_usd`, `estimated_cost_usd`는 의도적으로 PATCH에서 제외 또는 읽기 전용.
-
-### 4.3 고객 페이지에만 있고 Admin에 “대응 필드”가 없는 UI (순수 카피/인프라)
-
-- 좌측 네비·워터마크·티어 잠금·Frankfurter 환율 표시.
-- `BrokerEmailDraft` UI (HS 기반 이메일 초안) — DB 추가 컬럼이라기보다 컴포넌트 동작.
-- **Broken anchor:** `global-market-proof` — `MarketIntelligence.tsx` L320 스크롤 타깃이 현재 `SupplierContact`에 없음.
-
-### 4.4 "Opportunity Status" (Admin 섹션)은 고객 어디에 해당하는가?
-
-- **고객:** `TrendSignalDashboard` 세 번째 카드 제목이 **"Opportunity Status"**이며 값은 **`gap_status`** (`TrendSignalDashboard.tsx` L71–77).
-- **추가:** 같은 이름이 Admin에서 독립 섹션(L629)으로 **`gap_status`**, **`go_verdict`**, **`opportunity_reasoning`** 을 묶음. → 라벨은 Trend와 맞지만 **`go_verdict`/`opportunity_reasoning`** 은 고객 기준으로는 Identity·Social 쪽에 가깝다.
-
-### 4.5 "Global Prices" (`global_prices`) Admin 위치
-
-- **`app/admin/[id]/page.tsx`** 의 **Market Intelligence** 접이 섹션 내부 (라벨 "Global Prices", L773–785).
-- JSON은 **`GlobalPricesHelper`** 가 편집.
+  return (
+    <div className="bg-[#F8F7F4] min-h-screen flex items-start justify-center pt-40">
+      <div className="max-w-sm mx-auto w-full px-4">
+        <div className="bg-white border border-[#E8E6E1] rounded-2xl p-8 flex flex-col gap-6">
+          <h1 className="text-xl font-bold text-[#1A1916] text-center">
+            🔐 KoreaScout Admin
+          </h1>
+          <p className="text-xs text-[#9E9C98] text-center">
+            Internal use only
+          </p>
+          <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="Password"
+              className="bg-[#F2F1EE] border border-[#E8E6E1] rounded-lg px-4 py-2.5 text-[#1A1916] text-sm focus:border-[#16A34A] outline-none w-full"
+              autoComplete="current-password"
+              disabled={loading}
+            />
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full bg-[#16A34A] hover:bg-[#15803D] text-white font-semibold rounded-lg py-2.5 transition-colors disabled:opacity-60"
+            >
+              {loading ? "Checking..." : "Enter Dashboard →"}
+            </button>
+          </form>
+          {error && (
+            <p className="text-[#DC2626] text-sm text-center">{error}</p>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+```
 
 ---
 
-## STEP 5 — 고객 읽기 순서에 맞춘 이상적 Admin 그룹 제안
+## 3. `app/admin/[id]/page.tsx` (full file)
 
-아래는 **고객 PDP** (`page.tsx` 컴포넌트 순서: Identity → Trend → MarketIntel → Social → SourcingIntel → SupplierContact`)를 기준으로 한 **권장 그룹**이다.
+```tsx
+"use client";
 
-### Product Identity
+import { useEffect, useState, useCallback } from "react";
+import Link from "next/link";
+import { useParams, useRouter } from "next/navigation";
+import type { ScoutFinalReportsRow } from "@/types/database";
+import { GlobalPricesHelper } from "@/components/admin/GlobalPricesHelper";
+import { HazmatCheckboxes } from "@/components/admin/HazmatCheckboxes";
+import { AiPageLinksHelper } from "@/components/admin/AiPageLinksHelper";
 
-- **포함 권장:** `product_name`, `naver_product_name`, `translated_name`, `category`, `image_url`, `kr_price`, `viability_reason`, `naver_link`, `week_id`, `ai_image_url`, (읽기전용) `id`, `kr_price_usd`, `estimated_cost_usd`
-- **이동 검토:** `export_status` → **Export & Logistics** 그룹으로 옮기면 고객 Export Readiness와 인접.
-- **판정:** `go_verdict`, `composite_score` — Identity에 표시되므로 Identity 근처 단일 소스(읽기 전용 vs 편집 통일).
+type SaveStatus = "idle" | "saved" | "error";
+type OpenSections = { s1: boolean; s2: boolean; s3: boolean; s4: boolean; s5: boolean; s6: boolean; s7: boolean };
+type DiffItem = { field: string; fieldKo: string; before: string; after: string };
 
-### Trend Signals
+const EXPORT_STATUS_OPTIONS = ["Green", "Yellow", "Red"];
+const COMPETITION_OPTIONS = ["Low", "Medium", "High"];
+const GAP_STATUS_OPTIONS = ["Blue Ocean", "Emerging", "Competitive", "Saturated"] as const;
+const GO_VERDICT_OPTIONS = ["GO", "CAUTIOUS GO", "WATCH", "NO GO"] as const;
 
-- **포함 권장:** `market_viability`, `competition_level`, `gap_status` (단일 입력 방식으로 통일), `platform_scores`, `growth_signal`, `growth_evidence`, `new_content_volume`
-- **에서 제거 권장:** `wow_rate`, `mom_growth` → **Market Intelligence** 그룹으로 이동.
+/** Korean labels for every DB field (for diff modal & edit history) */
+const FIELD_LABELS_KO: Record<string, string> = {
+  id: "ID",
+  product_name: "제품명",
+  naver_product_name: "네이버 상품명",
+  translated_name: "번역명",
+  category: "카테고리",
+  kr_price: "한국가격(₩)",
+  kr_price_usd: "USD가격",
+  estimated_cost_usd: "추정도매원가",
+  export_status: "수출상태",
+  viability_reason: "시장성요약",
+  image_url: "이미지URL",
+  naver_link: "네이버링크",
+  week_id: "주차ID",
+  m_name: "제조사명",
+  corporate_scale: "기업규모",
+  contact_email: "문의이메일",
+  contact_phone: "문의전화번호",
+  m_homepage: "제조사홈페이지",
+  wholesale_link: "도매문의링크",
+  status: "상태",
+  market_viability: "시장성점수",
+  competition_level: "경쟁수준",
+  gap_status: "갭상태",
+  wow_rate: "WoW성장률",
+  mom_growth: "MoM성장률",
+  growth_evidence: "성장근거",
+  profit_multiplier: "마진배수",
+  top_selling_point: "핵심강점",
+  common_pain_point: "소비자페인포인트",
+  new_content_volume: "신규콘텐츠량",
+  global_prices: "글로벌가격",
+  buzz_summary: "버즈요약",
+  kr_local_score: "국내로컬점수",
+  global_trend_score: "글로벌트렌드점수",
+  gap_index: "갭지수",
+  billable_weight_g: "과금중량(g)",
+  kr_evidence: "국내근거",
+  global_evidence: "글로벌근거",
+  kr_source_used: "국내출처",
+  opportunity_reasoning: "기회논리",
+  rising_keywords: "상승키워드",
+  seo_keywords: "SEO키워드",
+  viral_hashtags: "바이럴해시태그",
+  platform_scores: "플랫폼점수",
+  sourcing_tip: "소싱팁",
+  hs_code: "HS코드",
+  hs_description: "HS설명",
+  status_reason: "상태사유",
+  composition_info: "성분정보",
+  spec_summary: "스펙요약",
+  actual_weight_g: "실제중량(g)",
+  volumetric_weight_g: "부피중량(g)",
+  dimensions_cm: "치수(cm)",
+  hazmat_status: "위험물여부",
+  required_certificates: "필요인증",
+  shipping_notes: "배송메모",
+  verified_cost_usd: "검증된원가(USD)",
+  verified_cost_note: "검증원가메모",
+  verified_at: "검증일시",
+  moq: "최소주문수량",
+  lead_time: "리드타임",
+  sample_policy: "샘플정책",
+  export_cert_note: "수출인증메모",
+  viral_video_url: "바이럴영상URL",
+  video_url: "영상URL",
+  marketing_assets_url: "마케팅자산URL",
+  ai_detail_page_links: "AI상세페이지링크",
+  published_at: "발행일시",
+  go_verdict: "GO판정",
+  composite_score: "종합점수",
+  growth_signal: "성장시그널",
+  search_volume: "검색볼륨",
+  best_platform: "최적플랫폼",
+  trend_entry_strategy: "진입전략",
+  shipping_tier: "배송티어",
+  key_risk_ingredient: "위험성분",
+  hazmat_summary: "위험물요약",
+  global_site_url: "글로벌사이트URL",
+  b2b_inquiry_url: "B2B문의URL",
+  can_oem: "OEM가능여부",
+  ai_image_url: "AI이미지URL",
+};
 
-### Market Intelligence
+/** Normalizes value for display: parses JSON array strings so we don't show escaped slashes. */
+function toCommaStr(v: string | string[] | null | undefined): string {
+  if (v == null) return "";
+  let target: unknown = v;
+  if (typeof v === "string" && v.trim().startsWith("[")) {
+    try {
+      target = JSON.parse(v);
+    } catch {
+      target = v;
+    }
+  }
+  if (Array.isArray(target)) return target.filter(Boolean).map(String).join(", ");
+  return String(target);
+}
 
-- **포함 권장:** `profit_multiplier`, `global_prices`, `best_platform`, `search_volume`, `mom_growth`, `wow_rate`, `top_selling_point`, `common_pain_point`
-- **내부 순서 권장:** 마진/도매/글로벌 밸류에이션 블록 → 6시장 가격 → Search & Growth → Analyst Brief.
+function fromCommaStr(s: string): string[] {
+  return s
+    .split(",")
+    .map((x) => x.trim())
+    .filter(Boolean);
+}
 
-### Social Proof & Trend Intelligence
+/** Indestructible parser: handles deeply corrupted JSON strings, always returns exactly 5 slots. */
+function ensureLength5(val: unknown): string[] {
+  let arr: string[] = [];
+  if (Array.isArray(val)) arr = val.map(String);
+  else if (typeof val === "string") {
+    const clean = val.replace(/[\[\]\\"]/g, "");
+    arr = clean.split(",").map((s) => s.trim()).filter(Boolean);
+  }
+  return [...arr, "", "", "", "", ""].slice(0, 5);
+}
 
-- **포함 권장:** `buzz_summary`, `kr_local_score`, `global_trend_score`, `gap_index`(자동), `kr_evidence`, `global_evidence`, `kr_source_used`, `trend_entry_strategy`, `rising_keywords`, `seo_keywords`, `viral_hashtags`, `opportunity_reasoning`, `sourcing_tip` (전략 1–3 문단)
-- **중복 제거:** `gap_status` text 필드(Social 내) 제거하고 **Trend**의 select만 유지하거나 반대로 하나로 통일.
-- **`platform_scores`는 Trend로 이미 이동** (고객 UI 기준).
+function toDisplayVal(v: unknown): string {
+  if (v == null) return "—";
+  if (Array.isArray(v)) return v.join(", ");
+  if (typeof v === "object") return JSON.stringify(v);
+  return String(v);
+}
 
-### Export & Logistics
+export default function AdminEditPage() {
+  const params = useParams();
+  const router = useRouter();
+  const id = params?.id as string;
+  const [formData, setFormData] = useState<Partial<ScoutFinalReportsRow> | null>(null);
+  const [originalData, setOriginalData] = useState<Partial<ScoutFinalReportsRow> | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [saveStatus, setSaveStatus] = useState<SaveStatus>("idle");
+  const [saveModalOpen, setSaveModalOpen] = useState(false);
+  const [saveDiff, setSaveDiff] = useState<DiffItem[]>([]);
+  const [openSections, setOpenSections] = useState<OpenSections>({
+    s1: false,
+    s2: false,
+    s3: false,
+    s4: false,
+    s5: false,
+    s6: false,
+    s7: false,
+  });
 
-- **포함 권장:** `export_status`, `status_reason`, `hs_code`, `hs_description`, `actual_weight_g`, `volumetric_weight_g`, `billable_weight_g`, `dimensions_cm`, `hazmat_status`, `required_certificates`, `composition_info`, `spec_summary`, `shipping_tier`, `key_risk_ingredient`, `hazmat_summary`, `shipping_notes`, `sourcing_tip` 내 Step 4–5에 해당하는 콘텐츠(현재는 단일 필드 파싱 — 구조 유지 시 별도 서브블록만 순서 조정)
+  const serializeSourcingTip = (steps: string[]): string => {
+    const headers = [
+      "Marketing Strategy",
+      "Price / Margin Strategy",
+      "B2B Sourcing Strategy",
+      "Customs / Compliance Strategy",
+      "Logistics / Shipping Strategy",
+    ];
+    return steps
+      .map((content, i) => `[${headers[i]}]\n${content ?? ""}`)
+      .join("\n\n");
+  };
 
-### Launch Kit (단일 섹션 권장: 현 "Launch & Execution Kit" + "CEO Zone" 병합)
+  const parseTipToSteps = (raw: string | null | undefined): string[] => {
+    if (!raw) return ["", "", "", "", ""];
+    const regex = /(?:^|\n)\s*\[([^\n]*?)\]/g;
+    const matches: { title: string; index: number }[] = [];
+    let m;
+    while ((m = regex.exec(raw)) !== null) {
+      matches.push({ title: m[1].trim(), index: m.index });
+    }
+    if (matches.length === 0) return [raw.trim(), "", "", "", ""];
+    const steps: string[] = [];
+    for (let i = 0; i < 5; i++) {
+      if (!matches[i]) { steps.push(""); continue; }
+      const start = raw.indexOf("]", matches[i].index) + 1;
+      const end = matches[i + 1] ? matches[i + 1].index : raw.length;
+      steps.push(raw.slice(start, end).trim());
+    }
+    return steps;
+  };
 
-- **Financial:** `verified_cost_usd`, `verified_cost_note`, `verified_at`, `moq`, `lead_time`, `can_oem`, `sample_policy`, `export_cert_note`
-- **Supplier:** `m_name`, `corporate_scale`, `contact_email`, `contact_phone`, `m_homepage`, `wholesale_link`, `global_site_url`, `b2b_inquiry_url`
-- **Creative / AI:** `viral_video_url`, `video_url`, `marketing_assets_url`, `ai_detail_page_links`
-- **`global_prices`는 Market Intelligence에 유지**하되, Launch의 “Global Market Proof” 설명과 인접 배치를 원하면 같은 페이지에서 **섹션 참조 링크** 또는 접이 순서만 조정.
+  useEffect(() => {
+    if (!id) return;
+    let cancelled = false;
+    (async () => {
+      try {
+        const res = await fetch(`/api/admin/reports/${id}`, { credentials: "include" });
+        if (!res.ok) {
+          if (!cancelled) setFormData(null);
+          return;
+        }
+        const row = (await res.json()) as ScoutFinalReportsRow;
+        if (!cancelled) {
+          const initial = {
+            ...row,
+            seo_keywords: ensureLength5(row.seo_keywords),
+            rising_keywords: ensureLength5(row.rising_keywords ?? null),
+            viral_hashtags: ensureLength5(row.viral_hashtags ?? null),
+          } as unknown as Partial<ScoutFinalReportsRow>;
+          setFormData(initial);
+          setOriginalData(JSON.parse(JSON.stringify(initial)));
+        }
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    })();
+    return () => { cancelled = true; };
+  }, [id]);
 
-### 신규/보완 필드 (선택)
+  const toggleSection = useCallback((key: keyof OpenSections) => {
+    setOpenSections((prev) => ({ ...prev, [key]: !prev[key] }));
+  }, []);
 
-- **`global_price` 레거시** 마이그레이션 끝나면 Admin에서 제거 또는 읽기 전용 표시.
-- **`summary`, `consumer_insight`, `is_teaser`, `free_list_at`** 등 운영 플래그는 별도 "Publishing & Access" 접이 블록을 두면 고객 본문과 분리되어 관리가 쉬움.
+  const formKeys = [
+    "product_name", "naver_product_name", "translated_name", "category", "kr_price", "export_status", "viability_reason",
+    "image_url", "naver_link", "week_id", "m_name", "corporate_scale", "contact_email", "contact_phone", "m_homepage", "wholesale_link", "status",
+    "market_viability", "competition_level", "gap_status", "gap_index", "billable_weight_g",
+    "go_verdict", "composite_score", "growth_signal", "search_volume", "best_platform", "trend_entry_strategy",
+    "shipping_tier", "key_risk_ingredient", "hazmat_summary", "global_site_url", "b2b_inquiry_url", "can_oem", "ai_image_url",
+    "wow_rate", "mom_growth", "growth_evidence", "profit_multiplier", "strategy_price", "top_selling_point", "common_pain_point",
+    "new_content_volume", "global_prices", "buzz_summary", "kr_local_score", "global_trend_score", "kr_evidence",
+    "global_evidence", "kr_source_used", "opportunity_reasoning", "rising_keywords", "seo_keywords", "viral_hashtags",
+    "platform_scores", "sourcing_tip", "hs_code", "hs_description", "status_reason", "composition_info", "spec_summary",
+    "actual_weight_g", "volumetric_weight_g", "dimensions_cm", "hazmat_status", "required_certificates", "shipping_notes",
+    "verified_cost_usd", "verified_cost_note", "verified_at", "moq", "lead_time", "sample_policy", "export_cert_note",
+    "viral_video_url", "video_url", "marketing_assets_url", "ai_detail_page_links", "published_at",
+  ];
+
+  function getDiff(orig: Partial<ScoutFinalReportsRow> | null, current: Partial<ScoutFinalReportsRow> | null): DiffItem[] {
+    if (!orig || !current) return [];
+    const out: DiffItem[] = [];
+    for (const key of formKeys) {
+      const a = toDisplayVal(orig[key as keyof ScoutFinalReportsRow]);
+      const b = toDisplayVal(current[key as keyof ScoutFinalReportsRow]);
+      if (a !== b) out.push({ field: key, fieldKo: FIELD_LABELS_KO[key] ?? key, before: a, after: b });
+    }
+    return out;
+  }
+
+  function openSaveModal() {
+    if (!formData || !originalData) return;
+    setSaveDiff(getDiff(originalData, formData));
+    setSaveModalOpen(true);
+  }
+
+  const handleConfirmSave = async () => {
+    if (!formData || !id || !originalData) return;
+    const updates: Record<string, unknown> = { ...formData };
+    delete updates.id;
+    delete updates.kr_price_usd;
+    delete updates.estimated_cost_usd;
+    delete updates.created_at;
+    if (updates.status === "published") {
+      updates.published_at = updates.published_at || new Date().toISOString();
+    }
+    const seoArr = ensureLength5(updates.seo_keywords).filter(Boolean);
+    updates.seo_keywords = seoArr.length ? seoArr : null;
+    const risingArr = ensureLength5(updates.rising_keywords).filter(Boolean);
+    updates.rising_keywords = risingArr.length ? risingArr : null;
+    const viralArr = ensureLength5(updates.viral_hashtags).filter(Boolean);
+    updates.viral_hashtags = viralArr.length ? viralArr : null;
+    if (typeof updates.platform_scores === "string" && updates.platform_scores) {
+      try {
+        updates.platform_scores = JSON.parse(updates.platform_scores as string);
+      } catch {
+        /* leave as string */
+      }
+    }
+    const changes = saveDiff.map((d) => ({ field: d.field, before: d.before, after: d.after }));
+    const newEntry = { timestamp: new Date().toISOString(), changes };
+    const existing = formData.edit_history as { entries?: { timestamp: string; changes: { field: string; before: string; after: string }[] }[] } | null | undefined;
+    const entries = Array.isArray(existing?.entries) ? [...existing.entries, newEntry] : [newEntry];
+    updates.edit_history = { entries };
+
+    try {
+      const res = await fetch(`/api/admin/reports/${id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify(updates),
+      });
+      if (!res.ok) {
+        setSaveStatus("error");
+        setSaveModalOpen(false);
+        return;
+      }
+      setSaveStatus("saved");
+      setTimeout(() => setSaveStatus("idle"), 2000);
+      const nextForm = { ...formData, edit_history: { entries } };
+      setFormData(nextForm);
+      setOriginalData(JSON.parse(JSON.stringify(nextForm)));
+      setSaveModalOpen(false);
+      router.refresh();
+    } catch {
+      setSaveStatus("error");
+      setSaveModalOpen(false);
+    }
+  };
+
+  function handleCancelSave() {
+    setSaveModalOpen(false);
+  }
+
+  /* Un saved changes warning: prompt before leaving if formData !== originalData */
+  useEffect(() => {
+    if (!formData || !originalData) return;
+    const handler = (e: BeforeUnloadEvent) => {
+      try {
+        const a = JSON.stringify(formData);
+        const b = JSON.stringify(originalData);
+        if (a !== b) {
+          e.preventDefault();
+          e.returnValue = "";
+        }
+      } catch {
+        e.preventDefault();
+        e.returnValue = "";
+      }
+    };
+    window.addEventListener("beforeunload", handler);
+    return () => window.removeEventListener("beforeunload", handler);
+  }, [formData, originalData]);
+
+  if (loading || !formData) {
+    return (
+      <div className="bg-[#F8F7F4] min-h-screen flex items-center justify-center">
+        <p className="text-[#6B6860] text-sm">{loading ? "Loading…" : "Report not found."}</p>
+      </div>
+    );
+  }
+
+  const inputClass =
+    "bg-white border border-[#E8E6E1] rounded-md px-3 py-2 text-sm text-[#1A1916] focus:border-[#16A34A] focus:ring-1 focus:ring-[#16A34A] outline-none placeholder:text-[#C4C2BE] w-full transition-colors";
+  const readOnlyClass =
+    "bg-[#F8F7F4] border border-[#E8E6E1] rounded-md px-3 py-2 text-sm text-[#9E9C98] cursor-not-allowed w-full";
+  const labelClass = "text-xs font-medium text-[#9E9C98] uppercase tracking-wider";
+
+  return (
+    <div className="bg-[#F8F7F4] min-h-screen">
+      {/* Sticky header */}
+      <header className="sticky top-0 z-50 bg-white border-b border-[#E8E6E1] px-6 py-3 flex items-center justify-between">
+        <Link
+          href="/admin"
+          className="text-sm text-[#9E9C98] hover:text-[#1A1916] transition-colors"
+        >
+          ← Back to List
+        </Link>
+        <span className="text-sm font-semibold text-[#1A1916] truncate max-w-[200px] mx-2">
+          {formData.product_name ?? "—"}
+        </span>
+        <div className="flex items-center gap-2">
+          {saveStatus === "saved" && (
+            <span className="text-xs text-[#16A34A]">Saved!</span>
+          )}
+          {saveStatus === "error" && (
+            <span className="text-xs text-[#DC2626]">Save failed</span>
+          )}
+          <label className="sr-only" htmlFor="admin-status-select">Status (상태)</label>
+          <select
+            id="admin-status-select"
+            value={formData.status === "published" ? "published" : "hidden"}
+            onChange={(e) => {
+              const v = e.target.value as "published" | "hidden";
+              setFormData((p) => ({
+                ...p!,
+                status: v,
+                published_at: v === "published" ? new Date().toISOString() : null,
+              }));
+            }}
+            className="bg-[#F2F1EE] text-[#3D3B36] border border-[#E8E6E1] text-sm font-medium px-4 py-1.5 rounded-lg hover:bg-[#E8E6E1] transition-colors"
+          >
+            <option value="published">published (공개)</option>
+            <option value="hidden">hidden (숨김)</option>
+          </select>
+          <button
+            type="button"
+            onClick={openSaveModal}
+            className="bg-[#16A34A] text-white text-sm font-semibold px-4 py-1.5 rounded-lg hover:bg-[#15803D] transition-colors"
+          >
+            Save Changes
+          </button>
+        </div>
+      </header>
+
+      {/* Save confirmation modal */}
+      {saveModalOpen && (
+        <div className="fixed inset-0 z-[1000] flex items-center justify-center bg-black/40 backdrop-blur-sm" role="dialog" aria-modal="true">
+          <div className="bg-white border border-[#E8E6E1] rounded-2xl shadow-xl max-w-lg w-full mx-4 max-h-[80vh] flex flex-col">
+            <div className="px-6 py-4 border-b border-[#E8E6E1]">
+              <h2 className="text-lg font-semibold text-[#1A1916]">
+                Save Changes — 변경 사항 확인
+              </h2>
+              <p className="text-xs text-[#9E9C98] mt-1">다음 필드가 변경됩니다.</p>
+            </div>
+            <div className="px-6 py-4 overflow-y-auto flex-1">
+              {saveDiff.length === 0 ? (
+                <p className="text-[#6B6860] text-sm">변경된 필드가 없습니다.</p>
+              ) : (
+                <ul className="space-y-2">
+                  {saveDiff.map((d, i) => (
+                    <li key={i} className="text-sm">
+                      <span className="font-medium text-[#3D3B36]">{d.fieldKo} ({d.field}):</span>{" "}
+                      <span className="text-[#9E9C98]">[{d.before}]</span> → <span className="text-[#16A34A]">[{d.after}]</span>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+            <div className="px-6 py-4 border-t border-[#E8E6E1] flex justify-end gap-2">
+              <button
+                type="button"
+                onClick={handleCancelSave}
+                className="px-4 py-2 rounded-lg text-[#6B6860] hover:text-[#1A1916] border border-[#E8E6E1] hover:border-[#E8E6E1] transition-colors text-sm"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={handleConfirmSave}
+                className="px-4 py-2 rounded-lg bg-[#16A34A] hover:bg-[#15803D] text-white text-sm font-medium transition-colors"
+              >
+                Confirm
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      <main className="max-w-4xl mx-auto px-6 py-8 flex flex-col gap-4">
+        {/* Section 1 — Product Identity */}
+        <div className="bg-white rounded-2xl border border-[#E8E6E1] shadow-[0_1px_3px_0_rgb(26_25_22/0.06)] overflow-hidden">
+          <button
+            type="button"
+            onClick={() => toggleSection("s1")}
+            className="w-full flex items-center justify-between px-6 py-4 hover:bg-[#F8F7F4] transition-colors"
+          >
+            <span className="text-sm font-semibold text-[#1A1916]">Product Identity</span>
+            <span className="text-[#9E9C98] text-xs">{openSections.s1 ? "▼" : "▶"}</span>
+          </button>
+          {openSections.s1 && (
+            <div className="px-6 pb-6 flex flex-col gap-5 border-t border-[#E8E6E1]">
+              <div className="flex flex-col gap-1.5">
+                <label className={labelClass}>id (ID) <span className="text-[#9E9C98] normal-case font-normal">(자동)</span></label>
+                <div className={readOnlyClass}>
+                  {formData.id ?? "—"}
+                </div>
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <label className={labelClass}>Image URL (이미지URL)</label>
+                {formData.image_url && (
+                  <div className="rounded-xl overflow-hidden border border-[#E8E6E1] w-48 h-48 flex items-center justify-center bg-[#F8F7F4]">
+                    <img
+                      src={formData.image_url}
+                      alt="product"
+                      className="object-contain w-full h-full"
+                      onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
+                    />
+                  </div>
+                )}
+                <input
+                  type="text"
+                  value={formData.image_url ?? ""}
+                  onChange={(e) => setFormData((p) => ({ ...p!, image_url: e.target.value }))}
+                  className={inputClass}
+                  placeholder="이미지 URL을 붙여넣으세요"
+                />
+                <p className="text-xs text-[#9E9C98]">⚠️ 이미지가 깨진 경우 네이버 상품 페이지에서 이미지 URL을 복사해 교체하세요.</p>
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <label className={labelClass}>AI Image URL (AI이미지URL)</label>
+                {formData.ai_image_url && (
+                  <div className="rounded-xl overflow-hidden border border-[#E8E6E1] w-48 h-48 flex items-center justify-center bg-[#F8F7F4]">
+                    <img
+                      src={formData.ai_image_url}
+                      alt="ai product"
+                      className="object-contain w-full h-full"
+                      onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
+                    />
+                  </div>
+                )}
+                <input
+                  type="text"
+                  value={formData.ai_image_url ?? ""}
+                  onChange={(e) => setFormData((p) => ({ ...p!, ai_image_url: e.target.value }))}
+                  className={inputClass}
+                  placeholder="AI 생성 이미지 URL"
+                />
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <label className={labelClass}>Product Name (제품명)</label>
+                <input
+                  value={formData.product_name ?? ""}
+                  onChange={(e) => setFormData((p) => ({ ...p!, product_name: e.target.value }))}
+                  className={inputClass}
+                />
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <label className={labelClass}>Naver Product Name (네이버 상품명)</label>
+                <input
+                  value={formData.naver_product_name ?? ""}
+                  onChange={(e) => setFormData((p) => ({ ...p!, naver_product_name: e.target.value }))}
+                  className={inputClass}
+                />
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <label className={labelClass}>Translated Name (번역명)</label>
+                <input
+                  value={formData.translated_name ?? ""}
+                  onChange={(e) => setFormData((p) => ({ ...p!, translated_name: e.target.value }))}
+                  className={inputClass}
+                />
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <label className={labelClass}>Category (카테고리)</label>
+                <input
+                  value={formData.category ?? ""}
+                  onChange={(e) => setFormData((p) => ({ ...p!, category: e.target.value }))}
+                  className={inputClass}
+                />
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <label className={labelClass}>KR Price (₩) (한국가격)</label>
+                <input
+                  type="text"
+                  value={formData.kr_price ?? ""}
+                  onChange={(e) => setFormData((p) => ({ ...p!, kr_price: e.target.value }))}
+                  className={inputClass}
+                />
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <label className={labelClass}>USD Price (USD가격) <span className="text-[#9E9C98] normal-case font-normal">(자동계산)</span></label>
+                <div className={readOnlyClass}>
+                  {formData.kr_price_usd ?? "—"}
+                </div>
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <label className={labelClass}>Est. Wholesale Cost (추정도매원가) <span className="text-[#9E9C98] normal-case font-normal">(자동계산)</span></label>
+                <div className={readOnlyClass}>
+                  {formData.estimated_cost_usd ?? "—"}
+                </div>
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <label className={labelClass}>Export Status (수출상태)</label>
+                <select
+                  value={formData.export_status ?? ""}
+                  onChange={(e) => setFormData((p) => ({ ...p!, export_status: e.target.value }))}
+                  className={inputClass}
+                >
+                  {EXPORT_STATUS_OPTIONS.map((opt) => (
+                    <option key={opt} value={opt}>{opt}</option>
+                  ))}
+                </select>
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <label className={labelClass}>Viability Summary (시장성요약)</label>
+                <textarea
+                  rows={3}
+                  value={formData.viability_reason ?? ""}
+                  onChange={(e) => setFormData((p) => ({ ...p!, viability_reason: e.target.value }))}
+                  className={`${inputClass} resize-none`}
+                />
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <label className={labelClass}>GO Verdict (GO판정)</label>
+                <select
+                  value={formData.go_verdict ?? ""}
+                  onChange={(e) =>
+                    setFormData((p) => ({
+                      ...p!,
+                      go_verdict: e.target.value === "" ? null : e.target.value,
+                    }))
+                  }
+                  className={inputClass}
+                >
+                  <option value="">—</option>
+                  {GO_VERDICT_OPTIONS.map((opt) => (
+                    <option key={opt} value={opt}>
+                      {opt}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <label className={labelClass}>Composite Score (종합점수) <span className="text-[#9E9C98] normal-case font-normal">(자동)</span></label>
+                <div className={readOnlyClass}>{formData.composite_score ?? "—"}</div>
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <label className={labelClass}>Naver Link (네이버링크)</label>
+                <input
+                  value={formData.naver_link ?? ""}
+                  onChange={(e) => setFormData((p) => ({ ...p!, naver_link: e.target.value }))}
+                  className={inputClass}
+                />
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <label className={labelClass}>Week ID (주차ID)</label>
+                <input
+                  value={formData.week_id ?? ""}
+                  onChange={(e) => setFormData((p) => ({ ...p!, week_id: e.target.value }))}
+                  className={inputClass}
+                />
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Section 2 — Trend Signal Dashboard */}
+        <div className="bg-white rounded-2xl border border-[#E8E6E1] shadow-[0_1px_3px_0_rgb(26_25_22/0.06)] overflow-hidden">
+          <button
+            type="button"
+            onClick={() => toggleSection("s2")}
+            className="w-full flex items-center justify-between px-6 py-4 hover:bg-[#F8F7F4] transition-colors"
+          >
+            <span className="text-sm font-semibold text-[#1A1916]">Trend Signal Dashboard</span>
+            <span className="text-[#9E9C98] text-xs">{openSections.s2 ? "▼" : "▶"}</span>
+          </button>
+          {openSections.s2 && (
+            <div className="px-6 pb-6 flex flex-col gap-5 border-t border-[#E8E6E1]">
+              <div className="flex flex-col gap-1.5">
+                <label className={labelClass}>Market Score (0–100) (시장성점수)</label>
+                <input
+                  type="number"
+                  min={0}
+                  max={100}
+                  value={formData.market_viability ?? ""}
+                  onChange={(e) =>
+                    setFormData((p) => ({
+                      ...p!,
+                      market_viability: e.target.value === "" ? 0 : Number(e.target.value),
+                    }))
+                  }
+                  className={inputClass}
+                />
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <label className={labelClass}>Competition Level (경쟁수준)</label>
+                <select
+                  value={formData.competition_level ?? ""}
+                  onChange={(e) => setFormData((p) => ({ ...p!, competition_level: e.target.value }))}
+                  className={inputClass}
+                >
+                  {COMPETITION_OPTIONS.map((opt) => (
+                    <option key={opt} value={opt}>{opt}</option>
+                  ))}
+                </select>
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <label className={labelClass}>Growth Evidence (성장근거)</label>
+                <textarea
+                  rows={3}
+                  value={formData.growth_evidence ?? ""}
+                  onChange={(e) => setFormData((p) => ({ ...p!, growth_evidence: e.target.value }))}
+                  className={`${inputClass} resize-none`}
+                />
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <label className={labelClass}>Growth Signal (성장시그널)</label>
+                <input
+                  value={formData.growth_signal ?? ""}
+                  onChange={(e) => setFormData((p) => ({ ...p!, growth_signal: e.target.value }))}
+                  className={inputClass}
+                  placeholder="e.g. Stable, Rising, Viral"
+                />
+              </div>
+              {/* gap_status — moved from Opportunity Status */}
+              <div className="flex flex-col gap-1.5">
+                <label className={labelClass}>GAP STATUS / Opportunity Status (갭 상태)</label>
+                <select
+                  value={formData.gap_status ?? ""}
+                  onChange={(e) => setFormData((p) => ({ ...p!, gap_status: e.target.value }))}
+                  className={inputClass}
+                >
+                  <option value="">—</option>
+                  {formData.gap_status &&
+                    !GAP_STATUS_OPTIONS.includes(
+                      formData.gap_status as (typeof GAP_STATUS_OPTIONS)[number]
+                    ) && (
+                      <option value={formData.gap_status}>{formData.gap_status}</option>
+                    )}
+                  {GAP_STATUS_OPTIONS.map((opt) => (
+                    <option key={opt} value={opt}>
+                      {opt}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              {/* platform_scores — moved from Social Proof */}
+              <div className="flex flex-col gap-1.5">
+                <label className={labelClass}>Platform Scores JSON (플랫폼점수)</label>
+                <textarea
+                  rows={6}
+                  value={typeof formData.platform_scores === "string" ? formData.platform_scores : JSON.stringify(formData.platform_scores ?? {}, null, 2)}
+                  onChange={(e) => {
+                    try {
+                      const parsed = JSON.parse(e.target.value);
+                      setFormData((p) => ({ ...p!, platform_scores: parsed }));
+                    } catch {
+                      setFormData((p) => ({
+                        ...p!,
+                        platform_scores: e.target.value as unknown as ScoutFinalReportsRow["platform_scores"],
+                      }));
+                    }
+                  }}
+                  className={`${inputClass} resize-none font-mono text-xs`}
+                />
+              </div>
+              {/* new_content_volume — moved from Market Intelligence */}
+              <div className="flex flex-col gap-1.5">
+                <label className={labelClass}>New Content Volume (신규콘텐츠량)</label>
+                <input
+                  type="text"
+                  value={formData.new_content_volume ?? ""}
+                  onChange={(e) => setFormData((p) => ({ ...p!, new_content_volume: e.target.value }))}
+                  className={inputClass}
+                />
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <label className={labelClass}>OPPORTUNITY REASONING (기회 근거)</label>
+                <textarea
+                  rows={4}
+                  value={formData.opportunity_reasoning ?? ""}
+                  onChange={(e) => setFormData((p) => ({ ...p!, opportunity_reasoning: e.target.value }))}
+                  className={`${inputClass} resize-none`}
+                />
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Section 3 — Market Intelligence */}
+        <div className="bg-white rounded-2xl border border-[#E8E6E1] shadow-[0_1px_3px_0_rgb(26_25_22/0.06)] overflow-hidden">
+          <button
+            type="button"
+            onClick={() => toggleSection("s3")}
+            className="w-full flex items-center justify-between px-6 py-4 hover:bg-[#F8F7F4] transition-colors"
+          >
+            <span className="text-sm font-semibold text-[#1A1916]">Market Intelligence</span>
+            <span className="text-[#9E9C98] text-xs">{openSections.s3 ? "▼" : "▶"}</span>
+          </button>
+          {openSections.s3 && (
+            <div className="px-6 pb-6 flex flex-col gap-5 border-t border-[#E8E6E1]">
+              <div className="flex flex-col gap-1.5">
+                <label className={labelClass}>Profit Multiplier (마진배수)</label>
+                <input
+                  type="number"
+                  step="0.1"
+                  value={formData.profit_multiplier ?? ""}
+                  onChange={(e) =>
+                    setFormData((p) => ({
+                      ...p!,
+                      profit_multiplier: e.target.value,
+                    }))
+                  }
+                  className={inputClass}
+                />
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <label className={labelClass}>
+                  Strategic Target Price (전략적 목표가 USD)
+                </label>
+                <input
+                  type="number"
+                  step="0.01"
+                  value={
+                    (formData as Record<string, unknown>).strategy_price != null
+                      ? String((formData as Record<string, unknown>).strategy_price)
+                      : ""
+                  }
+                  onChange={(e) =>
+                    setFormData((p) => ({
+                      ...p!,
+                      strategy_price: e.target.value === "" ? null : e.target.value,
+                    }))
+                  }
+                  placeholder="예: 18.50 — 비우면 자동계산 표시"
+                  className={inputClass}
+                />
+                <p className="text-xs text-[#9E9C98]">
+                  입력 시 PDP에 Strategic Target Price로 표시. 비우면 숨김.
+                </p>
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <label className={labelClass}>Winning Feature (핵심강점)</label>
+                <textarea
+                  rows={3}
+                  value={formData.top_selling_point ?? ""}
+                  onChange={(e) => setFormData((p) => ({ ...p!, top_selling_point: e.target.value }))}
+                  className={`${inputClass} resize-none`}
+                />
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <label className={labelClass}>Pain Point (소비자페인포인트)</label>
+                <textarea
+                  rows={3}
+                  value={formData.common_pain_point ?? ""}
+                  onChange={(e) => setFormData((p) => ({ ...p!, common_pain_point: e.target.value }))}
+                  className={`${inputClass} resize-none`}
+                />
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <label className={labelClass}>Search Volume (검색볼륨)</label>
+                <input
+                  value={formData.search_volume ?? ""}
+                  onChange={(e) => setFormData((p) => ({ ...p!, search_volume: e.target.value }))}
+                  className={inputClass}
+                  placeholder="e.g. Rising (18,100/mo)"
+                />
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <label className={labelClass}>MoM Growth (MoM성장률)</label>
+                <input
+                  type="text"
+                  value={formData.mom_growth ?? ""}
+                  onChange={(e) => setFormData((p) => ({ ...p!, mom_growth: e.target.value }))}
+                  className={inputClass}
+                />
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <label className={labelClass}>WoW Growth (WoW성장률)</label>
+                <input
+                  type="text"
+                  value={formData.wow_rate ?? ""}
+                  onChange={(e) => setFormData((p) => ({ ...p!, wow_rate: e.target.value }))}
+                  className={inputClass}
+                />
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <label className={labelClass}>Best Platform (최적플랫폼)</label>
+                <input
+                  value={formData.best_platform ?? ""}
+                  onChange={(e) => setFormData((p) => ({ ...p!, best_platform: e.target.value }))}
+                  className={inputClass}
+                  placeholder="e.g. Amazon US, TikTok Shop"
+                />
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Section 4 — Social Proof & Trend Intelligence */}
+        <div className="bg-white rounded-2xl border border-[#E8E6E1] shadow-[0_1px_3px_0_rgb(26_25_22/0.06)] overflow-hidden">
+          <button
+            type="button"
+            onClick={() => toggleSection("s4")}
+            className="w-full flex items-center justify-between px-6 py-4 hover:bg-[#F8F7F4] transition-colors"
+          >
+            <span className="text-sm font-semibold text-[#1A1916]">Social Proof & Trend Intelligence</span>
+            <span className="text-[#9E9C98] text-xs">{openSections.s4 ? "▼" : "▶"}</span>
+          </button>
+          {openSections.s4 && (
+            <div className="px-6 pb-6 flex flex-col gap-5 border-t border-[#E8E6E1]">
+              <div className="flex flex-col gap-1.5">
+                <label className={labelClass}>Buzz Summary (버즈요약)</label>
+                <textarea
+                  rows={4}
+                  value={formData.buzz_summary ?? ""}
+                  onChange={(e) => setFormData((p) => ({ ...p!, buzz_summary: e.target.value }))}
+                  className={`${inputClass} resize-none`}
+                />
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <label className={labelClass}>KR Local Score (0–100) (국내로컬점수)</label>
+                <input
+                  type="number"
+                  min={0}
+                  max={100}
+                  value={formData.kr_local_score ?? ""}
+                  onChange={(e) => {
+                    const newKr = e.target.value === "" ? null : Number(e.target.value);
+                    setFormData((p) => {
+                      if (!p) return null;
+                      const gt = p.global_trend_score;
+                      const gap = (newKr != null && gt != null) ? newKr - gt : null;
+                      return { ...p, kr_local_score: newKr, gap_index: gap };
+                    });
+                  }}
+                  className={inputClass}
+                />
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <label className={labelClass}>Global Trend Score (0–100) (글로벌트렌드점수)</label>
+                <input
+                  type="number"
+                  min={0}
+                  max={100}
+                  value={formData.global_trend_score ?? ""}
+                  onChange={(e) => {
+                    const newGt = e.target.value === "" ? null : Number(e.target.value);
+                    setFormData((p) => {
+                      if (!p) return null;
+                      const kr = p.kr_local_score;
+                      const gap = (kr != null && newGt != null) ? kr - newGt : null;
+                      return { ...p, global_trend_score: newGt, gap_index: gap };
+                    });
+                  }}
+                  className={inputClass}
+                />
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <label className={labelClass}>Gap Index (갭지수) <span className="text-[#9E9C98] normal-case font-normal">(자동: 국내점수 − 글로벌점수)</span></label>
+                <div className={readOnlyClass}>
+                  {formData.gap_index != null ? formData.gap_index : "—"}
+                </div>
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <label className={labelClass}>KR Evidence (국내근거)</label>
+                <textarea
+                  rows={3}
+                  value={formData.kr_evidence ?? ""}
+                  onChange={(e) => setFormData((p) => ({ ...p!, kr_evidence: e.target.value }))}
+                  className={`${inputClass} resize-none`}
+                />
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <label className={labelClass}>Global Evidence (글로벌근거)</label>
+                <textarea
+                  rows={3}
+                  value={formData.global_evidence ?? ""}
+                  onChange={(e) => setFormData((p) => ({ ...p!, global_evidence: e.target.value }))}
+                  className={`${inputClass} resize-none`}
+                />
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <label className={labelClass}>KR Source Used (국내출처)</label>
+                <input
+                  value={formData.kr_source_used ?? ""}
+                  onChange={(e) => setFormData((p) => ({ ...p!, kr_source_used: e.target.value }))}
+                  className={inputClass}
+                />
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <label className={labelClass}>Rising Keywords (상승키워드)</label>
+                <div className="grid grid-cols-5 gap-2">
+                  {ensureLength5(formData.rising_keywords).map((kw, i) => (
+                    <input
+                      key={i}
+                      value={kw}
+                      onChange={(e) => {
+                        const next = [...ensureLength5(formData.rising_keywords)];
+                        next[i] = e.target.value;
+                        setFormData((p) => ({ ...p!, rising_keywords: next } as unknown as Partial<ScoutFinalReportsRow>));
+                      }}
+                      className={inputClass}
+                      placeholder={`Keyword ${i + 1}`}
+                    />
+                  ))}
+                </div>
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <label className={labelClass}>SEO Keywords (SEO키워드)</label>
+                <div className="grid grid-cols-5 gap-2">
+                  {ensureLength5(formData.seo_keywords).map((kw, i) => (
+                    <input
+                      key={i}
+                      value={kw}
+                      onChange={(e) => {
+                        const next = [...ensureLength5(formData.seo_keywords)];
+                        next[i] = e.target.value;
+                        setFormData((p) => ({ ...p!, seo_keywords: next } as unknown as Partial<ScoutFinalReportsRow>));
+                      }}
+                      className={inputClass}
+                      placeholder={`Keyword ${i + 1}`}
+                    />
+                  ))}
+                </div>
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <label className={labelClass}>Viral Hashtags (바이럴해시태그)</label>
+                <div className="grid grid-cols-5 gap-2">
+                  {ensureLength5(formData.viral_hashtags).map((tag, i) => (
+                    <input
+                      key={i}
+                      value={tag}
+                      onChange={(e) => {
+                        const next = [...ensureLength5(formData.viral_hashtags)];
+                        next[i] = e.target.value;
+                        setFormData((p) => ({ ...p!, viral_hashtags: next } as unknown as Partial<ScoutFinalReportsRow>));
+                      }}
+                      className={inputClass}
+                      placeholder={`Hashtag ${i + 1}`}
+                    />
+                  ))}
+                </div>
+              </div>
+              {/* Scout Strategy Report - Steps 1-3 */}
+              <div className="flex flex-col gap-3 border border-[#E8E6E1] rounded-xl p-4">
+                <p className="text-sm font-semibold text-[#1A1916]">📋 Scout Strategy Report (Steps 1–3)</p>
+                {["Marketing Strategy", "Price / Margin Strategy", "B2B Sourcing Strategy"].map((header, i) => {
+                  const steps = parseTipToSteps(formData.sourcing_tip);
+                  return (
+                    <div key={i} className="flex flex-col gap-1.5">
+                      <label className={labelClass}>Step {i + 1}: {header}</label>
+                      <textarea
+                        rows={4}
+                        value={steps[i] ?? ""}
+                        onChange={(e) => {
+                          const current = parseTipToSteps(formData.sourcing_tip);
+                          current[i] = e.target.value;
+                          setFormData((p) => ({ ...p!, sourcing_tip: serializeSourcingTip(current) }));
+                        }}
+                        className={`${inputClass} resize-none`}
+                      />
+                    </div>
+                  );
+                })}
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <label className={labelClass}>Trend Entry Strategy (진입전략)</label>
+                <textarea
+                  rows={3}
+                  value={formData.trend_entry_strategy ?? ""}
+                  onChange={(e) => setFormData((p) => ({ ...p!, trend_entry_strategy: e.target.value }))}
+                  className={`${inputClass} resize-none`}
+                  placeholder="AI-generated. Edit if needed."
+                />
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Section 5 — Export & Logistics Intel */}
+        <div className="bg-white rounded-2xl border border-[#E8E6E1] shadow-[0_1px_3px_0_rgb(26_25_22/0.06)] overflow-hidden">
+          <button
+            type="button"
+            onClick={() => toggleSection("s5")}
+            className="w-full flex items-center justify-between px-6 py-4 hover:bg-[#F8F7F4] transition-colors"
+          >
+            <span className="text-sm font-semibold text-[#1A1916]">Export & Logistics Intel</span>
+            <span className="text-[#9E9C98] text-xs">{openSections.s5 ? "▼" : "▶"}</span>
+          </button>
+          {openSections.s5 && (
+            <div className="px-6 pb-6 flex flex-col gap-5 border-t border-[#E8E6E1]">
+              <div className="flex flex-col gap-1.5">
+                <label className={labelClass}>HS Code (HS코드)</label>
+                <input
+                  value={formData.hs_code ?? ""}
+                  onChange={(e) => setFormData((p) => ({ ...p!, hs_code: e.target.value }))}
+                  className={inputClass}
+                />
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <label className={labelClass}>HS Description (HS설명)</label>
+                <input
+                  value={formData.hs_description ?? ""}
+                  onChange={(e) => setFormData((p) => ({ ...p!, hs_description: e.target.value }))}
+                  className={inputClass}
+                />
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <label className={labelClass}>Status Reason (상태사유)</label>
+                <textarea
+                  rows={3}
+                  value={formData.status_reason ?? ""}
+                  onChange={(e) => setFormData((p) => ({ ...p!, status_reason: e.target.value }))}
+                  className={`${inputClass} resize-none`}
+                />
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <label className={labelClass}>Composition Info (성분정보)</label>
+                <textarea
+                  rows={3}
+                  value={formData.composition_info ?? ""}
+                  onChange={(e) => setFormData((p) => ({ ...p!, composition_info: e.target.value }))}
+                  className={`${inputClass} resize-none`}
+                />
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <label className={labelClass}>Spec Summary (스펙요약)</label>
+                <textarea
+                  rows={3}
+                  value={formData.spec_summary ?? ""}
+                  onChange={(e) => setFormData((p) => ({ ...p!, spec_summary: e.target.value }))}
+                  className={`${inputClass} resize-none`}
+                />
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <label className={labelClass}>Actual Weight (g) (실제중량)</label>
+                <input
+                  type="number"
+                  value={formData.actual_weight_g ?? ""}
+                  onChange={(e) => {
+                    const newAw = e.target.value === "" ? null : Number(e.target.value);
+                    setFormData((p) => {
+                      if (!p) return null;
+                      const vw = p.volumetric_weight_g;
+                      const billable = (newAw != null || vw != null) ? Math.max(newAw ?? 0, vw ?? 0) : null;
+                      return { ...p, actual_weight_g: newAw, billable_weight_g: billable };
+                    });
+                  }}
+                  className={inputClass}
+                />
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <label className={labelClass}>Volumetric Weight (g) (부피중량)</label>
+                <input
+                  type="number"
+                  value={formData.volumetric_weight_g ?? ""}
+                  onChange={(e) => {
+                    const newVw = e.target.value === "" ? null : Number(e.target.value);
+                    setFormData((p) => {
+                      if (!p) return null;
+                      const aw = p.actual_weight_g;
+                      const billable = (aw != null || newVw != null) ? Math.max(aw ?? 0, newVw ?? 0) : null;
+                      return { ...p, volumetric_weight_g: newVw, billable_weight_g: billable };
+                    });
+                  }}
+                  className={inputClass}
+                />
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <label className={labelClass}>Billable Weight (g) (과금중량) <span className="text-[#9E9C98] normal-case font-normal">(자동: max(실제, 부피))</span></label>
+                <div className={readOnlyClass}>
+                  {formData.billable_weight_g != null ? formData.billable_weight_g : "—"}
+                </div>
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <label className={labelClass}>Dimensions (cm) (치수)</label>
+                <input
+                  value={formData.dimensions_cm ?? ""}
+                  onChange={(e) => setFormData((p) => ({ ...p!, dimensions_cm: e.target.value }))}
+                  className={inputClass}
+                />
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <label className={labelClass}>Hazmat Status (위험물여부)</label>
+                <div className="bg-[#F8F7F4] rounded-xl border border-[#E8E6E1] p-4">
+                  <HazmatCheckboxes
+                    value={
+                      typeof formData.hazmat_status === "string"
+                        ? formData.hazmat_status
+                        : formData.hazmat_status != null
+                          ? JSON.stringify(formData.hazmat_status)
+                          : null
+                    }
+                    onChange={(s) => setFormData((p) => ({ ...p!, hazmat_status: s as unknown as ScoutFinalReportsRow["hazmat_status"] }))}
+                  />
+                </div>
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <label className={labelClass}>Required Certificates (필요인증)</label>
+                <input
+                  value={formData.required_certificates ?? ""}
+                  onChange={(e) => setFormData((p) => ({ ...p!, required_certificates: e.target.value }))}
+                  className={inputClass}
+                  placeholder="Comma-separated"
+                />
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <label className={labelClass}>Shipping Notes (배송메모)</label>
+                <textarea
+                  rows={3}
+                  value={formData.shipping_notes ?? ""}
+                  onChange={(e) => setFormData((p) => ({ ...p!, shipping_notes: e.target.value }))}
+                  className={`${inputClass} resize-none`}
+                />
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <label className={labelClass}>Shipping Tier (배송티어)</label>
+                <input
+                  value={formData.shipping_tier ?? ""}
+                  onChange={(e) => setFormData((p) => ({ ...p!, shipping_tier: e.target.value }))}
+                  className={inputClass}
+                  placeholder="e.g. Tier 1"
+                />
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <label className={labelClass}>Key Risk Ingredient (위험성분)</label>
+                <input
+                  value={formData.key_risk_ingredient ?? ""}
+                  onChange={(e) => setFormData((p) => ({ ...p!, key_risk_ingredient: e.target.value }))}
+                  className={inputClass}
+                  placeholder="e.g. Retinol, Aerosol"
+                />
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <label className={labelClass}>Hazmat Summary (위험물요약)</label>
+                <textarea
+                  rows={2}
+                  value={formData.hazmat_summary ?? ""}
+                  onChange={(e) => setFormData((p) => ({ ...p!, hazmat_summary: e.target.value }))}
+                  className={`${inputClass} resize-none`}
+                />
+              </div>
+              {/* Compliance & Logistics Strategy - Steps 4-5 */}
+              <div className="flex flex-col gap-3 border border-[#E8E6E1] rounded-xl p-4">
+                <p className="text-sm font-semibold text-[#1A1916]">📦 Compliance & Logistics Strategy (Steps 4–5)</p>
+                {["Customs / Compliance Strategy", "Logistics / Shipping Strategy"].map((header, i) => {
+                  const steps = parseTipToSteps(formData.sourcing_tip);
+                  return (
+                    <div key={i} className="flex flex-col gap-1.5">
+                      <label className={labelClass}>Step {i + 4}: {header}</label>
+                      <textarea
+                        rows={4}
+                        value={steps[i + 3] ?? ""}
+                        onChange={(e) => {
+                          const current = parseTipToSteps(formData.sourcing_tip);
+                          current[i + 3] = e.target.value;
+                          setFormData((p) => ({ ...p!, sourcing_tip: serializeSourcingTip(current) }));
+                        }}
+                        className={`${inputClass} resize-none`}
+                      />
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Section 7 — Global Market Prices (before Launch Kit) */}
+        <div className="bg-white rounded-2xl border border-[#E8E6E1] shadow-[0_1px_3px_0_rgb(26_25_22/0.06)] overflow-hidden">
+          <button
+            type="button"
+            onClick={() => toggleSection("s7")}
+            className="w-full flex items-center justify-between px-6 py-4 hover:bg-[#F8F7F4] transition-colors"
+          >
+            <span className="text-sm font-semibold text-[#1A1916]">🌍 Global Market Prices</span>
+            <span className="text-[#9E9C98] text-xs">{openSections.s7 ? "▼" : "▶"}</span>
+          </button>
+          {openSections.s7 && (
+            <div className="px-6 pb-6 flex flex-col gap-5 border-t border-[#E8E6E1]">
+              <div className="flex flex-col gap-1.5">
+                <label className={labelClass}>Global Prices (글로벌가격 — US/UK/EU/JP/SEA/UAE)</label>
+                <GlobalPricesHelper
+                  value={
+                    typeof formData.global_prices === "string"
+                      ? formData.global_prices
+                      : formData.global_prices != null
+                        ? JSON.stringify(formData.global_prices)
+                        : null
+                  }
+                  onChange={(s) => setFormData((p) => ({ ...p!, global_prices: s as unknown as ScoutFinalReportsRow["global_prices"] }))}
+                />
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Section 6 — Launch & Execution Kit (default open) */}
+        <div className="bg-white rounded-2xl border border-[#E8E6E1] shadow-[0_1px_3px_0_rgb(26_25_22/0.06)] overflow-hidden">
+          <button
+            type="button"
+            onClick={() => toggleSection("s6")}
+            className="w-full flex items-center justify-between px-6 py-4 hover:bg-[#F8F7F4] transition-colors"
+          >
+            <span className="text-sm font-semibold text-[#1A1916]">Launch & Execution Kit</span>
+            <span className="text-[#9E9C98] text-xs">{openSections.s6 ? "▼" : "▶"}</span>
+          </button>
+          {openSections.s6 && (
+            <div className="px-6 pb-6 flex flex-col gap-5 border-t border-[#E8E6E1]">
+              <p className="text-xs font-semibold text-indigo-400 uppercase tracking-widest pt-2">
+                📋 제조사·연락처 (Manufacturer & Contact)
+              </p>
+              <div className="flex flex-col gap-1.5">
+                <label className={labelClass}>Manufacturer Name (제조사명)</label>
+                <input
+                  value={formData.m_name ?? ""}
+                  onChange={(e) => setFormData((p) => ({ ...p!, m_name: e.target.value }))}
+                  className={inputClass}
+                />
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <label className={labelClass}>Corporate Scale (기업 규모 e.g. SME)</label>
+                <input
+                  value={formData.corporate_scale ?? ""}
+                  onChange={(e) => setFormData((p) => ({ ...p!, corporate_scale: e.target.value }))}
+                  className={inputClass}
+                  placeholder="e.g. SME"
+                />
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <label className={labelClass}>Contact Email (문의 이메일)</label>
+                <input
+                  type="email"
+                  value={formData.contact_email ?? ""}
+                  onChange={(e) => setFormData((p) => ({ ...p!, contact_email: e.target.value }))}
+                  className={inputClass}
+                />
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <label className={labelClass}>Contact Phone (문의 전화번호)</label>
+                <input
+                  type="tel"
+                  value={formData.contact_phone ?? ""}
+                  onChange={(e) => setFormData((p) => ({ ...p!, contact_phone: e.target.value }))}
+                  className={inputClass}
+                />
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <label className={labelClass}>Manufacturer Website (제조사 홈페이지)</label>
+                <input
+                  type="url"
+                  value={formData.m_homepage ?? ""}
+                  onChange={(e) => setFormData((p) => ({ ...p!, m_homepage: e.target.value }))}
+                  className={inputClass}
+                />
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <label className={labelClass}>Wholesale Portal (도매 문의 링크)</label>
+                <input
+                  type="url"
+                  value={formData.wholesale_link ?? ""}
+                  onChange={(e) => setFormData((p) => ({ ...p!, wholesale_link: e.target.value }))}
+                  className={inputClass}
+                />
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <label className={labelClass}>Global Site URL (글로벌사이트URL)</label>
+                <input
+                  type="url"
+                  value={formData.global_site_url ?? ""}
+                  onChange={(e) => setFormData((p) => ({ ...p!, global_site_url: e.target.value }))}
+                  className={inputClass}
+                />
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <label className={labelClass}>B2B Inquiry URL (B2B문의URL)</label>
+                <input
+                  type="url"
+                  value={formData.b2b_inquiry_url ?? ""}
+                  onChange={(e) => setFormData((p) => ({ ...p!, b2b_inquiry_url: e.target.value }))}
+                  className={inputClass}
+                />
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <label className={labelClass}>Can OEM (OEM가능여부)</label>
+                <select
+                  value={formData.can_oem === true ? "true" : formData.can_oem === false ? "false" : ""}
+                  onChange={(e) => setFormData((p) => ({
+                    ...p!,
+                    can_oem: e.target.value === "true" ? true : e.target.value === "false" ? false : null
+                  }))}
+                  className={inputClass}
+                >
+                  <option value="">— 미확인 —</option>
+                  <option value="true">Yes (가능)</option>
+                  <option value="false">No (불가)</option>
+                </select>
+              </div>
+              <div className="border-t border-[#E8E6E1] pt-5">
+                <p className="text-sm font-semibold text-[#1A1916] mb-4">🎯 CEO Direct Input</p>
+              </div>
+              <p className="text-xs text-[#9E9C98] pt-4">이 구역은 대표님이 브랜드와 직접 협의하거나 발품 팔아 확인한 정보만 입력합니다. Make.com이 자동으로 채우지 않습니다.</p>
+
+              <p className="text-xs font-semibold text-[#16A34A] uppercase tracking-widest pt-2">B2B 소싱 원가 & 조건</p>
+              <div className="flex flex-col gap-1.5">
+                <label className={labelClass}>Verified Cost (USD) (검증된 원가)</label>
+                <input
+                  type="text"
+                  value={formData.verified_cost_usd ?? ""}
+                  onChange={(e) => setFormData((p) => ({ ...p!, verified_cost_usd: e.target.value }))}
+                  className={inputClass}
+                />
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <label className={labelClass}>Verified Cost Note (검증원가메모)</label>
+                <input
+                  value={formData.verified_cost_note ?? ""}
+                  onChange={(e) => setFormData((p) => ({ ...p!, verified_cost_note: e.target.value }))}
+                  className={inputClass}
+                  placeholder="Type 'undisclosed' to hide price"
+                />
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <label className={labelClass}>Verified At (검증일시)</label>
+                <input
+                  type="date"
+                  value={formData.verified_at ? String(formData.verified_at).slice(0, 10) : ""}
+                  onChange={(e) => setFormData((p) => ({ ...p!, verified_at: e.target.value ? e.target.value : null }))}
+                  className={inputClass}
+                />
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <label className={labelClass}>MOQ (최소주문수량)</label>
+                <input
+                  value={formData.moq ?? ""}
+                  onChange={(e) => setFormData((p) => ({ ...p!, moq: e.target.value }))}
+                  className={inputClass}
+                />
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <label className={labelClass}>Lead Time (리드타임)</label>
+                <input
+                  value={formData.lead_time ?? ""}
+                  onChange={(e) => setFormData((p) => ({ ...p!, lead_time: e.target.value }))}
+                  className={inputClass}
+                />
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <label className={labelClass}>Sample Policy (샘플정책)</label>
+                <input
+                  value={formData.sample_policy ?? ""}
+                  onChange={(e) => setFormData((p) => ({ ...p!, sample_policy: e.target.value }))}
+                  className={inputClass}
+                />
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <label className={labelClass}>Export Cert Note (수출인증메모)</label>
+                <input
+                  value={formData.export_cert_note ?? ""}
+                  onChange={(e) => setFormData((p) => ({ ...p!, export_cert_note: e.target.value }))}
+                  className={inputClass}
+                />
+              </div>
+
+              <p className="text-xs font-semibold text-[#2563EB] uppercase tracking-widest pt-4">미디어 & 마케팅 자산</p>
+              <div className="flex flex-col gap-1.5">
+                <label className={labelClass}>Viral Video URL (바이럴영상URL)</label>
+                <input
+                  value={formData.viral_video_url ?? ""}
+                  onChange={(e) => setFormData((p) => ({ ...p!, viral_video_url: e.target.value }))}
+                  className={inputClass}
+                />
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <label className={labelClass}>Video URL (영상URL)</label>
+                <input
+                  value={formData.video_url ?? ""}
+                  onChange={(e) => setFormData((p) => ({ ...p!, video_url: e.target.value }))}
+                  className={inputClass}
+                />
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <label className={labelClass}>Marketing Assets URL (마케팅자산URL)</label>
+                <input
+                  value={formData.marketing_assets_url ?? ""}
+                  onChange={(e) => setFormData((p) => ({ ...p!, marketing_assets_url: e.target.value }))}
+                  className={inputClass}
+                />
+              </div>
+
+              <p className="text-xs font-semibold text-[#7C3AED] uppercase tracking-widest pt-4">AI 자산</p>
+              <div className="flex flex-col gap-1.5">
+                <label className={labelClass}>AI Detail Page Links (AI상세페이지링크)</label>
+                <div className="bg-[#F8F7F4] rounded-xl border border-[#E8E6E1] p-4">
+                  <AiPageLinksHelper
+                    value={
+                      typeof formData.ai_detail_page_links === "string"
+                        ? formData.ai_detail_page_links
+                        : formData.ai_detail_page_links != null
+                          ? JSON.stringify(formData.ai_detail_page_links)
+                          : null
+                    }
+                    onChange={(s) => setFormData((p) => ({ ...p!, ai_detail_page_links: s as unknown as ScoutFinalReportsRow["ai_detail_page_links"] }))}
+                  />
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Edit History */}
+        <div className="bg-white rounded-2xl border border-[#E8E6E1] shadow-[0_1px_3px_0_rgb(26_25_22/0.06)] overflow-hidden mt-8">
+          <h2 className="px-6 py-4 border-b border-[#E8E6E1] text-sm font-semibold text-[#1A1916]">
+            수정 이력 (Edit History)
+          </h2>
+          <div className="overflow-x-auto">
+            {(() => {
+              const hist = formData.edit_history as { entries?: { timestamp: string; changes: { field: string; before: string; after: string }[] }[] } | null | undefined;
+              const entries = Array.isArray(hist?.entries) ? hist.entries : [];
+              if (entries.length === 0) {
+                return (
+                  <div className="px-6 py-8 text-center text-[#6B6860] text-sm">
+                    아직 수정 이력이 없습니다.
+                  </div>
+                );
+              }
+              return (
+                <table className="w-full text-left">
+                  <thead>
+                    <tr className="bg-[#F8F7F4] border-b border-[#E8E6E1] text-xs font-semibold text-[#9E9C98] uppercase tracking-widest">
+                      <th className="px-4 py-3">일시</th>
+                      <th className="px-4 py-3">필드 (한글)</th>
+                      <th className="px-4 py-3">변경 전</th>
+                      <th className="px-4 py-3">변경 후</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {[...entries].reverse().map((entry, ei) =>
+                      entry.changes?.map((c, ci) => (
+                        <tr key={`${ei}-${ci}`} className="border-t border-[#E8E6E1] text-sm">
+                          <td className="px-4 py-2 text-[#6B6860] font-mono text-xs whitespace-nowrap">
+                            {entry.timestamp ? new Date(entry.timestamp).toLocaleString("ko-KR") : "—"}
+                          </td>
+                          <td className="px-4 py-2 text-[#3D3B36]">
+                            {FIELD_LABELS_KO[c.field] ?? c.field}
+                          </td>
+                          <td className="px-4 py-2 text-[#6B6860] max-w-[200px] truncate" title={c.before}>
+                            {c.before}
+                          </td>
+                          <td className="px-4 py-2 text-[#16A34A] max-w-[200px] truncate" title={c.after}>
+                            {c.after}
+                          </td>
+                        </tr>
+                      ))
+                    )}
+                  </tbody>
+                </table>
+              );
+            })()}
+          </div>
+        </div>
+      </main>
+    </div>
+  );
+}
+```
 
 ---
 
-## 부록: 파일·라인 빠른 색인
+## 4. `components/admin/HazmatCheckboxes.tsx` (full file)
 
-| 파일 | 용도 |
-|------|------|
-| `app/weekly/[weekId]/[id]/page.tsx` | L133–140 `sections`, L163–183 컴포넌트 순서 |
-| `components/layout/ClientLeftNav.tsx` | L62–84 네비 버튼 |
-| `components/ProductIdentity.tsx` | L88–251 섹션 1 |
-| `components/report/TrendSignalDashboard.tsx` | L39–177 섹션 2 |
-| `components/report/MarketIntelligence.tsx` | L185–427 섹션 3 |
-| `components/report/SocialProofTrendIntelligence.tsx` | L29–234 섹션 4 |
-| `components/report/SourcingIntel.tsx` | L41–244 섹션 5 |
-| `components/report/SupplierContact.tsx` | L192–438 Launch Kit |
-| `components/GroupBBrokerSection.tsx` | HS 브로커 블록 |
-| `app/admin/[id]/page.tsx` | L414~ 전체 폼 |
-| `types/database.ts` | L35–170 `ScoutFinalReportsRow` |
+```tsx
+"use client";
+
+import { useState, useEffect } from "react";
+
+type HazmatState = {
+  contains_liquid: boolean;
+  contains_powder: boolean;
+  contains_battery: boolean;
+  contains_aerosol: boolean;
+};
+
+function parseValue(value: string | null): HazmatState {
+  const def: HazmatState = {
+    contains_liquid: false,
+    contains_powder: false,
+    contains_battery: false,
+    contains_aerosol: false,
+  };
+  if (!value?.trim()) return def;
+  try {
+    const p = JSON.parse(value);
+    if (typeof p !== "object" || p === null) return def;
+    return {
+      contains_liquid: Boolean(p.contains_liquid),
+      contains_powder: Boolean(p.contains_powder),
+      contains_battery: Boolean(p.contains_battery),
+      contains_aerosol: Boolean(p.contains_aerosol),
+    };
+  } catch {
+    return def;
+  }
+}
+
+export function HazmatCheckboxes({
+  value,
+  onChange,
+}: {
+  value: string | null;
+  onChange: (newJsonString: string) => void;
+}) {
+  const [state, setState] = useState<HazmatState>(() => parseValue(value));
+
+  useEffect(() => {
+    setState(parseValue(value));
+  }, [value]);
+
+  function toggle(key: keyof HazmatState) {
+    const newState = { ...state, [key]: !state[key] };
+    setState(newState);
+    onChange(
+      JSON.stringify({
+        contains_liquid: newState.contains_liquid,
+        contains_powder: newState.contains_powder,
+        contains_battery: newState.contains_battery,
+        contains_aerosol: newState.contains_aerosol,
+      })
+    );
+  }
+
+  const items: { key: keyof HazmatState; icon: string; label: string }[] = [
+    { key: "contains_liquid", icon: "💧", label: "Liquid" },
+    { key: "contains_powder", icon: "🧪", label: "Powder" },
+    { key: "contains_battery", icon: "🔋", label: "Battery" },
+    { key: "contains_aerosol", icon: "💨", label: "Aerosol" },
+  ];
+
+  return (
+    <div className="grid grid-cols-2 gap-3 bg-[#F8F7F4] p-4 rounded-lg">
+      {items.map(({ key, icon, label }) => (
+        <label
+          key={key}
+          className="flex items-center gap-2 cursor-pointer text-sm text-[#3D3B36]"
+        >
+          <input
+            type="checkbox"
+            checked={state[key]}
+            onChange={() => toggle(key)}
+            className="appearance-none w-4 h-4 rounded border border-[#E8E6E1] bg-white checked:bg-[#16A34A] checked:border-[#16A34A] focus:border-[#16A34A] outline-none"
+          />
+          <span>
+            {icon} {label}
+          </span>
+        </label>
+      ))}
+    </div>
+  );
+}
+```
 
 ---
 
-*본 문서는 리디자인 시 단일 출처로 사용할 수 있도록 필드·파일·고객 섹션 매핑을 끝까지 나열함.*
+## 5. `components/admin/AiPageLinksHelper.tsx` (full file)
+
+```tsx
+"use client";
+
+import { useState, useEffect } from "react";
+
+const MAX_LINKS = 5;
+
+function parseValue(value: string | null): string[] {
+  if (value == null || value === "") return [""];
+  try {
+    const p = JSON.parse(value);
+    if (Array.isArray(p)) {
+      const arr = p.map((x) => (typeof x === "string" ? x : "")).slice(0, MAX_LINKS);
+      return arr.length ? arr : [""];
+    }
+    if (typeof p === "string" && p.trim()) return [p.trim()];
+  } catch {
+    if (typeof value === "string" && value.trim()) return [value.trim()];
+  }
+  return [""];
+}
+
+export function AiPageLinksHelper({
+  value,
+  onChange,
+}: {
+  value: string | null;
+  onChange: (newJsonString: string) => void;
+}) {
+  const [links, setLinks] = useState<string[]>(() => parseValue(value));
+
+  useEffect(() => {
+    setLinks(parseValue(value));
+  }, [value]);
+
+  function updateLink(i: number, v: string) {
+    const newLinks = [...links];
+    newLinks[i] = v;
+    setLinks(newLinks);
+    const filtered = newLinks.filter((s) => s.trim());
+    onChange(JSON.stringify(filtered.length ? filtered : []));
+  }
+
+  function removeLink(i: number) {
+    const newLinks = links.filter((_, idx) => idx !== i);
+    setLinks(newLinks);
+    const filtered = newLinks.filter((s) => s.trim());
+    onChange(JSON.stringify(filtered.length ? filtered : []));
+  }
+
+  function addLink() {
+    if (links.length >= MAX_LINKS) return;
+    const newLinks = [...links, ""];
+    setLinks(newLinks);
+    const filtered = newLinks.filter((s) => s.trim());
+    onChange(JSON.stringify(filtered.length ? filtered : []));
+  }
+
+  const inputClass =
+    "bg-white border border-[#E8E6E1] rounded-lg px-3 py-2 text-sm text-[#1A1916] placeholder:text-[#C4C2BE] focus:border-[#16A34A] outline-none flex-1 min-w-0";
+
+  return (
+    <div className="flex flex-col gap-2 bg-[#F8F7F4] border border-[#E8E6E1] rounded-lg p-4">
+      {links.map((link, i) => (
+        <div key={i} className="flex items-center gap-2">
+          <span className="text-[#9E9C98] text-xs w-14">Link {i + 1}:</span>
+          <input
+            type="url"
+            value={link}
+            onChange={(e) => updateLink(i, e.target.value)}
+            placeholder="https://..."
+            className={inputClass}
+          />
+          <button
+            type="button"
+            onClick={() => removeLink(i)}
+            className="text-[#9E9C98] hover:text-[#DC2626] p-1 shrink-0"
+            aria-label="Remove"
+          >
+            🗑
+          </button>
+        </div>
+      ))}
+      {links.length < MAX_LINKS && (
+        <button
+          type="button"
+          onClick={addLink}
+          className="text-xs text-[#16A34A] hover:text-[#15803D] w-fit"
+        >
+          + Add Link
+        </button>
+      )}
+    </div>
+  );
+}
+```
+
+---
+
+## 6. `components/admin/GlobalPricesHelper.tsx` (full file)
+
+```tsx
+"use client";
+
+import { useState, useEffect, useCallback } from "react";
+
+// ——— Types ———
+type ListingItem = {
+  platform?: string;
+  price_usd?: number;
+  url?: string;
+  sold_out?: boolean;
+  is_official?: boolean;
+  [k: string]: unknown;
+};
+
+type RegionDataLike = {
+  price_usd?: number;
+  url?: string | null;
+  official_url?: string;
+  seller_type?: string;
+  listings?: ListingItem[];
+  [k: string]: unknown;
+};
+
+type GlobalPricesLike = {
+  us_uk_eu?: { us?: RegionDataLike; uk?: RegionDataLike; eu?: RegionDataLike; [k: string]: unknown };
+  jp_sea?: { jp?: RegionDataLike; sea?: RegionDataLike; [k: string]: unknown };
+  uae?: { uae?: RegionDataLike; [k: string]: unknown };
+  shopee_lazada?: RegionDataLike;
+  [k: string]: unknown;
+};
+
+const REGIONS: Array<{ key: string; flag: string; name: string }> = [
+  { key: "us", flag: "🇺🇸", name: "US" },
+  { key: "gb", flag: "🇬🇧", name: "UK" },
+  { key: "eu", flag: "🇪🇺", name: "EU" },
+  { key: "jp", flag: "🇯🇵", name: "Japan" },
+  { key: "sea", flag: "🇸🇬", name: "SEA" },
+  { key: "uae", flag: "🇦🇪", name: "UAE" },
+];
+
+const inputCls =
+  "bg-white border border-[#E8E6E1] rounded-md px-2 py-1.5 text-sm text-[#1A1916] focus:border-[#16A34A] focus:ring-1 focus:ring-[#16A34A] outline-none";
+
+function parseValue(value: string | null): GlobalPricesLike {
+  if (value == null || value === "") return {};
+  try {
+    let raw: unknown = JSON.parse(value);
+    if (typeof raw === "string") raw = JSON.parse(raw);
+    if (typeof raw !== "object" || raw === null) return {};
+    return raw as GlobalPricesLike;
+  } catch {
+    return {};
+  }
+}
+
+function getRegionData(data: GlobalPricesLike, regionKey: string): RegionDataLike | undefined {
+  if (regionKey === "shopee_lazada") return data.shopee_lazada;
+  if (regionKey === "us") return data.us_uk_eu?.us;
+  if (regionKey === "gb") return data.us_uk_eu?.uk;
+  if (regionKey === "eu") return data.us_uk_eu?.eu;
+  if (regionKey === "jp") return data.jp_sea?.jp;
+  if (regionKey === "sea") return data.jp_sea?.sea;
+  if (regionKey === "uae") return data.uae?.uae;
+  return undefined;
+}
+
+function normalizeListing(l: unknown, source?: "sea" | "shopee_lazada"): ListingItem {
+  if (l && typeof l === "object" && !Array.isArray(l)) {
+    const o = l as Record<string, unknown>;
+    const price_usd_val = typeof o.price_usd === "number" ? o.price_usd : 0;
+    const sold_out = o.sold_out === true || price_usd_val === 0;
+    const item: ListingItem = {
+      platform: typeof o.platform === "string" ? o.platform : "",
+      price_usd: price_usd_val,
+      url: typeof o.url === "string" ? o.url : "",
+      sold_out,
+      is_official: o.is_official === true,
+    };
+    if (source) item.source = source;
+    return item;
+  }
+  const item: ListingItem = { platform: "", price_usd: 0, url: "", sold_out: true };
+  if (source) item.source = source;
+  return item;
+}
+
+function getRegionListings(data: GlobalPricesLike, regionKey: string): ListingItem[] {
+  if (regionKey === "sea") {
+    const seaList = getRegionData(data, "sea")?.listings;
+    const shopeeList = data.shopee_lazada?.listings;
+    const seaItems = Array.isArray(seaList) ? seaList.map((l) => normalizeListing(l, "sea")) : [];
+    const shopeeItems = Array.isArray(shopeeList) ? shopeeList.map((l) => normalizeListing(l, "shopee_lazada")) : [];
+    return [...seaItems, ...shopeeItems];
+  }
+  const region = getRegionData(data, regionKey);
+  const list = region?.listings;
+  if (!Array.isArray(list)) return [];
+  return list.map((l) => normalizeListing(l));
+}
+
+/** Minimum price_usd > 0 is the Best price for the badge. */
+function getBestPrice(listings: ListingItem[]): number | null {
+  const prices = listings.map((l) => l.price_usd ?? 0).filter((p) => p > 0);
+  if (prices.length === 0) return null;
+  return Math.min(...prices);
+}
+
+function getBestListingIndex(listings: ListingItem[]): number {
+  let bestIdx = -1;
+  let best = Infinity;
+  listings.forEach((l, i) => {
+    const p = l.price_usd ?? 0;
+    if (p > 0 && p < best) {
+      best = p;
+      bestIdx = i;
+    }
+  });
+  return bestIdx;
+}
+
+function sortListings(listings: ListingItem[]): ListingItem[] {
+  return [...listings].sort((a, b) => {
+    const pa = a.price_usd ?? 0;
+    const pb = b.price_usd ?? 0;
+    if (pa > 0 && pb > 0) return pa - pb;
+    if (pa > 0) return -1;
+    if (pb > 0) return 1;
+    return 0;
+  });
+}
+
+function stripSource(listing: ListingItem): Omit<ListingItem, "source"> {
+  const { source: _s, ...rest } = listing;
+  return rest;
+}
+
+function setRegionListings(
+  data: GlobalPricesLike,
+  regionKey: string,
+  listings: ListingItem[]
+): GlobalPricesLike {
+  const activePrices = listings
+    .filter((l) => !l.sold_out && (l.price_usd ?? 0) > 0)
+    .map((l) => l.price_usd as number);
+  const next = JSON.parse(JSON.stringify(data)) as GlobalPricesLike;
+  if (regionKey === "sea") {
+    const seaListings = listings
+      .filter((l) => (l as ListingItem & { source?: string }).source !== "shopee_lazada")
+      .map(stripSource);
+    const shopeeListings = listings
+      .filter((l) => (l as ListingItem & { source?: string }).source === "shopee_lazada")
+      .map(stripSource);
+    if (!next.jp_sea) next.jp_sea = {};
+    if (!next.jp_sea.sea) next.jp_sea.sea = {};
+    next.jp_sea.sea.listings = seaListings;
+    if (activePrices.length === 0) {
+      next.jp_sea.sea.price_usd = 0;
+      next.jp_sea.sea.url = null;
+    } else {
+      next.jp_sea.sea.price_usd = Math.min(...activePrices);
+    }
+    if (!next.shopee_lazada) next.shopee_lazada = {};
+    next.shopee_lazada.listings = shopeeListings;
+    return next;
+  }
+  if (regionKey === "shopee_lazada") {
+    if (!next.shopee_lazada) next.shopee_lazada = {};
+    next.shopee_lazada.listings = listings.map(stripSource);
+    return next;
+  }
+  if (regionKey === "us") {
+    if (!next.us_uk_eu) next.us_uk_eu = {};
+    if (!next.us_uk_eu.us) next.us_uk_eu.us = {};
+    next.us_uk_eu.us.listings = listings.map(stripSource);
+    if (activePrices.length === 0) {
+      next.us_uk_eu.us.price_usd = 0;
+      next.us_uk_eu.us.url = null;
+    } else {
+      next.us_uk_eu.us.price_usd = Math.min(...activePrices);
+    }
+    return next;
+  }
+  if (regionKey === "gb") {
+    if (!next.us_uk_eu) next.us_uk_eu = {};
+    if (!next.us_uk_eu.uk) next.us_uk_eu.uk = {};
+    next.us_uk_eu.uk.listings = listings.map(stripSource);
+    if (activePrices.length === 0) {
+      next.us_uk_eu.uk.price_usd = 0;
+      next.us_uk_eu.uk.url = null;
+    } else {
+      next.us_uk_eu.uk.price_usd = Math.min(...activePrices);
+    }
+    return next;
+  }
+  if (regionKey === "eu") {
+    if (!next.us_uk_eu) next.us_uk_eu = {};
+    if (!next.us_uk_eu.eu) next.us_uk_eu.eu = {};
+    next.us_uk_eu.eu.listings = listings.map(stripSource);
+    if (activePrices.length === 0) {
+      next.us_uk_eu.eu.price_usd = 0;
+      next.us_uk_eu.eu.url = null;
+    } else {
+      next.us_uk_eu.eu.price_usd = Math.min(...activePrices);
+    }
+    return next;
+  }
+  if (regionKey === "jp") {
+    if (!next.jp_sea) next.jp_sea = {};
+    if (!next.jp_sea.jp) next.jp_sea.jp = {};
+    next.jp_sea.jp.listings = listings.map(stripSource);
+    if (activePrices.length === 0) {
+      next.jp_sea.jp.price_usd = 0;
+      next.jp_sea.jp.url = null;
+    } else {
+      next.jp_sea.jp.price_usd = Math.min(...activePrices);
+    }
+    return next;
+  }
+  if (regionKey === "uae") {
+    if (!next.uae) next.uae = {};
+    if (!next.uae.uae) next.uae.uae = {};
+    next.uae.uae.listings = listings.map(stripSource);
+    if (activePrices.length === 0) {
+      next.uae.uae.price_usd = 0;
+      next.uae.uae.url = null;
+    } else {
+      next.uae.uae.price_usd = Math.min(...activePrices);
+    }
+    return next;
+  }
+  return next;
+}
+
+function setRegionSellerType(
+  data: GlobalPricesLike,
+  regionKey: string,
+  sellerType: string
+): GlobalPricesLike {
+  const next = JSON.parse(JSON.stringify(data)) as GlobalPricesLike;
+  if (regionKey === "us") {
+    if (!next.us_uk_eu) next.us_uk_eu = {};
+    if (!next.us_uk_eu.us) next.us_uk_eu.us = {};
+    next.us_uk_eu.us.seller_type = sellerType;
+  } else if (regionKey === "gb") {
+    if (!next.us_uk_eu) next.us_uk_eu = {};
+    if (!next.us_uk_eu.uk) next.us_uk_eu.uk = {};
+    next.us_uk_eu.uk.seller_type = sellerType;
+  } else if (regionKey === "eu") {
+    if (!next.us_uk_eu) next.us_uk_eu = {};
+    if (!next.us_uk_eu.eu) next.us_uk_eu.eu = {};
+    next.us_uk_eu.eu.seller_type = sellerType;
+  } else if (regionKey === "jp") {
+    if (!next.jp_sea) next.jp_sea = {};
+    if (!next.jp_sea.jp) next.jp_sea.jp = {};
+    next.jp_sea.jp.seller_type = sellerType;
+  } else if (regionKey === "sea") {
+    if (!next.jp_sea) next.jp_sea = {};
+    if (!next.jp_sea.sea) next.jp_sea.sea = {};
+    next.jp_sea.sea.seller_type = sellerType;
+  } else if (regionKey === "uae") {
+    if (!next.uae) next.uae = {};
+    if (!next.uae.uae) next.uae.uae = {};
+    next.uae.uae.seller_type = sellerType;
+  }
+  return next;
+}
+
+function getRegionSellerType(data: GlobalPricesLike, regionKey: string): string {
+  const region = getRegionData(data, regionKey);
+  return (region?.seller_type as string) ?? "";
+}
+
+export function GlobalPricesHelper({
+  value,
+  onChange,
+}: {
+  value: string | null;
+  onChange: (newJsonString: string) => void;
+}) {
+  const [data, setData] = useState<GlobalPricesLike>(() => parseValue(value));
+  const [rawOpen, setRawOpen] = useState(false);
+  const [openRegions, setOpenRegions] = useState<Record<string, boolean>>(() =>
+    REGIONS.reduce((acc, r) => ({ ...acc, [r.key]: true }), {})
+  );
+  const [pendingDelete, setPendingDelete] = useState<{ regionKey: string; index: number } | null>(null);
+
+  useEffect(() => {
+    setData(parseValue(value));
+  }, [value]);
+
+  const emit = useCallback(
+    (next: GlobalPricesLike) => {
+      setData(next);
+      onChange(JSON.stringify(next));
+    },
+    [onChange]
+  );
+
+  const updateRegionListings = useCallback(
+    (regionKey: string, updater: (prev: ListingItem[]) => ListingItem[]) => {
+      const prev = getRegionListings(data, regionKey);
+      const nextListings = updater(prev);
+      const nextData = setRegionListings(data, regionKey, nextListings);
+      emit(nextData);
+    },
+    [data, emit]
+  );
+
+  const setListing = useCallback(
+    (regionKey: string, index: number, listing: ListingItem) => {
+      updateRegionListings(regionKey, (list) => {
+        const next = [...list];
+        next[index] = listing;
+        return next;
+      });
+      // Official 체크 시 region official_url 자동 반영
+      setData((prev) => {
+        const next = JSON.parse(JSON.stringify(prev)) as GlobalPricesLike;
+
+        // 해당 region의 official_url 업데이트
+        const setOfficialUrl = (regionObj: Record<string, unknown> | undefined, url: string | null) => {
+          if (regionObj) regionObj.official_url = url;
+        };
+
+        if (listing.is_official && listing.url) {
+          // Official 체크 ON → 이 URL을 official_url로 설정
+          if (regionKey === "us") setOfficialUrl(next.us_uk_eu?.us as Record<string, unknown>, listing.url);
+          else if (regionKey === "gb") setOfficialUrl(next.us_uk_eu?.uk as Record<string, unknown>, listing.url);
+          else if (regionKey === "eu") setOfficialUrl(next.us_uk_eu?.eu as Record<string, unknown>, listing.url);
+          else if (regionKey === "jp") setOfficialUrl(next.jp_sea?.jp as Record<string, unknown>, listing.url);
+          else if (regionKey === "sea") setOfficialUrl(next.jp_sea?.sea as Record<string, unknown>, listing.url);
+          else if (regionKey === "uae") setOfficialUrl(next.uae?.uae as Record<string, unknown>, listing.url);
+        } else if (!listing.is_official) {
+          // Official 체크 OFF → 다른 Official 체크된 listing이 없으면 official_url 제거
+          const updatedListings = getRegionListings(next, regionKey);
+          const hasOtherOfficial = updatedListings.some((l, i) => i !== index && l.is_official);
+          if (!hasOtherOfficial) {
+            if (regionKey === "us") setOfficialUrl(next.us_uk_eu?.us as Record<string, unknown>, null);
+            else if (regionKey === "gb") setOfficialUrl(next.us_uk_eu?.uk as Record<string, unknown>, null);
+            else if (regionKey === "eu") setOfficialUrl(next.us_uk_eu?.eu as Record<string, unknown>, null);
+            else if (regionKey === "jp") setOfficialUrl(next.jp_sea?.jp as Record<string, unknown>, null);
+            else if (regionKey === "sea") setOfficialUrl(next.jp_sea?.sea as Record<string, unknown>, null);
+            else if (regionKey === "uae") setOfficialUrl(next.uae?.uae as Record<string, unknown>, null);
+          }
+        }
+        onChange(JSON.stringify(next));
+        return next;
+      });
+    },
+    [updateRegionListings, getRegionListings, onChange]
+  );
+
+  const addListing = useCallback(
+    (regionKey: string) => {
+      updateRegionListings(regionKey, (list) => {
+        const newItem: ListingItem = { platform: "", price_usd: 0, url: "", sold_out: false };
+        if (regionKey === "sea") (newItem as ListingItem & { source?: string }).source = "sea";
+        return [...list, newItem];
+      });
+    },
+    [updateRegionListings]
+  );
+
+  const deleteListing = useCallback(
+    (regionKey: string, index: number) => {
+      updateRegionListings(regionKey, (list) => list.filter((_, i) => i !== index));
+    },
+    [updateRegionListings]
+  );
+
+  const openUrl = useCallback((url: string) => {
+    const u = (url ?? "").trim();
+    if (u) window.open(u, "_blank");
+  }, []);
+
+  const currentJson = JSON.stringify(data, null, 2);
+
+  return (
+    <div className="flex flex-col gap-2">
+      {REGIONS.map((r) => {
+        const regionKey = r.key;
+        const listings = getRegionListings(data, regionKey);
+        const sorted = sortListings(listings);
+        const bestPrice = getBestPrice(listings);
+        const bestIdx = getBestListingIndex(sorted);
+        const hasAnyPrice = listings.some((l) => (l.price_usd ?? 0) > 0);
+
+        return (
+          <div
+            key={regionKey}
+            className="bg-white border border-[#E8E6E1] rounded-xl overflow-hidden"
+          >
+            {/* Region header */}
+            <button
+              type="button"
+              onClick={() => setOpenRegions((prev) => ({ ...prev, [regionKey]: !prev[regionKey] }))}
+              className="w-full flex items-center justify-between gap-2 px-4 py-2.5 bg-[#F8F7F4] border-b border-[#E8E6E1] text-left hover:bg-[#F0EDE8] transition-colors"
+            >
+              <div className="flex items-center gap-2">
+                <span className="text-[15px]">{r.flag}</span>
+                <span className="text-sm font-bold text-[#1A1916]">{r.name}</span>
+                {hasAnyPrice && bestPrice != null ? (
+                  <span
+                    className="text-[11px] px-2 py-0.5 rounded-md border border-[#BBF7D0] font-medium"
+                    style={{
+                      color: "#16A34A",
+                      background: "#F0FDF4",
+                      borderWidth: "1px",
+                      borderRadius: "6px",
+                    }}
+                  >
+                    Best ${Number(bestPrice).toFixed(2)}
+                  </span>
+                ) : (
+                  <span className="text-xs text-[#9E9C98]">No data</span>
+                )}
+              </div>
+              <span className="text-[#9E9C98] text-sm shrink-0">
+                {openRegions[regionKey] !== false ? "▼" : "▶"}
+              </span>
+            </button>
+
+            {/* Listings — expand when open */}
+            {openRegions[regionKey] !== false && (
+              <div className="flex items-center gap-2 px-4 py-2 border-b border-[#E8E6E1] bg-[#FAFAF9]">
+                <span className="text-xs text-[#9E9C98] whitespace-nowrap w-[100px]">Seller Type</span>
+                <input
+                  type="text"
+                  placeholder="e.g. 3rd Party Reseller"
+                  value={getRegionSellerType(data, regionKey)}
+                  onChange={(e) => {
+                    const next = setRegionSellerType(data, regionKey, e.target.value);
+                    emit(next);
+                  }}
+                  className={`${inputCls} flex-1`}
+                />
+              </div>
+            )}
+            {openRegions[regionKey] !== false && sorted.map((listing, idx) => {
+              const price = listing.price_usd ?? 0;
+              const isBest = hasAnyPrice && idx === bestIdx;
+              const isZero = price === 0;
+              const originalIndex = listings.findIndex((l) => l === listing);
+              const isPendingDelete = pendingDelete?.regionKey === regionKey && pendingDelete?.index === originalIndex;
+
+              if (isPendingDelete) {
+                return (
+                  <div
+                    key={`del-${regionKey}-${originalIndex}`}
+                    className="flex items-center gap-2 px-4 py-2 border-b border-[#E8E6E1] last:border-b-0 bg-[#FEE2E2]"
+                  >
+                    <span className="text-sm text-[#1A1916] flex-1">이 항목을 삭제하시겠습니까?</span>
+                    <button
+                      type="button"
+                      onClick={() => setPendingDelete(null)}
+                      className="text-sm px-3 py-1.5 rounded border border-[#E8E6E1] bg-white text-[#1A1916] hover:bg-[#F8F7F4] transition-colors"
+                    >
+                      취소
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        deleteListing(regionKey, originalIndex);
+                        setPendingDelete(null);
+                      }}
+                      className="text-sm px-3 py-1.5 rounded border border-[#DC2626] bg-[#FEE2E2] text-[#DC2626] hover:bg-[#FECACA] transition-colors"
+                    >
+                      삭제
+                    </button>
+                  </div>
+                );
+              }
+
+              return (
+                <div
+                  key={originalIndex >= 0 ? originalIndex : idx}
+                  className={`flex items-center gap-2 px-4 py-2 border-b border-[#E8E6E1] last:border-b-0 ${isBest ? "bg-[#F0FDF4]" : ""} ${isZero ? "opacity-70" : ""}`}
+                >
+                  <input
+                    type="text"
+                    placeholder="Platform"
+                    value={listing.platform ?? ""}
+                    onChange={(e) =>
+                      setListing(regionKey, originalIndex, {
+                        ...listing,
+                        platform: e.target.value,
+                      })
+                    }
+                    className={`${inputCls} w-[100px]`}
+                  />
+                  <input
+                    type="number"
+                    step={0.01}
+                    min={0}
+                    value={price === 0 ? "" : price}
+                    onChange={(e) => {
+                      const v = e.target.value;
+                      const num = v === "" ? 0 : Number(v);
+                      setListing(regionKey, originalIndex, {
+                        ...listing,
+                        price_usd: num,
+                      });
+                    }}
+                    className={`${inputCls} w-[70px]`}
+                  />
+                  <input
+                    type="url"
+                    placeholder="URL"
+                    value={listing.url ?? ""}
+                    onChange={(e) =>
+                      setListing(regionKey, originalIndex, {
+                        ...listing,
+                        url: e.target.value,
+                      })
+                    }
+                    className={`${inputCls} flex-1 min-w-0`}
+                  />
+                  <label className="flex items-center gap-1 text-xs text-[#9E9C98] whitespace-nowrap cursor-pointer flex-shrink-0">
+                    <input
+                      type="checkbox"
+                      checked={listing.sold_out === true}
+                      onChange={(e) =>
+                        setListing(regionKey, originalIndex, {
+                          ...listing,
+                          sold_out: e.target.checked,
+                        })
+                      }
+                      className="rounded border-[#E8E6E1] text-[#16A34A] focus:ring-[#16A34A]"
+                    />
+                    Sold Out
+                  </label>
+                  <label className="flex items-center gap-1 text-xs text-[#16A34A] whitespace-nowrap cursor-pointer flex-shrink-0">
+                    <input
+                      type="checkbox"
+                      checked={listing.is_official === true}
+                      onChange={(e) =>
+                        setListing(regionKey, originalIndex, {
+                          ...listing,
+                          is_official: e.target.checked,
+                        })
+                      }
+                      className="appearance-none w-4 h-4 rounded border border-[#E8E6E1] bg-white checked:bg-[#16A34A] checked:border-[#16A34A] focus:border-[#16A34A] outline-none"
+                    />
+                    Official
+                  </label>
+                  <button
+                    type="button"
+                    onClick={() => openUrl(listing.url ?? "")}
+                    className="text-[#9E9C98] hover:text-[#1A1916] text-sm px-1.5 py-1 rounded transition-colors bg-transparent border-none cursor-pointer flex-shrink-0"
+                    aria-label="Open URL"
+                  >
+                    🔗
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setPendingDelete({ regionKey, index: originalIndex })}
+                    className="text-[#9E9C98] hover:text-[#1A1916] text-sm px-1.5 py-1 rounded transition-colors bg-transparent border-none cursor-pointer flex-shrink-0"
+                    aria-label="Delete"
+                  >
+                    🗑
+                  </button>
+                </div>
+              );
+            })}
+
+            {openRegions[regionKey] !== false && (
+              <button
+                type="button"
+                onClick={() => addListing(regionKey)}
+                className="text-xs text-[#16A34A] hover:text-[#15803D] px-4 py-2 text-left bg-transparent border-none cursor-pointer w-full"
+              >
+                + Add listing
+              </button>
+            )}
+          </div>
+        );
+      })}
+
+      <button
+        type="button"
+        onClick={() => setRawOpen((o) => !o)}
+        className="text-xs text-[#C4C2BE] hover:text-[#9E9C98] cursor-pointer bg-transparent border-none mt-1"
+      >
+        {rawOpen ? "▼ Hide Raw JSON" : "▶ Show Raw JSON"}
+      </button>
+      {rawOpen && (
+        <textarea
+          readOnly
+          value={currentJson}
+          rows={10}
+          className="mt-1 w-full bg-[#F8F7F4] border border-[#E8E6E1] rounded-md px-2 py-1.5 text-xs font-mono text-[#1A1916] resize-none"
+        />
+      )}
+      <p className="text-xs text-[#9E9C98] italic mt-1">
+        Leave URL empty to show Blue Ocean badge on the product page.
+      </p>
+    </div>
+  );
+}
+```
+
