@@ -47,8 +47,8 @@ export default async function SampleReportPage() {
       {/* Sticky premium banner */}
       <div className="sticky top-0 z-50 w-full border-b border-[#E8E6E1] bg-[#1A1916] shadow-[0_4px_20px_rgba(0,0,0,0.08)]">
         <div className="max-w-6xl mx-auto px-6 sm:px-8 py-4 flex flex-col sm:flex-row items-center justify-between gap-3">
-          <p className="text-white/95 text-sm sm:text-base font-medium text-center sm:text-left">
-            This is a curated sample report. Get full access to our weekly intelligence.
+          <p className="text-white/95 text-xs sm:text-base font-medium text-center sm:text-left">
+            Sample report. Get full access to our weekly intelligence.
           </p>
           <Link
             href="/pricing"
@@ -59,8 +59,8 @@ export default async function SampleReportPage() {
         </div>
       </div>
 
-      <div className="max-w-6xl mx-auto px-6 sm:px-8 pt-10 pb-[60vh]">
-        <div className="space-y-6 mt-6">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 sm:pt-10 pb-[60vh]">
+        <div className="space-y-4 sm:space-y-6 mt-4 sm:mt-6">
           <Link
             href="/"
             className="text-base font-medium text-[#6B6860] hover:text-[#1A1916] transition-colors inline-block"
