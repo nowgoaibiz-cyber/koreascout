@@ -59,7 +59,7 @@ export default async function SampleReportPage() {
         </div>
       </div>
 
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 sm:pt-10 pb-[60vh]">
+      <div className="w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 sm:pt-10 pb-[60vh]">
         <div className="space-y-4 sm:space-y-6 mt-4 sm:mt-6">
           <Link
             href="/"
