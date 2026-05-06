@@ -1,3 +1,10 @@
+# Creative Assets 썸네일 추가 전수조사
+
+---
+
+## SECTION 1: components/report/SupplierContact.tsx — Full File
+
+```tsx
 "use client";
 
 import { useState } from "react";
@@ -5,17 +12,6 @@ import { LockedValue } from "@/components/ui/LockedValue";
 import { ArrowRight, ArrowUpRight, Download, ExternalLink, Film, Globe, Globe2, ImageIcon, LayoutTemplate, Mail, Phone, Play, ShoppingBag } from "lucide-react";
 import type { ScoutFinalReportsRow } from "@/types/database";
 import { getAiDetailUrl } from "./utils";
-
-function extractGoogleDriveFileId(url: string | null): string | null {
-  if (!url) return null;
-  const match = url.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
-  return match ? match[1] : null;
-}
-
-function getGoogleDriveThumbnail(url: string | null): string | null {
-  const id = extractGoogleDriveFileId(url);
-  return id ? `https://drive.google.com/thumbnail?id=${id}&sz=w400` : null;
-}
 
 export function SupplierContact({
   report,
@@ -136,7 +132,6 @@ export function SupplierContact({
       title: "Viral Reference",
       description: "Korean TikTok/Reels success case. Study the hook.",
       href: viralUrl,
-      thumbnailSrc: getGoogleDriveThumbnail(viralUrl),
       ctaText: "Watch Original",
       isPrimary: true,
       icon: <Play className="w-32 h-32 text-[#1A1916]" />,
@@ -148,7 +143,6 @@ export function SupplierContact({
       title: "Raw Ad Footage",
       description: "Unedited footage ready for your market adaptation.",
       href: videoUrl,
-      thumbnailSrc: getGoogleDriveThumbnail(videoUrl),
       ctaText: "Watch & Download",
       isPrimary: false,
       icon: <Film className="w-32 h-32 text-[#1A1916]" />,
@@ -193,7 +187,6 @@ export function SupplierContact({
     title: string;
     description: string;
     href: string;
-    thumbnailSrc?: string | null;
     ctaText: string;
     isPrimary: boolean;
     icon: React.ReactNode;
@@ -413,16 +406,6 @@ export function SupplierContact({
                     className="bg-white rounded-2xl border border-[#E8E6E1] overflow-hidden group hover:border-[#16A34A] transition-all duration-300 hover:shadow-[0_4px_20px_0_rgb(22_163_74/0.1)]"
                   >
                     <div className="aspect-video bg-[#F8F7F4] relative flex items-center justify-center overflow-hidden">
-                      {card.thumbnailSrc ? (
-                        <img
-                          src={card.thumbnailSrc}
-                          alt={card.title}
-                          className="absolute inset-0 w-full h-full object-cover"
-                          onError={(e) => {
-                            (e.currentTarget as HTMLImageElement).style.display = "none";
-                          }}
-                        />
-                      ) : null}
                       <div className="absolute inset-0 flex items-center justify-center">
                         <div className="w-32 h-32 text-[#1A1916] opacity-5 flex items-center justify-center">{card.icon}</div>
                       </div>
@@ -595,3 +578,106 @@ function GlobalProofAccordion({ tags }: { tags: Array<{ region: string; fullName
     </div>
   );
 }
+```
+
+---
+
+## SECTION 2: 현재 Creative Assets 카드 구조 분석
+
+코드 기준 답변.
+
+1. **assetCards 배열에서 `video_url`과 `viral_video_url`이 각각 어떤 카드로 렌더되는가?**
+   - `viral_video_url` → `viralUrl`로 읽혀 첫 번째 조건부 항목: `id: "viral"`, `title: "Viral Reference"`, `href: viralUrl`, `platform: "Viral"`, `ctaText: "Watch Original"`, 아이콘 `Play`.
+   - `video_url` → `videoUrl`로 읽혀 두 번째 조건부 항목: `id: "video"`, `title: "Raw Ad Footage"`, `href: videoUrl`, `platform: "Video"`, `ctaText: "Watch & Download"`, 아이콘 `Film`, 호버 아이콘 `Download`.
+
+2. **`aspect-video` 영역에 현재 무엇이 렌더되는가?**
+   - 배경 클래스 `aspect-video bg-[#F8F7F4]`.
+   - 큰 **`card.icon`(Lucide SVG)** 만 `opacity-5` 로 중앙 배치 — **실제 비디오/이미지/iframe 없음.**
+   - `card.platform`이 있으면 좌상단 배지 텍스트.
+   - 호버 시 녹색 오버레이 + `card.hoverIcon` 원형 버튼.
+   - **이미지(`<img>`)나 `<iframe>`은 이 영역에 없음.**
+
+3. **`thumbnail_url` 같은 별도 필드가 있는가?**
+   - **없음.** `assetCards` 항목 타입에는 `thumbnail_url` 또는 유사 필드 없고, `report`에서는 `video_url`, `viral_video_url`, `marketing_assets_url`, `ai_image_url`, `ai_detail_page_links` 등만 사용.
+
+4. **`LockedValue`가 어디에 wrapping되어 있는가?**
+   - Financial Briefing: Cost Per Unit, MOQ, Est. Production Lead Time, OEM/ODM 각각 `<LockedValue locked={!canSeeAlpha} tier="alpha" …>`.
+   - Supplier & Brand Intel: 메인 콘텐츠 블록, Sample Policy, Compliance Note, Global Market Proof 각각 `<LockedValue …>`.
+   - **Creative Assets:** 제목 `Creative Assets`는 밖에 두고, **그리드 전체**가 `<LockedValue locked={!canSeeAlpha} tier="alpha" minHeight="120px">` 로 감싸져 있음 (자산 카드 목록 또는 “No creative assets available.”).
+
+5. **카드 클릭 시 `href`로 새 탭 열리는 구조인가?**
+   - 카드 **전체**는 `<div>`라서 클릭해도 네비게이션 없음.
+   - 하단 **CTA만** `<a href={card.href} target="_blank" rel="noopener noreferrer">` — **새 탭에서 `card.href` 열림.**
+   - `aspect-video` 영역은 링크가 아님.
+
+---
+
+## SECTION 3: 구글드라이브 썸네일 URL 변환 가능 여부
+
+**질문:** `video_url`에서 FILE_ID를 추출하는 로직이 컴포넌트 안에 있는가?
+
+**답:** **없다.** `SupplierContact.tsx` 전체에서 `drive.google.com`, `thumbnail`, `FILE_ID`, `id=` 패턴으로 URL을 파싱하거나 Google Drive 전용 추출을 하는 코드는 없다. `videoUrl` / `viralUrl`은 `trim()` 후 `href`에 그대로 전달될 뿐이다.
+
+관련 코드 (추출 없음, URL 그대로 사용):
+
+```41:45:components/report/SupplierContact.tsx
+  const viralUrl = report.viral_video_url?.trim() || null;
+  const videoUrl = report.video_url?.trim() || null;
+  const aiDetailUrl = getAiDetailUrl(report.ai_detail_page_links as string | unknown[] | Record<string, unknown> | null);
+  const marketingUrl = report.marketing_assets_url?.trim() || null;
+  const aiImageUrl = report.ai_image_url?.trim() || null;
+```
+
+```133:138:components/report/SupplierContact.tsx
+    videoUrl && {
+      id: "video",
+      platform: "Video" as const,
+      title: "Raw Ad Footage",
+      description: "Unedited footage ready for your market adaptation.",
+      href: videoUrl,
+```
+
+(참고: `getShopeeOrLazadaLabel` / `getPlatformLabel`은 **Global Market Proof**용 Shopee/Lazada/hostname 라벨만 다루며 Google Drive와 무관.)
+
+---
+
+## SECTION 4: database.ts — thumbnail 관련 필드 확인
+
+`types/database.ts` 전체를 `thumbnail`, `poster`, `preview`(대소문자 무관), `image`로 검색한 결과:
+
+- **`thumbnail` / `poster` / `preview`:** 해당 파일 **어느 줄에도 필드명으로 없음.**
+- **`image` 포함 필드 복사 (해당 줄):**
+
+```
+  image_url: string;
+  ai_image_url: string | null;
+```
+
+```
+  /** Marketing assets (e.g. image pack, banner) URL */
+  marketing_assets_url?: string | null;
+```
+
+위 세 줄은 `ScoutFinalReportsRow` 안의 이미지/에셋 URL과 관련된 유일한 직접 매칭이다.
+
+---
+
+## SECTION 5: 구현 난이도 평가
+
+분석만 기준으로 한 평가(구현 지시 아님).
+
+1. **`https://drive.google.com/thumbnail?id={FILE_ID}&sz=w400` 를 `aspect-video` 안에 `<img>`로 넣는 것이 가능한가?**  
+   - **기술적으로는 가능.** 현재该区域는 아이콘 전용이므로, 조건부로 `<img>`를 추가하는 레이아웃 변경만으로 시도할 수 있다. 다만 브라우저/구글측 **hotlink·CORS·403·로그인 요구**, 파일 공개 설정 등으로 **실제로 로드 실패할 수 있는 리스크**는 코드만으로 제거 불가.
+
+2. **`video_url` → FILE_ID 추출 → 썸네일 URL → `<img src>` 를 `SupplierContact.tsx` 안에서만 처리 가능한가?**  
+   - **부분적으로만.** 순수 문자열 파싱(예: `/file/d/`, `id=` 쿼리, `/open?id=`)으로 보조 함수 만들기는 파일 내부에서 가능하다.  
+   - 반면 URL 형식이 다양하거나 비드라이브이면 분기 필요. **외부 패키지/서버 프록시 없이 클라만**으로 할지는 요구사항에 따름.
+
+3. **DB 스키마 변경 없이 프론트만으로 가능한가?**  
+   - **썸네일을 파생값으로만 쓰는 경우 가능:** 기존 `video_url`(및 선택적으로 `viral_video_url`)만으로 계산하면 DB 변경 없음.  
+   - 별도 썸네일 URL 저장이 필요하면 **스키마 확장 또는 파이프라인** 필요.
+
+4. **예상 작업 범위 (대략)**  
+   - **파일 개수:** 핵심 UI는 **`components/report/SupplierContact.tsx` 1개** 가능. 선택적으로 헬버를 **`components/report/utils.ts`** 등으로 분리 시 +1. 드라이브 URL 단위 테스트를 두면 **`*.test.ts`** 추가 가능.  
+   - **줄 수 (대략):** 헬버(파일 ID 추출 + 썸네일 URL 생성) **~15–45줄**, 카드 레이아웃에 선택적 `<img>` + 폴백 아이콘 **카드별 ~10–25줄**, 타입 확장(assetCards에 선택 `thumbnailSrc?`) **~5–15줄** — 합하면 **약 35–95줄** 수준 추정 (에러 처리·URL 패턴 분기·`next/image` vs `img` 선택에 따라 변동).
+
