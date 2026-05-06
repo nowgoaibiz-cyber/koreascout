@@ -43,7 +43,7 @@ export default async function SampleReportPage() {
   const isTeaser = true;
 
   return (
-    <div className="min-h-screen w-full bg-[#F8F7F4]">
+    <div className="min-h-screen w-screen bg-[#F8F7F4]">
       {/* Sticky premium banner */}
       <div className="sticky top-0 z-50 w-full border-b border-[#E8E6E1] bg-[#1A1916] shadow-[0_4px_20px_rgba(0,0,0,0.08)]">
         <div className="max-w-6xl mx-auto px-6 sm:px-8 py-4 flex flex-col sm:flex-row items-center justify-between gap-3">
@@ -59,7 +59,7 @@ export default async function SampleReportPage() {
         </div>
       </div>
 
-      <div className="w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 sm:pt-10 pb-20">
+      <div className="w-full max-w-6xl mx-auto px-3 sm:px-6 lg:px-8 pt-4 sm:pt-10 pb-20">
         <div className="space-y-4 sm:space-y-6 mt-4 sm:mt-6">
           <Link
             href="/"
