@@ -250,7 +250,7 @@ export function MarketIntelligence({
               </p>
             </div>
 
-            <div className={strategicTarget ? "grid grid-cols-3" : "grid grid-cols-2"}>
+            <div className={strategicTarget ? "grid grid-cols-1 sm:grid-cols-3" : "grid grid-cols-1 sm:grid-cols-2"}>
               <div className="pr-8 border-r border-[#E8E6E1]">
                 <p className="text-lg font-bold text-[#6B6860] uppercase tracking-widest" style={{ marginTop: "0.8cm" }}>
                   Est. Wholesale
@@ -343,7 +343,7 @@ export function MarketIntelligence({
                   Best Entry: <span className="font-bold text-[#1A1916]">{report.best_platform}</span>
                 </p>
               )}
-              <div className="grid grid-cols-2 gap-x-16" style={{ marginTop: "1.2cm", rowGap: "1.2cm" }}>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-16" style={{ marginTop: "1.2cm", rowGap: "1.2cm" }}>
                 {sixMarkets.map((market) => {
                   const isUntapped = !market.row || market.row.isBlueOcean;
                   return (
@@ -396,7 +396,7 @@ export function MarketIntelligence({
 
         {(hasSearchGrowth || winningFeature || painPoint) && (
           <div className="bg-[#F8F7F4] rounded-3xl p-12">
-            <div className="grid grid-cols-2 gap-x-24 mt-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-24 mt-6">
               {hasSearchGrowth && (
                 <div>
                   <h3 className="text-xl font-bold text-[#1A1916] mb-12">Search &amp; Growth</h3>

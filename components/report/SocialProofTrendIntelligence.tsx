@@ -80,7 +80,7 @@ export function SocialProofTrendIntelligence({
 
       <div className="bg-[#F8F7F4] rounded-2xl p-10 mb-12">
         <p className="text-xl font-bold text-[#1A1916] mb-10">Market Gap Analysis</p>
-        <div className="grid grid-cols-2">
+        <div className="grid grid-cols-1 sm:grid-cols-2">
           <div className="pr-12 border-r border-[#E8E6E1]">
             <p className="text-sm font-bold text-[#6B6860] tracking-widest mb-4">Korean Traction</p>
             <LockedValue locked={!canSeeStandard} tier="standard" minHeight="80px">
