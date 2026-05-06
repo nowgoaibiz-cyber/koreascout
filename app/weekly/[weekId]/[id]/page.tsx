@@ -140,7 +140,7 @@ export default async function ProductDetailPage({
   ];
 
   return (
-    <div className="flex min-h-screen bg-[#F8F7F4] overflow-x-hidden">
+    <div className="flex min-h-screen bg-[#F8F7F4]">
       {userEmail && (
         <ZombieWatermark email={userEmail} />
       )}

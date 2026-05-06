@@ -63,7 +63,7 @@ export default function RootLayout({
   return (
     <html lang="en" className="scroll-smooth">
       <body
-        className={`${plusJakartaSans.variable} ${jetbrainsMono.variable} font-sans antialiased bg-[#0A0908]`}
+        className={`${plusJakartaSans.variable} ${jetbrainsMono.variable} font-sans antialiased bg-[#F8F7F4]`}
       >
         <ConditionalRootContent>{children}</ConditionalRootContent>
       </body>
