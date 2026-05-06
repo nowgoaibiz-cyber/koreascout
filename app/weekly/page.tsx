@@ -3,8 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import { getAuthTier } from "@/lib/auth-server";
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import Script from "next/script";
-import { ArrowRight, ChevronLeft, ChevronRight, FileText, Lock } from "lucide-react";
+import { ArrowRight, FileText, Lock } from "lucide-react";
 import { MonthAccordion } from "./MonthAccordion";
 
 function formatPublishedDate(publishedAt: string | null): string {
@@ -159,55 +158,6 @@ export default async function WeeklyHubPage() {
 
   return (
     <div className="min-h-screen bg-[#F8F7F4]">
-      <div
-        id="prelaunch-popup"
-        className="fixed inset-0 z-[1000] hidden items-center justify-center bg-black/40 backdrop-blur-sm p-4"
-        aria-hidden="true"
-      >
-        <div className="bg-[#0A0908] border border-[#1A1916] rounded-2xl shadow-xl w-full max-w-sm mx-auto p-6">
-          <h2 className="text-[#F8F7F4] font-bold text-xl">
-            🔍 Beta Launch: April 25
-          </h2>
-          <p className="mt-4 text-[#9E9C98] text-sm leading-relaxed whitespace-pre-line">
-            {"KoreaScout is in the final stages of curating this week's K-beauty intelligence reports.\n\nBeta access opens April 25, 2026."}
-          </p>
-          <button
-            id="prelaunch-popup-close"
-            type="button"
-            className="mt-6 bg-[#16A34A] text-white rounded-xl px-6 py-3 hover:bg-[#15803D] transition-colors"
-          >
-            Got it
-          </button>
-        </div>
-      </div>
-      <Script id="weekly-prelaunch-popup" strategy="afterInteractive">
-        {`
-          (function () {
-            var cutoff = new Date('2026-04-25');
-            if (new Date() >= cutoff) return;
-            var tier = ${JSON.stringify(tier)};
-            if (!tier) return;
-            var key = 'ks:prelaunch:dismissed';
-            if (window.localStorage.getItem(key) === '1') return;
-            var popup = document.getElementById('prelaunch-popup');
-            var close = document.getElementById('prelaunch-popup-close');
-            if (!popup || !close) return;
-            popup.classList.remove('hidden');
-            popup.classList.add('flex');
-            popup.setAttribute('aria-hidden', 'false');
-            var dismiss = function () {
-              window.localStorage.setItem(key, '1');
-              popup.classList.remove('flex');
-              popup.classList.add('hidden');
-              popup.setAttribute('aria-hidden', 'true');
-            };
-            close.addEventListener('click', dismiss, { once: true });
-            popup.addEventListener('click', function (e) {
-              if (e.target === popup) dismiss();
-            });
-          })();
-        `}
-      </Script>
       {/* 1. DARK HERO — section label + tier badge only */}
       <section className="bg-[#1A1916] pt-24 pb-6 px-6">
         <div className="max-w-5xl mx-auto">
@@ -220,46 +170,6 @@ export default async function WeeklyHubPage() {
             >
               {tierLabel}
             </span>
-          </div>
-        </div>
-      </section>
-
-      {/* 2. TREND NEWS — Massive rolling hero banner */}
-      <section className="bg-[#1A1916] px-6 pb-10">
-        <div className="max-w-5xl mx-auto">
-          <div className="relative rounded-2xl overflow-hidden min-h-[320px] md:min-h-[400px] border border-[#BBF7D0]/20 flex items-end group cursor-pointer">
-            {/* Placeholder background (replace with dynamic image later) */}
-            <div
-              className="absolute inset-0 bg-[#0A0908] bg-cover bg-center opacity-50 group-hover:opacity-60 transition-opacity"
-              style={{
-                backgroundImage: "url(https://images.unsplash.com/photo-1617897903246-719242758050?q=80&w=1200)",
-              }}
-            />
-            {/* Gradient overlay for text readability */}
-            <div className="absolute inset-0 bg-gradient-to-t from-[#1A1916] via-[#1A1916]/80 to-transparent" />
-            {/* Carousel nav — left */}
-            <div className="absolute left-3 top-1/2 -translate-y-1/2 z-20 flex items-center justify-center w-10 h-10 rounded-full bg-black/30 backdrop-blur border border-white/10 text-white/90 hover:bg-black/50 transition-colors">
-              <ChevronLeft className="w-5 h-5" strokeWidth={2.5} aria-hidden />
-            </div>
-            {/* Carousel nav — right */}
-            <div className="absolute right-3 top-1/2 -translate-y-1/2 z-20 flex items-center justify-center w-10 h-10 rounded-full bg-black/30 backdrop-blur border border-white/10 text-white/90 hover:bg-black/50 transition-colors">
-              <ChevronRight className="w-5 h-5" strokeWidth={2.5} aria-hidden />
-            </div>
-            {/* Pagination dots — bottom center */}
-            <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-20 flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-[#16A34A]" aria-current="true" />
-              <span className="w-2 h-2 rounded-full bg-white/40" />
-              <span className="w-2 h-2 rounded-full bg-white/40" />
-            </div>
-            {/* Content */}
-            <div className="relative z-10 p-6 md:p-8 w-full">
-              <span className="inline-block px-3 py-1 bg-[#16A34A] text-white text-xs font-bold uppercase tracking-wider rounded-sm mb-3">
-                HOT ISSUE
-              </span>
-              <h2 className="text-2xl md:text-3xl font-black text-white mb-2 leading-tight group-hover:text-[#BBF7D0] transition-colors">
-                Coming Soon
-              </h2>
-            </div>
           </div>
         </div>
       </section>
