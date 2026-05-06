@@ -310,7 +310,7 @@ export default async function WeeklyHubPage() {
             )}
 
             {sampleProduct && (
-              <div className="max-w-3xl mx-auto px-4 mb-12">
+              <div className="max-w-5xl mx-auto px-4 mb-12">
                 <p className="text-xs font-semibold tracking-widest text-[#16A34A] mb-3">SAMPLE REPORT</p>
                 <Link
                   href="/sample-report"

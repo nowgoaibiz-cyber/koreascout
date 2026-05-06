@@ -465,7 +465,7 @@ export default async function HomePage() {
                 <div className="bg-[#F8F7F4] border border-[#E8E6E1] rounded-xl px-4 py-3 min-h-[120px] flex items-center">
                   <p className="text-sm text-[#1A1916] leading-relaxed">
                     <span className="font-black uppercase">INSTANT ACCESS:</span>{" "}
-                    <span className="font-medium">10+ products unlocked immediately. (1 week · 14-day delay)</span>
+                    <span className="font-medium">INSTANT ACCESS: Access 1 sample report — no credit card required.</span>
                   </p>
                 </div>
                 <div className="flex-grow my-8">
@@ -481,7 +481,7 @@ export default async function HomePage() {
                     Unlock Free Intelligence
                   </a>
                   <p className="text-xs text-[#9E9C98] text-center mt-3">
-                    10+ products · 1 week unlocked · 14-day delay
+                    1 sample report · free forever · no card needed
                   </p>
                 </div>
               </div>
