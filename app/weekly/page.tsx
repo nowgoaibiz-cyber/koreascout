@@ -4,20 +4,8 @@ import { getAuthTier } from "@/lib/auth-server";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import Script from "next/script";
-import { ChevronLeft, ChevronRight, FileText, Lock } from "lucide-react";
+import { ArrowRight, ChevronLeft, ChevronRight, FileText, Lock } from "lucide-react";
 import { MonthAccordion } from "./MonthAccordion";
-
-const FREE_DELAY_DAYS = 14;
-
-function formatAvailableDate(publishedAt: string): string {
-  const d = new Date(publishedAt);
-  d.setDate(d.getDate() + FREE_DELAY_DAYS);
-  return d.toLocaleDateString("en-US", {
-    month: "short",
-    day: "numeric",
-    year: "numeric",
-  });
-}
 
 function formatPublishedDate(publishedAt: string | null): string {
   if (!publishedAt) return "";
@@ -26,13 +14,6 @@ function formatPublishedDate(publishedAt: string | null): string {
   const m = String(d.getMonth() + 1).padStart(2, "0");
   const day = String(d.getDate()).padStart(2, "0");
   return `${y}.${m}.${day}`;
-}
-
-function isWeekAvailableForFree(publishedAt: string | null): boolean {
-  if (!publishedAt) return false;
-  const freeAt = new Date(publishedAt);
-  freeAt.setDate(freeAt.getDate() + FREE_DELAY_DAYS);
-  return new Date() >= freeAt;
 }
 
 /** True if published in the past and within the last N days. */
@@ -97,13 +78,22 @@ export default async function WeeklyHubPage() {
     .limit(3);
   const latest3WeekIds = (latest3Weeks ?? []).map((w) => w.week_id);
 
-  const freeOpenWeekId =
-    weeks
-      ?.filter((w) => isWeekAvailableForFree(w.published_at))
-      .sort(
-        (a, b) =>
-          new Date(b.published_at!).getTime() - new Date(a.published_at!).getTime()
-      )[0]?.week_id ?? null;
+  const { data: sampleConfig } = await supabase
+    .from("site_config")
+    .select("value")
+    .eq("key", "sample_product_id")
+    .single();
+  const sampleProductId = sampleConfig?.value ?? null;
+
+  let sampleProduct = null;
+  if (sampleProductId) {
+    const { data: sampleData } = await supabase
+      .from("scout_final_reports")
+      .select("id, product_name, translated_name, image_url, market_viability, week_id")
+      .eq("id", sampleProductId)
+      .single();
+    sampleProduct = sampleData;
+  }
 
   const monthGroups: MonthGroup[] = [];
   for (const week of weeks ?? []) {
@@ -129,7 +119,7 @@ export default async function WeeklyHubPage() {
       subscriptionStartAt && week.published_at
         ? new Date(week.published_at) >= new Date(subscriptionStartAt)
         : false;
-    return isPaid ? isLatestWeek || isAfterSub : week.week_id === freeOpenWeekId;
+    return isPaid ? isLatestWeek || isAfterSub : false;
   }
 
   const unlockedWeeks = (weeks ?? []).filter(canAccessWeek);
@@ -319,6 +309,27 @@ export default async function WeeklyHubPage() {
               </div>
             )}
 
+            {sampleProduct && (
+              <div className="max-w-3xl mx-auto px-4 mb-8">
+                <p className="text-xs font-semibold tracking-widest text-[#16A34A] mb-3">SAMPLE REPORT</p>
+                <Link
+                  href={`/weekly/${sampleProduct.week_id}/${sampleProduct.id}`}
+                  className="block bg-white rounded-2xl border border-[#16A34A] p-6 hover:shadow-md transition-all"
+                >
+                  <div className="flex items-center gap-4">
+                    {sampleProduct.image_url && (
+                      <img src={sampleProduct.image_url} alt={sampleProduct.translated_name ?? ""} className="w-16 h-16 object-cover rounded-xl" />
+                    )}
+                    <div className="flex-1">
+                      <p className="text-xs text-[#9E9C98] mb-1">Free Preview</p>
+                      <p className="font-bold text-[#1A1916]">{sampleProduct.translated_name}</p>
+                      <p className="text-sm text-[#9E9C98]">Market Viability {sampleProduct.market_viability}/100</p>
+                    </div>
+                    <ArrowRight className="w-5 h-5 text-[#16A34A]" />
+                  </div>
+                </Link>
+              </div>
+            )}
             {/* 4. THE VAULT (Classified Folders) */}
             <div className="mt-16 mb-6">
               <p className="text-xs font-bold tracking-[0.2em] uppercase text-[#9E9C98] mb-2">
@@ -356,7 +367,7 @@ export default async function WeeklyHubPage() {
                                 </span>
                                 <span className="text-sm text-[#9E9C98]">
                                   {!isPaid && week.published_at
-                                    ? `Available ${formatAvailableDate(week.published_at)}`
+                                    ? `Published: ${formatPublishedDate(week.published_at)}`
                                     : "Archive"}
                                 </span>
                               </div>

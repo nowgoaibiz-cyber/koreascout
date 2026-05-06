@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useEffect } from "react";
+import Link from "next/link";
 import HeroCTA from "@/components/HeroCTA";
 
 export default function Hero() {
@@ -75,8 +76,14 @@ export default function Hero() {
           The K-Beauty Trend Pipeline.<br />Before Your Feed Knows It Exists.
         </h1>
 
-        <div className="mt-20 flex flex-col items-center justify-center">
+        <div className="mt-20 flex flex-col items-center justify-center gap-4">
           <HeroCTA />
+          <Link
+            href="/login"
+            className="text-sm text-white/60 hover:text-white underline underline-offset-4 transition-colors"
+          >
+            View a sample report →
+          </Link>
         </div>
       </div>
     </section>

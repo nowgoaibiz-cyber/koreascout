@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { createClient } from "@/lib/supabase/server";
 import ProductIdentity from "@/components/ProductIdentity";
 import {
   TrendSignalDashboard,
@@ -8,10 +9,36 @@ import {
   SupplierContact,
   EXPORT_STATUS_DISPLAY,
 } from "@/components/report";
-import { sampleReportData } from "@/data/sampleReportData";
 
-export default function SampleReportPage() {
-  const report = sampleReportData;
+export default async function SampleReportPage() {
+  const supabase = await createClient();
+
+  const { data: config } = await supabase
+    .from("site_config")
+    .select("value")
+    .eq("key", "sample_product_id")
+    .single();
+
+  const sampleId = config?.value ?? null;
+
+  let report = null;
+  if (sampleId) {
+    const { data } = await supabase
+      .from("scout_final_reports")
+      .select("*")
+      .eq("id", sampleId)
+      .single();
+    report = data;
+  }
+
+  if (!report) {
+    return (
+      <div className="min-h-screen bg-[#F8F7F4] flex items-center justify-center">
+        <p className="text-[#9E9C98]">Sample report coming soon.</p>
+      </div>
+    );
+  }
+
   const tier = "alpha" as const;
   const isTeaser = true;
 
