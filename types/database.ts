@@ -73,8 +73,8 @@ export interface ScoutFinalReportsRow {
   b2b_inquiry_url?: string | null;
   video_url: string | null;
   competitor_analysis_pdf: string | null;
-  /** v1.2: 바이럴 숏폼 영상 URL */
-  viral_video_url: string | null;
+  /** Additional raw footage URL (Drive, etc.). */
+  video_url_2: string | null;
   published_at: string | null;
   free_list_at: string | null;
   is_premium: boolean;
@@ -153,10 +153,10 @@ export interface ScoutFinalReportsRow {
   /** Volumetric weight (grams) */
   volumetric_weight_g?: number | null;
   /* ----- Launch & Execution Kit / Section 6 신규 컬럼 ----- */
-  /** Marketing assets (e.g. image pack, banner) URL */
-  marketing_assets_url?: string | null;
-  /** AI-generated detail/landing page links (URL or JSON array of URLs) */
-  ai_detail_page_links?: string | null;
+  /** Third raw footage URL (Drive, etc.). */
+  video_url_3?: string | null;
+  /** YouTube / trend reference URLs (JSON array in DB). */
+  ai_detail_page_links?: string[] | null;
   /** When supplier pricing/contact was verified (ISO timestamp) */
   verified_at?: string | null;
   /** Sample order / sampling policy text */

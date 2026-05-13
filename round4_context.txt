@@ -1,0 +1,144 @@
+﻿=== CREATIVE ASSETS CODE CONTEXT ===
+File: C:\k-productscout\components\report\SupplierContact.tsx, Lines: 130-205 (assetCards) + 420-482 (UI)
+ 130|      };
+ 131|      return tag;
+ 132|    })
+ 133|    .filter((t): t is ProofTag => t !== null);
+ 134|
+ 135|  const assetCards = [
+ 136|    viralUrl && {
+ 137|      id: "viral",
+ 138|      platform: "Viral" as const,
+ 139|      title: "Viral Reference",
+ 140|      description: "Korean TikTok/Reels success case. Study the hook.",
+ 141|      href: viralUrl,
+ 142|      thumbnailSrc: getGoogleDriveThumbnail(viralUrl),
+ 143|      ctaText: "Watch Original",
+ 144|      isPrimary: true,
+ 145|      icon: <Play className="w-32 h-32 text-[#1A1916]" />,
+ 146|      hoverIcon: <Play className="w-5 h-5 text-[#1A1916]" />,
+ 147|    },
+ 148|    videoUrl && {
+ 149|      id: "video",
+ 150|      platform: "Video" as const,
+ 151|      title: "Raw Ad Footage",
+ 152|      description: "Unedited footage ready for your market adaptation.",
+ 153|      href: videoUrl,
+ 154|      thumbnailSrc: getGoogleDriveThumbnail(videoUrl),
+ 155|      ctaText: "Watch & Download",
+ 156|      isPrimary: false,
+ 157|      icon: <Film className="w-32 h-32 text-[#1A1916]" />,
+ 158|      hoverIcon: <Download className="w-5 h-5 text-[#1A1916]" />,
+ 159|    },
+ 160|    aiDetailUrl && {
+ 161|      id: "ai-landing",
+ 162|      platform: "AI Page" as const,
+ 163|      title: "AI Landing Page",
+ 164|      description: "Opal-generated A/B product page drafts.",
+ 165|      href: aiDetailUrl,
+ 166|      ctaText: "Open Page",
+ 167|      isPrimary: false,
+ 168|      icon: <LayoutTemplate className="w-32 h-32 text-[#1A1916]" />,
+ 169|      hoverIcon: <ExternalLink className="w-5 h-5 text-[#1A1916]" />,
+ 170|    },
+ 171|    marketingUrl && {
+ 172|      id: "brand-asset",
+ 173|      platform: "Assets" as const,
+ 174|      title: "Brand Asset Kit",
+ 175|      description: "High-res model shots and product imagery from the manufacturer.",
+ 176|      href: marketingUrl,
+ 177|      ctaText: "Access Assets",
+ 178|      isPrimary: false,
+ 179|      icon: <ImageIcon className="w-32 h-32 text-[#1A1916]" />,
+ 180|      hoverIcon: <ArrowRight className="w-5 h-5 text-[#1A1916]" />,
+ 181|    },
+ 182|    aiImageUrl && {
+ 183|      id: "ai-image",
+ 184|      platform: "AI Image" as const,
+ 185|      title: "AI Product Image",
+ 186|      description: "AI-generated product image. Open or download.",
+ 187|      href: aiImageUrl,
+ 188|      ctaText: "Open / Download",
+ 189|      isPrimary: false,
+ 190|      icon: <ImageIcon className="w-32 h-32 text-[#1A1916]" />,
+ 191|      hoverIcon: <Download className="w-5 h-5 text-[#1A1916]" />,
+ 192|    },
+ 193|  ].filter(Boolean) as Array<{
+ 194|    id: string;
+ 195|    platform: string;
+ 196|    title: string;
+ 197|    description: string;
+ 198|    href: string;
+ 199|    thumbnailSrc?: string | null;
+ 200|    ctaText: string;
+ 201|    isPrimary: boolean;
+ 202|    icon: React.ReactNode;
+ 203|    hoverIcon: React.ReactNode;
+ 204|  }>;
+ 205|
+
+---
+
+ 420|              )}
+ 421|            </LockedValue>
+ 422|          </div>
+ 423|        </div>
+ 424|
+ 425|        <div className="bg-[#F8F7F4] rounded-2xl p-10">
+ 426|          <p className="text-xl font-bold text-[#1A1916] mb-10">Creative Assets</p>
+ 427|          <LockedValue locked={!canSeeAlpha} tier="alpha" minHeight="120px">
+ 428|            {assetCards.length > 0 ? (
+ 429|              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+ 430|                {assetCards.map((card) => (
+ 431|                  <div
+ 432|                    key={card.id}
+ 433|                    className="bg-white rounded-2xl border border-[#E8E6E1] overflow-hidden group hover:border-[#16A34A] transition-all duration-300 hover:shadow-[0_4px_20px_0_rgb(22_163_74/0.1)]"
+ 434|                  >
+ 435|                    <div className="aspect-video bg-[#F8F7F4] relative flex items-center justify-center overflow-hidden">
+ 436|                      {card.thumbnailSrc ? (
+ 437|                        <img
+ 438|                          src={card.thumbnailSrc}
+ 439|                          alt={card.title}
+ 440|                          className="absolute inset-0 w-full h-full object-cover"
+ 441|                          onError={(e) => {
+ 442|                            (e.currentTarget as HTMLImageElement).style.display = "none";
+ 443|                          }}
+ 444|                        />
+ 445|                      ) : null}
+ 446|                      <div className="absolute inset-0 flex items-center justify-center">
+ 447|                        <div className="w-32 h-32 text-[#1A1916] opacity-5 flex items-center justify-center">{card.icon}</div>
+ 448|                      </div>
+ 449|                      {card.platform && (
+ 450|                        <span className="absolute top-3 left-3 bg-black/70 text-white text-[10px] font-bold rounded px-2 py-1 uppercase tracking-wide z-10">
+ 451|                          {card.platform}
+ 452|                        </span>
+ 453|                      )}
+ 454|                      <div className="absolute inset-0 bg-[#16A34A]/5 opacity-0 group-hover:opacity-100 transition-all duration-300 flex items-center justify-center z-10">
+ 455|                        <div className="w-12 h-12 bg-white/90 rounded-full flex items-center justify-center shadow-lg">
+ 456|                          {card.hoverIcon}
+ 457|                        </div>
+ 458|                      </div>
+ 459|                    </div>
+ 460|                    <div className="p-6">
+ 461|                      <p className="text-xl font-bold text-[#1A1916] mb-2">{card.title}</p>
+ 462|                      <p className={`${refC} mb-6`}>{card.description}</p>
+ 463|                      <a
+ 464|                        href={card.href}
+ 465|                        target="_blank"
+ 466|                        rel="noopener noreferrer"
+ 467|                        className={`w-full flex items-center justify-center gap-2 py-3 rounded-xl font-bold text-sm transition-colors duration-200 ${
+ 468|                          card.isPrimary ? "bg-[#1A1916] text-white hover:bg-[#2D2B26]" : "bg-white border border-[#E8E6E1] text-[#1A1916] hover:border-[#1A1916]"
+ 469|                        }`}
+ 470|                      >
+ 471|                        {card.ctaText}
+ 472|                        <ArrowRight className="w-4 h-4 shrink-0" />
+ 473|                      </a>
+ 474|                    </div>
+ 475|                  </div>
+ 476|                ))}
+ 477|              </div>
+ 478|            ) : (
+ 479|              <p className="text-sm italic text-[#9E9C98]">No creative assets available.</p>
+ 480|            )}
+ 481|          </LockedValue>
+ 482|        </div>

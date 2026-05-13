@@ -2,9 +2,8 @@
 
 import { useState } from "react";
 import { LockedValue } from "@/components/ui/LockedValue";
-import { ArrowRight, ArrowUpRight, Download, ExternalLink, Film, Globe, Globe2, ImageIcon, LayoutTemplate, Mail, Phone, Play, ShoppingBag } from "lucide-react";
+import { ArrowRight, ArrowUpRight, Download, ExternalLink, Film, Globe, Globe2, ImageIcon, Mail, Phone, ShoppingBag } from "lucide-react";
 import type { ScoutFinalReportsRow } from "@/types/database";
-import { getAiDetailUrl } from "./utils";
 
 function extractGoogleDriveFileId(url: string | null): string | null {
   if (!url) return null;
@@ -52,10 +51,10 @@ export function SupplierContact({
       : NaN;
   const hasVerifiedPrice = !Number.isNaN(costNum);
 
-  const viralUrl = report.viral_video_url?.trim() || null;
-  const videoUrl = report.video_url?.trim() || null;
-  const aiDetailUrl = getAiDetailUrl(report.ai_detail_page_links as string | unknown[] | Record<string, unknown> | null);
-  const marketingUrl = report.marketing_assets_url?.trim() || null;
+  const videoUrl = report.video_url?.trim();
+  const videoUrl2 = report.video_url_2?.trim();
+  const videoUrl3 = report.video_url_3?.trim();
+  const youtubeRefs = report.ai_detail_page_links || [];
   const aiImageUrl = report.ai_image_url?.trim() || null;
 
   let rawPrices: Record<string, { url?: string; platform?: string }> = {};
@@ -133,23 +132,12 @@ export function SupplierContact({
     .filter((t): t is ProofTag => t !== null);
 
   const assetCards = [
-    viralUrl && {
-      id: "viral",
-      platform: "Viral" as const,
-      title: "Viral Reference",
-      description: "Korean TikTok/Reels success case. Study the hook.",
-      href: viralUrl,
-      thumbnailSrc: getGoogleDriveThumbnail(viralUrl),
-      ctaText: "Watch Original",
-      isPrimary: true,
-      icon: <Play className="w-32 h-32 text-[#1A1916]" />,
-      hoverIcon: <Play className="w-5 h-5 text-[#1A1916]" />,
-    },
+    // Video 1
     videoUrl && {
-      id: "video",
+      id: "video-1",
       platform: "Video" as const,
-      title: "Raw Ad Footage",
-      description: "Unedited footage ready for your market adaptation.",
+      title: "Raw Ad Footage #1",
+      description: "Product demonstration footage (4K)",
       href: videoUrl,
       thumbnailSrc: getGoogleDriveThumbnail(videoUrl),
       ctaText: "Watch & Download",
@@ -157,28 +145,45 @@ export function SupplierContact({
       icon: <Film className="w-32 h-32 text-[#1A1916]" />,
       hoverIcon: <Download className="w-5 h-5 text-[#1A1916]" />,
     },
-    aiDetailUrl && {
-      id: "ai-landing",
-      platform: "AI Page" as const,
-      title: "AI Landing Page",
-      description: "Opal-generated A/B product page drafts.",
-      href: aiDetailUrl,
-      ctaText: "Open Page",
+    // Video 2
+    videoUrl2 && {
+      id: "video-2",
+      platform: "Video" as const,
+      title: "Raw Ad Footage #2",
+      description: "Texture & application footage (4K)",
+      href: videoUrl2,
+      thumbnailSrc: getGoogleDriveThumbnail(videoUrl2),
+      ctaText: "Watch & Download",
       isPrimary: false,
-      icon: <LayoutTemplate className="w-32 h-32 text-[#1A1916]" />,
+      icon: <Film className="w-32 h-32 text-[#1A1916]" />,
+      hoverIcon: <Download className="w-5 h-5 text-[#1A1916]" />,
+    },
+    // Video 3
+    videoUrl3 && {
+      id: "video-3",
+      platform: "Video" as const,
+      title: "Raw Ad Footage #3",
+      description: "Additional product footage (4K)",
+      href: videoUrl3,
+      thumbnailSrc: getGoogleDriveThumbnail(videoUrl3),
+      ctaText: "Watch & Download",
+      isPrimary: false,
+      icon: <Film className="w-32 h-32 text-[#1A1916]" />,
+      hoverIcon: <Download className="w-5 h-5 text-[#1A1916]" />,
+    },
+    // YouTube References (up to 4)
+    ...(youtubeRefs.slice(0, 4).map((url: string, idx: number) => ({
+      id: `youtube-${idx + 1}`,
+      platform: "YouTube" as const,
+      title: `Trend Reference #${idx + 1}`,
+      description: "Trending content reference",
+      href: url,
+      thumbnailSrc: null, // YouTube thumbnail extraction can be added later
+      ctaText: "Watch on YouTube",
+      isPrimary: false,
+      icon: <Film className="w-32 h-32 text-[#1A1916]" />,
       hoverIcon: <ExternalLink className="w-5 h-5 text-[#1A1916]" />,
-    },
-    marketingUrl && {
-      id: "brand-asset",
-      platform: "Assets" as const,
-      title: "Brand Asset Kit",
-      description: "High-res model shots and product imagery from the manufacturer.",
-      href: marketingUrl,
-      ctaText: "Access Assets",
-      isPrimary: false,
-      icon: <ImageIcon className="w-32 h-32 text-[#1A1916]" />,
-      hoverIcon: <ArrowRight className="w-5 h-5 text-[#1A1916]" />,
-    },
+    }))),
     aiImageUrl && {
       id: "ai-image",
       platform: "AI Image" as const,
@@ -371,16 +376,29 @@ export function SupplierContact({
             </div>
           </LockedValue>
 
-          <div className="mt-8">
-            <p className="text-xs font-bold text-[#9E9C98] uppercase tracking-[0.2em] mb-3">
-              Sample Policy
-            </p>
-            <LockedValue locked={!canSeeAlpha} tier="alpha" minHeight="50px">
-              <p className="text-sm text-[#3D3B36] leading-relaxed">
-                {report.sample_policy?.trim() || "—"}
+          {report.sample_policy?.trim() && (
+            <div className="mt-8">
+              <p className="text-xs font-bold text-[#9E9C98] uppercase tracking-[0.2em] mb-3">
+                🛒 Sample Purchase Available
               </p>
-            </LockedValue>
-          </div>
+              <LockedValue locked={!canSeeAlpha} tier="alpha" minHeight="50px">
+                <div className="space-y-3">
+                  <a
+                    href={report.sample_policy.trim()}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 text-base font-medium text-[#16A34A] hover:text-[#15803d] hover:underline transition-colors"
+                  >
+                    Delivered Korea
+                    <span className="text-sm">→</span>
+                  </a>
+                  <p className="text-xs italic text-[#9E9C98] leading-relaxed border-t border-[#E8E6E1] pt-3">
+                    {`*We don't sell products directly. This link is provided for your convenience to purchase samples for testing.`}
+                  </p>
+                </div>
+              </LockedValue>
+            </div>
+          )}
 
           {report.export_cert_note?.trim() && (
             <div className="mt-6">
@@ -410,7 +428,10 @@ export function SupplierContact({
         </div>
 
         <div className="bg-[#F8F7F4] rounded-2xl p-10">
-          <p className="text-xl font-bold text-[#1A1916] mb-10">Creative Assets</p>
+          <p className="text-xl font-bold text-[#1A1916] mb-4">Creative Assets</p>
+          <p className="text-sm text-[#6B6860] mb-10">
+            Raw footage and trending references — Filmed by KoreaScout
+          </p>
           <LockedValue locked={!canSeeAlpha} tier="alpha" minHeight="120px">
             {assetCards.length > 0 ? (
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">

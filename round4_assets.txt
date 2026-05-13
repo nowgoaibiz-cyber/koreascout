@@ -1,0 +1,23 @@
+﻿=== CREATIVE ASSETS SECTION ===
+C:\k-productscout\components\LandingTimeWidget.tsx:21:  { label: "Video + creative assets", hrs: 16 },
+C:\k-productscout\components\report\SupplierContact.tsx:426:          <p className="text-xl font-bold text-[#1A1916] mb-10">Creative Assets</p>
+C:\k-productscout\components\report\SupplierContact.tsx:479:              <p className="text-sm italic text-[#9E9C98]">No creative assets available.</p>
+
+=== RAW AD FOOTAGE ===
+C:\k-productscout\components\report\SupplierContact.tsx:151:      title: "Raw Ad Footage",
+
+=== VIDEO_URL FIELD ===
+C:\k-productscout\app\admin\[id]\page.tsx:85:  viral_video_url: "바이럴영상URL",
+C:\k-productscout\app\admin\[id]\page.tsx:86:  video_url: "영상URL",
+C:\k-productscout\app\admin\[id]\page.tsx:288:    "viral_video_url", "video_url", "marketing_assets_url", "ai_detail_page_links", "published_at",
+C:\k-productscout\app\admin\[id]\page.tsx:1474:                  value={formData.viral_video_url ?? ""}
+C:\k-productscout\app\admin\[id]\page.tsx:1475:                  onChange={(e) => setFormData((p) => ({ ...p!, viral_video_url: e.target.value }))}
+C:\k-productscout\app\admin\[id]\page.tsx:1482:                  value={formData.video_url ?? ""}
+C:\k-productscout\app\admin\[id]\page.tsx:1483:                  onChange={(e) => setFormData((p) => ({ ...p!, video_url: e.target.value }))}
+C:\k-productscout\components\report\SupplierContact.tsx:55:  const viralUrl = report.viral_video_url?.trim() || null;
+C:\k-productscout\components\report\SupplierContact.tsx:56:  const videoUrl = report.video_url?.trim() || null;
+C:\k-productscout\components\report\SupplierContact.tsx:148:    videoUrl && {
+C:\k-productscout\components\report\SupplierContact.tsx:153:      href: videoUrl,
+C:\k-productscout\components\report\SupplierContact.tsx:154:      thumbnailSrc: getGoogleDriveThumbnail(videoUrl),
+
+=== YOUTUBE REFERENCE FIELDS ===

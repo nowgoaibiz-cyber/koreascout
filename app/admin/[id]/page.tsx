@@ -82,10 +82,10 @@ const FIELD_LABELS_KO: Record<string, string> = {
   lead_time: "리드타임",
   sample_policy: "샘플정책",
   export_cert_note: "수출인증메모",
-  viral_video_url: "바이럴영상URL",
+  video_url_2: "비디오URL2(추가영상)",
   video_url: "영상URL",
-  marketing_assets_url: "마케팅자산URL",
-  ai_detail_page_links: "AI상세페이지링크",
+  video_url_3: "비디오URL3(추가영상)",
+  ai_detail_page_links: "YouTube참조URL",
   published_at: "발행일시",
   go_verdict: "GO판정",
   composite_score: "종합점수",
@@ -285,7 +285,7 @@ export default function AdminEditPage() {
     "platform_scores", "sourcing_tip", "hs_code", "hs_description", "status_reason", "composition_info", "spec_summary",
     "actual_weight_g", "volumetric_weight_g", "dimensions_cm", "hazmat_status", "required_certificates", "shipping_notes",
     "verified_cost_usd", "verified_cost_note", "verified_at", "moq", "lead_time", "sample_policy", "export_cert_note",
-    "viral_video_url", "video_url", "marketing_assets_url", "ai_detail_page_links", "published_at",
+    "video_url_2", "video_url", "video_url_3", "ai_detail_page_links", "published_at",
   ];
 
   function getDiff(orig: Partial<ScoutFinalReportsRow> | null, current: Partial<ScoutFinalReportsRow> | null): DiffItem[] {
@@ -1469,10 +1469,10 @@ export default function AdminEditPage() {
 
               <p className="text-xs font-semibold text-[#2563EB] uppercase tracking-widest pt-4">미디어 & 마케팅 자산</p>
               <div className="flex flex-col gap-1.5">
-                <label className={labelClass}>Viral Video URL (바이럴영상URL)</label>
+                <label className={labelClass}>Video URL 2 (Additional Footage)</label>
                 <input
-                  value={formData.viral_video_url ?? ""}
-                  onChange={(e) => setFormData((p) => ({ ...p!, viral_video_url: e.target.value }))}
+                  value={formData.video_url_2 ?? ""}
+                  onChange={(e) => setFormData((p) => ({ ...p!, video_url_2: e.target.value }))}
                   className={inputClass}
                 />
               </div>
@@ -1485,17 +1485,17 @@ export default function AdminEditPage() {
                 />
               </div>
               <div className="flex flex-col gap-1.5">
-                <label className={labelClass}>Marketing Assets URL (마케팅자산URL)</label>
+                <label className={labelClass}>Video URL 3 (Additional Footage)</label>
                 <input
-                  value={formData.marketing_assets_url ?? ""}
-                  onChange={(e) => setFormData((p) => ({ ...p!, marketing_assets_url: e.target.value }))}
+                  value={formData.video_url_3 ?? ""}
+                  onChange={(e) => setFormData((p) => ({ ...p!, video_url_3: e.target.value }))}
                   className={inputClass}
                 />
               </div>
 
               <p className="text-xs font-semibold text-[#7C3AED] uppercase tracking-widest pt-4">AI 자산</p>
               <div className="flex flex-col gap-1.5">
-                <label className={labelClass}>AI Detail Page Links (AI상세페이지링크)</label>
+                <label className={labelClass}>YouTube Reference URLs (comma-separated)</label>
                 <div className="bg-[#F8F7F4] rounded-xl border border-[#E8E6E1] p-4">
                   <AiPageLinksHelper
                     value={

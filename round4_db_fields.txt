@@ -1,0 +1,12 @@
+﻿=== DATABASE VIDEO FIELDS ===
+C:\k-productscout\types\database.ts:74:  video_url: string | null;
+C:\k-productscout\types\database.ts:77:  viral_video_url: string | null;
+
+=== ADMIN VIDEO FIELDS ===
+C:\k-productscout\app\admin\[id]\page.tsx:85:  viral_video_url: "바이럴영상URL",
+C:\k-productscout\app\admin\[id]\page.tsx:86:  video_url: "영상URL",
+C:\k-productscout\app\admin\[id]\page.tsx:288:    "viral_video_url", "video_url", "marketing_assets_url", "ai_detail_page_links", "published_at",
+C:\k-productscout\app\admin\[id]\page.tsx:1474:                  value={formData.viral_video_url ?? ""}
+C:\k-productscout\app\admin\[id]\page.tsx:1475:                  onChange={(e) => setFormData((p) => ({ ...p!, viral_video_url: e.target.value }))}
+C:\k-productscout\app\admin\[id]\page.tsx:1482:                  value={formData.video_url ?? ""}
+C:\k-productscout\app\admin\[id]\page.tsx:1483:                  onChange={(e) => setFormData((p) => ({ ...p!, video_url: e.target.value }))}

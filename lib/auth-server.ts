@@ -80,10 +80,10 @@ export function maskReportByTier(
     "b2b_inquiry_url",
     "sample_policy",
     "export_cert_note",
-    "viral_video_url",
+    "video_url_2",
     "video_url",
     "ai_detail_page_links",
-    "marketing_assets_url",
+    "video_url_3",
     "ai_image_url",
   ] as const;
 

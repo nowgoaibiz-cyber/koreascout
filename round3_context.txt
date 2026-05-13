@@ -1,0 +1,43 @@
+﻿=== SAMPLE POLICY CODE CONTEXT ===
+File: C:\k-productscout\components\report\SupplierContact.tsx, Lines: 366-406
+ 366|                      </a>
+ 367|                    ))}
+ 368|                  </div>
+ 369|                );
+ 370|              })()}
+ 371|            </div>
+ 372|          </LockedValue>
+ 373|
+ 374|          <div className="mt-8">
+ 375|            <p className="text-xs font-bold text-[#9E9C98] uppercase tracking-[0.2em] mb-3">
+ 376|              Sample Policy
+ 377|            </p>
+ 378|            <LockedValue locked={!canSeeAlpha} tier="alpha" minHeight="50px">
+ 379|              <p className="text-sm text-[#3D3B36] leading-relaxed">
+ 380|                {report.sample_policy?.trim() || "—"}
+ 381|              </p>
+ 382|            </LockedValue>
+ 383|          </div>
+ 384|
+ 385|          {report.export_cert_note?.trim() && (
+ 386|            <div className="mt-6">
+ 387|              <p className="text-xs font-bold text-[#9E9C98] uppercase tracking-[0.2em] mb-3">
+ 388|                Compliance Note
+ 389|              </p>
+ 390|              <LockedValue locked={!canSeeAlpha} tier="alpha" minHeight="50px">
+ 391|                <p className="text-sm text-[#3D3B36] leading-relaxed">
+ 392|                  {report.export_cert_note.trim()}
+ 393|                </p>
+ 394|              </LockedValue>
+ 395|            </div>
+ 396|          )}
+ 397|
+ 398|          <div id="global-market-proof" className="mt-8">
+ 399|            <p className="text-xs font-bold text-[#9E9C98] uppercase tracking-[0.2em] mb-6">
+ 400|              Global Market Proof
+ 401|            </p>
+ 402|            <LockedValue locked={!canSeeAlpha} tier="alpha" minHeight="100px">
+ 403|              {globalProofTags.length > 0 ? (
+ 404|                <GlobalProofAccordion tags={globalProofTags} />
+ 405|              ) : (
+ 406|                <p className="text-sm italic text-[#9E9C98]">No global listings found.</p>
