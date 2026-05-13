@@ -1,0 +1,21 @@
+﻿=== ANALYZE PRICING SOURCES BUTTON ===
+C:\k-productscout\components\report\MarketIntelligence.tsx:376:                    Analyze Pricing Sources &amp; Entry Points ↓
+
+=== ONCLICK HANDLERS ===
+MarketIntelligence.tsx:102:            onClick={() => setOpen(v => !v)}
+          <div className="pt-1">
+            <button
+              onClick={() => setOpen(v => !v)}
+              className="text-xs font-semibold text-[#6B6860] hover:text-[#1A1916] transition-colors flex items-center gap-1"
+            >
+---
+
+=== GLOBAL MARKET PROOF ANCHOR ===
+C:\k-productscout\app\pricing\page.tsx:102:      { feature: "Global Market Proof Links", free: "—", standard: "—", alpha: "✓" },
+C:\k-productscout\components\report\MarketIntelligence.tsx:375:                  <ScrollToIdButton sectionId="global-market-proof" className="text-base font-bold text-[#16A34A] hover:underline transition-colors block mt-[0.6cm]">
+C:\k-productscout\components\report\SupplierContact.tsx:398:              Global Market Proof
+
+=== SCROLLTOIDBUTTON USAGE ===
+C:\k-productscout\components\report\MarketIntelligence.tsx:5:import { ScrollToIdButton } from "@/components/ScrollToIdButton";
+C:\k-productscout\components\report\MarketIntelligence.tsx:375:                  <ScrollToIdButton sectionId="global-market-proof" className="text-base font-bold text-[#16A34A] hover:underline transition-colors block mt-[0.6cm]">
+C:\k-productscout\components\report\MarketIntelligence.tsx:377:                  </ScrollToIdButton>

@@ -1,0 +1,49 @@
+﻿=== COMPLIANCE NOTE CODE CONTEXT ===
+File: C:\k-productscout\components\report\SupplierContact.tsx, Lines: 382-408
+ 382|            </LockedValue>
+ 383|          </div>
+ 384|
+ 385|          <div className="mt-6">
+ 386|            <p className="text-xs font-bold text-[#9E9C98] uppercase tracking-[0.2em] mb-3">
+ 387|              Compliance Note
+ 388|            </p>
+ 389|            <LockedValue locked={!canSeeAlpha} tier="alpha" minHeight="50px">
+ 390|              <p className="text-sm text-[#3D3B36] leading-relaxed">
+ 391|                {report.export_cert_note?.trim() || "??}
+ 392|              </p>
+ 393|            </LockedValue>
+ 394|          </div>
+ 395|
+ 396|          <div className="mt-8">
+ 397|            <p className="text-xs font-bold text-[#9E9C98] uppercase tracking-[0.2em] mb-6">
+ 398|              Global Market Proof
+ 399|            </p>
+ 400|            <LockedValue locked={!canSeeAlpha} tier="alpha" minHeight="100px">
+ 401|              {globalProofTags.length > 0 ? (
+ 402|                <GlobalProofAccordion tags={globalProofTags} />
+ 403|              ) : (
+ 404|                <p className="text-sm italic text-[#9E9C98]">No global listings found.</p>
+ 405|              )}
+ 406|            </LockedValue>
+ 407|          </div>
+ 408|        </div>
+---
+
+=== PRICING BUTTON CODE CONTEXT ===
+File: C:\k-productscout\components\report\MarketIntelligence.tsx, Lines: 366-380
+ 366|              </div>
+ 367|              <div style={{ marginTop: "2.5cm" }}>
+ 368|                <div className="border-t border-[#E8E6E1] pt-6">
+ 369|                  <p className="text-base italic text-[#6B6860]">
+ 370|                    ??Untapped = No established sellers detected. <span className="text-sm">* Data may vary based on real-time market changes.</span>
+ 371|                  </p>
+ 372|                  <p className="text-[11px] text-[#9E9C98] mt-1">
+ 373|                    ?뮦 All prices are shown in USD, converted from local currency at the exchange rate on the date of research. Prices may vary due to currency fluctuations.
+ 374|                  </p>
+ 375|                  <ScrollToIdButton sectionId="global-market-proof" className="text-base font-bold text-[#16A34A] hover:underline transition-colors block mt-[0.6cm]">
+ 376|                    Analyze Pricing Sources &amp; Entry Points ??                  </ScrollToIdButton>
+ 377|                </div>
+ 378|              </div>
+ 379|            </div>
+ 380|          );
+---

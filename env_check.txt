@@ -1,0 +1,15 @@
+=== ENV VARIABLES - LEMONSQUEEZY ===
+./.env.local:8:LEMONSQUEEZY_API_KEY=[REDACTED — 민감 정보; 원본은 로컬 .env.local 참고]
+./.env.local:9:LEMONSQUEEZY_WEBHOOK_SECRET=[REDACTED — 민감 정보]
+./.env.local:12:LEMONSQUEEZY_VARIANT_ID_STANDARD=1441570
+./.env.local:13:LEMONSQUEEZY_VARIANT_ID_ALPHA=1441563
+./app/api/billing/portal/route.ts:34:          Authorization: `Bearer ${process.env.LEMONSQUEEZY_API_KEY}`,
+./app/api/webhooks/lemonsqueezy/route.ts:5:const LEMONSQUEEZY_WEBHOOK_SECRET = process.env.LEMONSQUEEZY_WEBHOOK_SECRET;
+./app/api/webhooks/lemonsqueezy/route.ts:11:/** Standard/Alpha 숫자 variant_id (.env: LEMONSQUEEZY_VARIANT_ID_STANDARD / _ALPHA) — 일치 시 tier 업데이트 */
+./app/api/webhooks/lemonsqueezy/route.ts:12:const STANDARD_VARIANT_NUMERIC = process.env.LEMONSQUEEZY_VARIANT_ID_STANDARD
+./app/api/webhooks/lemonsqueezy/route.ts:13:  ? parseInt(process.env.LEMONSQUEEZY_VARIANT_ID_STANDARD, 10)
+./app/api/webhooks/lemonsqueezy/route.ts:15:const ALPHA_VARIANT_NUMERIC = process.env.LEMONSQUEEZY_VARIANT_ID_ALPHA
+./app/api/webhooks/lemonsqueezy/route.ts:16:  ? parseInt(process.env.LEMONSQUEEZY_VARIANT_ID_ALPHA, 10)
+./app/api/webhooks/lemonsqueezy/route.ts:20:  if (!LEMONSQUEEZY_WEBHOOK_SECRET || !signature) return false;
+./app/api/webhooks/lemonsqueezy/route.ts:21:  const hmac = crypto.createHmac("sha256", LEMONSQUEEZY_WEBHOOK_SECRET);
+./app/api/webhooks/lemonsqueezy/route.ts:132:            ? "→ LemonSqueezy는 웹훅에 숫자 variant_id를 보냅니다. .env에 LEMONSQUEEZY_VARIANT_ID_STANDARD, LEMONSQUEEZY_VARIANT_ID_ALPHA (숫자) 설정 후 재시도."

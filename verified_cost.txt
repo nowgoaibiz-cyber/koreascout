@@ -1,0 +1,18 @@
+=== VERIFIED SUPPLIER COST BUTTON ===
+./components/report/MarketIntelligence.tsx:267:                      ✓ View Verified Supplier Cost ↓
+./components/report/MarketIntelligence.tsx:271:                      🔒 View Verified Supplier Cost
+
+=== VERIFIED_COST_USD FIELD USAGE ===
+./app/admin/[id]/page.tsx:78:  verified_cost_usd: "검증된원가(USD)",
+./app/admin/[id]/page.tsx:287:    "verified_cost_usd", "verified_cost_note", "verified_at", "moq", "lead_time", "sample_policy", "export_cert_note",
+./app/admin/[id]/page.tsx:1414:                  value={formData.verified_cost_usd ?? ""}
+./app/admin/[id]/page.tsx:1415:                  onChange={(e) => setFormData((p) => ({ ...p!, verified_cost_usd: e.target.value }))}
+./components/report/SupplierContact.tsx:43:  const verifiedCostUsd = report.verified_cost_usd ?? null;
+./data/sampleReportData.ts:70:  verified_cost_usd: null,
+./lib/auth-server.ts:65:    "verified_cost_usd",
+./types/database.ts:92:  verified_cost_usd?: string | null;
+
+=== ALPHA MEMBERS MESSAGE ===
+./components/FaqAccordion.tsx:34:        a: "Every week, KoreaScout publishes 10+ curated K-products. Standard and Alpha members get instant access to the latest 3 weeks — that's 30+ verified products from day one. Free members get access to one unlocked week with a 14-day delay. Every product in your report has cleared our Margin Multiplier threshold and passed multi-source Korean demand verification.",
+./components/LandingPipelineSneakPeek.tsx:87:                  Alpha members get verified supplier quotes
+./components/ProductIdentity.tsx:233:                  Alpha members get verified supplier quotes

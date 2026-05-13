@@ -1,0 +1,29 @@
+=== SOURCING_TIP RENDERING ===
+./app/admin/[id]/page.tsx:66:  sourcing_tip: "소싱팁",
+./app/admin/[id]/page.tsx:285:    "platform_scores", "sourcing_tip", "hs_code", "hs_description", "status_reason", "composition_info", "spec_summary",
+./app/admin/[id]/page.tsx:1053:                  const steps = parseTipToSteps(formData.sourcing_tip);
+./app/admin/[id]/page.tsx:1061:                          const current = parseTipToSteps(formData.sourcing_tip);
+./app/admin/[id]/page.tsx:1063:                          setFormData((p) => ({ ...p!, sourcing_tip: serializeSourcingTip(current) }));
+./app/admin/[id]/page.tsx:1252:                  const steps = parseTipToSteps(formData.sourcing_tip);
+./app/admin/[id]/page.tsx:1260:                          const current = parseTipToSteps(formData.sourcing_tip);
+./app/admin/[id]/page.tsx:1262:                          setFormData((p) => ({ ...p!, sourcing_tip: serializeSourcingTip(current) }));
+./app/weekly/[weekId]/[id]/page.tsx:122:    (report.sourcing_tip && report.sourcing_tip.trim());
+./app/weekly/[weekId]/[id]/page.tsx:131:    (report.sourcing_tip && report.sourcing_tip.trim());
+./components/report/SocialProofTrendIntelligence.tsx:26:  const allSteps = parseSourcingStrategy(report.sourcing_tip);
+./components/report/SourcingIntel.tsx:23:  const allSteps = parseSourcingStrategy(report.sourcing_tip);
+./components/report/SupplierContact.tsx:38:    (report.sourcing_tip && report.sourcing_tip.trim());
+
+=== B2B SOURCING STRATEGY SECTION ===
+./app/admin/[id]/page.tsx:216:      "B2B Sourcing Strategy",
+./app/admin/[id]/page.tsx:1052:                {["Marketing Strategy", "Price / Margin Strategy", "B2B Sourcing Strategy"].map((header, i) => {
+./components/report/SocialProofTrendIntelligence.tsx:222:            { label: "B2B Sourcing Strategy" },
+
+=== SCOUT STRATEGY REPORT COMPONENT ===
+./app/admin/[id]/page.tsx:1049:              {/* Scout Strategy Report - Steps 1-3 */}
+./app/admin/[id]/page.tsx:1051:                <p className="text-sm font-semibold text-[#1A1916]">📋 Scout Strategy Report (Steps 1–3)</p>
+./app/pricing/page.tsx:79:      { feature: "Scout Strategy Report", free: "—", standard: "—", alpha: "✓" },
+./components/report/SocialProofTrendIntelligence.tsx:7:import { normalizeToArray, parseSourcingStrategy } from "./utils";
+./components/report/SocialProofTrendIntelligence.tsx:26:  const allSteps = parseSourcingStrategy(report.sourcing_tip);
+./components/report/SocialProofTrendIntelligence.tsx:216:        <p className="text-xl font-bold text-[#1A1916] mb-10">Scout Strategy Report</p>
+./components/report/SourcingIntel.tsx:10:import { describeShippingTier, parseSourcingStrategy } from "./utils";
+./components/report/SourcingIntel.tsx:23:  const allSteps = parseSourcingStrategy(report.sourcing_tip);

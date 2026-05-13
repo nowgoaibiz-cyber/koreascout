@@ -1,0 +1,7 @@
+=== TIER COMPARISON: 'standard' ===
+./components/layout/ClientLeftNav.tsx:132:                    {tier === 'alpha' ? 'Alpha' : tier === 'standard' ? 'Standard' : 'Free'}
+
+=== TIER COMPARISON: 'alpha' ===
+./components/layout/ClientLeftNav.tsx:127:                      tier === 'alpha'
+./components/layout/ClientLeftNav.tsx:132:                    {tier === 'alpha' ? 'Alpha' : tier === 'standard' ? 'Standard' : 'Free'}
+./components/ui/PaywallOverlay.tsx:25:    tier === 'alpha' ? `Go Alpha ${PRICING.CURRENCY}${PRICING.ALPHA.monthly}/mo →` : `Go Standard ${PRICING.CURRENCY}${PRICING.STANDARD.monthly}/mo →`

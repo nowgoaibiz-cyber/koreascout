@@ -1,0 +1,9 @@
+=== WEEKLY REPORT PDP ===
+./app/weekly/page.tsx
+./app/weekly/[weekId]/page.tsx
+./app/weekly/[weekId]/[id]/page.tsx
+
+=== REPORTS PDP ===
+
+=== ALL REPORT-RELATED PAGES ===
+./app/sample-report/page.tsx

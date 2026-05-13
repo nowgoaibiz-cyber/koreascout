@@ -1,0 +1,66 @@
+=== MARKETINTELLIGENCE.TSX CONTEXT ===
+                    {estimatedCost ? `~$${estimatedCost}` : "—"}
+                  </p>
+                </LockedValue>
+                <p className="text-xs text-[#9E9C98] mt-2">Est. KR Wholesale</p>
+                <div style={{ marginTop: "0.6cm" }}>
+                  {isAlpha ? (
+                    <ScrollToIdButton sectionId="section-6" className="text-base font-bold text-[#16A34A] hover:underline transition-colors">
+                      ✓ View Verified Supplier Cost ↓
+                    </ScrollToIdButton>
+                  ) : (
+                    <button disabled className="inline-flex items-center gap-2 text-base font-bold text-[#9E9C98] cursor-not-allowed">
+                      🔒 View Verified Supplier Cost
+                      <span className="text-[10px] font-bold text-white bg-[#16A34A] rounded-full px-2 py-0.5">Alpha</span>
+                    </button>
+                  )}
+                </div>
+              </div>
+              <div className={strategicTarget ? "px-8 border-r border-[#E8E6E1]" : "pl-8"}>
+                <p className="text-lg font-bold text-[#6B6860] uppercase tracking-widest" style={{ marginTop: "0.8cm" }}>
+                  Global Valuation
+                </p>
+
+=== FINANCIAL BRIEFING COMPONENT CONTEXT ===
+File: ./components/report/SupplierContact.tsx, Lines: 206-246
+    <section className="bg-white rounded-2xl border border-[#E8E6E1] p-6 shadow-[0_1px_3px_0_rgb(26_25_22/0.06)]">
+      <>
+        <h2 className="text-3xl font-bold text-[#1A1916] mb-4 tracking-tight">
+          Launch &amp; Execution Kit
+        </h2>
+        <p className="text-sm text-[#6B6860] mb-8">
+          From product discovery to live campaign — everything you need.
+        </p>
+
+        <div className="bg-[#F8F7F4] rounded-2xl p-10 mb-6 mt-6">
+          <p className="text-xl font-bold text-[#1A1916] mb-10">Financial Briefing</p>
+
+          <div className="mb-6">
+            <p className="text-xs font-bold text-[#9E9C98] uppercase tracking-[0.2em] mb-3">
+              Cost Per Unit
+            </p>
+            <LockedValue locked={!canSeeAlpha} tier="alpha" minHeight="80px">
+              {hasVerifiedPrice && !isUndisclosed ? (
+                <div>
+                  <p className="text-5xl font-black tracking-tighter text-[#1A1916]">
+                    ${costNum.toFixed(2)}
+                  </p>
+                  {report.verified_at && (
+                    <p className="text-xs text-[#9E9C98] mt-2">
+                      Verified by KoreaScout on{" "}
+                      {new Date(report.verified_at).toLocaleDateString("en-US", {
+                        year: "numeric", month: "long", day: "numeric",
+                      })}
+                    </p>
+                  )}
+                </div>
+              ) : verifiedCostUsd != null && isUndisclosed ? (
+                <p className="text-sm italic text-[#6B6860] leading-relaxed">
+                  Pricing verified and on file. Contact the manufacturer directly.
+                </p>
+              ) : (
+                <p className="text-sm italic text-[#9E9C98]">Not available</p>
+              )}
+            </LockedValue>
+          </div>
+

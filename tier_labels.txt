@@ -1,0 +1,8 @@
+=== STANDARD TIER REFERENCES ===
+./components/FaqAccordion.tsx:87:        a: "Standard gives you the full trend intelligence layer: Gap Index, Margin Multiplier, Platform Velocity, Growth Signal. That alone replaces 58 hours of manual sourcing research per month. Alpha adds the action layer: verified factory contacts, MOQ + EXW pricing, HS Code reference, compliance flags, 4K On-Site Sourcing Footage (Raw), SEO keywords, and a broker email draft. The $120 difference buys you a complete sourcing brief — ready to act on, not just read. If your average margin is $8/unit and you source 200 units from one Alpha-sourced product, that's $1,600 gross from a $199 subscription. The math works on the first product.",
+
+=== ALPHA TIER REFERENCES ===
+./components/FaqAccordion.tsx:86:        q: "Why does Alpha cost $199/mo when Standard is $79/mo?",
+./components/FaqAccordion.tsx:87:        a: "Standard gives you the full trend intelligence layer: Gap Index, Margin Multiplier, Platform Velocity, Growth Signal. That alone replaces 58 hours of manual sourcing research per month. Alpha adds the action layer: verified factory contacts, MOQ + EXW pricing, HS Code reference, compliance flags, 4K On-Site Sourcing Footage (Raw), SEO keywords, and a broker email draft. The $120 difference buys you a complete sourcing brief — ready to act on, not just read. If your average margin is $8/unit and you source 200 units from one Alpha-sourced product, that's $1,600 gross from a $199 subscription. The math works on the first product.",
+
+=== EARLY BIRD PRICING ===

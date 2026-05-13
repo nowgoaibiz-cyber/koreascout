@@ -1,0 +1,11 @@
+﻿=== COMPLIANCE NOTE SECTION ===
+C:\k-productscout\components\report\SupplierContact.tsx:387:              Compliance Note
+
+=== CGMP ISO HALAL CERTIFICATIONS ===
+
+=== EXPORT_CERT_NOTE FIELD ===
+C:\k-productscout\app\admin\[id]\page.tsx:84:  export_cert_note: "수출인증메모",
+C:\k-productscout\app\admin\[id]\page.tsx:287:    "verified_cost_usd", "verified_cost_note", "verified_at", "moq", "lead_time", "sample_policy", "export_cert_note",
+C:\k-productscout\app\admin\[id]\page.tsx:1464:                  value={formData.export_cert_note ?? ""}
+C:\k-productscout\app\admin\[id]\page.tsx:1465:                  onChange={(e) => setFormData((p) => ({ ...p!, export_cert_note: e.target.value }))}
+C:\k-productscout\components\report\SupplierContact.tsx:391:                {report.export_cert_note?.trim() || "—"}

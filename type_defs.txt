@@ -1,0 +1,4 @@
+=== TIER TYPE DEFINITIONS ===
+./next-env.d.ts
+
+=== SUBSCRIPTION TYPES ===

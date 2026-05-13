@@ -1,0 +1,8 @@
+=== LANDING PAGE MAIN FILE ===
+./app/page.tsx
+
+=== LANDING PAGE COMPONENTS ===
+./components/Hero.tsx
+./components/HeroCTA.tsx
+./components/LandingPipelineSneakPeek.tsx
+./components/LandingTimeWidget.tsx

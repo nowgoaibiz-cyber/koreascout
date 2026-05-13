@@ -1,0 +1,29 @@
+=== VARIANT_ID MAPPING ===
+./app/api/webhooks/lemonsqueezy/route.ts:7:/** Standard $69 — checkout URL UUID (LemonSqueezy 웹훅은 variant_id를 숫자로 보낼 수 있음) */
+./app/api/webhooks/lemonsqueezy/route.ts:11:/** Standard/Alpha 숫자 variant_id (.env: LEMONSQUEEZY_VARIANT_ID_STANDARD / _ALPHA) — 일치 시 tier 업데이트 */
+./app/api/webhooks/lemonsqueezy/route.ts:34:function variantIdToTier(variantId: string | number): "standard" | "alpha" | null {
+./app/api/webhooks/lemonsqueezy/route.ts:36:    typeof variantId === "number"
+./app/api/webhooks/lemonsqueezy/route.ts:37:      ? variantId
+./app/api/webhooks/lemonsqueezy/route.ts:38:      : typeof variantId === "string" && /^\d+$/.test(variantId)
+./app/api/webhooks/lemonsqueezy/route.ts:39:        ? parseInt(variantId, 10)
+./app/api/webhooks/lemonsqueezy/route.ts:46:  const id = String(variantId).toLowerCase();
+./app/api/webhooks/lemonsqueezy/route.ts:92:          variant_id?: number | string;
+./app/api/webhooks/lemonsqueezy/route.ts:111:    if (attrs?.variant_id !== undefined) {
+./app/api/webhooks/lemonsqueezy/route.ts:112:      console.log("[lemonsqueezy] variant_id:", attrs.variant_id, "typeof:", typeof attrs.variant_id);
+./app/api/webhooks/lemonsqueezy/route.ts:116:      const variantId = attrs?.variant_id;
+./app/api/webhooks/lemonsqueezy/route.ts:117:      if (variantId == null) {
+./app/api/webhooks/lemonsqueezy/route.ts:118:        console.warn("[lemonsqueezy] 400: Missing variant_id. attrs:", JSON.stringify(attrs ?? {}));
+./app/api/webhooks/lemonsqueezy/route.ts:120:          { error: "Missing variant_id" },
+./app/api/webhooks/lemonsqueezy/route.ts:124:      const tier = variantIdToTier(variantId);
+./app/api/webhooks/lemonsqueezy/route.ts:127:          "[lemonsqueezy] 400: Unknown variant_id. received:",
+./app/api/webhooks/lemonsqueezy/route.ts:128:          variantId,
+./app/api/webhooks/lemonsqueezy/route.ts:130:          typeof variantId,
+./app/api/webhooks/lemonsqueezy/route.ts:131:          typeof variantId === "number"
+./app/api/webhooks/lemonsqueezy/route.ts:132:            ? "→ LemonSqueezy는 웹훅에 숫자 variant_id를 보냅니다. .env에 LEMONSQUEEZY_VARIANT_ID_STANDARD, LEMONSQUEEZY_VARIANT_ID_ALPHA (숫자) 설정 후 재시도."
+./app/api/webhooks/lemonsqueezy/route.ts:136:          { error: "Unknown variant_id" },
+
+=== LEMONSQUEEZY TIER MAPPING ===
+
+=== SUBSCRIPTION WEBHOOK HANDLER ===
+./app/api/webhook/route.ts
+./app/api/webhooks/lemonsqueezy/route.ts

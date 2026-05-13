@@ -1,0 +1,14 @@
+=== LOCKED SECTION & PAYWALL FILES ===
+./components/LockedSection.tsx
+./components/ui/PaywallOverlay.tsx
+./locked_components.txt
+
+=== LOCKED/PAYWALL COMPONENT USAGE ===
+./components/LockedSection.tsx:5:export interface LockedSectionProps {
+./components/LockedSection.tsx:51:export function LockedSection({
+./components/LockedSection.tsx:56:}: LockedSectionProps) {
+./components/ui/PaywallOverlay.tsx:7:export type PaywallTier = 'standard' | 'alpha'
+./components/ui/PaywallOverlay.tsx:9:export interface PaywallOverlayProps {
+./components/ui/PaywallOverlay.tsx:10:  tier: PaywallTier
+./components/ui/PaywallOverlay.tsx:17:export function PaywallOverlay({
+./components/ui/PaywallOverlay.tsx:23:}: PaywallOverlayProps) {

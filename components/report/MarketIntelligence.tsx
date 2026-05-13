@@ -221,7 +221,6 @@ export function MarketIntelligence({
   const winningFeature = report.top_selling_point?.trim() || null;
   const painPoint = report.common_pain_point?.trim() || null;
 
-  const isAlpha = tier === "alpha";
   const canSeeStandard = tier === "standard" || tier === "alpha" || isTeaser;
 
   return (
@@ -261,18 +260,6 @@ export function MarketIntelligence({
                   </p>
                 </LockedValue>
                 <p className="text-xs text-[#9E9C98] mt-2">Est. KR Wholesale</p>
-                <div style={{ marginTop: "0.6cm" }}>
-                  {isAlpha ? (
-                    <ScrollToIdButton sectionId="section-6" className="text-base font-bold text-[#16A34A] hover:underline transition-colors">
-                      ✓ View Verified Supplier Cost ↓
-                    </ScrollToIdButton>
-                  ) : (
-                    <button disabled className="inline-flex items-center gap-2 text-base font-bold text-[#9E9C98] cursor-not-allowed">
-                      🔒 View Verified Supplier Cost
-                      <span className="text-[10px] font-bold text-white bg-[#16A34A] rounded-full px-2 py-0.5">Alpha</span>
-                    </button>
-                  )}
-                </div>
               </div>
               <div className={strategicTarget ? "px-8 border-r border-[#E8E6E1]" : "pl-8"}>
                 <p className="text-lg font-bold text-[#6B6860] uppercase tracking-widest" style={{ marginTop: "0.8cm" }}>

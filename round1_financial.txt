@@ -1,0 +1,61 @@
+=== FINANCIAL BRIEFING SECTION ===
+./components/report/SupplierContact.tsx:216:          <p className="text-xl font-bold text-[#1A1916] mb-10">Financial Briefing</p>
+
+=== COST PER UNIT ===
+./app/pricing/page.tsx:97:      { feature: "Verified Cost Per Unit & MOQ", free: "—", standard: "—", alpha: "✓" },
+./components/report/SupplierContact.tsx:220:              Cost Per Unit
+
+=== MOQ FIELD ===
+./app/admin/[id]/page.tsx:81:  moq: "최소주문수량",
+./app/admin/[id]/page.tsx:287:    "verified_cost_usd", "verified_cost_note", "verified_at", "moq", "lead_time", "sample_policy", "export_cert_note",
+./app/admin/[id]/page.tsx:1438:                <label className={labelClass}>MOQ (최소주문수량)</label>
+./app/admin/[id]/page.tsx:1440:                  value={formData.moq ?? ""}
+./app/admin/[id]/page.tsx:1441:                  onChange={(e) => setFormData((p) => ({ ...p!, moq: e.target.value }))}
+./app/page.tsx:167:                    { text: "Verified Factory Cost ($) & MOQ", lock: false },
+./app/page.tsx:312:                    d: "Verified manufacturer name, MOQ, and direct contact email. Our Seoul team checks it. Not scraped. Human-verified.",
+./app/page.tsx:393:                        "Verified MOQ & Factory Price (EXW)",
+./app/pricing/page.tsx:97:      { feature: "Verified Cost Per Unit & MOQ", free: "—", standard: "—", alpha: "✓" },
+./components/AlphaVaultPreview.tsx:13:  "MOQ: ███ units (est.) †",
+./components/FaqAccordion.tsx:53:        a: "No. Standard at $79/mo is built exactly for creators. Alpha adds factory contacts, MOQ pricing, HS Codes, and logistics data — tools for sellers who want to source and ship. If your goal is to grow your channel, Standard is all you need.",
+./components/FaqAccordion.tsx:68:        a: "Alpha reports include manufacturer name, contact information, and sourcing reference links sourced from Korean B2B databases and verified product listings. We provide the lead — direct outreach and negotiation is yours to own. Supplier responsiveness and MOQ terms vary by manufacturer and are subject to change.",
+./components/FaqAccordion.tsx:83:        a: "This is a structural decision, not a marketing gimmick. Each Alpha product report includes direct factory contacts and MOQ pricing. If 10,000 sellers receive the same supplier contact simultaneously, the factory gets overwhelmed, MOQs increase, and pricing negotiation leverage disappears. 3,000 is the ceiling at which our intelligence retains its commercial value. When that ceiling is hit, Alpha closes. This protects your investment, not ours.",
+./components/FaqAccordion.tsx:87:        a: "Standard gives you the full trend intelligence layer: Gap Index, Margin Multiplier, Platform Velocity, Growth Signal. That alone replaces 58 hours of manual sourcing research per month. Alpha adds the action layer: verified factory contacts, MOQ + EXW pricing, HS Code reference, compliance flags, 4K On-Site Sourcing Footage (Raw), SEO keywords, and a broker email draft. The $120 difference buys you a complete sourcing brief — ready to act on, not just read. If your average margin is $8/unit and you source 200 units from one Alpha-sourced product, that's $1,600 gross from a $199 subscription. The math works on the first product.",
+./components/IntelligencePipeline.tsx:18:  { main: "Exact MOQ & Unit Cost", sub: "— EXW price locked" },
+./components/LandingTimeWidget.tsx:187:              † HS Code classifications, MOQ figures, and compliance data provided by
+./components/report/SupplierContact.tsx:249:              <p className="text-xs font-bold text-[#9E9C98] uppercase tracking-[0.2em] mb-3">MOQ</p>
+./components/report/SupplierContact.tsx:252:                  {report.moq?.trim() || "—"}
+
+=== LEAD TIME ===
+./app/admin/[id]/page.tsx:82:  lead_time: "리드타임",
+./app/admin/[id]/page.tsx:287:    "verified_cost_usd", "verified_cost_note", "verified_at", "moq", "lead_time", "sample_policy", "export_cert_note",
+./app/admin/[id]/page.tsx:1446:                <label className={labelClass}>Lead Time (리드타임)</label>
+./app/admin/[id]/page.tsx:1448:                  value={formData.lead_time ?? ""}
+./app/admin/[id]/page.tsx:1449:                  onChange={(e) => setFormData((p) => ({ ...p!, lead_time: e.target.value }))}
+./app/legal/privacy/page.tsx:31:          <p className="text-[#4A4845] leading-relaxed">You have the right to request access to, correction of, or deletion of your personal data at any time. To submit a data deletion request, contact us at <a href="mailto:support@koreascout.com" className="text-[#16A34A] underline">support@koreascout.com</a>.</p>
+./app/legal/terms/page.tsx:20:          <p className="text-[#4A4845] leading-relaxed">Subscriptions are automatically renewed on a monthly basis. By subscribing, you acknowledge and consent to recurring charges until you cancel. Subscribers may cancel at any time. Upon cancellation, full access to the subscribed tier is retained through the end of the current billing cycle. No partial refunds will be issued for unused days.</p>
+./app/legal/terms/page.tsx:25:          <p className="text-[#4A4845] leading-relaxed">KoreaScout targets weekly delivery of curated intelligence reports. The exact number of featured products per issue may vary based on market conditions and our quality standards. KoreaScout does not guarantee a fixed number of reports per issue, and fluctuations in report volume do not constitute grounds for a refund. KoreaScout does not guarantee 100% uptime and shall not be liable for temporary service interruptions caused by technical issues, maintenance, or factors beyond our control.</p>
+./app/page.tsx:170:                    { text: "Production & Lead Time Data", lock: false },
+./app/pricing/page.tsx:98:      { feature: "Est. Production Lead Time", free: "—", standard: "—", alpha: "✓" },
+./components/AlphaVaultPreview.tsx:14:  "Lead Time: ██ days †",
+./components/report/SupplierContact.tsx:258:                Est. Production Lead Time
+./components/report/SupplierContact.tsx:262:                  {report.lead_time?.trim() || "—"}
+
+=== OEM/ODM ===
+./app/admin/[id]/page.tsx:101:  can_oem: "OEM가능여부",
+./app/admin/[id]/page.tsx:281:    "shipping_tier", "key_risk_ingredient", "hazmat_summary", "global_site_url", "b2b_inquiry_url", "can_oem", "ai_image_url",
+./app/admin/[id]/page.tsx:1390:                <label className={labelClass}>Can OEM (OEM가능여부)</label>
+./app/admin/[id]/page.tsx:1392:                  value={formData.can_oem === true ? "true" : formData.can_oem === false ? "false" : ""}
+./app/admin/[id]/page.tsx:1395:                    can_oem: e.target.value === "true" ? true : e.target.value === "false" ? false : null
+./components/report/SupplierContact.tsx:268:                OEM / ODM
+./components/report/SupplierContact.tsx:272:                  {report.can_oem == null ? "—" : report.can_oem ? "Available" : "Not Available"}
+
+=== LAUNCH KIT COMPONENT ===
+./components/LaunchKit.tsx
+./app/admin/[id]/page.tsx:1274:        {/* Section 7 — Global Market Prices (before Launch Kit) */}
+./app/admin/[id]/page.tsx:1303:        {/* Section 6 — Launch & Execution Kit (default open) */}
+./app/admin/[id]/page.tsx:1310:            <span className="text-sm font-semibold text-[#1A1916]">Launch & Execution Kit</span>
+./app/page.tsx:317:                    t: "Launch Kit",
+./app/pricing/page.tsx:95:    label: "Launch & Execution Kit",
+./app/weekly/[weekId]/[id]/page.tsx:139:    { id: "section-6", label: "Launch Kit", icon: null },
+./components/LaunchKit.tsx:13:export default function LaunchKit() {
+./components/report/SupplierContact.tsx:209:          Launch &amp; Execution Kit

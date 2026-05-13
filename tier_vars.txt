@@ -1,0 +1,11 @@
+=== SUBSCRIPTION_TIER References ===
+
+=== USER_TIER References ===
+
+=== TIER ENUM/TYPE DEFINITIONS ===
+./components/GlobalPricingTable.tsx:21:type Tier = "free" | "standard" | "alpha";
+./components/layout/ClientLeftNav.tsx:7:export type NavTier = 'free' | 'standard' | 'alpha'
+./components/ui/index.ts:12:export type { PaywallOverlayProps, PaywallTier } from './PaywallOverlay'
+./components/ui/PaywallOverlay.tsx:7:export type PaywallTier = 'standard' | 'alpha'
+./lib/auth-server.ts:2:import type { ScoutFinalReportsRow, Tier } from "@/types/database";
+./types/database.ts:10:export type Tier = "free" | "standard" | "alpha";

@@ -17,6 +17,9 @@ function getGoogleDriveThumbnail(url: string | null): string | null {
   return id ? `https://drive.google.com/thumbnail?id=${id}&sz=w400` : null;
 }
 
+// Feature flags
+const SHOW_FINANCIAL_BRIEFING = false; // Set to true when Alpha Premium launches
+
 export function SupplierContact({
   report,
   tier,
@@ -212,7 +215,8 @@ export function SupplierContact({
           From product discovery to live campaign — everything you need.
         </p>
 
-        <div className="bg-[#F8F7F4] rounded-2xl p-10 mb-6 mt-6">
+        {SHOW_FINANCIAL_BRIEFING && (
+          <div className="bg-[#F8F7F4] rounded-2xl p-10 mb-6 mt-6">
           <p className="text-xl font-bold text-[#1A1916] mb-10">Financial Briefing</p>
 
           <div className="mb-6">
@@ -274,7 +278,8 @@ export function SupplierContact({
               </LockedValue>
             </div>
           </div>
-        </div>
+          </div>
+        )}
 
         <div className="bg-[#F8F7F4] rounded-2xl p-10 mb-6">
           <p className="text-xl font-bold text-[#1A1916] mb-10">Supplier &amp; Brand Intel</p>
@@ -377,18 +382,20 @@ export function SupplierContact({
             </LockedValue>
           </div>
 
-          <div className="mt-6">
-            <p className="text-xs font-bold text-[#9E9C98] uppercase tracking-[0.2em] mb-3">
-              Compliance Note
-            </p>
-            <LockedValue locked={!canSeeAlpha} tier="alpha" minHeight="50px">
-              <p className="text-sm text-[#3D3B36] leading-relaxed">
-                {report.export_cert_note?.trim() || "—"}
+          {report.export_cert_note?.trim() && (
+            <div className="mt-6">
+              <p className="text-xs font-bold text-[#9E9C98] uppercase tracking-[0.2em] mb-3">
+                Compliance Note
               </p>
-            </LockedValue>
-          </div>
+              <LockedValue locked={!canSeeAlpha} tier="alpha" minHeight="50px">
+                <p className="text-sm text-[#3D3B36] leading-relaxed">
+                  {report.export_cert_note.trim()}
+                </p>
+              </LockedValue>
+            </div>
+          )}
 
-          <div className="mt-8">
+          <div id="global-market-proof" className="mt-8">
             <p className="text-xs font-bold text-[#9E9C98] uppercase tracking-[0.2em] mb-6">
               Global Market Proof
             </p>
