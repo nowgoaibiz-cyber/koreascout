@@ -22,7 +22,7 @@ export function PaywallOverlay({
   className = '',
 }: PaywallOverlayProps) {
   const ctaLabel =
-    tier === 'alpha' ? `Go Alpha ${PRICING.CURRENCY}${PRICING.ALPHA.monthly}/mo →` : `Go Standard ${PRICING.CURRENCY}${PRICING.STANDARD.monthly}/mo →`
+    tier === 'alpha' ? `Go Alpha+ ${PRICING.CURRENCY}${PRICING.ALPHA_PLUS.monthly}/mo →` : `Go Alpha ${PRICING.CURRENCY}${PRICING.ALPHA.monthly}/mo →`
 
   return (
     <div className={`relative overflow-hidden ${className}`.trim()}>

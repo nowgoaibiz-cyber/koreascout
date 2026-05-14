@@ -207,12 +207,12 @@ export default async function ProductDetailPage({
               <div className="rounded-lg border border-[#E8E6E1] bg-[#F2F1EE] px-4 py-3 text-center">
                 {tier === "free" && (
                   <Link href="/pricing" className="text-sm font-medium text-[#16A34A] hover:text-[#15803D] underline transition-colors">
-                    Unlock Full Market Intelligence — Start at {PRICING.CURRENCY}{PRICING.STANDARD.monthly}/mo →
+                    Unlock Full Market Intelligence — Start at {PRICING.CURRENCY}{PRICING.ALPHA.monthly}/mo →
                   </Link>
                 )}
                 {tier === "standard" && (
                   <Link href="/pricing" className="text-sm font-medium text-[#16A34A] hover:text-[#15803D] underline transition-colors">
-                    Go Alpha — Get Supplier Contacts for {PRICING.CURRENCY}{PRICING.ALPHA.monthly}/mo →
+                    Go Alpha+ — Get Supplier Contacts for {PRICING.CURRENCY}{PRICING.ALPHA_PLUS.monthly}/mo →
                   </Link>
                 )}
                 {tier === "alpha" && <p className="text-sm font-medium text-[#16A34A]">You have full access</p>}

@@ -29,10 +29,10 @@ export default function LandingTimeWidget() {
   const isCreator = mode === "creator";
   const rows = isCreator ? CREATOR_ROWS : LEFT_ROWS;
   const total = isCreator ? CREATOR_TOTAL : TOTAL;
-  const rightLabel = isCreator ? "KoreaScout Standard" : "KoreaScout Alpha";
+  const rightLabel = isCreator ? "KoreaScout Alpha" : "KoreaScout Alpha+";
   const rightPrice = isCreator
-    ? `${PRICING.CURRENCY}${PRICING.STANDARD.monthly}/month`
-    : `${PRICING.CURRENCY}${PRICING.ALPHA.monthly}/month`;
+    ? `${PRICING.CURRENCY}${PRICING.ALPHA.monthly}/month`
+    : `${PRICING.CURRENCY}${PRICING.ALPHA_PLUS.monthly}/month`;
   const bottomHrs = isCreator ? "28 hours" : "58 hours";
   const bottomTagline = isCreator
     ? " Stop searching, start filming."

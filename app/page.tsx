@@ -5,7 +5,6 @@ import LandingPipelineSneakPeek from "@/components/LandingPipelineSneakPeek";
 import DynamiteFuseSection from "@/components/DynamiteFuseSection";
 import IntelligencePipeline from "@/components/IntelligencePipeline";
 import LandingTimeWidget from "@/components/LandingTimeWidget";
-import { createServiceRoleClient } from "@/lib/supabase/admin";
 import CheckoutButton from "@/components/CheckoutButton";
 import { PRICING } from "@/src/config/pricing";
 import { Rocket, Handshake, ShieldCheck } from "lucide-react";
@@ -23,9 +22,6 @@ export const metadata: Metadata = {
 
 const STANDARD_CHECKOUT_URL =
   "https://getkoreascout.lemonsqueezy.com/checkout/buy/e9701b40-aad3-446e-b00a-617d0159d501";
-const ALPHA_CHECKOUT_URL =
-  "https://getkoreascout.lemonsqueezy.com/checkout/buy/936321c8-fba1-4f88-bb30-8865c8006fac";
-const ALPHA_MAX = 3000;
 
 function UnlockIcon({ className }: { className?: string }) {
   return (
@@ -45,25 +41,7 @@ function LockIcon({ className }: { className?: string }) {
   );
 }
 
-async function getAlphaCount(): Promise<number> {
-  try {
-    const supabase = createServiceRoleClient();
-    const { count, error } = await supabase
-      .from("profiles")
-      .select("*", { count: "exact", head: true })
-      .eq("tier", "alpha");
-    if (error || count === null) return 0;
-    return count;
-  } catch {
-    return 0;
-  }
-}
-
-export default async function HomePage() {
-  const alphaCount = await getAlphaCount();
-  const remaining = Math.max(0, ALPHA_MAX - alphaCount);
-  const isFull = alphaCount >= ALPHA_MAX;
-
+export default function HomePage() {
   return (
     <>
       <main className="w-full min-h-screen bg-[#0A0908] text-white selection:bg-[#16A34A]/30 overflow-x-clip">
@@ -486,20 +464,20 @@ export default async function HomePage() {
                 </div>
               </div>
 
-              {/* STANDARD — v5 copy */}
+              {/* ALPHA — v5 copy */}
               <div className="bg-white border border-[#E8E6E1] rounded-2xl flex flex-col h-full p-8 md:p-12 shadow-[0_4px_20px_0_rgb(26_25_22/0.08)]">
                 <div className="min-h-[100px]">
                   <p className="text-3xl md:text-4xl font-black text-[#1A1916] tracking-tighter leading-none mb-8">
-                    Standard
+                    Alpha
                   </p>
                   <div className="mb-1">
                     <span className="text-5xl font-black text-[#1A1916] leading-none tracking-tighter">
-                      {PRICING.CURRENCY}{PRICING.STANDARD.monthly}
+                      {PRICING.CURRENCY}{PRICING.ALPHA.monthly}
                     </span>
                     <span className="text-base text-[#9E9C98] font-medium ml-2">/ month</span>
                   </div>
                   <p className="text-xs font-bold text-[#9E9C98] mb-1">
-                    Approx. {PRICING.CURRENCY}{PRICING.STANDARD.daily.toFixed(2)} / day
+                    Approx. {PRICING.CURRENCY}{PRICING.ALPHA.daily.toFixed(2)} / day
                   </p>
                 </div>
                 <div className="w-8 h-px bg-[#E8E6E1] my-5" />
@@ -511,7 +489,7 @@ export default async function HomePage() {
                 </div>
                 <div className="flex-grow my-8">
                   <p className="text-base font-medium text-[#6B6860] leading-relaxed">
-                    Know WHAT survived Korea&apos;s market. {PRICING.CURRENCY}{PRICING.STANDARD.daily.toFixed(2)}/day — less than your morning coffee,
+                    Know WHAT survived Korea&apos;s market. {PRICING.CURRENCY}{PRICING.ALPHA.daily.toFixed(2)}/day — less than your morning coffee,
                     more valuable than 14 hours of research.
                   </p>
                 </div>
@@ -520,7 +498,7 @@ export default async function HomePage() {
                     checkoutUrl={STANDARD_CHECKOUT_URL}
                     className="block w-full text-center py-3 rounded-xl border-2 border-[#1A1916] text-sm font-black text-[#1A1916] hover:bg-[#1A1916] hover:text-white transition-all duration-200"
                   >
-                    Start Knowing — {PRICING.CURRENCY}{PRICING.STANDARD.monthly}/mo
+                    Join Alpha — {PRICING.CURRENCY}{PRICING.ALPHA.monthly}/mo
                   </CheckoutButton>
                   <p className="text-xs text-[#9E9C98] text-center mt-3">
                     10+ products/week · Instant access
@@ -528,111 +506,71 @@ export default async function HomePage() {
                 </div>
               </div>
 
-              {/* ALPHA — v5 copy, URL 41bb4d4b */}
+              {/* Alpha+ — Coming Soon */}
               <div
-                className="bg-[#F8F7F4] border border-[#E8E6E1] border-l-4 border-l-[#16A34A] rounded-2xl flex flex-col h-full p-8 md:p-12 shadow-[0_4px_20px_0_rgb(22_163_74/0.1)]"
+                className="relative rounded-2xl border-2 border-green-600 bg-white p-8 md:p-12 shadow-xl flex flex-col h-full"
                 style={{ transform: "scale(1.03)", transformOrigin: "center" }}
               >
-                <div className="min-h-[100px]">
-                  <div className="flex items-center justify-between mb-8">
-                    <p className="text-3xl md:text-4xl font-black text-[#16A34A] tracking-tighter leading-none">
-                      Alpha
+                <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-10">
+                  <div
+                    className="rotate-[-15deg] border-4 border-gray-400/40 bg-gray-100/80 px-12 py-6 rounded-lg"
+                    style={{
+                      letterSpacing: "0.15em",
+                      backdropFilter: "blur(2px)",
+                    }}
+                  >
+                    <span className="text-4xl font-black text-gray-500/60 tracking-wider">
+                      COMING SOON
+                    </span>
+                  </div>
+                </div>
+
+                <div className="opacity-60 flex flex-col flex-grow">
+                  <div className="mb-6">
+                    <h3 className="text-3xl md:text-4xl font-black text-gray-900 mb-3 tracking-tighter">Alpha+</h3>
+                    <div className="flex items-baseline gap-2 mb-2">
+                      <span className="text-5xl md:text-6xl font-black text-gray-900 leading-none tracking-tighter">
+                        {PRICING.CURRENCY}{PRICING.ALPHA_PLUS.monthly}
+                      </span>
+                      <span className="text-base text-gray-600 font-medium">/ month</span>
+                    </div>
+                    <p className="text-xs font-bold text-gray-500">
+                      Approx. {PRICING.CURRENCY}{PRICING.ALPHA_PLUS.daily.toFixed(2)} / day
                     </p>
-                    <div className="flex items-center gap-2 px-3 py-1.5 bg-[#16A34A]/10 border border-[#16A34A]/20 rounded-full">
-                      <span className="relative flex h-2.5 w-2.5 shrink-0">
-                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#16A34A] opacity-75" />
-                        <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#16A34A] shadow-[0_0_8px_1px_rgba(22,163,74,0.8)]" />
-                      </span>
-                      <span className="text-xs md:text-sm font-black text-[#16A34A] tracking-widest uppercase">
-                        {alphaCount.toLocaleString()} / 3,000
-                      </span>
+                  </div>
+
+                  <div className="bg-green-50 border border-green-200 rounded-xl px-4 py-3 min-h-[120px] flex items-center mb-8">
+                    <div>
+                      <div className="font-semibold text-green-900 mb-2 text-sm uppercase tracking-wide">
+                        EVERYTHING IN ALPHA, PLUS:
+                      </div>
+                      <p className="text-sm text-gray-700 leading-relaxed">
+                        Advanced B2B sourcing intelligence, priority 1:1 support, early access to new features, and
+                        exclusive market insights.
+                      </p>
                     </div>
                   </div>
-                  <div className="mb-1">
-                    <span className="text-5xl font-black text-[#1A1916] leading-none tracking-tighter">
-                      {PRICING.CURRENCY}{PRICING.ALPHA.monthly}
-                    </span>
-                    <span className="text-base text-[#9E9C98] font-medium ml-2">/ month</span>
-                  </div>
-                  <p className="text-xs font-bold text-[#16A34A] mb-1">
-                    Approx. {PRICING.CURRENCY}{PRICING.ALPHA.daily.toFixed(2)} / day
-                  </p>
-                </div>
-                <div className="w-8 h-px bg-[#E8E6E1] my-5" />
-                <div className="bg-white border border-[#16A34A] rounded-xl px-4 py-3 min-h-[120px] flex items-center">
-                  <p className="text-sm text-[#1A1916] leading-relaxed">
-                    <span className="font-black uppercase">FULL-SPECTRUM ACCESS:</span>{" "}
-                    <span className="font-medium">30+ Premium Assets (Last 3 Weeks) Unlocked Immediately, Plus Direct HQ Contacts.</span>
-                  </p>
-                </div>
-                <div className="flex-grow my-8">
-                  <p className="text-base font-medium text-[#6B6860] leading-relaxed">
-                    Know HOW to bring it to your market. {PRICING.CURRENCY}{PRICING.ALPHA.daily.toFixed(2)}/day. Your Seoul-based sourcing team —
-                    58 hours of work. 60 seconds to receive.
-                  </p>
-                  {!isFull && (
-                    <p className="mt-4 text-xs font-bold text-[#16A34A]">
-                      EXCLUSIVE: Limited to {ALPHA_MAX.toLocaleString()} Global Membership Spots (
-                      {remaining.toLocaleString()} remaining)
-                    </p>
-                  )}
-                </div>
-                <div className="mt-auto">
-                  {isFull ? (
-                    <a
-                      href="/waitlist"
-                      className="block w-full text-center py-3 rounded-xl bg-[#1A1916] text-white text-sm font-black hover:bg-[#2D2B26] transition-colors duration-200"
-                    >
-                      Join the Waiting List
-                    </a>
-                  ) : (
-                    <CheckoutButton
-                      checkoutUrl={ALPHA_CHECKOUT_URL}
-                      className="block w-full text-center py-3 rounded-xl bg-[#16A34A] text-white text-sm font-black hover:bg-[#15803D] transition-colors duration-200 shadow-[0_4px_12px_0_rgb(22_163_74/0.3)]"
-                    >
-                      Go Alpha — {PRICING.CURRENCY}{PRICING.ALPHA.monthly}/mo
-                    </CheckoutButton>
-                  )}
-                  <p className="text-xs text-[#9E9C98] text-center mt-3">
-                    10+ products/week · Full sourcing intel
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
 
-        {/* ══ S8b: INSTITUTIONAL POLICY (Alpha Moat) — synced from pricing page ═══════════════ */}
-        <section className="bg-[#1A1916] py-20 px-6">
-          <div className="max-w-3xl mx-auto border border-white/10 rounded-2xl p-10">
-            <p className="text-[10px] font-black uppercase tracking-[0.35em] text-[#16A34A] mb-6">
-              Institutional Policy
-            </p>
-            <h3
-              className="font-black text-white leading-tight tracking-tighter mb-6"
-              style={{ fontSize: "clamp(1.75rem, 4vw, 2.75rem)" }}
-            >
-              Why only 3,000 members?
-            </h3>
-            <p className="text-lg text-white/60 font-medium leading-relaxed">
-              With over 50 million global sellers competing for the same demand, trend saturation is a certainty. Information loses its edge when everyone has it.
-              <br /><br />
-              By capping Alpha at exactly 3,000 spots—representing the top 0.006% of the global market—we mathematically minimize competition and protect your exclusive profit margins. We provide the verified intelligence. The execution is yours.
-              <br /><br />
-              We don&apos;t just find trends —{" "}
-              <span className="text-white font-semibold">we protect your opportunity.</span>
-            </p>
-            {!isFull && (
-              <div className="mt-8 flex items-center gap-3">
-                <span className="relative flex h-3 w-3 shrink-0">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#16A34A] opacity-75" />
-                  <span className="relative inline-flex rounded-full h-3 w-3 bg-[#16A34A] shadow-[0_0_10px_2px_rgba(22,163,74,0.9)]" />
-                </span>
-                <p className="text-xl md:text-2xl font-black text-[#16A34A]">
-                  {remaining.toLocaleString()} of {ALPHA_MAX.toLocaleString()} spots remaining
+                  <div className="flex-grow my-8">
+                    <p className="text-base font-medium text-[#6B6860] leading-relaxed">
+                      Know HOW to bring it to your market. {PRICING.CURRENCY}{PRICING.ALPHA_PLUS.daily.toFixed(2)}/day. Your Seoul-based sourcing team —
+                      58 hours of work. 60 seconds to receive.
+                    </p>
+                  </div>
+                </div>
+
+                <a
+                  href="/waitlist"
+                  className="block w-full bg-gray-800 hover:bg-gray-900 text-white text-center px-8 py-4 rounded-lg font-semibold text-lg transition-colors relative z-20 mt-auto"
+                >
+                  Join Waitlist →
+                </a>
+                <p className="text-center text-sm text-gray-500 mt-4 relative z-20">Be the first to know when Alpha+ launches</p>
+                <p className="text-xs text-[#9E9C98] text-center mt-3 relative z-20">
+                  10+ products/week · Full sourcing intel
                 </p>
               </div>
-            )}
+            </div>
           </div>
         </section>
 
@@ -736,17 +674,8 @@ export default async function HomePage() {
               The market moves while you hesitate.
             </p>
             <p className="text-base md:text-lg font-medium text-[#6B6860] leading-relaxed mb-10 max-w-xl mx-auto">
-              Secure your intelligence before the 3,000 spots are gone.
+              Join Alpha today — Alpha+ waitlist opens soon for the full execution layer.
             </p>
-
-            {!isFull && (
-              <div className="flex items-center justify-center gap-2 mb-10">
-                <span className="w-2.5 h-2.5 rounded-full bg-[#16A34A] animate-pulse" />
-                <p className="text-base font-black text-[#16A34A]">
-                  {remaining.toLocaleString()} of {ALPHA_MAX.toLocaleString()} Alpha spots remaining
-                </p>
-              </div>
-            )}
 
             <div className="flex flex-col items-center mb-4">
               <a
