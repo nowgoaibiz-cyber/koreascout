@@ -172,8 +172,8 @@ export default function PricingPage() {
               </div>
             </div>
 
-            {/* ALPHA */}
-            <div className="bg-white border border-[#E8E6E1] rounded-2xl flex flex-col h-full p-8 md:p-12 shadow-[0_4px_20px_0_rgb(26_25_22/0.08)]">
+            {/* ALPHA — green emphasized tier */}
+            <div className="bg-white border-2 border-green-600 rounded-2xl flex flex-col h-full p-8 md:p-12 shadow-[0_4px_24px_0_rgb(22_163_74/0.18)]">
               <div className="min-h-[100px]">
                 <p className="text-3xl md:text-4xl font-black text-[#1A1916] tracking-tighter leading-none mb-8">
                   Alpha
@@ -206,7 +206,7 @@ export default function PricingPage() {
               <div className="mt-auto">
                 <CheckoutButton
                   checkoutUrl={STANDARD_CHECKOUT_URL}
-                  className="block w-full text-center py-3 rounded-xl border-2 border-[#1A1916] text-sm font-black text-[#1A1916] hover:bg-[#1A1916] hover:text-white transition-all"
+                  className="block w-full text-center py-3 rounded-xl border-2 border-green-600 bg-green-600 text-sm font-black text-white hover:bg-green-700 hover:border-green-700 transition-all"
                 >
                   Join Alpha — {PRICING.CURRENCY}{PRICING.ALPHA.monthly}/mo
                 </CheckoutButton>
@@ -217,62 +217,51 @@ export default function PricingPage() {
             </div>
 
             {/* Alpha+ Card - Coming Soon */}
-            <div
-              className="relative rounded-2xl border-2 border-green-600 bg-white p-8 md:p-12 shadow-xl flex flex-col h-full"
-              style={{ transform: "scale(1.03)", transformOrigin: "center" }}
-            >
+            <div className="relative rounded-2xl border border-[#E8E6E1] bg-white p-8 md:p-12 shadow-[0_4px_20px_0_rgb(26_25_22/0.08)] flex flex-col h-full">
+              {/* COMING SOON Stamp - Minimal Square Style */}
               <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-10">
                 <div
-                  className="rotate-[-15deg] border-4 border-gray-400/40 bg-gray-100/80 px-12 py-6 rounded-lg"
-                  style={{
-                    letterSpacing: "0.15em",
-                    backdropFilter: "blur(2px)",
-                  }}
+                  className="rotate-[-12deg] border-[3px] border-gray-600/50 bg-white/90 px-8 py-4 rounded-md shadow-lg"
                 >
-                  <span className="text-4xl font-black text-gray-500/60 tracking-wider">
+                  <span className="text-3xl font-black text-gray-600 tracking-[0.15em]">
                     COMING SOON
                   </span>
                 </div>
               </div>
 
-              <div className="opacity-60 flex flex-col flex-grow">
+              <div className="opacity-50 flex flex-col flex-grow">
+                {/* Price section */}
                 <div className="mb-6">
-                  <h3 className="text-3xl md:text-4xl font-black text-gray-900 mb-3 tracking-tighter">Alpha+</h3>
+                  <h3 className="text-3xl font-bold text-gray-900 mb-3">Alpha+</h3>
                   <div className="flex items-baseline gap-2 mb-2">
-                    <span className="text-5xl md:text-6xl font-black text-gray-900 leading-none tracking-tighter">
+                    <span className="text-6xl font-bold text-gray-900">
                       {PRICING.CURRENCY}{PRICING.ALPHA_PLUS.monthly}
                     </span>
-                    <span className="text-base text-gray-600 font-medium">/ month</span>
+                    <span className="text-xl text-gray-600">/ month</span>
                   </div>
-                  <p className="text-xs font-bold text-gray-500">
+                  <p className="text-base text-gray-500">
                     Approx. {PRICING.CURRENCY}{PRICING.ALPHA_PLUS.daily.toFixed(2)} / day
                   </p>
                 </div>
 
-                <div className="bg-green-50 border border-green-200 rounded-xl px-4 py-3 min-h-[120px] flex items-center mb-8">
-                  <div>
-                    <div className="font-semibold text-green-900 mb-2 text-sm uppercase tracking-wide">
-                      EVERYTHING IN ALPHA, PLUS:
-                    </div>
-                    <p className="text-sm text-gray-700 leading-relaxed">
-                      Advanced B2B sourcing intelligence, priority 1:1 support, early access to new features, and
-                      exclusive market insights.
-                    </p>
-                  </div>
-                </div>
+                {/* Simple message */}
+                <p className="text-lg text-gray-700 leading-relaxed mb-8">
+                  More powerful sourcing tools.<br />
+                  Built for sellers like you.
+                </p>
 
-                <p className="text-base text-gray-600 leading-relaxed mb-8">
-                  The ultimate edge for high-volume sellers. Reserved for our most committed members.
+                <p className="text-base text-gray-600">
+                  Launching soon.
                 </p>
               </div>
 
+              {/* Join Waitlist Button - tone down */}
               <a
                 href="/waitlist"
-                className="block w-full bg-gray-800 hover:bg-gray-900 text-white text-center px-8 py-4 rounded-lg font-semibold text-lg transition-colors relative z-20 mt-auto"
+                className="block w-full border-2 border-gray-400 bg-white hover:bg-gray-50 text-gray-800 text-center px-8 py-4 rounded-lg font-semibold text-lg transition-colors relative z-20 mt-8"
               >
                 Join Waitlist →
               </a>
-              <p className="text-center text-sm text-gray-500 mt-4 relative z-20">Be the first to know when Alpha+ launches</p>
             </div>
           </div>
         </div>
