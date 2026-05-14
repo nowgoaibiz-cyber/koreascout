@@ -454,7 +454,7 @@ export default function HomePage() {
                 <div className="mt-auto">
                   <a
                     href="/signup"
-                    className="block w-full text-center py-3 rounded-xl border-2 border-[#1A1916] text-sm font-black text-[#1A1916] hover:bg-[#1A1916] hover:text-white transition-all duration-200"
+                    className="block w-full text-center py-4 rounded-xl border-2 border-[#1A1916] text-lg font-semibold text-[#1A1916] hover:bg-[#1A1916] hover:text-white transition-all"
                   >
                     Unlock Free Intelligence
                   </a>
@@ -496,7 +496,7 @@ export default function HomePage() {
                 <div className="mt-auto">
                   <CheckoutButton
                     checkoutUrl={STANDARD_CHECKOUT_URL}
-                    className="block w-full text-center py-3 rounded-xl border-2 border-green-600 bg-green-600 text-sm font-black text-white hover:bg-green-700 hover:border-green-700 transition-all duration-200"
+                    className="block w-full text-center py-4 rounded-xl border-2 border-green-600 bg-green-600 text-lg font-semibold text-white hover:bg-green-700 hover:border-green-700 transition-all"
                   >
                     Join Alpha — {PRICING.CURRENCY}{PRICING.ALPHA.monthly}/mo
                   </CheckoutButton>
@@ -524,12 +524,12 @@ export default function HomePage() {
                   <div className="mb-6">
                     <h3 className="text-3xl font-bold text-gray-900 mb-3">Alpha+</h3>
                     <div className="flex items-baseline gap-2 mb-2">
-                      <span className="text-6xl font-bold text-gray-900">
+                      <span className="text-5xl font-black text-gray-900 leading-none tracking-tighter">
                         {PRICING.CURRENCY}{PRICING.ALPHA_PLUS.monthly}
                       </span>
-                      <span className="text-xl text-gray-600">/ month</span>
+                      <span className="text-base text-gray-600 font-medium ml-2">/ month</span>
                     </div>
-                    <p className="text-base text-gray-500">
+                    <p className="text-xs font-bold text-gray-500 mb-1">
                       Approx. {PRICING.CURRENCY}{PRICING.ALPHA_PLUS.daily.toFixed(2)} / day
                     </p>
                   </div>
