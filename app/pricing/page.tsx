@@ -228,18 +228,18 @@ export default function PricingPage() {
                 <div className="mb-6">
                   <h3 className="text-3xl font-bold text-gray-900 mb-3">Alpha+</h3>
                   <div className="flex items-baseline gap-2 mb-2">
-                    <span className="text-6xl font-bold text-gray-900">
+                    <span className="text-5xl font-black text-gray-900 leading-none tracking-tighter">
                       {PRICING.CURRENCY}{PRICING.ALPHA_PLUS.monthly}
                     </span>
-                    <span className="text-xl text-gray-600">/ month</span>
+                    <span className="text-base text-gray-600 font-medium ml-2">/ month</span>
                   </div>
-                  <p className="text-base text-gray-500">
+                  <p className="text-xs font-bold text-gray-500 mb-1">
                     Approx. {PRICING.CURRENCY}{PRICING.ALPHA_PLUS.daily.toFixed(2)} / day
                   </p>
                 </div>
 
                 {/* Simple message */}
-                <p className="text-lg text-gray-700 leading-relaxed mb-8">
+                <p className="text-lg text-gray-700 leading-relaxed mb-8 mt-6">
                   More powerful sourcing tools.<br />
                   Built for sellers like you.
                 </p>
