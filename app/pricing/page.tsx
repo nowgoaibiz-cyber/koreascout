@@ -162,13 +162,10 @@ export default function PricingPage() {
               <div className="mt-auto">
                 <a
                   href="/signup"
-                  className="block w-full text-center py-3 rounded-xl border-2 border-[#1A1916] text-sm font-black text-[#1A1916] hover:bg-[#1A1916] hover:text-white transition-all"
+                  className="block w-full text-center py-4 rounded-xl border-2 border-[#1A1916] text-lg font-semibold text-[#1A1916] hover:bg-[#1A1916] hover:text-white transition-all"
                 >
                   Unlock Free Intelligence
                 </a>
-                <p className="text-xs text-[#9E9C98] text-center mt-3">
-                  1 sample report · free forever · no card needed
-                </p>
               </div>
             </div>
 
@@ -206,13 +203,10 @@ export default function PricingPage() {
               <div className="mt-auto">
                 <CheckoutButton
                   checkoutUrl={STANDARD_CHECKOUT_URL}
-                  className="block w-full text-center py-3 rounded-xl border-2 border-green-600 bg-green-600 text-sm font-black text-white hover:bg-green-700 hover:border-green-700 transition-all"
+                  className="block w-full text-center py-4 rounded-xl border-2 border-green-600 bg-green-600 text-lg font-semibold text-white hover:bg-green-700 hover:border-green-700 transition-all"
                 >
                   Join Alpha — {PRICING.CURRENCY}{PRICING.ALPHA.monthly}/mo
                 </CheckoutButton>
-                <p className="text-xs text-[#9E9C98] text-center mt-3">
-                  30+ products · Last 3 weeks · Instant access
-                </p>
               </div>
             </div>
 
