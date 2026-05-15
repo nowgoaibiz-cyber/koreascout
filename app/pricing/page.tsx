@@ -93,6 +93,7 @@ const FEATURE_GROUPS: FeatureGroup[] = [
       { feature: "Minimum Order Quantity (MOQ)", free: "—", alpha: "—", alphaPlus: "✓" },
       { feature: "Est. Production Lead Time", free: "—", alpha: "—", alphaPlus: "✓" },
       { feature: "Sample Policy & Rights", free: "—", alpha: "—", alphaPlus: "✓" },
+      { feature: "Additional Alpha+ services launching soon.", free: "", alpha: "", alphaPlus: "" },
     ],
   },
 ];
@@ -291,14 +292,36 @@ export default function PricingPage() {
                 <p className="text-xs font-black uppercase tracking-[0.2em] text-[#9E9C98] text-center border-t-2 border-transparent pt-3">
                   Free
                 </p>
-                <p className="text-xs font-black uppercase tracking-[0.2em] text-[#9E9C98] text-center border-t-2 border-transparent pt-3">
+                <p className="text-xs font-black uppercase tracking-[0.2em] text-[#16A34A] text-center border-t-2 border-[#16A34A] pt-3">
                   Alpha
                 </p>
-                <p className="text-xs font-black uppercase tracking-[0.2em] text-[#16A34A] text-center border-t-2 border-[#16A34A] pt-3">
+                <p className="text-xs font-black uppercase tracking-[0.2em] text-[#9E9C98] text-center border-t-2 border-transparent pt-3">
                   Alpha+
                 </p>
               </div>
-              {group.rows.map((row, i) => (
+              {group.rows.map((row, i) => {
+                const isFullWidthNote =
+                  row.feature.includes("Additional Alpha+") &&
+                  row.free === "" &&
+                  row.alpha === "" &&
+                  row.alphaPlus === "";
+
+                if (isFullWidthNote) {
+                  return (
+                    <div
+                      key={row.feature}
+                      className={`grid grid-cols-4 px-2 py-4 items-center ${
+                        i % 2 === 0 ? "bg-white" : "bg-[#F8F7F4]/50"
+                      }`}
+                    >
+                      <p className="col-span-4 text-center text-xs italic font-medium text-[#9E9C98] leading-relaxed">
+                        {row.feature}
+                      </p>
+                    </div>
+                  );
+                }
+
+                return (
                 <div
                   key={row.feature}
                   className={`grid grid-cols-4 px-2 py-4 items-center border-b border-[#E8E6E1] last:border-0 ${
@@ -316,23 +339,24 @@ export default function PricingPage() {
                     {row.free}
                   </p>
                   <p
-                    className={`text-xs font-bold text-center ${
+                    className={`text-sm font-black text-center ${
                       row.alpha === "✓" ? "text-[#16A34A]" : "text-[#9E9C98]"
                     }`}
                   >
                     {row.alpha}
                   </p>
                   <p
-                    className={`text-sm font-black text-center ${
+                    className={`text-xs font-bold text-center ${
                       row.alphaPlus === "✓" || row.alphaPlus === "Full"
-                        ? "text-[#16A34A]"
+                        ? "text-[#9E9C98]"
                         : "text-[#1A1916]"
                     }`}
                   >
                     {row.alphaPlus}
                   </p>
                 </div>
-              ))}
+                );
+              })}
               </div>
             </div>
           ))}
