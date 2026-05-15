@@ -1,7 +1,6 @@
 "use client";
 // red-400/60: IRON RULE 예외 — 수동 리서치 bar 전용 허용
 
-import { useState } from "react";
 import { PRICING } from "@/src/config/pricing";
 
 const CREATOR_ROWS = [
@@ -24,15 +23,16 @@ const TOTAL = LEFT_ROWS.reduce((s, r) => s + r.hrs, 0); // 58
 
 export default function LandingTimeWidget() {
   type Mode = "creator" | "seller";
-  const [mode, setMode] = useState<Mode>("creator");
+  /** Creator/Seller toggle hidden: always Global Seller (`LEFT_ROWS`). Restore `useState<Mode>("creator")` + toggle UI to re-enable. */
+  const mode: Mode = "seller";
 
   const isCreator = mode === "creator";
   const rows = isCreator ? CREATOR_ROWS : LEFT_ROWS;
   const total = isCreator ? CREATOR_TOTAL : TOTAL;
-  const rightLabel = isCreator ? "KoreaScout Alpha" : "KoreaScout Alpha+";
-  const rightPrice = isCreator
-    ? `${PRICING.CURRENCY}${PRICING.ALPHA.monthly}/month`
-    : `${PRICING.CURRENCY}${PRICING.ALPHA_PLUS.monthly}/month`;
+  /** With toggle off, seller view uses Alpha tier label + `PRICING.ALPHA` (not Alpha+). */
+  const rightLabel = isCreator ? "KoreaScout Alpha" : "KOREASCOUT ALPHA";
+  /** Toggle hidden: show Alpha tier price. If Creator/Seller toggle returns, use `ALPHA` for creator and `ALPHA_PLUS` for seller. */
+  const rightPrice = `${PRICING.CURRENCY}${PRICING.ALPHA.monthly}/month`;
   const bottomHrs = isCreator ? "28 hours" : "58 hours";
   const bottomTagline = isCreator
     ? " Stop searching, start filming."
@@ -60,7 +60,7 @@ export default function LandingTimeWidget() {
           <br />non-renewable resource.
         </h2>
 
-        {/* Toggle */}
+        {/* Toggle — hidden (force Global Seller). Restore block + `useState` to re-enable Creator/Seller switch.
         <div className="flex justify-center mb-12">
           <div
             className="flex rounded-full p-1"
@@ -89,6 +89,7 @@ export default function LandingTimeWidget() {
             ))}
           </div>
         </div>
+        */}
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
