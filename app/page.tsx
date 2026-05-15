@@ -126,7 +126,7 @@ export default function HomePage() {
               {[
                 {
                   alpha: false,
-                  badge: "Standard & Alpha",
+                  badge: "ALPHA",
                   q: "Is this the next viral hit?",
                   items: [
                     { text: "Gap Index & Opportunity Analysis", lock: false },
@@ -140,12 +140,12 @@ export default function HomePage() {
                 {
                   alpha: true,
                   badge: "Alpha Exclusive",
-                  q: "How do I buy it wholesale?",
+                  q: "How do I source it?",
                   items: [
-                    { text: "Verified Factory Cost ($) & MOQ", lock: false },
                     { text: "Direct Supplier Contact Intel", lock: false },
-                    { text: "Factory Sample Policy & Availability", lock: false },
-                    { text: "Production & Lead Time Data", lock: false },
+                    { text: "B2B Inquiry Portal Link", lock: false },
+                    { text: "Verified Manufacturer Info", lock: false },
+                    { text: "Wholesale Email Template", lock: false },
                   ],
                   cta: "Verified Korea Intel. Just hit send.",
                   time: "SAVES 21 HRS",
@@ -158,14 +158,14 @@ export default function HomePage() {
                     { text: "HS Code Guidance (Standard 6-digit)", lock: false },
                     { text: "Compliance Requirement Analysis (MoCRA/CPNP)", lock: false },
                     { text: "Hazmat & Shipping Specifications", lock: false },
-                    { text: "Technical Product Data Framework", lock: false },
+                    { text: "Full Ingredient Disclosure", lock: false },
                   ],
                   cta: "We give your broker a 90% head start.",
                   time: "SAVES 7 HRS",
                 },
                 {
                   alpha: false,
-                  badge: "Standard & Alpha",
+                  badge: "ALPHA",
                   q: "How do I make it go viral?",
                   items: [
                     { text: "Viral Hashtag Strategy", lock: false },
