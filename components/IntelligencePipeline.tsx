@@ -9,13 +9,13 @@ const PILLS = [
   { label: "Amazon",        top: "148px", left: "96px",  rot: "0.4deg",  delay: "1.5s", dur: "3.7s" },
 ] as const;
 
-const NOISE_ITEMS = ["Junk Trends", "Fake Viral (Low Engagement)", "Hazmat / Battery", "Margin Multiplier < 2.0×"] as const;
+const NOISE_ITEMS = ["Junk Trends", "Fake Viral (Low Engagement)", "Hazmat / Battery", "Zero-Demand Products"] as const;
 
 const NOISE_LINES = ["Only real demand. Only real margin."] as const;
 
 const KOREA_HQ_ROWS = [
-  { main: "Factory Direct Line", sub: "— Human-verified" },
-  { main: "Exact MOQ & Unit Cost", sub: "— EXW price locked" },
+  { main: "4K On-Site Sourcing Footage", sub: "— Raw product video" },
+  { main: "Global Price Intelligence", sub: "— Global pricing data" },
   { main: "MoCRA / CPNP", sub: "— Compliance pre-cleared" },
 ] as const;
 
