@@ -86,6 +86,15 @@ const FEATURE_GROUPS: FeatureGroup[] = [
       { feature: "4K On-Site Sourcing Footage (Raw)", free: "—", alpha: "—", alphaPlus: "✓" },
     ],
   },
+  {
+    label: "Coming Soon",
+    rows: [
+      { feature: "Verified Cost Per Unit", free: "—", alpha: "—", alphaPlus: "✓" },
+      { feature: "Minimum Order Quantity (MOQ)", free: "—", alpha: "—", alphaPlus: "✓" },
+      { feature: "Est. Production Lead Time", free: "—", alpha: "—", alphaPlus: "✓" },
+      { feature: "Sample Policy & Rights", free: "—", alpha: "—", alphaPlus: "✓" },
+    ],
+  },
 ];
 
 export default function PricingPage() {
@@ -346,7 +355,7 @@ export default function PricingPage() {
             </p>
             <h2 className="text-4xl md:text-5xl lg:text-6xl font-black tracking-tighter leading-[1.1] flex flex-col items-center">
               <span className="text-[#F8F7F4] block">Unlock the entire intelligence pipeline.</span>
-              <span className="text-[#16A34A] block mt-1 md:mt-2">For under {PRICING.CURRENCY}{PRICING.ALPHA_PLUS.marketingDailyLimit.toFixed(2)} a day.</span>
+              <span className="text-[#16A34A] block mt-1 md:mt-2">For under {PRICING.CURRENCY}{PRICING.ALPHA.marketingDailyLimit.toFixed(2)} a day.</span>
             </h2>
           </div>
         </div>
@@ -356,7 +365,7 @@ export default function PricingPage() {
               checkoutUrl={STANDARD_CHECKOUT_URL}
               className="w-full text-center py-4 border border-white/30 text-white rounded-xl font-bold text-base hover:border-white/60 transition-colors"
             >
-              Join Alpha — {PRICING.CURRENCY}{PRICING.ALPHA.monthly}/mo
+              Join Alpha
             </CheckoutButton>
             <a
               href="/waitlist"
