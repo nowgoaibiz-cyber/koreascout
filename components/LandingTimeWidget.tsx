@@ -24,11 +24,9 @@ const TOTAL = LEFT_ROWS.reduce((s, r) => s + r.hrs, 0); // 58
 export default function LandingTimeWidget() {
   type Mode = "creator" | "seller";
   /** Creator/Seller toggle hidden: always Global Seller (`LEFT_ROWS`). Restore `useState<Mode>("creator")` + toggle UI to re-enable. */
-  const mode: Mode = "seller";
-
-  const isCreator = mode === "creator";
-  const rows = isCreator ? CREATOR_ROWS : LEFT_ROWS;
-  const total = isCreator ? CREATOR_TOTAL : TOTAL;
+  const isCreator = false;  // Creator/Seller toggle hidden: always Global Seller (ALPHA)
+  const rows = LEFT_ROWS;
+  const total = TOTAL;
   /** With toggle off, seller view uses Alpha tier label + `PRICING.ALPHA` (not Alpha+). */
   const rightLabel = isCreator ? "KoreaScout Alpha" : "KOREASCOUT ALPHA";
   /** Toggle hidden: show Alpha tier price. If Creator/Seller toggle returns, use `ALPHA` for creator and `ALPHA_PLUS` for seller. */
