@@ -287,7 +287,7 @@ export default function HomePage() {
                   {
                     n: "05",
                     t: "Direct Supplier Access",
-                    d: "Verified manufacturer name, MOQ, and direct contact email. Our Seoul team checks it. Not scraped. Human-verified.",
+                    d: "Verified manufacturer name and direct contact email. Our Seoul team checks it. Not scraped. Human-verified.",
                     s: "12 HRS",
                   },
                   {
@@ -345,7 +345,7 @@ export default function HomePage() {
 
                   {/* Standard Access — green open lock (#16A34A), verbatim 4 items */}
                   <div className="border-t border-white/10 pt-5 pb-5">
-                    <p className="text-[9px] font-black uppercase tracking-[0.2em] text-white/40 mb-3">Standard Access</p>
+                    <p className="text-[9px] font-black uppercase tracking-[0.2em] text-white/40 mb-3">Alpha Access</p>
                     <ul className="space-y-2">
                       {[
                         "Gap Index Score & Opportunity Reasoning",
@@ -363,12 +363,11 @@ export default function HomePage() {
 
                   {/* Alpha Only — same green open lock (#16A34A), same bright text as Standard */}
                   <div className="border-t border-white/10 pt-5 pb-5">
-                    <p className="text-[9px] font-black uppercase tracking-[0.2em] text-white/40 mb-3">Alpha Only — Execution Layer</p>
+                    <p className="text-[9px] font-black uppercase tracking-[0.2em] text-white/40 mb-3">Alpha — Execution Layer</p>
                     <ul className="space-y-2">
                       {[
                         "HS Code (6-digit) & Hazmat Assessment",
                         "Custom Broker Email Draft (English Template)",
-                        "Verified MOQ & Factory Price (EXW)",
                         "Verified Direct Sourcing Intel",
                         "4K On-Site Sourcing Footage (Raw)",
                       ].map((item) => (
