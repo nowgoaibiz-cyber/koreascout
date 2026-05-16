@@ -9,7 +9,7 @@ import { HazmatCheckboxes } from "@/components/admin/HazmatCheckboxes";
 import { AiPageLinksHelper } from "@/components/admin/AiPageLinksHelper";
 
 type SaveStatus = "idle" | "saved" | "error";
-type OpenSections = { s1: boolean; s2: boolean; s3: boolean; s4: boolean; s5: boolean; s6: boolean; s7: boolean };
+type OpenSections = { s1: boolean; s2: boolean; s3: boolean; s4: boolean; s5: boolean; s6a: boolean; s6b: boolean; s6c: boolean; s7: boolean };
 type DiffItem = { field: string; fieldKo: string; before: string; after: string };
 
 const EXPORT_STATUS_OPTIONS = ["Green", "Yellow", "Red"];
@@ -205,7 +205,9 @@ export default function AdminEditPage() {
     s3: false,
     s4: false,
     s5: false,
-    s6: false,
+    s6a: false,
+    s6b: false,
+    s6c: false,
     s7: false,
   });
 
@@ -1300,17 +1302,17 @@ export default function AdminEditPage() {
           )}
         </div>
 
-        {/* Section 6 — Launch & Execution Kit (default open) */}
+        {/* Section 6A — Launch & Execution Kit */}
         <div className="bg-white rounded-2xl border border-[#E8E6E1] shadow-[0_1px_3px_0_rgb(26_25_22/0.06)] overflow-hidden">
           <button
             type="button"
-            onClick={() => toggleSection("s6")}
+            onClick={() => toggleSection("s6a")}
             className="w-full flex items-center justify-between px-6 py-4 hover:bg-[#F8F7F4] transition-colors"
           >
             <span className="text-sm font-semibold text-[#1A1916]">Launch & Execution Kit</span>
-            <span className="text-[#9E9C98] text-xs">{openSections.s6 ? "▼" : "▶"}</span>
+            <span className="text-[#9E9C98] text-xs">{openSections.s6a ? "▼" : "▶"}</span>
           </button>
-          {openSections.s6 && (
+          {openSections.s6a && (
             <div className="px-6 pb-6 flex flex-col gap-5 border-t border-[#E8E6E1]">
               <p className="text-xs font-semibold text-indigo-400 uppercase tracking-widest pt-2">
                 📋 제조사·연락처 (Manufacturer & Contact)
@@ -1386,6 +1388,92 @@ export default function AdminEditPage() {
                   className={inputClass}
                 />
               </div>
+            </div>
+          )}
+        </div>
+
+        {/* Section 6B — Brand Intel */}
+        <div className="bg-white rounded-2xl border border-[#E8E6E1] shadow-[0_1px_3px_0_rgb(26_25_22/0.06)] overflow-hidden">
+          <button
+            type="button"
+            onClick={() => toggleSection("s6b")}
+            className="w-full flex items-center justify-between px-6 py-4 hover:bg-[#F8F7F4] transition-colors"
+          >
+            <span className="text-sm font-semibold text-[#1A1916]">
+              Brand Intel <span className="text-xs text-[#9E9C98] font-normal ml-2">(샘플, 수출메모만 확인)</span>
+            </span>
+            <span className="text-[#9E9C98] text-xs">{openSections.s6b ? "▼" : "▶"}</span>
+          </button>
+          {openSections.s6b && (
+            <div className="px-6 pb-6 flex flex-col gap-5 border-t border-[#E8E6E1]">
+              <h3 className="text-lg font-semibold mb-4 text-[#1A1916]">
+                Brand Intel <span className="text-xs text-[#9E9C98] font-normal ml-2">(샘플, 수출메모만 확인)</span>
+              </h3>
+              <div className="flex flex-col gap-1.5">
+                <label className={labelClass}>Naver Link (네이버링크)</label>
+                <input
+                  type="url"
+                  value={formData.naver_link ?? ""}
+                  onChange={(e) => setFormData((p) => ({ ...p!, naver_link: e.target.value }))}
+                  className={inputClass}
+                />
+              </div>
+              <div className="flex items-center gap-2 mt-2 mb-4">
+                <button
+                  type="button"
+                  onClick={() => {
+                    const naverUrl = formData.naver_link;
+                    if (!naverUrl) {
+                      alert("네이버 링크를 먼저 입력해주세요.");
+                      return;
+                    }
+
+                    // Support both Daiso URL patterns
+                    let match = naverUrl.match(/\/products\/(\d+)/);
+                    if (!match) {
+                      match = naverUrl.match(/pdNo=(\d+)/);
+                    }
+
+                    if (!match) {
+                      alert(
+                        "올바른 다이소 URL이 아닙니다.\n\n지원 형식:\n1. https://brand.naver.com/daiso/products/12345\n2. https://www.daisomall.co.kr/...?pdNo=12345"
+                      );
+                      return;
+                    }
+
+                    const productId = match[1];
+                    const deliveredUrl = `https://delivered.co.kr/ko/stores/daiso-korea/products/${productId}`;
+
+                    setFormData((p) => ({ ...p!, sample_policy: deliveredUrl }));
+
+                    alert(`✅ 샘플정책 URL 자동 생성 완료!\n${deliveredUrl}`);
+                  }}
+                  className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded transition-colors"
+                >
+                  🔗 샘플정책 URL 자동생성
+                </button>
+                <span className="text-xs text-[#9E9C98]">
+                  네이버 다이소 링크에서 자동으로 Delivered 코리아 URL 생성
+                </span>
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <label className={labelClass}>Sample Policy (샘플정책)</label>
+                <input
+                  type="url"
+                  value={formData.sample_policy ?? ""}
+                  onChange={(e) => setFormData((p) => ({ ...p!, sample_policy: e.target.value }))}
+                  className={inputClass}
+                  placeholder="https://delivered.co.kr/ko/stores/daiso-korea/products/..."
+                />
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <label className={labelClass}>Export Cert Note (수출인증메모)</label>
+                <input
+                  value={formData.export_cert_note ?? ""}
+                  onChange={(e) => setFormData((p) => ({ ...p!, export_cert_note: e.target.value }))}
+                  className={inputClass}
+                />
+              </div>
               <div className="flex flex-col gap-1.5">
                 <label className={labelClass}>Can OEM (OEM가능여부)</label>
                 <select
@@ -1404,98 +1492,71 @@ export default function AdminEditPage() {
               <div className="border-t border-[#E8E6E1] pt-5">
                 <p className="text-sm font-semibold text-[#1A1916] mb-4">🎯 CEO Direct Input</p>
               </div>
-              <p className="text-xs text-[#9E9C98] pt-4">이 구역은 대표님이 브랜드와 직접 협의하거나 발품 팔아 확인한 정보만 입력합니다. Make.com이 자동으로 채우지 않습니다.</p>
+              <p className="text-xs text-[#9E9C98]">이 구역은 대표님이 브랜드와 직접 협의하거나 발품 팔아 확인한 정보만 입력합니다. Make.com이 자동으로 채우지 않습니다.</p>
 
-              <p className="text-xs font-semibold text-[#16A34A] uppercase tracking-widest pt-2">B2B 소싱 원가 & 조건</p>
-              <div className="flex flex-col gap-1.5">
-                <label className={labelClass}>Verified Cost (USD) (검증된 원가)</label>
-                <input
-                  type="text"
-                  value={formData.verified_cost_usd ?? ""}
-                  onChange={(e) => setFormData((p) => ({ ...p!, verified_cost_usd: e.target.value }))}
-                  className={inputClass}
-                />
+              <div className="border-t border-[#E8E6E1] pt-5 flex flex-col gap-5">
+                <div className="flex flex-col gap-1.5">
+                  <label className={labelClass}>Verified Cost (USD) (검증된 원가)</label>
+                  <input
+                    type="text"
+                    value={formData.verified_cost_usd ?? ""}
+                    onChange={(e) => setFormData((p) => ({ ...p!, verified_cost_usd: e.target.value }))}
+                    className={inputClass}
+                  />
+                </div>
+                <div className="flex flex-col gap-1.5">
+                  <label className={labelClass}>Verified Cost Note (검증원가메모)</label>
+                  <input
+                    value={formData.verified_cost_note ?? ""}
+                    onChange={(e) => setFormData((p) => ({ ...p!, verified_cost_note: e.target.value }))}
+                    className={inputClass}
+                    placeholder="Type 'undisclosed' to hide price"
+                  />
+                </div>
+                <div className="flex flex-col gap-1.5">
+                  <label className={labelClass}>Verified At (검증일시)</label>
+                  <input
+                    type="date"
+                    value={formData.verified_at ? String(formData.verified_at).slice(0, 10) : ""}
+                    onChange={(e) => setFormData((p) => ({ ...p!, verified_at: e.target.value ? e.target.value : null }))}
+                    className={inputClass}
+                  />
+                </div>
+                <div className="flex flex-col gap-1.5">
+                  <label className={labelClass}>MOQ (최소주문수량)</label>
+                  <input
+                    value={formData.moq ?? ""}
+                    onChange={(e) => setFormData((p) => ({ ...p!, moq: e.target.value }))}
+                    className={inputClass}
+                  />
+                </div>
+                <div className="flex flex-col gap-1.5">
+                  <label className={labelClass}>Lead Time (리드타임)</label>
+                  <input
+                    value={formData.lead_time ?? ""}
+                    onChange={(e) => setFormData((p) => ({ ...p!, lead_time: e.target.value }))}
+                    className={inputClass}
+                  />
+                </div>
               </div>
-              <div className="flex flex-col gap-1.5">
-                <label className={labelClass}>Verified Cost Note (검증원가메모)</label>
-                <input
-                  value={formData.verified_cost_note ?? ""}
-                  onChange={(e) => setFormData((p) => ({ ...p!, verified_cost_note: e.target.value }))}
-                  className={inputClass}
-                  placeholder="Type 'undisclosed' to hide price"
-                />
-              </div>
-              <div className="flex flex-col gap-1.5">
-                <label className={labelClass}>Verified At (검증일시)</label>
-                <input
-                  type="date"
-                  value={formData.verified_at ? String(formData.verified_at).slice(0, 10) : ""}
-                  onChange={(e) => setFormData((p) => ({ ...p!, verified_at: e.target.value ? e.target.value : null }))}
-                  className={inputClass}
-                />
-              </div>
-              <div className="flex flex-col gap-1.5">
-                <label className={labelClass}>MOQ (최소주문수량)</label>
-                <input
-                  value={formData.moq ?? ""}
-                  onChange={(e) => setFormData((p) => ({ ...p!, moq: e.target.value }))}
-                  className={inputClass}
-                />
-              </div>
-              <div className="flex flex-col gap-1.5">
-                <label className={labelClass}>Lead Time (리드타임)</label>
-                <input
-                  value={formData.lead_time ?? ""}
-                  onChange={(e) => setFormData((p) => ({ ...p!, lead_time: e.target.value }))}
-                  className={inputClass}
-                />
-              </div>
-              <div className="flex flex-col gap-1.5">
-                <label className={labelClass}>Sample Policy (샘플정책)</label>
-                <input
-                  value={formData.sample_policy ?? ""}
-                  onChange={(e) => setFormData((p) => ({ ...p!, sample_policy: e.target.value }))}
-                  className={inputClass}
-                />
-              </div>
-              <div className="flex flex-col gap-1.5">
-                <label className={labelClass}>Export Cert Note (수출인증메모)</label>
-                <input
-                  value={formData.export_cert_note ?? ""}
-                  onChange={(e) => setFormData((p) => ({ ...p!, export_cert_note: e.target.value }))}
-                  className={inputClass}
-                />
-              </div>
+            </div>
+          )}
+        </div>
 
-              <p className="text-xs font-semibold text-[#2563EB] uppercase tracking-widest pt-4">미디어 & 마케팅 자산</p>
-              <div className="flex flex-col gap-1.5">
-                <label className={labelClass}>Video URL 2 (Additional Footage)</label>
-                <input
-                  value={formData.video_url_2 ?? ""}
-                  onChange={(e) => setFormData((p) => ({ ...p!, video_url_2: e.target.value }))}
-                  className={inputClass}
-                />
-              </div>
-              <div className="flex flex-col gap-1.5">
-                <label className={labelClass}>Video URL (영상URL)</label>
-                <input
-                  value={formData.video_url ?? ""}
-                  onChange={(e) => setFormData((p) => ({ ...p!, video_url: e.target.value }))}
-                  className={inputClass}
-                />
-              </div>
-              <div className="flex flex-col gap-1.5">
-                <label className={labelClass}>Video URL 3 (Additional Footage)</label>
-                <input
-                  value={formData.video_url_3 ?? ""}
-                  onChange={(e) => setFormData((p) => ({ ...p!, video_url_3: e.target.value }))}
-                  className={inputClass}
-                />
-              </div>
-
-              <p className="text-xs font-semibold text-[#7C3AED] uppercase tracking-widest pt-4">AI 자산</p>
-              <div className="flex flex-col gap-1.5">
-                <label className={labelClass}>YouTube Reference URLs (comma-separated)</label>
+        {/* Section 6C — Media & Reference Assets */}
+        <div className="bg-white rounded-2xl border border-[#E8E6E1] shadow-[0_1px_3px_0_rgb(26_25_22/0.06)] overflow-hidden">
+          <button
+            type="button"
+            onClick={() => toggleSection("s6c")}
+            className="w-full flex items-center justify-between px-6 py-4 hover:bg-[#F8F7F4] transition-colors"
+          >
+            <span className="text-sm font-semibold text-[#1A1916]">Media & Reference Assets</span>
+            <span className="text-[#9E9C98] text-xs">{openSections.s6c ? "▼" : "▶"}</span>
+          </button>
+          {openSections.s6c && (
+            <div className="px-6 pb-6 flex flex-col gap-5 border-t border-[#E8E6E1]">
+              <div className="flex flex-col gap-1.5 pt-2">
+                <label className={labelClass}>YouTube Reference URLs (AI 참고용)</label>
                 <div className="bg-[#F8F7F4] rounded-xl border border-[#E8E6E1] p-4">
                   <AiPageLinksHelper
                     value={
@@ -1508,6 +1569,30 @@ export default function AdminEditPage() {
                     onChange={(s) => setFormData((p) => ({ ...p!, ai_detail_page_links: s as unknown as ScoutFinalReportsRow["ai_detail_page_links"] }))}
                   />
                 </div>
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <label className={labelClass}>Video URL (영상URL)</label>
+                <input
+                  value={formData.video_url ?? ""}
+                  onChange={(e) => setFormData((p) => ({ ...p!, video_url: e.target.value }))}
+                  className={inputClass}
+                />
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <label className={labelClass}>Video URL 2 (Additional Footage)</label>
+                <input
+                  value={formData.video_url_2 ?? ""}
+                  onChange={(e) => setFormData((p) => ({ ...p!, video_url_2: e.target.value }))}
+                  className={inputClass}
+                />
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <label className={labelClass}>Video URL 3 (Additional Footage)</label>
+                <input
+                  value={formData.video_url_3 ?? ""}
+                  onChange={(e) => setFormData((p) => ({ ...p!, video_url_3: e.target.value }))}
+                  className={inputClass}
+                />
               </div>
             </div>
           )}
