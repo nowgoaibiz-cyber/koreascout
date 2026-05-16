@@ -31,29 +31,30 @@ const FAQ_DATA: FaqCategory[] = [
       },
       {
         q: "How many products do I get each week?",
-        a: "Every week, KoreaScout publishes 10+ curated K-products. Standard and Alpha members get instant access to the latest 3 weeks — that's 30+ verified products from day one. Free members get access to one unlocked week with a 14-day delay. Every product in your report has cleared our Margin Multiplier threshold and passed multi-source Korean demand verification.",
+        a: "Every week, KoreaScout publishes 10+ curated K-products. Alpha members get instant access to the latest 3 weeks — that's 30+ verified products from day one, plus 10 new products every week. Free members get access to 1 sample report. Every product in your report has cleared our demand threshold and passed multi-source Korean verification.",
       },
     ],
   },
-  {
-    id: "for-creators",
-    label: "For Creators",
-    subtitle: "I make content, not shipments. Is this for me?",
-    items: [
-      {
-        q: "I'm a content creator, not a seller. How does KoreaScout help me?",
-        a: "Standard gives you weekly verified K-Product trend intelligence — which items are exploding on Korean TikTok and Instagram right now, which hashtags are going viral, and what global audiences haven't seen yet. Instead of scrolling Korean social media for hours, you get the trend signal in 60 seconds. First to the trend = first to the views.",
-      },
-      {
-        q: "Will I get content ideas from KoreaScout, or just product data?",
-        a: "Standard delivers Cross-Platform Vitality scores (TikTok·IG·YT), Social Buzz analysis, Rising Korean Keywords, Viral Hashtag Strategy, and Global SEO Keywords — all based on real Korean demand data. You're not getting generic content ideas. You're getting data-backed proof that a specific product is about to trend globally.",
-      },
-      {
-        q: "I don't source products. Do I still need Alpha?",
-        a: "No. Standard at $79/mo is built exactly for creators. Alpha adds factory contacts, MOQ pricing, HS Codes, and logistics data — tools for sellers who want to source and ship. If your goal is to grow your channel, Standard is all you need.",
-      },
-    ],
-  },
+  // {
+  //   id: "for-creators",
+  //   label: "For Creators",
+  //   subtitle: "I make content, not shipments. Is this for me?",
+  //   hidden: true,
+  //   items: [
+  //     {
+  //       q: "I'm a content creator, not a seller. How does KoreaScout help me?",
+  //       a: "Standard gives you weekly verified K-Product trend intelligence — which items are exploding on Korean TikTok and Instagram right now, which hashtags are going viral, and what global audiences haven't seen yet. Instead of scrolling Korean social media for hours, you get the trend signal in 60 seconds. First to the trend = first to the views.",
+  //     },
+  //     {
+  //       q: "Will I get content ideas from KoreaScout, or just product data?",
+  //       a: "Standard delivers Cross-Platform Vitality scores (TikTok·IG·YT), Social Buzz analysis, Rising Korean Keywords, Viral Hashtag Strategy, and Global SEO Keywords — all based on real Korean demand data. You're not getting generic content ideas. You're getting data-backed proof that a specific product is about to trend globally.",
+  //     },
+  //     {
+  //       q: "I don't source products. Do I still need Alpha?",
+  //       a: "No. Standard at $79/mo is built exactly for creators. Alpha adds factory contacts, MOQ pricing, HS Codes, and logistics data — tools for sellers who want to source and ship. If your goal is to grow your channel, Standard is all you need.",
+  //     },
+  //   ],
+  // },
   {
     id: "sourcing-logistics",
     label: "Sourcing & Logistics",
@@ -64,8 +65,12 @@ const FAQ_DATA: FaqCategory[] = [
         a: "Each Alpha report includes the estimated HS Code for US and EU import classification, along with hazmat status and key compliance flags (FDA MoCRA, CPNP, ingredient screening). This is reference intelligence — not legal advice. Use it to have an informed conversation with your customs broker before you commit to a shipment. The goal is no surprises at the border.",
       },
       {
-        q: "Is the supplier information verified or just scraped?",
-        a: "Alpha reports include manufacturer name, contact information, and sourcing reference links sourced from Korean B2B databases and verified product listings. We provide the lead — direct outreach and negotiation is yours to own. Supplier responsiveness and MOQ terms vary by manufacturer and are subject to change.",
+        q: "Do you provide actual product footage?",
+        a: "Yes. Alpha reports include 4K On-Site Sourcing Footage filmed directly at Korean retail locations. This raw video gives you a real-world view of the product, packaging, and display — helping you make faster sourcing decisions without traveling to Korea.",
+      },
+      {
+        q: "How reliable is the manufacturer information?",
+        a: "Alpha reports include verified manufacturer name, contact information, and sourcing reference links sourced from Korean B2B databases and official product listings. We provide the verified intelligence — direct outreach and supplier negotiation is yours to manage. Supplier responsiveness varies by manufacturer and may change over time. As we continue to expand Alpha+, verified factory costs and MOQ data will be added to help you source even faster.",
       },
       {
         q: "Can KoreaScout help me with logistics after sourcing?",
@@ -79,20 +84,16 @@ const FAQ_DATA: FaqCategory[] = [
     subtitle: "Why is there a 3,000 member cap? Sounds like a sales tactic.",
     items: [
       {
-        q: "Why is Alpha limited to 3,000 members?",
-        a: "This is a structural decision, not a marketing gimmick. Each Alpha product report includes direct factory contacts and MOQ pricing. If 10,000 sellers receive the same supplier contact simultaneously, the factory gets overwhelmed, MOQs increase, and pricing negotiation leverage disappears. 3,000 is the ceiling at which our intelligence retains its commercial value. When that ceiling is hit, Alpha closes. This protects your investment, not ours.",
+        q: "When will Alpha+ launch?",
+        a: "We're launching Alpha+ as quickly as possible. Stay tuned — exciting features are coming soon! :)",
       },
       {
-        q: "Why does Alpha cost $199/mo when Standard is $79/mo?",
-        a: "Standard gives you the full trend intelligence layer: Gap Index, Margin Multiplier, Platform Velocity, Growth Signal. That alone replaces 58 hours of manual sourcing research per month. Alpha adds the action layer: verified factory contacts, MOQ + EXW pricing, HS Code reference, compliance flags, 4K On-Site Sourcing Footage (Raw), SEO keywords, and a broker email draft. The $120 difference buys you a complete sourcing brief — ready to act on, not just read. If your average margin is $8/unit and you source 200 units from one Alpha-sourced product, that's $1,600 gross from a $199 subscription. The math works on the first product.",
+        q: "Why does Alpha+ cost $199/mo when Alpha is $149/mo?",
+        a: "Alpha provides the trend intelligence layer. Many sellers struggle with the time investment required for sourcing research and face barriers accessing Korea's niche market. We solve this arbitrage gap with intelligence data and on-site footage.\n\nAlpha+ is currently in development. When completed, it will add execution layers designed to help you source faster.\n\nThe $50 difference will include a sourcing kit ready to act on — not just data. Features may change depending on business circumstances when Alpha+ launches.",
       },
       {
-        q: "Can I upgrade from Standard to Alpha later?",
-        a: "Yes, anytime. When you upgrade, you pay only the price difference — your existing Standard subscription credit is applied. Alpha access opens immediately upon payment. No waiting, no new billing cycle.",
-      },
-      {
-        q: "What if Alpha is sold out when I'm ready to upgrade?",
-        a: "Alpha membership is capped at 3,000 seats globally. If the cap is reached, the upgrade option closes and you join a waitlist. Standard members are given priority notification before public waitlist openings. This is the only honest answer: don't wait if you're considering it.",
+        q: "Can I upgrade from Alpha to Alpha+ later?",
+        a: "Yes, anytime. Alpha+ is coming soon, and when it launches, you'll be able to upgrade instantly. When you upgrade, you pay only the price difference — your existing Alpha subscription credit is applied. Alpha+ access opens immediately upon payment. No waiting, no new billing cycle.\n\nStay tuned for the Alpha+ launch!",
       },
     ],
   },
@@ -107,7 +108,7 @@ const FAQ_DATA: FaqCategory[] = [
       },
       {
         q: "Why should I trust your data over doing my own research?",
-        a: "You can do your own research. It will take approximately 28–58 hours per month — cross-referencing Korean social platforms, translating product listings, verifying supplier reliability, checking HS codes, and estimating landed costs. KoreaScout compresses that into 60 seconds of reading. The question isn't whether you trust our data. It's whether your time is worth $79/month.",
+        a: "You can do your own research. It will take approximately 28–58 hours per month — cross-referencing Korean social platforms, translating product listings, verifying supplier reliability, checking HS codes, and estimating landed costs. KoreaScout compresses that into 60 seconds of reading. The question isn't whether you trust our data. It's whether your time is worth $149/month.",
       },
       {
         q: "What is your refund policy?",
@@ -122,8 +123,8 @@ const FAQ_DATA: FaqCategory[] = [
         a: "All billing is processed through LemonSqueezy, a global Merchant of Record that handles payment processing, VAT/GST compliance, and fraud protection across 100+ countries. KoreaScout never stores your card information. LemonSqueezy is the same infrastructure used by thousands of SaaS products globally. Your payment data never touches our servers.",
       },
       {
-        q: "What if I start on Standard and want to downgrade or cancel?",
-        a: "Downgrade and cancellation both take effect at your next billing date. Until then, you keep every feature you're currently paying for. We don't claw back access early. What you paid for, you use in full.",
+        q: "What if I want to cancel my Alpha subscription?",
+        a: "Cancellation takes effect at your next billing date. Until then, you keep every feature you're currently paying for. We don't claw back access early. What you paid for, you use in full.",
       },
     ],
   },
