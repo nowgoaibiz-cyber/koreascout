@@ -406,7 +406,7 @@ export function SupplierContact({
                       </svg>
                     </div>
                     <div className="flex flex-col gap-0.5 min-w-0">
-                      <span className="text-sm font-medium text-[#1A1916]">Purchase Sample</span>
+                      <span className="text-sm font-bold text-[#1A1916]">Purchase Sample</span>
                       <span className="text-xs text-[#9E9C98]">(Delivered Korea)</span>
                     </div>
                   </a>
