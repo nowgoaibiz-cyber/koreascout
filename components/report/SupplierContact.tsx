@@ -387,24 +387,28 @@ export function SupplierContact({
                     href={report.sample_policy.trim()}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 px-4 py-2.5 bg-[#16A34A] hover:bg-[#15803D] text-white text-sm font-medium rounded-lg transition-colors shadow-sm hover:shadow-md"
+                    className="flex items-center gap-3 px-5 py-3.5 bg-white border-2 border-[#E8E6E1] rounded-2xl hover:border-[#16A34A] transition-colors group w-full sm:max-w-md"
                   >
-                    <svg
-                      className="w-4 h-4 shrink-0"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                      aria-hidden
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
-                      />
-                    </svg>
-                    <span>Purchase Sample</span>
-                    <span className="text-white/70 text-xs font-normal">(Delivered Korea)</span>
+                    <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-[#16A34A]/10 group-hover:bg-[#16A34A]/20 transition-colors shrink-0">
+                      <svg
+                        className="w-5 h-5 text-[#16A34A]"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                        aria-hidden
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
+                        />
+                      </svg>
+                    </div>
+                    <div className="flex flex-col gap-0.5 min-w-0">
+                      <span className="text-sm font-medium text-[#1A1916]">Purchase Sample</span>
+                      <span className="text-xs text-[#9E9C98]">(Delivered Korea)</span>
+                    </div>
                   </a>
                   <p className="text-xs italic text-[#9E9C98] leading-relaxed border-t border-[#E8E6E1] pt-3">
                     {`*We don't sell products directly. This link is provided for your convenience to purchase samples for testing.`}
