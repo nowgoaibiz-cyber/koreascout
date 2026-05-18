@@ -85,7 +85,7 @@ export function SocialProofTrendIntelligence({
       <div className="bg-[#F8F7F4] rounded-2xl p-10 mb-12">
         <p className="text-xl font-bold text-[#1A1916] mb-10">Market Gap Analysis</p>
         <div className="grid grid-cols-1 sm:grid-cols-2">
-          <div className="pr-12 border-r border-[#E8E6E1]">
+          <div className="pr-0 sm:pr-12 border-r-0 sm:border-r border-b sm:border-b-0 border-[#E8E6E1] pb-8 sm:pb-0 text-center sm:text-left">
             <p className="text-sm font-bold text-[#6B6860] tracking-widest mb-4">Korean Traction</p>
             <LockedValue locked={!canSeeStandard} tier="standard" minHeight="80px">
               <div>
@@ -99,15 +99,21 @@ export function SocialProofTrendIntelligence({
                   />
                 </div>
                 {report.kr_evidence?.trim() && (
-                  <p className="text-lg text-[#1A1916] leading-relaxed mt-4">{report.kr_evidence}</p>
+                  <div className="mt-4 space-y-3 max-w-prose mx-auto sm:mx-0">
+                    {report.kr_evidence.split(/(?<=\.)\s+/).filter(Boolean).map((para, i) => (
+                      <p key={i} className="text-sm sm:text-lg text-[#1A1916] leading-relaxed">
+                        {para.trim()}
+                      </p>
+                    ))}
+                  </div>
                 )}
                 {report.kr_source_used?.trim() && (
-                  <p className="text-xs text-[#9E9C98] mt-3">Source: {report.kr_source_used}</p>
+                  <p className="text-xs text-[#9E9C98] mt-4 italic">Source: {report.kr_source_used}</p>
                 )}
               </div>
             </LockedValue>
           </div>
-          <div className="pl-12">
+          <div className="pl-0 sm:pl-12 pt-8 sm:pt-0 text-center sm:text-left">
             <p className="text-sm font-bold text-[#6B6860] tracking-widest mb-4">Global Presence</p>
             <LockedValue locked={!canSeeStandard} tier="standard" minHeight="80px">
               <div>
@@ -121,7 +127,13 @@ export function SocialProofTrendIntelligence({
                   />
                 </div>
                 {report.global_evidence?.trim() && (
-                  <p className="text-lg text-[#1A1916] leading-relaxed mt-4">{report.global_evidence}</p>
+                  <div className="mt-4 space-y-3 max-w-prose mx-auto sm:mx-0">
+                    {report.global_evidence.split(/(?<=\.)\s+/).filter(Boolean).map((para, i) => (
+                      <p key={i} className="text-sm sm:text-lg text-[#1A1916] leading-relaxed">
+                        {para.trim()}
+                      </p>
+                    ))}
+                  </div>
                 )}
               </div>
             </LockedValue>

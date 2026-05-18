@@ -29,7 +29,7 @@ export function GroupBBrokerSection({
 
       <div
         className={
-          isEmailOpen ? "flex flex-col gap-4" : "grid grid-cols-2 gap-6"
+          isEmailOpen ? "flex flex-col gap-6" : "grid grid-cols-1 sm:grid-cols-2 gap-6"
         }
       >
         <div>
@@ -37,7 +37,7 @@ export function GroupBBrokerSection({
           <LockedValue locked={!canSeeAlpha} tier="alpha" minHeight="80px">
             {report.hs_code?.trim() ? (
               <div>
-                <div className="flex items-center gap-3 mb-3">
+                <div className="flex flex-col sm:flex-row items-center sm:items-start gap-3 mb-3">
                   <p className="text-4xl font-black tracking-tighter text-[#1A1916]">
                     {formatHsCode(report.hs_code)}
                   </p>
@@ -48,7 +48,7 @@ export function GroupBBrokerSection({
                       setIsCopied(true);
                       setTimeout(() => setIsCopied(false), 2000);
                     }}
-                    className="text-xs font-bold text-[#9E9C98] border border-[#E8E6E1] px-3 py-1 rounded-full hover:bg-white transition-colors"
+                    className="w-full sm:w-auto text-xs font-bold text-[#9E9C98] border border-[#E8E6E1] px-3 py-2 rounded-lg hover:bg-white transition-colors text-center"
                   >
                     {isCopied ? "Copied!" : "Copy"}
                   </button>

@@ -110,15 +110,15 @@ export function SourcingIntel({
           <p className="text-xl font-bold text-[#1A1916] mb-8">Logistics Dashboard</p>
 
           <LockedValue locked={!canSeeAlpha} tier="alpha" minHeight="100px">
-            <div className="flex items-center gap-3 mb-12">
-              <div className="flex-1 bg-white border border-[#E8E6E1] rounded-xl p-5 text-center">
+            <div className="flex flex-col md:flex-row items-center gap-4 mb-12">
+              <div className="w-full md:w-auto bg-white border border-[#E8E6E1] rounded-xl p-5 text-center">
                 <p className="text-lg font-bold text-[#6B6860] uppercase tracking-widest mb-3">Actual Weight</p>
                 <p className="text-4xl font-black tracking-tighter text-[#1A1916]">
                   {hasActual ? `${report.actual_weight_g}g` : "—"}
                 </p>
               </div>
-              <ArrowRight className="w-5 h-5 text-[#9E9C98] shrink-0" />
-              <div className="flex-1 bg-white border border-[#E8E6E1] rounded-xl p-5 text-center">
+              <ArrowRight className="w-5 h-5 text-[#9E9C98] shrink-0 rotate-90 md:rotate-0" />
+              <div className="w-full md:w-auto bg-white border border-[#E8E6E1] rounded-xl p-5 text-center">
                 <p className="text-lg font-bold text-[#6B6860] uppercase tracking-widest mb-3">Volumetric Weight</p>
                 <p className="text-4xl font-black tracking-tighter text-[#1A1916]">
                   {hasVol ? `${report.volumetric_weight_g}g` : "—"}
@@ -129,8 +129,8 @@ export function SourcingIntel({
                   </span>
                 )}
               </div>
-              <ArrowRight className="w-5 h-5 text-[#9E9C98] shrink-0" />
-              <div className="flex-1 bg-[#DCFCE7] border border-[#BBF7D0] rounded-xl p-5 text-center">
+              <ArrowRight className="w-5 h-5 text-[#9E9C98] shrink-0 rotate-90 md:rotate-0" />
+              <div className="w-full md:flex-1 bg-[#DCFCE7] border border-[#BBF7D0] rounded-xl p-5 text-center">
                 <p className="text-lg font-bold text-[#6B6860] uppercase tracking-widest mb-3 text-[#16A34A]">Billable Weight</p>
                 <p className="text-4xl font-black tracking-tighter text-[#16A34A]">
                   {hasBillable ? `${report.billable_weight_g}g` : "—"}

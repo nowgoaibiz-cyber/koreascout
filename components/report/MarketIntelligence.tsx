@@ -250,7 +250,7 @@ export function MarketIntelligence({
             </div>
 
             <div className={strategicTarget ? "grid grid-cols-1 sm:grid-cols-3" : "grid grid-cols-1 sm:grid-cols-2"}>
-              <div className="pr-8 border-r border-[#E8E6E1]">
+              <div className="pr-0 sm:pr-8 border-r-0 sm:border-r border-b sm:border-b-0 border-[#E8E6E1] pb-6 sm:pb-0 text-center">
                 <p className="text-lg font-bold text-[#6B6860] uppercase tracking-widest" style={{ marginTop: "0.8cm" }}>
                   Est. Wholesale
                 </p>
@@ -261,7 +261,7 @@ export function MarketIntelligence({
                 </LockedValue>
                 <p className="text-xs text-[#9E9C98] mt-2">Est. KR Wholesale</p>
               </div>
-              <div className={strategicTarget ? "px-8 border-r border-[#E8E6E1]" : "pl-8"}>
+              <div className={strategicTarget ? "px-0 sm:px-8 border-r-0 sm:border-r border-b sm:border-b-0 border-[#E8E6E1] pb-6 sm:pb-0 text-center" : "pl-0 sm:pl-8 text-center"}>
                 <p className="text-lg font-bold text-[#6B6860] uppercase tracking-widest" style={{ marginTop: "0.8cm" }}>
                   Global Valuation
                 </p>
@@ -283,7 +283,7 @@ export function MarketIntelligence({
                 )}
               </div>
               {strategicTarget && (
-                <div className="pl-8">
+                <div className="pl-0 sm:pl-8 pt-6 sm:pt-0 text-center">
                   <p
                     className="text-lg font-bold text-[#6B6860] uppercase tracking-widest"
                     style={{ marginTop: "0.8cm" }}
