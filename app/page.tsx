@@ -6,6 +6,7 @@ import DynamiteFuseSection from "@/components/DynamiteFuseSection";
 import IntelligencePipeline from "@/components/IntelligencePipeline";
 import LandingTimeWidget from "@/components/LandingTimeWidget";
 import CheckoutButton from "@/components/CheckoutButton";
+import AlphaPlusJoinWaitlist from "@/components/AlphaPlusJoinWaitlist";
 import { PRICING } from "@/src/config/pricing";
 import { Rocket, Handshake, ShieldCheck } from "lucide-react";
 import FaqAccordion from "@/components/FaqAccordion";
@@ -20,8 +21,8 @@ export const metadata: Metadata = {
   },
 };
 
-const STANDARD_CHECKOUT_URL =
-  "https://getkoreascout.lemonsqueezy.com/checkout/buy/e9701b40-aad3-446e-b00a-617d0159d501";
+const ALPHA_CHECKOUT_URL =
+  "https://getkoreascout.lemonsqueezy.com/checkout/buy/936321c8-fba1-4f88-bb30-8865c8006fac";
 
 function UnlockIcon({ className }: { className?: string }) {
   return (
@@ -494,7 +495,7 @@ export default function HomePage() {
                 </div>
                 <div className="mt-auto">
                   <CheckoutButton
-                    checkoutUrl={STANDARD_CHECKOUT_URL}
+                    checkoutUrl={ALPHA_CHECKOUT_URL}
                     className="block w-full text-center py-4 rounded-xl border-2 border-green-600 bg-green-600 text-lg font-semibold text-white hover:bg-green-700 hover:border-green-700 transition-all"
                   >
                     Join Alpha — {PRICING.CURRENCY}{PRICING.ALPHA.monthly}/mo
@@ -544,13 +545,7 @@ export default function HomePage() {
                   </p>
                 </div>
 
-                {/* Join Waitlist Button - tone down */}
-                <a
-                  href="/waitlist"
-                  className="block w-full border-2 border-gray-400 bg-white hover:bg-gray-50 text-gray-800 text-center px-8 py-4 rounded-lg font-semibold text-lg transition-colors relative z-20 mt-8"
-                >
-                  Join Waitlist →
-                </a>
+                <AlphaPlusJoinWaitlist />
               </div>
             </div>
           </div>

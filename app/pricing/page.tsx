@@ -1,14 +1,15 @@
 import type { Metadata } from "next";
 import { PRICING } from "@/src/config/pricing";
 import CheckoutButton from "@/components/CheckoutButton";
+import AlphaPlusJoinWaitlist from "@/components/AlphaPlusJoinWaitlist";
 
 export const metadata: Metadata = {
   title: "Pricing — KoreaScout",
   description: `Compare Free, Alpha ${PRICING.CURRENCY}${PRICING.ALPHA.monthly}, and Alpha+ ${PRICING.CURRENCY}${PRICING.ALPHA_PLUS.monthly}. Choose your intelligence level.`,
 };
 
-const STANDARD_CHECKOUT_URL =
-  "https://getkoreascout.lemonsqueezy.com/checkout/buy/e9701b40-aad3-446e-b00a-617d0159d501";
+const ALPHA_CHECKOUT_URL =
+  "https://getkoreascout.lemonsqueezy.com/checkout/buy/936321c8-fba1-4f88-bb30-8865c8006fac";
 
 type FeatureRow = {
   feature: string;
@@ -212,7 +213,7 @@ export default function PricingPage() {
               </div>
               <div className="mt-auto">
                 <CheckoutButton
-                  checkoutUrl={STANDARD_CHECKOUT_URL}
+                  checkoutUrl={ALPHA_CHECKOUT_URL}
                   className="block w-full text-center py-4 rounded-xl border-2 border-green-600 bg-green-600 text-lg font-semibold text-white hover:bg-green-700 hover:border-green-700 transition-all"
                 >
                   Join Alpha — {PRICING.CURRENCY}{PRICING.ALPHA.monthly}/mo
@@ -259,13 +260,9 @@ export default function PricingPage() {
                 </p>
               </div>
 
-              {/* Join Waitlist Button - tone down */}
-              <a
-                href="/waitlist"
-                className="block w-full border-2 border-gray-400 bg-white hover:bg-gray-50 text-gray-800 text-center px-8 py-4 rounded-lg font-semibold text-lg transition-colors relative z-20 mt-8"
-              >
-                Join Waitlist →
-              </a>
+              <AlphaPlusJoinWaitlist className="block w-full border-2 border-gray-400 bg-white hover:bg-gray-50 text-gray-800 text-center px-8 py-4 rounded-lg font-semibold text-lg transition-colors relative z-20 mt-8">
+                Join Waitlist
+              </AlphaPlusJoinWaitlist>
             </div>
           </div>
         </div>
@@ -386,17 +383,14 @@ export default function PricingPage() {
         <div className="flex flex-col items-center gap-4 max-w-2xl mx-auto mb-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
             <CheckoutButton
-              checkoutUrl={STANDARD_CHECKOUT_URL}
+              checkoutUrl={ALPHA_CHECKOUT_URL}
               className="w-full text-center py-4 border border-white/30 text-white rounded-xl font-bold text-base hover:border-white/60 transition-colors"
             >
               Join Alpha
             </CheckoutButton>
-            <a
-              href="/waitlist"
-              className="w-full text-center py-4 bg-[#1A1916] text-white rounded-xl font-black text-base hover:bg-[#2D2B26] transition-colors"
-            >
-              Join Alpha+ Waitlist →
-            </a>
+            <AlphaPlusJoinWaitlist className="w-full text-center py-4 border border-white/30 text-white rounded-xl font-bold text-base hover:border-white/60 transition-colors">
+              Join Alpha+ Waitlist
+            </AlphaPlusJoinWaitlist>
           </div>
         </div>
         <p className="text-xs text-white/30 font-medium">
