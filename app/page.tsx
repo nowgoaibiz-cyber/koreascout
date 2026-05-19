@@ -22,7 +22,7 @@ export const metadata: Metadata = {
 };
 
 const ALPHA_CHECKOUT_URL =
-  "https://getkoreascout.lemonsqueezy.com/checkout/buy/936321c8-fba1-4f88-bb30-8865c8006fac";
+  "https://getkoreascout.lemonsqueezy.com/checkout/buy/60ceb399-f681-4d65-a067-e250cf7d7e0d";
 
 function UnlockIcon({ className }: { className?: string }) {
   return (
