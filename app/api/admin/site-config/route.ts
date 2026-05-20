@@ -26,10 +26,41 @@ export async function POST(req: NextRequest) {
   const { key, value } = await req.json();
   if (!key) return NextResponse.json({ error: "Missing key" }, { status: 400 });
   const supabase = createServiceRoleClient();
-  await supabase.from("site_config").upsert({
-    key,
-    value,
-    updated_at: new Date().toISOString(),
-  });
+
+  if (key === "sample_product_id") {
+    const { data: oldConfig } = await supabase
+      .from("site_config")
+      .select("value")
+      .eq("key", "sample_product_id")
+      .single();
+    const oldSampleId = oldConfig?.value ?? null;
+
+    await supabase.from("site_config").upsert({
+      key,
+      value,
+      updated_at: new Date().toISOString(),
+    });
+
+    if (value) {
+      await supabase
+        .from("scout_final_reports")
+        .update({ is_teaser: true })
+        .eq("id", value);
+    }
+
+    if (oldSampleId && oldSampleId !== value) {
+      await supabase
+        .from("scout_final_reports")
+        .update({ is_teaser: false })
+        .eq("id", oldSampleId);
+    }
+  } else {
+    await supabase.from("site_config").upsert({
+      key,
+      value,
+      updated_at: new Date().toISOString(),
+    });
+  }
+
   return NextResponse.json({ ok: true });
 }

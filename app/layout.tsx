@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Script from "next/script";
 import { Plus_Jakarta_Sans, JetBrains_Mono } from "next/font/google";
 import { ConditionalRootContent } from "./ConditionalRootContent";
 import "./globals.css";
@@ -65,6 +66,20 @@ export default function RootLayout({
       <body
         className={`${plusJakartaSans.variable} ${jetbrainsMono.variable} font-sans antialiased bg-[#F8F7F4]`}
       >
+        {/* LemonSqueezy Affiliate Tracking */}
+        <Script
+          id="lemonsqueezy-affiliate-config"
+          strategy="afterInteractive"
+          dangerouslySetInnerHTML={{
+            __html: `window.lemonSqueezyAffiliateConfig = { store: "getkoreascout" };`,
+          }}
+        />
+        <Script
+          src="https://lmsqueezy.com/affiliate.js"
+          strategy="afterInteractive"
+          defer
+        />
+
         <ConditionalRootContent>{children}</ConditionalRootContent>
       </body>
     </html>

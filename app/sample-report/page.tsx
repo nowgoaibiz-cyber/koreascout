@@ -1,5 +1,7 @@
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { getUserProfile } from "@/lib/auth-server";
 import ProductIdentity from "@/components/ProductIdentity";
 import {
   TrendSignalDashboard,
@@ -11,6 +13,12 @@ import {
 } from "@/components/report";
 
 export default async function SampleReportPage() {
+  const { user } = await getUserProfile();
+
+  if (!user) {
+    redirect("/login?next=/sample-report");
+  }
+
   const supabase = await createClient();
 
   const { data: config } = await supabase

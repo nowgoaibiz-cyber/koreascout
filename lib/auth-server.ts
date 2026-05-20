@@ -1,5 +1,41 @@
 import { createClient } from "@/lib/supabase/server";
+import type { User } from "@supabase/supabase-js";
 import type { ScoutFinalReportsRow, Tier } from "@/types/database";
+
+export interface UserProfile {
+  tier: Tier;
+  subscription_start_at: string | null;
+}
+
+export interface UserProfileResult {
+  user: User | null;
+  profile: UserProfile | null;
+}
+
+export async function getUserProfile(): Promise<UserProfileResult> {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) {
+    return { user: null, profile: null };
+  }
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("tier, subscription_start_at")
+    .eq("id", user.id)
+    .single();
+  if (!profile) {
+    return { user, profile: null };
+  }
+  return {
+    user,
+    profile: {
+      tier: (profile.tier as Tier) ?? "free",
+      subscription_start_at: profile.subscription_start_at ?? null,
+    },
+  };
+}
 
 export interface AuthResult {
   userId: string | null;

@@ -4,10 +4,10 @@ import { createServiceRoleClient } from "@/lib/supabase/admin";
 
 const LEMONSQUEEZY_WEBHOOK_SECRET = process.env.LEMONSQUEEZY_WEBHOOK_SECRET;
 
-/** Standard $69 — checkout URL UUID (LemonSqueezy 웹훅은 variant_id를 숫자로 보낼 수 있음) */
-const STANDARD_VARIANT_UUID = "141f6710-c704-4ab3-b7c7-f30b2c587587";
-/** Alpha $129 — checkout URL UUID */
-const ALPHA_VARIANT_UUID = "41bb4d4b-b9d6-4a60-8e19-19287c35516d";
+/** Standard — LemonSqueezy numeric variant_id */
+const STANDARD_VARIANT_ID = "1441570"; // Keep old value if not using Standard
+/** Alpha — LemonSqueezy numeric variant_id (dashboard: 1674151) */
+const ALPHA_VARIANT_ID = "1674151";
 /** Standard/Alpha 숫자 variant_id (.env: LEMONSQUEEZY_VARIANT_ID_STANDARD / _ALPHA) — 일치 시 tier 업데이트 */
 const STANDARD_VARIANT_NUMERIC = process.env.LEMONSQUEEZY_VARIANT_ID_STANDARD
   ? parseInt(process.env.LEMONSQUEEZY_VARIANT_ID_STANDARD, 10)
@@ -41,11 +41,13 @@ function variantIdToTier(variantId: string | number): "standard" | "alpha" | nul
   if (!Number.isNaN(num)) {
     if (STANDARD_VARIANT_NUMERIC !== null && num === STANDARD_VARIANT_NUMERIC) return "standard";
     if (ALPHA_VARIANT_NUMERIC !== null && num === ALPHA_VARIANT_NUMERIC) return "alpha";
+    if (num === parseInt(STANDARD_VARIANT_ID, 10)) return "standard";
+    if (num === parseInt(ALPHA_VARIANT_ID, 10)) return "alpha";
     return null;
   }
-  const id = String(variantId).toLowerCase();
-  if (id === STANDARD_VARIANT_UUID.toLowerCase()) return "standard";
-  if (id === ALPHA_VARIANT_UUID.toLowerCase()) return "alpha";
+  const id = String(variantId);
+  if (id === STANDARD_VARIANT_ID) return "standard";
+  if (id === ALPHA_VARIANT_ID) return "alpha";
   return null;
 }
 
@@ -130,7 +132,7 @@ export async function POST(request: Request) {
           typeof variantId,
           typeof variantId === "number"
             ? "→ LemonSqueezy는 웹훅에 숫자 variant_id를 보냅니다. .env에 LEMONSQUEEZY_VARIANT_ID_STANDARD, LEMONSQUEEZY_VARIANT_ID_ALPHA (숫자) 설정 후 재시도."
-            : "→ Standard/Alpha UUID와 일치하는지 확인하세요."
+            : "→ Standard/Alpha variant ID와 일치하는지 확인하세요."
         );
         return NextResponse.json(
           { error: "Unknown variant_id" },
