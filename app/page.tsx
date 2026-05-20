@@ -7,6 +7,7 @@ import IntelligencePipeline from "@/components/IntelligencePipeline";
 import LandingTimeWidget from "@/components/LandingTimeWidget";
 import CheckoutButton from "@/components/CheckoutButton";
 import AlphaPlusJoinWaitlist from "@/components/AlphaPlusJoinWaitlist";
+import { ContactFooterLink } from "@/components/modals/ContactModal";
 import { PRICING } from "@/src/config/pricing";
 import { Rocket, Handshake, ShieldCheck } from "lucide-react";
 import FaqAccordion from "@/components/FaqAccordion";
@@ -695,12 +696,7 @@ export default function HomePage() {
               >
                 Sample Report
               </Link>
-              <Link
-                href="/contact"
-                className="text-sm font-medium text-[#0A0908] transition-colors duration-200 hover:text-[#16A34A]"
-              >
-                Contact
-              </Link>
+              <ContactFooterLink />
             </div>
           </div>
         </footer>
