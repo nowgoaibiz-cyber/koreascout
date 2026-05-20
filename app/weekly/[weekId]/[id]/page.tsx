@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import { getAuthTier, maskReportByTier } from "@/lib/auth-server";
+import { getAccessibleWeekIds } from "@/lib/week-access";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { PRICING } from "@/src/config/pricing";
@@ -62,13 +63,8 @@ export default async function ProductDetailPage({
     .order("published_at", { ascending: false })
     .limit(1)
     .single();
-  const { data: latest3Weeks } = await supabase
-    .from("weeks")
-    .select("week_id")
-    .eq("status", "published")
-    .order("published_at", { ascending: false })
-    .limit(3);
-  const latest3WeekIds = (latest3Weeks ?? []).map((w) => w.week_id);
+  const isPaid = tier === "standard" || tier === "alpha";
+  const accessibleWeekIds = await getAccessibleWeekIds(subscriptionStartAt, isPaid);
   const isFavorited = !!favoriteRow?.report_id;
 
   if (error || !report) notFound();
@@ -81,13 +77,7 @@ export default async function ProductDetailPage({
     }
     if (tier === "standard" || tier === "alpha") {
       if (isTeaser) return true;
-      const isLatestWeek = latest3WeekIds.includes(weekId);
-      if (isLatestWeek) return true;
-      if (!subscriptionStartAt) return false;
-      const subDate = new Date(subscriptionStartAt);
-      const weekDate = week?.published_at ? new Date(week.published_at) : null;
-      if (!weekDate) return true;
-      return weekDate >= subDate;
+      return accessibleWeekIds.includes(weekId);
     }
     return false;
   })();

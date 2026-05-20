@@ -1,6 +1,7 @@
 import React from "react";
 import { createClient } from "@/lib/supabase/server";
 import { getAuthTier } from "@/lib/auth-server";
+import { getAccessibleWeekIds } from "@/lib/week-access";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { ArrowRight, FileText, Lock } from "lucide-react";
@@ -56,7 +57,9 @@ export default async function WeeklyHubPage() {
     .select("week_id, week_label, start_date, end_date, published_at, product_count, summary, scout_final_reports(count)")
     .filter("scout_final_reports.status", "eq", "published")
     .eq("status", "published")
-    .order("start_date", { ascending: false });
+    .lte("published_at", new Date().toISOString())
+    .order("published_at", { ascending: false })
+    .order("week_id", { ascending: false });
 
   if (error) {
     return (
@@ -69,13 +72,7 @@ export default async function WeeklyHubPage() {
     );
   }
 
-  const { data: latest3Weeks } = await supabase
-    .from("weeks")
-    .select("week_id")
-    .eq("status", "published")
-    .order("published_at", { ascending: false })
-    .limit(3);
-  const latest3WeekIds = (latest3Weeks ?? []).map((w) => w.week_id);
+  const accessibleWeekIds = await getAccessibleWeekIds(subscriptionStartAt, isPaid);
 
   const { data: sampleConfig } = await supabase
     .from("site_config")
@@ -113,12 +110,7 @@ export default async function WeeklyHubPage() {
   })();
 
   function canAccessWeek(week: WeekRow): boolean {
-    const isLatestWeek = latest3WeekIds.includes(week.week_id);
-    const isAfterSub =
-      subscriptionStartAt && week.published_at
-        ? new Date(week.published_at) >= new Date(subscriptionStartAt)
-        : false;
-    return isPaid ? isLatestWeek || isAfterSub : false;
+    return accessibleWeekIds.includes(week.week_id);
   }
 
   const unlockedWeeks = (weeks ?? []).filter(canAccessWeek);

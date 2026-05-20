@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import { getAuthTier } from "@/lib/auth-server";
+import { getAccessibleWeekIds } from "@/lib/week-access";
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import Image from "next/image";
@@ -28,22 +29,11 @@ export default async function ProductListPage({
 
   if (weekError || !week) notFound();
 
-  const { data: latest3Weeks } = await supabase
-    .from("weeks")
-    .select("week_id")
-    .eq("status", "published")
-    .order("published_at", { ascending: false })
-    .limit(3);
-  const latest3WeekIds = (latest3Weeks ?? []).map((w) => w.week_id);
-  const isLatestWeek = latest3WeekIds.includes(weekId);
+  const accessibleWeekIds = await getAccessibleWeekIds(subscriptionStartAt, isPaid);
 
   let canAccess = false;
   if (isPaid) {
-    const isAfterSub =
-      subscriptionStartAt && week.published_at
-        ? new Date(week.published_at) >= new Date(subscriptionStartAt)
-        : false;
-    canAccess = isLatestWeek || isAfterSub;
+    canAccess = accessibleWeekIds.includes(weekId);
   } else {
     const { data: allWeeks } = await supabase
       .from("weeks")
@@ -86,7 +76,7 @@ export default async function ProductListPage({
             </p>
             <p className="text-sm text-[#6B6860] leading-relaxed mb-6 max-w-sm mx-auto">
               {isPaid
-                ? "Your access covers weeks published after you subscribed, plus the 3 most recent weeks."
+                ? "Your access covers your signup snapshot weeks and weeks published after you subscribed."
                 : "Subscribe to Standard or Alpha to unlock this week immediately."}
             </p>
             <Link

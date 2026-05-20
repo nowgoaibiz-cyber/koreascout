@@ -18,7 +18,9 @@ export default async function LatestWeeklyPage() {
     .limit(1);
 
   if (tier === "alpha" && subscriptionStartAt) {
-    query = query.gte("published_at", subscriptionStartAt);
+    query = query
+      .gte("published_at", subscriptionStartAt)
+      .lte("published_at", new Date().toISOString());
   } else if (tier === "free") {
     const fourteenDaysAgo = new Date(Date.now() - 14 * 24 * 60 * 60 * 1000).toISOString();
     query = query.lt("published_at", fourteenDaysAgo);

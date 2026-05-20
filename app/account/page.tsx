@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import { getAuthTier } from "@/lib/auth-server";
+import { getAccessibleWeekIds } from "@/lib/week-access";
 import Link from "next/link";
 import Image from "next/image";
 import { redirect } from "next/navigation";
@@ -22,12 +23,27 @@ export default async function AccountPage({ searchParams }: AccountPageProps) {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect("/login");
 
-  const { tier } = await getAuthTier();
+  const { tier, subscriptionStartAt } = await getAuthTier();
+  const isPaid = tier === "standard" || tier === "alpha";
 
-  const { count: accessibleProductCount } = await supabase
-    .from("scout_final_reports")
-    .select("*", { count: "exact", head: true })
-    .eq("status", "published");
+  let accessibleProductCount = 0;
+
+  if (isPaid) {
+    const accessibleWeekIds = await getAccessibleWeekIds(subscriptionStartAt, isPaid);
+
+    if (accessibleWeekIds.length > 0) {
+      const { data: publishedWeeks } = await supabase
+        .from("weeks")
+        .select("week_id, scout_final_reports(count)")
+        .eq("status", "published")
+        .in("week_id", accessibleWeekIds)
+        .filter("scout_final_reports.status", "eq", "published");
+
+      for (const week of publishedWeeks ?? []) {
+        accessibleProductCount += week.scout_final_reports?.[0]?.count ?? 0;
+      }
+    }
+  }
 
   const { data: favRows } = await supabase
     .from("user_favorites")
