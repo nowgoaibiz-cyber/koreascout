@@ -84,7 +84,8 @@ const FEATURE_GROUPS: FeatureGroup[] = [
       { feature: "Direct Wholesale Portal Link", free: "—", alpha: "✓", alphaPlus: "✓" },
       { feature: "Global Market Proof Links", free: "—", alpha: "✓", alphaPlus: "✓" },
       { feature: "Viral Hook Reference (Success Cases)", free: "—", alpha: "✓", alphaPlus: "✓" },
-      { feature: "4K On-Site Sourcing Footage (Raw)", free: "—", alpha: "✓", alphaPlus: "✓" },
+      { feature: "Store & Product Footage (4K raw)", free: "—", alpha: "✓", alphaPlus: "✓" },
+      { feature: "Field Testing Videos (4K raw)", free: "—", alpha: "✓", alphaPlus: "✓" },
     ],
   },
   {
