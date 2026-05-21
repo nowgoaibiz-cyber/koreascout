@@ -490,8 +490,7 @@ export default function HomePage() {
                 </div>
                 <div className="flex-grow my-8">
                   <p className="text-base font-medium text-[#6B6860] leading-relaxed">
-                    Know WHAT survived Korea&apos;s market. {PRICING.CURRENCY}{PRICING.ALPHA.daily.toFixed(2)}/day — less than your morning coffee,
-                    more valuable than 14 hours of research.
+                    Discover 10+ winning Korean products every week. {PRICING.CURRENCY}{PRICING.ALPHA.daily.toFixed(2)}/day — less than coffee, worth more than 40 hours of market research.
                   </p>
                 </div>
                 <div className="mt-auto">

@@ -206,10 +206,7 @@ export default function PricingPage() {
               </div>
               <div className="flex-grow my-8">
                 <p className="text-base font-medium text-[#6B6860] leading-relaxed">
-                  The market intelligence engine
-                  for serious global sellers.
-                  Know what Korea is trending —
-                  and exactly why it will sell.
+                  Discover 10+ winning Korean products every week. {PRICING.CURRENCY}{PRICING.ALPHA.daily.toFixed(2)}/day — less than coffee, worth more than 40 hours of market research.
                 </p>
               </div>
               <div className="mt-auto">
@@ -377,7 +374,7 @@ export default function PricingPage() {
             </p>
             <h2 className="text-4xl md:text-5xl lg:text-6xl font-black tracking-tighter leading-[1.1] flex flex-col items-center">
               <span className="text-[#F8F7F4] block">Unlock the entire intelligence pipeline.</span>
-              <span className="text-[#16A34A] block mt-1 md:mt-2">For under {PRICING.CURRENCY}{PRICING.ALPHA.marketingDailyLimit.toFixed(2)} a day.</span>
+              <span className="text-[#16A34A] block mt-1 md:mt-2">For less than {PRICING.CURRENCY}{PRICING.ALPHA.daily.toFixed(2)} a day.</span>
             </h2>
           </div>
         </div>

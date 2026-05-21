@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronDown } from "lucide-react";
+import { PRICING } from "@/src/config/pricing";
 
 type FaqItem = { q: string; a: string };
 type FaqCategory = { id: string; label: string; subtitle: string; items: FaqItem[] };
@@ -88,7 +89,7 @@ const FAQ_DATA: FaqCategory[] = [
         a: "We're launching Alpha+ as quickly as possible. Stay tuned — exciting features are coming soon! :)",
       },
       {
-        q: "Why does Alpha+ cost $199/mo when Alpha is $149/mo?",
+        q: `Why does Alpha+ cost ${PRICING.CURRENCY}${PRICING.ALPHA_PLUS.monthly}/mo when Alpha is ${PRICING.CURRENCY}${PRICING.ALPHA.monthly}/mo?`,
         a: "Alpha provides the trend intelligence layer. Many sellers struggle with the time investment required for sourcing research and face barriers accessing Korea's niche market. We solve this arbitrage gap with intelligence data and on-site footage.\n\nAlpha+ is currently in development. When completed, it will add execution layers designed to help you source faster.\n\nThe $50 difference will include a sourcing kit ready to act on — not just data. Features may change depending on business circumstances when Alpha+ launches.",
       },
       {
@@ -108,7 +109,7 @@ const FAQ_DATA: FaqCategory[] = [
       },
       {
         q: "Why should I trust your data over doing my own research?",
-        a: "You can do your own research. It will take approximately 28–58 hours per month — cross-referencing Korean social platforms, translating product listings, verifying supplier reliability, checking HS codes, and estimating landed costs. KoreaScout compresses that into 60 seconds of reading. The question isn't whether you trust our data. It's whether your time is worth $149/month.",
+        a: `You can do your own research. It will take approximately 28–58 hours per month — cross-referencing Korean social platforms, translating product listings, verifying supplier reliability, checking HS codes, and estimating landed costs. KoreaScout compresses that into 60 seconds of reading. The question isn't whether you trust our data. It's whether your time is worth ${PRICING.CURRENCY}${PRICING.ALPHA.monthly}/month.`,
       },
       {
         q: "What is your refund policy?",
