@@ -126,10 +126,10 @@ export default async function ProductListPage({
     <div className="min-h-screen bg-[#F8F7F4] pt-10">
       <div className="max-w-5xl mx-auto px-6 sm:px-8 py-10">
         <Link href="/weekly" className="text-base text-[#9E9C98] hover:text-[#1A1916] transition-colors flex items-center gap-1 mb-6 inline-block"><ChevronLeft className="w-4 h-4" /> Weekly Reports</Link>
-        <h1 className="text-5xl md:text-6xl font-black tracking-tighter text-[#1A1916]">
+        <h1 className="text-3xl md:text-4xl font-black tracking-tighter text-[#1A1916]">
           {week.week_label}
         </h1>
-        <p className="text-base text-[#6B6860] mt-2">
+        <p className="text-lg text-[#6B6860] mt-2">
           {products?.length ?? 0} product{products?.length !== 1 ? "s" : ""} in this week
         </p>
         {week.summary && <p className="text-[#6B6860] text-base mt-4">{week.summary}</p>}
