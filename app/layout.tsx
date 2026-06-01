@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Script from "next/script";
 import { Plus_Jakarta_Sans, JetBrains_Mono } from "next/font/google";
 import { ConditionalRootContent } from "./ConditionalRootContent";
+import EarlyBirdPopup from "@/components/EarlyBirdPopup";
 import "./globals.css";
 
 const plusJakartaSans = Plus_Jakarta_Sans({
@@ -80,7 +81,10 @@ export default function RootLayout({
           defer
         />
 
-        <ConditionalRootContent>{children}</ConditionalRootContent>
+        <ConditionalRootContent>
+          <EarlyBirdPopup />
+          {children}
+        </ConditionalRootContent>
       </body>
     </html>
   );

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { PRICING } from "@/src/config/pricing";
 import CheckoutButton from "@/components/CheckoutButton";
+import AlphaPricingCard from "@/components/AlphaPricingCard";
 import AlphaPlusJoinWaitlist from "@/components/AlphaPlusJoinWaitlist";
 
 export const metadata: Metadata = {
@@ -181,43 +182,7 @@ export default function PricingPage() {
               </div>
             </div>
 
-            {/* ALPHA — green emphasized tier */}
-            <div className="bg-white border-2 border-green-600 rounded-2xl flex flex-col h-full p-8 md:p-12 shadow-[0_4px_24px_0_rgb(22_163_74/0.18)]">
-              <div className="min-h-[100px]">
-                <p className="text-3xl md:text-4xl font-black text-[#1A1916] tracking-tighter leading-none mb-8">
-                  Alpha
-                </p>
-                <div className="mb-1">
-                  <span className="text-5xl font-black text-[#1A1916] leading-none tracking-tighter">
-                    {PRICING.CURRENCY}{PRICING.ALPHA.monthly}
-                  </span>
-                  <span className="text-base text-[#9E9C98] font-medium ml-2">/ month</span>
-                </div>
-                <p className="text-xs font-bold text-[#9E9C98] mb-1">
-                  Approx. {PRICING.CURRENCY}{PRICING.ALPHA.daily.toFixed(2)} / day
-                </p>
-              </div>
-              <div className="w-8 h-px bg-[#E8E6E1] my-5" />
-              <div className="bg-[#F8F7F4] border border-[#E8E6E1] rounded-xl px-4 py-3 min-h-[120px] flex items-center">
-                <p className="text-sm text-[#1A1916] leading-relaxed">
-                  <span className="font-black uppercase">INSTANT ACCESS:</span>{" "}
-                  <span className="font-medium">30+ Verified Products (Last 3 weeks) unlocked immediately.</span>
-                </p>
-              </div>
-              <div className="flex-grow my-8">
-                <p className="text-base font-medium text-[#6B6860] leading-relaxed">
-                  Discover 10+ winning Korean products every week. {PRICING.CURRENCY}{PRICING.ALPHA.daily.toFixed(2)}/day — less than coffee, worth more than 40 hours of market research.
-                </p>
-              </div>
-              <div className="mt-auto">
-                <CheckoutButton
-                  checkoutUrl={ALPHA_CHECKOUT_URL}
-                  className="block w-full text-center py-4 rounded-xl border-2 border-green-600 bg-green-600 text-lg font-semibold text-white hover:bg-green-700 hover:border-green-700 transition-all"
-                >
-                  Join Alpha — {PRICING.CURRENCY}{PRICING.ALPHA.monthly}/mo
-                </CheckoutButton>
-              </div>
-            </div>
+            <AlphaPricingCard showEarlyBird />
 
             {/* Alpha+ Card - Coming Soon */}
             <div className="relative rounded-2xl border border-[#E8E6E1] bg-white p-8 md:p-12 shadow-[0_4px_20px_0_rgb(26_25_22/0.08)] flex flex-col h-full">
