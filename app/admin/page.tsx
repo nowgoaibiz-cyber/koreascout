@@ -77,6 +77,24 @@ export default function AdminPage() {
         </button>
       </header>
 
+      {/* Tab Navigation */}
+      <div className="border-b border-[#E8E6E1] bg-white px-6">
+        <nav className="flex gap-0">
+          <a
+            href="/admin"
+            className="px-4 py-3 text-sm font-medium border-b-2 border-[#16A34A] text-[#16A34A]"
+          >
+            Reports
+          </a>
+          <a
+            href="/admin/script-generator"
+            className="px-4 py-3 text-sm font-medium border-b-2 border-transparent text-[#9E9C98] hover:text-[#1A1916] transition-colors"
+          >
+            Script Generator
+          </a>
+        </nav>
+      </div>
+
       <div className="px-6 py-3 flex items-center gap-4">
         <select
           value={weekFilter}
