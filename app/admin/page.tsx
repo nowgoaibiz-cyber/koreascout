@@ -65,7 +65,7 @@ export default function AdminPage() {
   }
 
   return (
-    <div className="bg-[#F8F7F4] min-h-screen">
+    <div className="bg-[#F8F7F4] min-h-screen pt-16">
       <header className="bg-white border-b border-[#E8E6E1] px-6 py-4 flex items-center justify-between">
         <span className="text-lg font-bold text-[#1A1916]">KoreaScout Admin</span>
         <button
