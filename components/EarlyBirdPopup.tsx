@@ -87,10 +87,17 @@ export default function EarlyBirdPopup() {
           <span className="text-[#16A34A]">Forever.</span>
         </h2>
 
-        <div className="flex items-baseline gap-3 mb-1">
-          <span className="text-4xl font-black text-white">${EARLYBIRD.price}</span>
-          <span className="text-base text-[#9E9C98]">/ month</span>
-          <span className="text-sm line-through text-[#9E9C98]">${EARLYBIRD.originalPrice}</span>
+        <div className="mb-1">
+          <div className="flex items-center gap-2 mb-1">
+            <span className="text-xl font-black text-[#9E9C98] line-through">$149</span>
+            <span className="text-xs font-black bg-[#16A34A]/20 text-[#16A34A] px-2 py-0.5 rounded-md">
+              -60% OFF
+            </span>
+          </div>
+          <div className="flex items-baseline gap-2">
+            <span className="text-5xl font-black text-white leading-none">$59</span>
+            <span className="text-base text-[#9E9C98]">/ month</span>
+          </div>
         </div>
         <p className="text-xs text-[#16A34A] font-bold mb-4">
           Price locked forever · Never increases
