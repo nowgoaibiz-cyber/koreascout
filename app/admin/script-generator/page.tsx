@@ -167,8 +167,8 @@ export default function ScriptGeneratorPage() {
         </button>
       </header>
 
-      <div className="border-b border-[#E8E6E1] bg-white px-6 pt-2 mt-2">
-        <nav className="flex gap-0">
+      <div className="bg-white border-b border-[#E8E6E1]">
+        <nav className="flex gap-0 px-6">
           <a
             href="/admin"
             className="px-4 py-3 text-sm font-medium border-b-2 border-transparent text-[#9E9C98] hover:text-[#1A1916] transition-colors"
@@ -177,7 +177,7 @@ export default function ScriptGeneratorPage() {
           </a>
           <a
             href="/admin/script-generator"
-            className="px-4 py-3 text-sm font-medium border-b-2 border-[#16A34A] text-[#16A34A]"
+            className="px-4 py-3 text-sm font-medium border-b-2 border-[#16A34A] text-[#16A34A] transition-colors"
           >
             Script Generator
           </a>

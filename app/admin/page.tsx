@@ -77,12 +77,11 @@ export default function AdminPage() {
         </button>
       </header>
 
-      {/* Tab Navigation */}
-      <div className="border-b border-[#E8E6E1] bg-white px-6">
-        <nav className="flex gap-0">
+      <div className="bg-white border-b border-[#E8E6E1]">
+        <nav className="flex gap-0 px-6">
           <a
             href="/admin"
-            className="px-4 py-3 text-sm font-medium border-b-2 border-[#16A34A] text-[#16A34A]"
+            className="px-4 py-3 text-sm font-medium border-b-2 border-[#16A34A] text-[#16A34A] transition-colors"
           >
             Reports
           </a>
