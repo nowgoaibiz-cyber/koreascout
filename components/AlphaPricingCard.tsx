@@ -52,6 +52,10 @@ export default function AlphaPricingCard({
   const ctaClassName =
     "block w-full text-center py-4 rounded-xl border-2 border-[#16A34A] bg-[#16A34A] text-lg font-semibold text-white hover:bg-[#15803D] hover:border-[#15803D] transition-all";
 
+  const checkoutUrl = isEarlyBirdActive
+    ? `${ALPHA_CHECKOUT_URL}?checkout[discount_code]=${EARLYBIRD.code}`
+    : ALPHA_CHECKOUT_URL;
+
   return (
     <div className="bg-white border-2 border-[#16A34A] rounded-2xl flex flex-col h-full p-8 md:p-12 shadow-[0_4px_24px_0_rgb(22_163_74/0.18)]">
       <div className="min-h-[100px]">
@@ -144,11 +148,7 @@ export default function AlphaPricingCard({
       {isEarlyBirdActive && <div className="flex-grow my-8" />}
 
       <div className="mt-auto">
-        <CheckoutButton
-          checkoutUrl={ALPHA_CHECKOUT_URL}
-          discountCode={isEarlyBirdActive ? EARLYBIRD.code : undefined}
-          className={ctaClassName}
-        >
+        <CheckoutButton checkoutUrl={checkoutUrl} className={ctaClassName}>
           {isEarlyBirdActive
             ? `Join Alpha — ${PRICING.CURRENCY}${EARLYBIRD.earlyPrice}/mo →`
             : `Join Alpha — ${PRICING.CURRENCY}${PRICING.ALPHA.monthly}/mo`}
