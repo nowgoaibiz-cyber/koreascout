@@ -81,6 +81,22 @@ export default function RootLayout({
           defer
         />
 
+        {/* Google Analytics GA4 */}
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=G-FEY8YDNNNX"
+          strategy="afterInteractive"
+        />
+        <Script id="ga4-init" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-FEY8YDNNNX', {
+              page_path: window.location.pathname,
+            });
+          `}
+        </Script>
+
         <ConditionalRootContent>
           <EarlyBirdPopup />
           {children}
