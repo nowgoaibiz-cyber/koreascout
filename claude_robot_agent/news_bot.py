@@ -99,7 +99,6 @@ def is_within_24h(published_str: str) -> bool:
 
 
 def is_similar_title(title1: str, title2: str, threshold: float = 0.8) -> bool:
-    """두 제목이 80% 이상 유사하면 True"""
     return SequenceMatcher(None, title1.lower(), title2.lower()).ratio() >= threshold
 
 
@@ -193,74 +192,148 @@ def decode_google_url(url: str) -> str:
     return url
 
 
-async def generate_posts(article: dict, body: str) -> tuple[str, str, str]:
+async def generate_x_post(article: dict, body: str) -> str:
+    """
+    X 포스팅 — 저격수 스타일
+    규칙: 반드시 ONE sentence. 가장 날카로운 팩트 하나 + 셀러 임팩트.
+    """
     client = anthropic.AsyncAnthropic(api_key=ANTHROPIC_API_KEY)
-    body_section = f"Article body (Korean — read this carefully, extract the real facts):\n{body}\n\n" if body else ""
+    body_section = f"Article body:\n{body}\n\n" if body else ""
 
     prompt = (
-        "You are Tae-o. You live in Korea. You spot K-beauty moves before the world does.\n"
-        "You write like a friend texting a global seller — short, direct, real.\n"
-        "One concrete fact. One implication. That's it.\n\n"
+        "You are Tae-o. You write X (Twitter) posts about K-beauty for global sellers.\n\n"
 
-        "✅ GOOD — study and copy this energy:\n"
-        "- Olive Young just opened store #2 in LA. Maenyeo Factory is already on the shelf. You're not.\n"
-        "- A $3 Daiso toner is outselling $40 US brands in Seoul. Someone's about to find the margin on this.\n"
-        "- Anua went viral in Vietnam 6 weeks ago. Nobody outside Korea saw it coming. That's the window.\n"
-        "- UCL showed up at MakeUp in Paris with a silicone-free blur cream. UK brands asked to produce at their Jeju factory on the spot.\n\n"
+        "YOUR ONLY JOB: Find the sharpest fact in the article. Write ONE sentence about it.\n\n"
 
-        "❌ BANNED — never write like this:\n"
-        "- 'formulation differentiation' (consultant speak)\n"
-        "- 'behind the curve' (cliché)\n"
-        "- 'significant development' (press release)\n"
-        "- 'planting flags' (journalist metaphor)\n"
-        "- 'the X era is over' (too vague)\n"
-        "- Any sentence that sounds like a McKinsey deck → rewrite it\n"
-        "- Two sentences when one will do\n\n"
+        "HOW TO THINK (not a template — a mindset):\n"
+        "1. What is the single most surprising or money-relevant fact in this article?\n"
+        "2. What does that fact mean for a global seller RIGHT NOW?\n"
+        "3. Combine those two things into ONE sentence. No more.\n\n"
+
+        "SENTENCE STRUCTURES that work (vary these — don't copy them):\n"
+        "- [Specific fact]. [What it means for sellers who are paying attention].\n"
+        "- [Person/brand] just [did specific thing]. [Implication in seller terms].\n"
+        "- [Number or concrete detail] — [what that number actually means].\n\n"
+
+        "WHAT MAKES A FACT 'SHARP':\n"
+        "- Specific: a name, a number, a place, an action\n"
+        "- Surprising: something the reader didn't already assume\n"
+        "- Actionable: a seller can DO something with this information\n\n"
+
+        "ABSOLUTE RULES:\n"
+        "- ONE sentence only. If you write two, delete the second.\n"
+        "- STRICT MAX 217 characters (link adds 23 chars after — count carefully)\n"
+        "- No sign-off. No hashtags. No emoji. No ellipsis.\n"
+        "- No journalist words: 'amid', 'leverage', 'landscape', 'significant', 'amid growing'\n"
+        "- No consultant words: 'differentiation', 'synergy', 'pipeline', 'ecosystem'\n"
+        "- No clichés: 'behind the curve', 'planting flags', 'game changer'\n"
+        "- If it sounds like a news headline → rewrite it as a text to a friend\n\n"
 
         f"Article title: {article['title']}\n"
         f"Category: {article['category']}\n"
         f"{body_section}"
-
-        "Now write THREE posts. Extract the sharpest fact from the article body above.\n\n"
-
-        "[X]\n"
-        "- STRICT MAX 217 characters (link adds 23 chars — budget for it)\n"
-        "- EXACTLY one line. Zero line breaks.\n"
-        "- Concrete fact first. Seller implication second. Done.\n"
-        "- NO sign-off. NO hashtags. NO emoji.\n\n"
-
-        "[Threads]\n"
-        "- STRICT MAX 477 characters (link adds 23 chars)\n"
-        "- EXACTLY one line. Zero line breaks.\n"
-        "- Same punch as X, slightly more detail — still one complete thought.\n"
-        "- NO sign-off. NO hashtags.\n\n"
-
-        "[LinkedIn]\n"
-        "- Line 1: same Tae-o punch (concrete fact + implication)\n"
-        "- Lines 2-4: three bullet points starting with • (specific market/money angle for global sellers)\n"
-        "- Line 5: one question that makes industry insiders want to comment\n"
-        "- STRICT MAX 700 characters total\n"
-        "- NO sign-off. NO hashtags.\n\n"
-
-        "Format exactly:\n[X]\n<post>\n\n[Threads]\n<post>\n\n[LinkedIn]\n<post>"
+        "Write the X post now. ONE sentence only.\n"
+        "Output only the post text, nothing else."
     )
 
     message = await client.messages.create(
         model="claude-sonnet-4-6",
-        max_tokens=900,
+        max_tokens=100,
         messages=[{"role": "user", "content": prompt}],
     )
-    response = message.content[0].text.strip()
+    return message.content[0].text.strip()
 
-    x_match = re.search(r"\[X\]\n(.+?)(?=\n\n\[Threads\]|$)", response, re.DOTALL)
-    threads_match = re.search(r"\[Threads\]\n(.+?)(?=\n\n\[LinkedIn\]|$)", response, re.DOTALL)
-    linkedin_match = re.search(r"\[LinkedIn\]\n(.+?)$", response, re.DOTALL)
 
-    x_post = x_match.group(1).strip() if x_match else response
-    threads_post = threads_match.group(1).strip() if threads_match else response
-    linkedin_post = linkedin_match.group(1).strip() if linkedin_match else response
+async def generate_threads_post(article: dict, body: str) -> str:
+    """
+    Threads 포스팅 — 현장 브리핑 스타일
+    규칙: 한 덩어리의 흐름. 팩트 + 배경 + 셀러 임팩트를 한 호흡에.
+    """
+    client = anthropic.AsyncAnthropic(api_key=ANTHROPIC_API_KEY)
+    body_section = f"Article body:\n{body}\n\n" if body else ""
 
-    return x_post, threads_post, linkedin_post
+    prompt = (
+        "You are Tae-o. You write Threads posts about K-beauty for global sellers.\n\n"
+
+        "YOUR JOB: Write a field briefing. You just read this article. Tell a seller friend\n"
+        "what happened, why it matters, and what they should think about — in one flowing thought.\n\n"
+
+        "HOW TO THINK:\n"
+        "1. What's the key fact? (specific, not vague)\n"
+        "2. What context makes this fact more interesting or alarming?\n"
+        "3. What's the concrete takeaway for a seller?\n"
+        "4. Write all three as ONE continuous sentence or thought — no line breaks.\n\n"
+
+        "THE FEEL:\n"
+        "- Like a sharp WhatsApp message from someone who just left a Seoul meeting\n"
+        "- More detail than X, but still punchy — not a paragraph, not a list\n"
+        "- The reader should finish it thinking 'I need to act on this'\n\n"
+
+        "ABSOLUTE RULES:\n"
+        "- No line breaks. One flowing thought.\n"
+        "- STRICT MAX 477 characters (link adds 23 chars after)\n"
+        "- No sign-off. No hashtags. No emoji.\n"
+        "- No journalist words, no consultant words, no clichés (same as X rules)\n"
+        "- Do NOT start with 'So,' or 'Look,' or 'Here's the thing'\n\n"
+
+        f"Article title: {article['title']}\n"
+        f"Category: {article['category']}\n"
+        f"{body_section}"
+        "Write the Threads post now.\n"
+        "Output only the post text, nothing else."
+    )
+
+    message = await client.messages.create(
+        model="claude-sonnet-4-6",
+        max_tokens=200,
+        messages=[{"role": "user", "content": prompt}],
+    )
+    return message.content[0].text.strip()
+
+
+async def generate_linkedin_post(article: dict, body: str) -> str:
+    """
+    LinkedIn 포스팅 — 인사이더 분석 스타일
+    규칙: 한 방 오프닝 + 3개 불릿 + 질문
+    """
+    client = anthropic.AsyncAnthropic(api_key=ANTHROPIC_API_KEY)
+    body_section = f"Article body:\n{body}\n\n" if body else ""
+
+    prompt = (
+        "You are Tae-o. You write LinkedIn posts about K-beauty for global sellers and industry insiders.\n\n"
+
+        "STRUCTURE (follow exactly):\n"
+        "Line 1: One punchy sentence — same Tae-o energy as X (fact + implication)\n"
+        "Lines 2-4: Three bullet points starting with •\n"
+        "  Each bullet = one specific market/money insight for global sellers\n"
+        "  Each bullet should answer: 'so what does this mean in dollars or distribution?'\n"
+        "Line 5: One question that makes industry insiders want to comment\n"
+        "  The question should be specific enough that someone with real knowledge has a real answer\n\n"
+
+        "WHAT MAKES GOOD BULLETS:\n"
+        "- Specific market size, gap, or trend (not vague 'opportunity')\n"
+        "- Something that reveals the seller's blind spot\n"
+        "- A connection between the article fact and a broader market reality\n\n"
+
+        "ABSOLUTE RULES:\n"
+        "- STRICT MAX 700 characters total\n"
+        "- No sign-off. No hashtags.\n"
+        "- No consultant words, no clichés\n"
+        "- The closing question must be SPECIFIC — not 'what do you think?' level\n\n"
+
+        f"Article title: {article['title']}\n"
+        f"Category: {article['category']}\n"
+        f"{body_section}"
+        "Write the LinkedIn post now.\n"
+        "Output only the post text, nothing else."
+    )
+
+    message = await client.messages.create(
+        model="claude-sonnet-4-6",
+        max_tokens=400,
+        messages=[{"role": "user", "content": prompt}],
+    )
+    return message.content[0].text.strip()
 
 
 def parse_selection(text: str, total: int) -> list[int]:
@@ -383,17 +456,21 @@ async def run_news_bot() -> None:
 
         article_body = body_reply.strip()
 
-        # 포스팅 생성
-        await bot.send_message(chat_id=chat_id, text=f"✍️ 포스팅 생성 중...")
+        # 포스팅 생성 (플랫폼별 독립 호출)
+        await bot.send_message(chat_id=chat_id, text="✍️ 포스팅 생성 중...")
         print(f"생성 중: {article['title']}")
-        x_post, threads_post, linkedin_post = await generate_posts(article, article_body)
+
+        x_post, threads_post, linkedin_post = await asyncio.gather(
+            generate_x_post(article, article_body),
+            generate_threads_post(article, article_body),
+            generate_linkedin_post(article, article_body),
+        )
 
         await bot.send_message(
             chat_id=chat_id,
             text=f"━━━━━━━━━━━━━━━\n𝕏 X 포스팅이에요\n📰 {article['title']}\n━━━━━━━━━━━━━━━"
         )
         await bot.send_message(chat_id=chat_id, text=f"{x_post}\n\n{article['link']}")
-
         await asyncio.sleep(0.5)
 
         await bot.send_message(
@@ -401,7 +478,6 @@ async def run_news_bot() -> None:
             text=f"━━━━━━━━━━━━━━━\n🧵 스레드 포스팅이에요\n📰 {article['title']}\n━━━━━━━━━━━━━━━"
         )
         await bot.send_message(chat_id=chat_id, text=f"{threads_post}\n\n{article['link']}")
-
         await asyncio.sleep(0.5)
 
         await bot.send_message(
@@ -409,7 +485,6 @@ async def run_news_bot() -> None:
             text=f"━━━━━━━━━━━━━━━\n💼 LinkedIn 포스팅이에요\n📰 {article['title']}\n━━━━━━━━━━━━━━━"
         )
         await bot.send_message(chat_id=chat_id, text=f"{linkedin_post}\n\n{article['link']}")
-
         await asyncio.sleep(1)
 
     await bot.send_message(chat_id=chat_id, text="✅ 완료! X/스레드/LinkedIn에 업로드 하세요 🚀")
