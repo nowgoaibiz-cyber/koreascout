@@ -5,18 +5,17 @@ import re
 import schedule
 import sys
 import time
-from datetime import datetime, timezone, timedelta
 from difflib import SequenceMatcher
+import httpx
+from datetime import datetime, timezone, timedelta
 from email.utils import parsedate_to_datetime
 from pathlib import Path
 
 import anthropic
 import feedparser
-import httpx
-from dotenv import load_dotenv
 from googlenewsdecoder import gnewsdecoder
-from telegram import Bot, Update
-from telegram.ext import Application, MessageHandler, filters
+from dotenv import load_dotenv
+from telegram import Bot
 
 load_dotenv()
 
@@ -25,8 +24,6 @@ TELEGRAM_CHAT_ID = os.getenv("TELEGRAM_CHAT_ID")
 ANTHROPIC_API_KEY = os.getenv("ANTHROPIC_API_KEY")
 
 SEEN_NEWS_FILE = Path(__file__).parent / "seen_news.json"
-MAX_ARTICLES = 15
-
 KST = timezone(timedelta(hours=9))
 
 RSS_FEEDS = {
@@ -102,6 +99,7 @@ def is_within_24h(published_str: str) -> bool:
 
 
 def is_similar_title(title1: str, title2: str, threshold: float = 0.8) -> bool:
+    """두 제목이 80% 이상 유사하면 True"""
     return SequenceMatcher(None, title1.lower(), title2.lower()).ratio() >= threshold
 
 
@@ -134,6 +132,57 @@ def fetch_all_articles(seen: set) -> list[dict]:
     return articles
 
 
+async def claude_filter(articles: list[dict]) -> list[dict]:
+    if not articles:
+        return []
+    client = anthropic.AsyncAnthropic(api_key=ANTHROPIC_API_KEY)
+    titles_text = "\n".join(
+        f"{i}. [{a['category']}] {a['title']}" for i, a in enumerate(articles)
+    )
+    prompt = (
+        "You are a content curator for KoreaScout — a K-beauty intelligence platform for global sellers.\n\n"
+        "Below are Korean beauty news article titles collected from RSS feeds.\n\n"
+        "YOUR SELECTION RULES:\n\n"
+        "STEP 1 — REMOVE (always cut these):\n"
+        "- Near-duplicates: same story from multiple outlets → keep only the most informative title\n"
+        "- Aggressive deduplication: if two articles are about the SAME brand doing the SAME thing, keep ONLY 1\n"
+        "- Stock prices, earnings, investor reports\n"
+        "- ODM/OEM factory news, regulatory filings, cGMP certifications\n"
+        "- Job postings, corporate HR news\n"
+        "- Purely domestic Korean consumer news with zero global angle\n\n"
+        "STEP 2 — PRIORITIZE:\n"
+        "🔥 HIGH PRIORITY (aim for 70%):\n"
+        "- Celebrity × beauty collabs (Netflix, K-pop idols, actors)\n"
+        "- Viral or sold-out products (품절, 바이럴, 틱톡)\n"
+        "- Foreign tourists going crazy for K-beauty in Korea\n"
+        "- Unexpected brand moments or surprising product launches\n"
+        "- 'Only in Korea' stories that global audiences wouldn't know\n"
+        "- Daiso beauty finds with insane margin potential\n\n"
+        "📊 LOWER PRIORITY (max 30%):\n"
+        "- Export records, global market expansion news\n"
+        "- Brand entering new country/platform\n"
+        "- Industry trend reports with global seller angle\n\n"
+        "STEP 3 — SELECT MAX 15 articles total\n\n"
+        "OUTPUT RULES — STRICTLY FOLLOW:\n"
+        "- First line only: comma-separated 0-based indices like: 0,3,7,12\n"
+        "- NO explanation, NO reasoning, NO words\n"
+        "- Maximum 15 numbers\n\n"
+        f"Articles:\n{titles_text}"
+    )
+    message = await client.messages.create(
+        model="claude-sonnet-4-6",
+        max_tokens=100,
+        messages=[{"role": "user", "content": prompt}],
+    )
+    response = message.content[0].text.strip().split('\n')[0]
+    selected_indices = list(dict.fromkeys(
+        int(part) for part in re.split(r'[,\s]+', response)
+        if part.isdigit() and 0 <= int(part) < len(articles)
+    ))
+    selected_indices = selected_indices[:15]
+    return [articles[i] for i in selected_indices] if selected_indices else articles[:15]
+
+
 def decode_google_url(url: str) -> str:
     try:
         result = gnewsdecoder(url)
@@ -155,12 +204,56 @@ async def fetch_article_body(url: str) -> str:
         return ""
 
 
-def build_news_message(articles: list[dict]) -> str:
-    lines = [f"📰 오늘의 K뷰티 뉴스 ({len(articles)}건)\n"]
-    for i, a in enumerate(articles, 1):
-        lines.append(f"{i}. {a['category']} {a['title']}")
-    lines.append("\n선택할 번호를 입력하세요 (예: 1,3,5)")
-    return "\n".join(lines)
+async def generate_posts(article: dict) -> tuple[str, str, str]:
+    client = anthropic.AsyncAnthropic(api_key=ANTHROPIC_API_KEY)
+    body = await fetch_article_body(article["link"])
+    body_section = f"Article body (Korean):\n{body[:2000]}\n\n" if body else ""
+
+    prompt = (
+        "You are Tae-o — on the ground in Korea, spotting K-beauty trends before the world catches on.\n\n"
+        f"Article title: {article['title']}\n"
+        f"Category: {article['category']}\n"
+        f"{body_section}"
+        "Write THREE posts in English:\n\n"
+        "[X]\n"
+        "- STRICT MAX 217 characters (link adds 23 chars after)\n"
+        "- EXACTLY one line. No line breaks.\n"
+        "- Raw, punchy, like a trader spotting a signal — not a press release\n"
+        "- Make global sellers feel they're missing out RIGHT NOW\n"
+        "- NO sign-off, NO '— KoreaScout', NO emoji at the end\n"
+        "- Do NOT include any URL\n\n"
+        "[Threads]\n"
+        "- STRICT MAX 477 characters (link adds 23 chars after)\n"
+        "- EXACTLY one line. No line breaks.\n"
+        "- Same energy as X but slightly more context baked in\n"
+        "- NO sign-off, NO '— KoreaScout'\n"
+        "- Do NOT include any URL\n\n"
+        "[LinkedIn]\n"
+        "- One punchy opening line\n"
+        "- 3 bullet insight lines starting with •\n"
+        "- One closing question\n"
+        "- STRICT MAX 700 characters total\n"
+        "- NO sign-off, NO '— KoreaScout'\n"
+        "- Do NOT include any URL\n\n"
+        "Format exactly:\n[X]\n<post>\n\n[Threads]\n<post>\n\n[LinkedIn]\n<post>"
+    )
+
+    message = await client.messages.create(
+        model="claude-sonnet-4-6",
+        max_tokens=900,
+        messages=[{"role": "user", "content": prompt}],
+    )
+    response = message.content[0].text.strip()
+
+    x_match = re.search(r"\[X\]\n(.+?)(?=\n\n\[Threads\]|$)", response, re.DOTALL)
+    threads_match = re.search(r"\[Threads\]\n(.+?)(?=\n\n\[LinkedIn\]|$)", response, re.DOTALL)
+    linkedin_match = re.search(r"\[LinkedIn\]\n(.+?)$", response, re.DOTALL)
+
+    x_post = x_match.group(1).strip() if x_match else response
+    threads_post = threads_match.group(1).strip() if threads_match else response
+    linkedin_post = linkedin_match.group(1).strip() if linkedin_match else response
+
+    return x_post, threads_post, linkedin_post
 
 
 def parse_selection(text: str, total: int) -> list[int]:
@@ -173,141 +266,132 @@ def parse_selection(text: str, total: int) -> list[int]:
     return list(dict.fromkeys(indices))
 
 
-async def generate_posts(article: dict) -> tuple[str, str, str]:
-    client = anthropic.AsyncAnthropic(api_key=ANTHROPIC_API_KEY)
-    prompt = (
-        "You are Tae-o, a Korean beauty industry insider running KoreaScout — "
-        "tracking K-beauty trends for global sellers. You're on the ground in Korea.\n\n"
-        f"Article title: {article['title']}\n"
-        f"Category: {article['category']}\n\n"
-        "Write THREE social media posts in English:\n\n"
-        "[X]\n"
-        "- STRICT MAX 217 characters. Count carefully. Link (23 chars) will be added after.\n"
-        "- One punchy impact line — opinionated, real person reacting\n"
-        "- Hook global sellers with FOMO or market insight\n"
-        "- NO sign-off, NO '— KoreaScout', NO username\n"
-        "- Do NOT include any URL\n\n"
-        "[Threads]\n"
-        "- STRICT MAX 477 characters. Count carefully. Link (23 chars) will be added after.\n"
-        "- One punchy impact line + a bit more context\n"
-        "- Feel like a real post, not a press release\n"
-        "- NO sign-off, NO '— KoreaScout', NO username\n"
-        "- Do NOT include any URL\n\n"
-        "[LinkedIn]\n"
-        "- One punchy opening line\n"
-        "- 3 insight lines for global sellers (each starting with •)\n"
-        "- One closing question to spark engagement\n"
-        "- STRICT MAX 700 characters total\n"
-        "- NO sign-off, NO '— KoreaScout', NO username\n"
-        "- Do NOT include any URL\n\n"
-        "Format exactly:\n[X]\n<post>\n\n[Threads]\n<post>\n\n[LinkedIn]\n<post>"
-    )
-    message = await client.messages.create(
-        model="claude-sonnet-4-6",
-        max_tokens=900,
-        messages=[{"role": "user", "content": prompt}],
-    )
-    response_text = message.content[0].text.strip()
+async def get_last_update_id(bot: Bot) -> int:
+    try:
+        updates = await bot.get_updates(offset=-1, timeout=1)
+        if updates:
+            return updates[-1].update_id
+    except Exception:
+        pass
+    return 0
 
-    x_post = ""
-    threads_post = ""
-    linkedin_post = ""
-    x_match = re.search(r"\[X\]\n(.+?)(?=\n\n\[Threads\]|$)", response_text, re.DOTALL)
-    threads_match = re.search(r"\[Threads\]\n(.+?)(?=\n\n\[LinkedIn\]|$)", response_text, re.DOTALL)
-    linkedin_match = re.search(r"\[LinkedIn\]\n(.+?)$", response_text, re.DOTALL)
-    if x_match:
-        x_post = x_match.group(1).strip()
-    if threads_match:
-        threads_post = threads_match.group(1).strip()
-    if linkedin_match:
-        linkedin_post = linkedin_match.group(1).strip()
 
-    return x_post, threads_post, linkedin_post
+async def wait_for_message(bot: Bot, chat_id: str, last_update_id: int, timeout: int = 300) -> tuple[str, int]:
+    deadline = asyncio.get_event_loop().time() + timeout
+    offset = last_update_id + 1
+    while asyncio.get_event_loop().time() < deadline:
+        try:
+            updates = await bot.get_updates(offset=offset, timeout=10, allowed_updates=["message"])
+            for update in updates:
+                offset = update.update_id + 1
+                if update.message and str(update.message.chat_id) == str(chat_id):
+                    return update.message.text or "", offset - 1
+        except Exception as e:
+            print(f"getUpdates 오류: {e}")
+        await asyncio.sleep(1)
+    return "TIMEOUT", offset - 1
 
 
 async def run_news_bot() -> None:
     bot = Bot(token=TELEGRAM_BOT_TOKEN)
     chat_id = TELEGRAM_CHAT_ID
+    now_kst = datetime.now(KST).strftime("%Y-%m-%d %H:%M KST")
 
+    last_update_id = await get_last_update_id(bot)
+
+    # 1. RSS 수집
+    await bot.send_message(chat_id=chat_id, text=f"🔍 K뷰티 뉴스 수집 중... ({now_kst})")
     seen = load_seen_news()
-    articles = fetch_all_articles(seen)
+    raw_articles = fetch_all_articles(seen)
 
-    if not articles:
-        await bot.send_message(chat_id=chat_id, text="새로운 K뷰티 뉴스가 없습니다.")
+    if not raw_articles:
+        await bot.send_message(chat_id=chat_id, text="📭 새로운 뉴스가 없습니다.")
         return
 
-    news_message = build_news_message(articles)
-    await bot.send_message(chat_id=chat_id, text=news_message)
+    # 2. Claude 필터링
+    await bot.send_message(chat_id=chat_id, text=f"🤖 필터링 중... ({len(raw_articles)}개 → 최대 15개)")
+    filtered = await claude_filter(raw_articles)
 
-    print(f"[{datetime.now().strftime('%H:%M:%S')}] Sent {len(articles)} articles. Waiting for reply...")
-
-    app = Application.builder().token(TELEGRAM_BOT_TOKEN).build()
-    selected_articles: list[dict] = []
-    reply_received = asyncio.Event()
-
-    async def handle_message(update: Update, context) -> None:
-        if str(update.effective_chat.id) != str(chat_id):
-            return
-        text = update.message.text or ""
-        indices = parse_selection(text, len(articles))
-        if not indices:
-            await update.message.reply_text("유효한 번호를 입력해주세요 (예: 1,3,5)")
-            return
-        selected_articles.extend(articles[i] for i in indices)
-        reply_received.set()
-
-    app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))
-
-    await app.initialize()
-    await app.start()
-    await app.updater.start_polling(drop_pending_updates=True)
-
-    try:
-        await asyncio.wait_for(reply_received.wait(), timeout=300)
-    except asyncio.TimeoutError:
-        await bot.send_message(chat_id=chat_id, text="시간 초과. 다시 실행해주세요.")
-        await app.updater.stop()
-        await app.stop()
-        await app.shutdown()
+    if not filtered:
+        await bot.send_message(chat_id=chat_id, text="📭 필터링 후 남은 뉴스가 없습니다.")
         return
 
-    await app.updater.stop()
-    await app.stop()
-    await app.shutdown()
+    # 3. 제목 리스트 전송
+    lines = [f"📰 오늘의 K뷰티 뉴스 ({len(filtered)}건) — {now_kst}\n"]
+    for i, a in enumerate(filtered, 1):
+        lines.append(f"{i}. {a['category']} {a['title']}\n")
+    lines.append("\n포스팅할 번호 입력 (예: 1,3,5)")
+    await bot.send_message(chat_id=chat_id, text="\n".join(lines))
 
-    new_seen = seen | {a["id"] for a in selected_articles}
-    save_seen_news(new_seen)
+    # 4. 번호 입력 대기
+    reply1, last_update_id = await wait_for_message(bot, chat_id, last_update_id)
+    if reply1 == "TIMEOUT":
+        await bot.send_message(chat_id=chat_id, text="⏰ 시간 초과.")
+        return
 
-    for article in selected_articles:
+    indices = parse_selection(reply1, len(filtered))
+    if not indices:
+        await bot.send_message(chat_id=chat_id, text="유효한 번호가 없습니다.")
+        return
+
+    selected = [filtered[i] for i in indices]
+
+    # 5. URL 디코딩 후 링크 전송
+    for article in selected:
         article["link"] = decode_google_url(article["link"])
-        print(f"[{datetime.now().strftime('%H:%M:%S')}] Generating posts for: {article['title']}")
+
+    url_lines = [f"🔗 선택한 기사 ({len(selected)}건)\n"]
+    for i, a in enumerate(selected, 1):
+        url_lines.append(f"{i}. {a['category']} {a['title']}")
+        url_lines.append(f"   {a['link']}\n")
+    url_lines.append("✅ 전체확정: OK  |  일부확정: 번호 재입력 (1,2,3 기준)  |  취소: NO")
+    await bot.send_message(chat_id=chat_id, text="\n".join(url_lines))
+
+    # 6. 최종 확정 대기
+    reply2, last_update_id = await wait_for_message(bot, chat_id, last_update_id)
+    if reply2 == "TIMEOUT" or reply2.upper() == "NO":
+        await bot.send_message(chat_id=chat_id, text="❌ 취소되었습니다.")
+        return
+
+    if reply2.upper() == "OK":
+        final_articles = selected
+    else:
+        final_indices = parse_selection(reply2, len(selected))
+        final_articles = [selected[i] for i in final_indices] if final_indices else selected
+
+    # 7. 포스팅 생성 (X + Threads + LinkedIn)
+    await bot.send_message(chat_id=chat_id, text=f"✍️ {len(final_articles)}개 포스팅 생성 중...")
+    save_seen_news(seen | {a["id"] for a in final_articles})
+
+    for article in final_articles:
+        print(f"생성 중: {article['title']}")
         x_post, threads_post, linkedin_post = await generate_posts(article)
 
         await bot.send_message(
             chat_id=chat_id,
-            text="━━━━━━━━━━━━━━━━━━━━\n🐦 X 포스팅이에요\n━━━━━━━━━━━━━━━━━━━━",
+            text=f"━━━━━━━━━━━━━━━\n𝕏 X 포스팅이에요\n📰 {article['title']}\n━━━━━━━━━━━━━━━"
         )
-        await bot.send_message(chat_id=chat_id, text=x_post + "\n\n" + article["link"])
+        await bot.send_message(chat_id=chat_id, text=f"{x_post}\n\n{article['link']}")
 
         await asyncio.sleep(0.5)
 
         await bot.send_message(
             chat_id=chat_id,
-            text="━━━━━━━━━━━━━━━━━━━━\n🧵 Threads 포스팅이에요\n━━━━━━━━━━━━━━━━━━━━",
+            text=f"━━━━━━━━━━━━━━━\n🧵 스레드 포스팅이에요\n📰 {article['title']}\n━━━━━━━━━━━━━━━"
         )
-        await bot.send_message(chat_id=chat_id, text=threads_post + "\n\n" + article["link"])
+        await bot.send_message(chat_id=chat_id, text=f"{threads_post}\n\n{article['link']}")
 
         await asyncio.sleep(0.5)
 
         await bot.send_message(
             chat_id=chat_id,
-            text="━━━━━━━━━━━━━━━━━━━━\n💼 LinkedIn 포스팅이에요\n━━━━━━━━━━━━━━━━━━━━",
+            text=f"━━━━━━━━━━━━━━━\n💼 LinkedIn 포스팅이에요\n📰 {article['title']}\n━━━━━━━━━━━━━━━"
         )
-        await bot.send_message(chat_id=chat_id, text=linkedin_post + "\n\n" + article["link"])
+        await bot.send_message(chat_id=chat_id, text=f"{linkedin_post}\n\n{article['link']}")
 
         await asyncio.sleep(1)
 
-    print(f"[{datetime.now().strftime('%H:%M:%S')}] Done.")
+    await bot.send_message(chat_id=chat_id, text="✅ 완료! X/스레드/LinkedIn에 업로드 하세요 🚀")
 
 
 def run_scheduler() -> None:
@@ -316,7 +400,7 @@ def run_scheduler() -> None:
     schedule.every().day.at("15:00").do(lambda: asyncio.run(run_news_bot()))
     schedule.every().day.at("20:00").do(lambda: asyncio.run(run_news_bot()))
 
-    print(f"[{datetime.now().strftime('%H:%M:%S')}] Scheduler started. Runs at 06:05 / 11:00 / 15:00 / 20:00 daily.")
+    print(f"[{datetime.now().strftime('%H:%M:%S')}] 스케줄러 시작: 06:05 / 11:00 / 15:00 / 20:00 (KST)")
     while True:
         schedule.run_pending()
         time.sleep(30)
