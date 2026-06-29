@@ -16,6 +16,7 @@ import feedparser
 from googlenewsdecoder import gnewsdecoder
 from dotenv import load_dotenv
 from telegram import Bot
+from telegram.error import TimedOut, NetworkError
 
 load_dotenv()
 
@@ -318,127 +319,129 @@ async def wait_for_message(bot: Bot, chat_id: str, last_update_id: int, timeout:
 
 
 async def run_news_bot() -> None:
-    bot = Bot(token=TELEGRAM_BOT_TOKEN)
-    chat_id = TELEGRAM_CHAT_ID
     now_kst = datetime.now(KST).strftime("%Y-%m-%d %H:%M KST")
+    print(f"[{now_kst}] 뉴스봇 시작")
+    try:
+        bot = Bot(token=TELEGRAM_BOT_TOKEN)
+        chat_id = TELEGRAM_CHAT_ID
 
-    last_update_id = await get_last_update_id(bot)
+        last_update_id = await get_last_update_id(bot)
 
-    # 1. RSS 수집
-    await bot.send_message(chat_id=chat_id, text=f"🔍 K뷰티 뉴스 수집 중... ({now_kst})")
-    seen = load_seen_news()
-    raw_articles = fetch_all_articles(seen)
+        # 1. RSS 수집
+        await bot.send_message(chat_id=chat_id, text=f"🔍 K뷰티 뉴스 수집 중... ({now_kst})")
+        seen = load_seen_news()
+        raw_articles = fetch_all_articles(seen)
 
-    if not raw_articles:
-        await bot.send_message(chat_id=chat_id, text="📭 새로운 뉴스가 없습니다.")
-        return
+        if not raw_articles:
+            await bot.send_message(chat_id=chat_id, text="📭 새로운 뉴스가 없습니다.")
+            return
 
-    # 2. Claude 필터링
-    await bot.send_message(chat_id=chat_id, text=f"🤖 필터링 중... ({len(raw_articles)}개 → 최대 15개)")
-    filtered = await claude_filter(raw_articles)
+        # 2. Claude 필터링
+        await bot.send_message(chat_id=chat_id, text=f"🤖 필터링 중... ({len(raw_articles)}개 → 최대 15개)")
+        filtered = await claude_filter(raw_articles)
 
-    if not filtered:
-        await bot.send_message(chat_id=chat_id, text="📭 필터링 후 남은 뉴스가 없습니다.")
-        return
+        if not filtered:
+            await bot.send_message(chat_id=chat_id, text="📭 필터링 후 남은 뉴스가 없습니다.")
+            return
 
-    # 3. 제목 리스트 전송
-    lines = [f"📰 오늘의 K뷰티 뉴스 ({len(filtered)}건) — {now_kst}\n"]
-    for i, a in enumerate(filtered, 1):
-        lines.append(f"{i}. {a['category']} {a['title']}\n")
-    lines.append("\n포스팅할 번호 입력 (예: 1,3,5)")
-    await bot.send_message(chat_id=chat_id, text="\n".join(lines))
+        # 3. 제목 리스트 전송
+        lines = [f"📰 오늘의 K뷰티 뉴스 ({len(filtered)}건) — {now_kst}\n"]
+        for i, a in enumerate(filtered, 1):
+            lines.append(f"{i}. {a['category']} {a['title']}\n")
+        lines.append("\n포스팅할 번호 입력 (예: 1,3,5)")
+        await bot.send_message(chat_id=chat_id, text="\n".join(lines))
 
-    # 4. 번호 입력 대기
-    reply1, last_update_id = await wait_for_message(bot, chat_id, last_update_id)
-    if reply1 == "TIMEOUT":
-        await bot.send_message(chat_id=chat_id, text="⏰ 시간 초과.")
-        return
+        # 4. 번호 입력 대기
+        reply1, last_update_id = await wait_for_message(bot, chat_id, last_update_id)
+        if reply1 == "TIMEOUT":
+            await bot.send_message(chat_id=chat_id, text="⏰ 시간 초과.")
+            return
 
-    indices = parse_selection(reply1, len(filtered))
-    if not indices:
-        await bot.send_message(chat_id=chat_id, text="유효한 번호가 없습니다.")
-        return
+        indices = parse_selection(reply1, len(filtered))
+        if not indices:
+            await bot.send_message(chat_id=chat_id, text="유효한 번호가 없습니다.")
+            return
 
-    selected = [filtered[i] for i in indices]
+        selected = [filtered[i] for i in indices]
 
-    # 5. URL 디코딩 후 링크 전송
-    for article in selected:
-        article["link"] = decode_google_url(article["link"])
+        # 5. URL 디코딩 후 링크 전송
+        for article in selected:
+            article["link"] = decode_google_url(article["link"])
 
-    url_lines = [f"🔗 선택한 기사 ({len(selected)}건)\n"]
-    for i, a in enumerate(selected, 1):
-        url_lines.append(f"{i}. {a['category']} {a['title']}")
-        url_lines.append(f"   {a['link']}\n")
-    url_lines.append("✅ 전체확정: OK  |  일부확정: 번호 재입력 (1,2,3 기준)  |  취소: NO")
-    await bot.send_message(chat_id=chat_id, text="\n".join(url_lines))
+        url_lines = [f"🔗 선택한 기사 ({len(selected)}건)\n"]
+        for i, a in enumerate(selected, 1):
+            url_lines.append(f"{i}. {a['category']} {a['title']}")
+            url_lines.append(f"   {a['link']}\n")
+        url_lines.append("✅ 전체확정: OK  |  일부확정: 번호 재입력 (1,2,3 기준)  |  취소: NO")
+        await bot.send_message(chat_id=chat_id, text="\n".join(url_lines))
 
-    # 6. 최종 확정 대기
-    reply2, last_update_id = await wait_for_message(bot, chat_id, last_update_id)
-    if reply2 == "TIMEOUT" or reply2.upper() == "NO":
-        await bot.send_message(chat_id=chat_id, text="❌ 취소되었습니다.")
-        return
+        # 6. 최종 확정 대기
+        reply2, last_update_id = await wait_for_message(bot, chat_id, last_update_id)
+        if reply2 == "TIMEOUT" or reply2.upper() == "NO":
+            await bot.send_message(chat_id=chat_id, text="❌ 취소되었습니다.")
+            return
 
-    if reply2.upper() == "OK":
-        final_articles = selected
-    else:
-        final_indices = parse_selection(reply2, len(selected))
-        final_articles = [selected[i] for i in final_indices] if final_indices else selected
+        if reply2.upper() == "OK":
+            final_articles = selected
+        else:
+            final_indices = parse_selection(reply2, len(selected))
+            final_articles = [selected[i] for i in final_indices] if final_indices else selected
 
-    # 7. 기사별 본문 복붙 받고 포스팅 생성
-    save_seen_news(seen | {a["id"] for a in final_articles})
+        # 7. 기사별 본문 복붙 받고 포스팅 생성
+        save_seen_news(seen | {a["id"] for a in final_articles})
 
-    for article in final_articles:
-        await bot.send_message(
-            chat_id=chat_id,
-            text=f"📋 기사 본문을 붙여넣어 주세요\n\n📰 {article['title']}\n🔗 {article['link']}\n\n기사 전체 내용을 복사해서 보내주세요 👇"
-        )
+        for article in final_articles:
+            await bot.send_message(
+                chat_id=chat_id,
+                text=f"📋 기사 본문을 붙여넣어 주세요\n\n📰 {article['title']}\n🔗 {article['link']}\n\n기사 전체 내용을 복사해서 보내주세요 👇"
+            )
 
-        body_reply, last_update_id = await wait_for_message(bot, chat_id, last_update_id, timeout=600)
-        if body_reply == "TIMEOUT":
-            await bot.send_message(chat_id=chat_id, text="⏰ 시간 초과. 다음 기사로 넘어갑니다.")
-            continue
+            body_reply, last_update_id = await wait_for_message(bot, chat_id, last_update_id, timeout=600)
+            if body_reply == "TIMEOUT":
+                await bot.send_message(chat_id=chat_id, text="⏰ 시간 초과. 다음 기사로 넘어갑니다.")
+                continue
 
-        article_body = body_reply.strip()
+            article_body = body_reply.strip()
 
-        await bot.send_message(chat_id=chat_id, text="✍️ 포스팅 생성 중...")
-        print(f"생성 중: {article['title']}")
+            await bot.send_message(chat_id=chat_id, text="✍️ 포스팅 생성 중...")
+            print(f"생성 중: {article['title']}")
 
-        x_post, threads_post, linkedin_post = await asyncio.gather(
-            generate_x_post(article, article_body),
-            generate_threads_post(article, article_body),
-            generate_linkedin_post(article, article_body),
-        )
+            x_post, threads_post, linkedin_post = await asyncio.gather(
+                generate_x_post(article, article_body),
+                generate_threads_post(article, article_body),
+                generate_linkedin_post(article, article_body),
+            )
 
-        await bot.send_message(
-            chat_id=chat_id,
-            text=f"━━━━━━━━━━━━━━━\n𝕏 X 포스팅이에요\n📰 {article['title']}\n━━━━━━━━━━━━━━━"
-        )
-        await bot.send_message(chat_id=chat_id, text=f"{x_post}\n\n{article['link']}")
-        await asyncio.sleep(0.5)
+            await bot.send_message(
+                chat_id=chat_id,
+                text=f"━━━━━━━━━━━━━━━\n𝕏 X 포스팅이에요\n📰 {article['title']}\n━━━━━━━━━━━━━━━"
+            )
+            await bot.send_message(chat_id=chat_id, text=f"{x_post}\n\n{article['link']}")
+            await asyncio.sleep(0.5)
 
-        await bot.send_message(
-            chat_id=chat_id,
-            text=f"━━━━━━━━━━━━━━━\n🧵 스레드 포스팅이에요\n📰 {article['title']}\n━━━━━━━━━━━━━━━"
-        )
-        await bot.send_message(chat_id=chat_id, text=f"{threads_post}\n\n{article['link']}")
-        await asyncio.sleep(0.5)
+            await bot.send_message(
+                chat_id=chat_id,
+                text=f"━━━━━━━━━━━━━━━\n🧵 스레드 포스팅이에요\n📰 {article['title']}\n━━━━━━━━━━━━━━━"
+            )
+            await bot.send_message(chat_id=chat_id, text=f"{threads_post}\n\n{article['link']}")
+            await asyncio.sleep(0.5)
 
-        await bot.send_message(
-            chat_id=chat_id,
-            text=f"━━━━━━━━━━━━━━━\n💼 LinkedIn 포스팅이에요\n📰 {article['title']}\n━━━━━━━━━━━━━━━"
-        )
-        await bot.send_message(chat_id=chat_id, text=f"{linkedin_post}\n\n{article['link']}")
-        await asyncio.sleep(1)
+            await bot.send_message(
+                chat_id=chat_id,
+                text=f"━━━━━━━━━━━━━━━\n💼 LinkedIn 포스팅이에요\n📰 {article['title']}\n━━━━━━━━━━━━━━━"
+            )
+            await bot.send_message(chat_id=chat_id, text=f"{linkedin_post}\n\n{article['link']}")
+            await asyncio.sleep(1)
 
-    await bot.send_message(chat_id=chat_id, text="✅ 완료! X/스레드/LinkedIn에 업로드 하세요 🚀")
+        await bot.send_message(chat_id=chat_id, text="✅ 완료! X/스레드/LinkedIn에 업로드 하세요 🚀")
+
+    except (TimedOut, NetworkError) as e:
+        print(f"[{now_kst}] 네트워크 오류 (다음 스케줄에 재시도): {e}")
+    except Exception as e:
+        print(f"[{now_kst}] 오류: {e}")
 
 
 def run_scheduler() -> None:
-    # 06:05 KST → 미국 퇴근 직전 (ET 17:05)
-    # 08:00 KST → 미국 퇴근 후 피드 (ET 19:00)
-    # 11:00 KST → 미국 저녁 먹고 피드 (ET 22:00)
-    # 22:00 KST → 미국 아침 골든타임 (ET 09:00) 🥇
-    # 23:00 KST → 미국 아침 피크 (ET 10:00) 🥇
     schedule.every().day.at("06:05").do(lambda: asyncio.run(run_news_bot()))
     schedule.every().day.at("08:00").do(lambda: asyncio.run(run_news_bot()))
     schedule.every().day.at("11:00").do(lambda: asyncio.run(run_news_bot()))
