@@ -192,36 +192,27 @@ def decode_google_url(url: str) -> str:
 
 
 async def generate_x_post(article: dict, body: str) -> str:
-    """
-    X — 50~100자 저격수
-    데이터: <100자가 RT/좋아요 피크. em dash(—) 구조가 스크롤 스탑.
-    """
     client = anthropic.AsyncAnthropic(api_key=ANTHROPIC_API_KEY)
     body_section = f"Article body:\n{body}\n\n" if body else ""
-
     prompt = (
         "You write X posts for KoreaScout — K-beauty intelligence for global sellers.\n\n"
-        "TARGET LENGTH: 50–100 characters. This is data-proven peak engagement for B2B.\n"
-        "If you go over 100 characters, you have failed. Cut ruthlessly.\n\n"
-        "THE ONLY STRUCTURE THAT WORKS:\n"
-        "[Specific fact] — [What it means for sellers right now.]\n"
+        "TARGET LENGTH: 50–100 characters. Data-proven peak B2B engagement.\n"
+        "If you exceed 100 characters, you have failed. Cut ruthlessly.\n\n"
+        "STRUCTURE: [Specific fact] — [Seller implication.]\n"
         "Use em dash (—) or colon (:) as the pivot. Never a comma.\n\n"
-        "WHAT 'SPECIFIC FACT' MEANS:\n"
-        "- A brand name, number, place, or action from the article\n"
-        "- NOT: 'K-beauty is growing' (vague)\n"
-        "- YES: 'Maenyeo Factory just landed in Olive Young LA #2' (specific)\n\n"
-        "BANNED WORDS: significant, leverage, landscape, differentiation, "
-        "synergy, amid, planting flags, behind the curve, game changer\n\n"
+        "SHARP FACT = brand name OR number OR place OR specific action from the article.\n"
+        "NOT 'K-beauty is growing' — YES 'Maenyeo Factory just landed in Olive Young LA #2'\n\n"
+        "BANNED WORDS: significant, leverage, landscape, differentiation, synergy, "
+        "amid, planting flags, behind the curve, game changer, at scale\n"
         "BANNED PATTERNS:\n"
-        "- Two sentences → delete the second\n"
+        "- Two sentences → delete the second one, period\n"
         "- Starting with 'The' or 'A' → rewrite\n"
-        "- Ending with a question → cut it\n\n"
+        "- Any summary after the dash → cut it\n\n"
         f"Article title: {article['title']}\n"
         f"Category: {article['category']}\n"
         f"{body_section}"
-        "Write ONE line. 50–100 characters. Em dash structure. Nothing else."
+        "Write ONE line. 50–100 characters. Em dash structure. Output post text only."
     )
-
     message = await client.messages.create(
         model="claude-sonnet-4-6",
         max_tokens=40,
@@ -231,35 +222,28 @@ async def generate_x_post(article: dict, body: str) -> str:
 
 
 async def generate_threads_post(article: dict, body: str) -> str:
-    """
-    Threads — 1+2+1 구조, 200자 이내
-    데이터: 멀티센텐스 + 줄바꿈 + 질문 마무리가 Save 수 최고
-    """
     client = anthropic.AsyncAnthropic(api_key=ANTHROPIC_API_KEY)
     body_section = f"Article body:\n{body}\n\n" if body else ""
-
     prompt = (
         "You write Threads posts for KoreaScout — K-beauty intelligence for global sellers.\n\n"
-        "STRUCTURE (1-2-1 pattern — proven highest Save rate on Threads):\n"
-        "Line 1: Hook — one punchy fact, NO period at end (keeps reader moving)\n"
+        "STRUCTURE (1-2-1 pattern — highest Save rate on Threads algorithm):\n"
+        "Line 1: Hook — one punchy fact, NO period at end\n"
         "[empty line]\n"
-        "Line 2: Context — what makes this fact surprising or important\n"
-        "Line 3: Seller angle — what this means in money or distribution terms\n"
+        "Line 2: Context — what makes this surprising\n"
+        "Line 3: Seller angle — money or distribution implication\n"
         "[empty line]\n"
-        "Line 4: Specific question — make industry insiders want to answer\n\n"
-        "LENGTH: Under 200 characters total (excluding the link added after).\n"
-        "Each line should be SHORT. Cut every unnecessary word.\n\n"
-        "THE QUESTION RULE:\n"
-        "- Must be specific enough that someone with real knowledge has a real answer\n"
-        "- NOT: 'What do you think?' → too vague\n"
-        "- YES: 'Which market is moving on NAD first — US or EU?' → specific\n\n"
-        "BANNED: sign-off, hashtags, journalist words, consultant words\n\n"
+        "Line 4: Specific question — industry insiders must want to answer this\n\n"
+        "LENGTH: Under 200 characters total.\n\n"
+        "CRITICAL RULES:\n"
+        "- After Line 2 and Line 3, do NOT add a summary sentence\n"
+        "- NEVER write 'That's X at scale' / 'This is Y' / 'That means Z' — these are banned\n"
+        "- No sign-off. No hashtags. No journalist words. No consultant words.\n"
+        "- The question must be specific — not 'What do you think?' level\n\n"
         f"Article title: {article['title']}\n"
         f"Category: {article['category']}\n"
         f"{body_section}"
-        "Write the 1-2-1 Threads post now. Under 200 chars. Nothing else."
+        "Write the 1-2-1 Threads post. Under 200 chars. Output post text only."
     )
-
     message = await client.messages.create(
         model="claude-sonnet-4-6",
         max_tokens=80,
@@ -269,32 +253,26 @@ async def generate_threads_post(article: dict, body: str) -> str:
 
 
 async def generate_linkedin_post(article: dict, body: str) -> str:
-    """
-    LinkedIn — 인사이더 분석
-    오프닝 한 방 + 불릿 3개(돈/시장 앵글) + 전문가 질문
-    """
     client = anthropic.AsyncAnthropic(api_key=ANTHROPIC_API_KEY)
     body_section = f"Article body:\n{body}\n\n" if body else ""
-
     prompt = (
         "You write LinkedIn posts for KoreaScout — K-beauty intelligence for global sellers.\n\n"
         "STRUCTURE:\n"
-        "Line 1: One punchy sentence — concrete fact + seller implication (same Tae-o energy)\n"
+        "Line 1: One punchy sentence — concrete fact + seller implication\n"
         "Lines 2-4: Three bullets starting with •\n"
         "  Each bullet = specific market/money insight (size, gap, timing, margin)\n"
-        "  Each bullet answers: 'so what does this mean in dollars or distribution?'\n"
-        "Line 5: One specific question — industry insiders should want to answer this\n\n"
-        "BULLET QUALITY CHECK:\n"
-        "- Contains a number, market name, or time window → GOOD\n"
+        "  Each bullet answers: 'what does this mean in dollars or distribution?'\n"
+        "Line 5: One specific question — industry insiders should want to answer\n\n"
+        "BULLET QUALITY:\n"
+        "- Contains number, market name, or time window → GOOD\n"
         "- Vague observation without data → REWRITE\n\n"
         "STRICT MAX: 700 characters total\n"
-        "NO sign-off. NO hashtags. NO consultant words.\n\n"
+        "NO sign-off. NO hashtags. NO consultant words. NO summary sentences.\n\n"
         f"Article title: {article['title']}\n"
         f"Category: {article['category']}\n"
         f"{body_section}"
-        "Write the LinkedIn post now. Under 700 chars. Nothing else."
+        "Write the LinkedIn post. Under 700 chars. Output post text only."
     )
-
     message = await client.messages.create(
         model="claude-sonnet-4-6",
         max_tokens=400,
@@ -456,11 +434,11 @@ async def run_news_bot() -> None:
 
 
 def run_scheduler() -> None:
-    # 06:05 KST → 미국 퇴근 직전 피드
-    # 08:00 KST → 미국 퇴근 후 피드
-    # 11:00 KST → 미국 저녁 먹고 피드
-    # 22:00 KST → 미국 아침 골든타임 (9AM ET) 🥇
-    # 23:00 KST → 미국 아침 피크 (10AM ET) 🥇
+    # 06:05 KST → 미국 퇴근 직전 (ET 17:05)
+    # 08:00 KST → 미국 퇴근 후 피드 (ET 19:00)
+    # 11:00 KST → 미국 저녁 먹고 피드 (ET 22:00)
+    # 22:00 KST → 미국 아침 골든타임 (ET 09:00) 🥇
+    # 23:00 KST → 미국 아침 피크 (ET 10:00) 🥇
     schedule.every().day.at("06:05").do(lambda: asyncio.run(run_news_bot()))
     schedule.every().day.at("08:00").do(lambda: asyncio.run(run_news_bot()))
     schedule.every().day.at("11:00").do(lambda: asyncio.run(run_news_bot()))
