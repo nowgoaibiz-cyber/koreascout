@@ -1,0 +1,227 @@
+
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  .page { background: #F8F7F4; padding: 48px 52px; max-width: 900px; color: #0A0908; font-family: system-ui, sans-serif; }
+  .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 36px; }
+  .logo-text { font-size: 28px; font-weight: 900; letter-spacing: -1px; color: #0A0908; }
+  .tagline-sm { font-size: 12px; color: #888; text-align: right; line-height: 1.6; }
+  .divider { height: 0.5px; background: #DDD; margin: 28px 0; }
+  .section-label { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: #16A34A; font-weight: 700; margin-bottom: 10px; }
+  .hero h1 { font-size: 30px; font-weight: 900; line-height: 1.25; color: #0A0908; margin-bottom: 10px; }
+  .hero h1 span { color: #16A34A; }
+  .hero p { font-size: 15px; color: #666; line-height: 1.8; }
+  .compare-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 24px; }
+  .compare-card { background: #fff; border: 0.5px solid #E0DED9; border-radius: 12px; padding: 18px 20px; }
+  .compare-card.active { border-color: #16A34A; border-width: 1.5px; }
+  .compare-title { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 12px; }
+  .compare-title.bad { color: #bbb; }
+  .compare-title.good { color: #16A34A; }
+  .compare-row { display: flex; justify-content: space-between; align-items: center; padding: 7px 0; border-bottom: 0.5px solid #F0EEE9; font-size: 13px; color: #555; }
+  .compare-row:last-child { border-bottom: none; }
+  .bad-val { color: #E25252; font-weight: 700; }
+  .good-val { color: #16A34A; font-weight: 700; }
+  .checklist { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 24px; margin-bottom: 24px; }
+  .check-item { display: flex; align-items: flex-start; gap: 8px; padding: 6px 0; }
+  .check-icon { color: #16A34A; font-size: 14px; margin-top: 2px; flex-shrink: 0; font-weight: 700; }
+  .check-text strong { font-size: 13px; font-weight: 700; color: #0A0908; display: block; margin-bottom: 2px; }
+  .check-text span { font-size: 12px; color: #999; }
+  .checklist-note { font-size: 12px; color: #999; margin-bottom: 14px; font-style: italic; }
+  .trust-wrap { background: #0A0908; border-radius: 16px; padding: 28px 28px; margin-bottom: 28px; }
+  .trust-eyebrow { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: #16A34A; font-weight: 700; margin-bottom: 10px; }
+  .trust-headline { font-size: 20px; font-weight: 800; color: #F8F7F4; line-height: 1.4; margin-bottom: 8px; }
+  .trust-sub { font-size: 13px; color: #777; line-height: 1.8; margin-bottom: 24px; }
+  .bridge-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-bottom: 24px; }
+  .bridge-card { background: #141412; border: 0.5px solid #2A2A28; border-radius: 12px; padding: 16px 18px; }
+  .bridge-q { font-size: 13px; color: #888; margin-bottom: 6px; }
+  .bridge-a { font-size: 17px; font-weight: 800; color: #16A34A; }
+  .story-divider { height: 0.5px; background: #222; margin: 0 0 20px; }
+  .cred-who { background: #141412; border: 0.5px solid #2A2A28; border-radius: 12px; padding: 20px 22px; margin-bottom: 12px; }
+  .cred-who-inner { display: grid; grid-template-columns: 220px 0.5px 1fr; gap: 20px; align-items: start; }
+  .cred-vdivider { background: #2A2A28; align-self: stretch; }
+  .cred-step { font-size: 10px; color: #16A34A; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 8px; }
+  .cred-title { font-size: 14px; font-weight: 800; color: #F8F7F4; line-height: 1.4; margin-bottom: 10px; }
+  .cred-tags { display: flex; gap: 6px; flex-wrap: wrap; }
+  .cred-tag { background: #1F1F1D; border: 0.5px solid #333; border-radius: 100px; padding: 4px 12px; font-size: 11px; color: #AAA; }
+  .cred-tag.green { border-color: #16A34A; color: #16A34A; }
+  .cred-desc { font-size: 13px; color: #888; line-height: 1.75; }
+  .cred-bottom { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .cred-card { background: #141412; border: 0.5px solid #2A2A28; border-radius: 12px; padding: 18px 20px; }
+  .pkg-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-bottom: 24px; }
+  .pkg-card { background: #fff; border: 0.5px solid #E0DED9; border-radius: 12px; padding: 18px 18px; }
+  .pkg-card.featured { border-color: #16A34A; border-width: 1.5px; }
+  .pkg-name { font-size: 11px; text-transform: uppercase; letter-spacing: 0.8px; color: #999; margin-bottom: 6px; font-weight: 700; }
+  .pkg-name.green { color: #16A34A; }
+  .pkg-price { font-size: 26px; font-weight: 800; color: #0A0908; margin-bottom: 10px; }
+  .pkg-price span { font-size: 13px; font-weight: 400; color: #999; }
+  .pkg-item { font-size: 12px; color: #555; padding: 4px 0; display: flex; align-items: center; gap: 8px; }
+  .pkg-item::before { content: ""; width: 5px; height: 5px; background: #16A34A; border-radius: 50%; flex-shrink: 0; }
+  .cta-bar { background: #16A34A; border-radius: 12px; padding: 20px 28px; display: flex; justify-content: space-between; align-items: center; }
+  .cta-left strong { font-size: 18px; font-weight: 800; color: #fff; display: block; margin-bottom: 4px; }
+  .cta-left span { font-size: 13px; color: rgba(255,255,255,0.75); }
+  .cta-right { font-size: 13px; font-weight: 700; color: #fff; background: rgba(255,255,255,0.18); padding: 10px 22px; border-radius: 100px; white-space: nowrap; }
+</style>
+
+<div class="page">
+
+  <div class="header">
+    <div class="logo-text">KoreaScout</div>
+    <div class="tagline-sm">K-Beauty Product Intelligence<br>for Amazon FBA Sellers</div>
+  </div>
+
+  <div class="hero" style="margin-bottom:28px;">
+    <h1><strong>The K-Beauty Trend Pipeline.</strong><br><span>Before Your Feed Knows It Exists.</span></h1>
+    <p style="margin-top:12px;">
+      Everyone's selling the same products.<br>
+      The winners find what Korea is buying — before it hits global feeds.
+    </p>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="section-label">Time vs. money</div>
+  <div class="compare-grid">
+    <div class="compare-card">
+      <div class="compare-title bad">Manual research</div>
+      <div class="compare-row"><span>Find trending product</span><span class="bad-val">8 hrs</span></div>
+      <div class="compare-row"><span>Verify market demand</span><span class="bad-val">6 hrs</span></div>
+      <div class="compare-row"><span>Find Korean supplier</span><span class="bad-val">12 hrs</span></div>
+      <div class="compare-row"><span>Analyze 6 global markets</span><span class="bad-val">16 hrs</span></div>
+      <div class="compare-row"><span>Export + logistics check</span><span class="bad-val">8 hrs</span></div>
+      <div style="padding-top:10px; font-size:13px; font-weight:700; color:#E25252;">Total: ~50 hours per product</div>
+    </div>
+    <div class="compare-card active">
+      <div class="compare-title good">KoreaScout</div>
+      <div class="compare-row"><span>Find trending product</span><span class="good-val">Included</span></div>
+      <div class="compare-row"><span>Verify market demand</span><span class="good-val">Included</span></div>
+      <div class="compare-row"><span>Find Korean supplier</span><span class="good-val">Included</span></div>
+      <div class="compare-row"><span>Analyze 6 global markets</span><span class="good-val">Included</span></div>
+      <div class="compare-row"><span>Export + logistics check</span><span class="good-val">Included</span></div>
+      <div style="padding-top:10px; font-size:13px; font-weight:700; color:#16A34A;">With KoreaScout: Done.</div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="section-label">What's in your report</div>
+  <div class="checklist-note">* Contents vary by package — see Packages section below</div>
+  <div class="checklist">
+    <div class="check-item"><span class="check-icon">✓</span><div class="check-text"><strong>Market Score</strong><span>demand + trend fit</span></div></div>
+    <div class="check-item"><span class="check-icon">✓</span><div class="check-text"><strong>Gap Index</strong><span>KR buzz vs global reach</span></div></div>
+    <div class="check-item"><span class="check-icon">✓</span><div class="check-text"><strong>Margin Analysis</strong><span>KR wholesale → global</span></div></div>
+    <div class="check-item"><span class="check-icon">✓</span><div class="check-text"><strong>SEO Keywords + Viral Hashtags</strong><span>ready to use</span></div></div>
+    <div class="check-item"><span class="check-icon">✓</span><div class="check-text"><strong>6 Global Market Prices</strong><span>US · UK · EU · JP · SEA · UAE</span></div></div>
+    <div class="check-item"><span class="check-icon">✓</span><div class="check-text"><strong>HS Code + Export Readiness</strong><span>customs-ready</span></div></div>
+    <div class="check-item"><span class="check-icon">✓</span><div class="check-text"><strong>Manufacturer B2B Contact</strong><span>Standard+ · brand · email · inquiry</span></div></div>
+    <div class="check-item"><span class="check-icon">✓</span><div class="check-text"><strong>4K Field Footage</strong><span>Elite only · filmed in Seoul</span></div></div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="trust-wrap">
+    <div class="trust-eyebrow">Why trust us</div>
+    <div class="trust-headline">Built our own AI engine from scratch.<br>Our Seoul team verifies every signal by hand.</div>
+    <div class="trust-sub">
+      We didn't buy a tool. We built one.<br>
+      Then we put boots on the ground in Korea to make sure the data is real.
+    </div>
+
+    <div class="bridge-grid">
+      <div class="bridge-card">
+        <div class="bridge-q">Language barrier?</div>
+        <div class="bridge-a">Eliminated.</div>
+      </div>
+      <div class="bridge-card">
+        <div class="bridge-q">Next viral trend?</div>
+        <div class="bridge-a">Pre-scouted.</div>
+      </div>
+      <div class="bridge-card">
+        <div class="bridge-q">Sourcing & logistics?</div>
+        <div class="bridge-a">Handled.</div>
+      </div>
+    </div>
+
+    <div class="story-divider"></div>
+
+    <div class="cred-who">
+      <div class="cred-who-inner">
+        <div>
+          <div class="cred-step">Who we are</div>
+          <div class="cred-title">K-Commerce B2B<br>Business Development<br>Specialist<br><span style="color:#16A34A;">Coupang & Shinhan Bank</span></div>
+          <div class="cred-tags">
+            <span class="cred-tag green">Coupang — Korea's Amazon</span>
+            <span class="cred-tag green">Shinhan Bank</span>
+          </div>
+        </div>
+        <div class="cred-vdivider"></div>
+        <div>
+          <div class="cred-desc">
+            We didn't learn Korean commerce from a YouTube video.<br><br>
+            We spent years inside Korea's #1 ecommerce company and a major financial institution doing B2B business development — learning how Korean supply chains, pricing structures, and distribution channels actually work from the inside.<br><br>
+            That's the difference between a tool that scrapes data and a team that understands what the data actually means.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="cred-bottom">
+      <div class="cred-card">
+        <div class="cred-step">How we built it</div>
+        <div class="cred-title">Korean Government Startup Program selectee</div>
+        <div class="cred-desc">Selected by the Ministry of SMEs. Government-backed validation of our AI intelligence platform. A recognized startup — not a random freelancer.</div>
+        <div class="cred-tags" style="margin-top:10px;">
+          <span class="cred-tag green">Gov. Certified</span>
+          <span class="cred-tag">Ministry of SMEs</span>
+        </div>
+      </div>
+      <div class="cred-card">
+        <div class="cred-step">Why it works</div>
+        <div class="cred-title">Seoul-based. Human-verified. Not scraped.</div>
+        <div class="cred-desc">500+ products scanned weekly. 50+ cross-border signals per report. Real data from real people on the ground in Korea.</div>
+        <div class="cred-tags" style="margin-top:10px;">
+          <span class="cred-tag green">500+ weekly scans</span>
+          <span class="cred-tag">50+ signals/report</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-label">Packages</div>
+  <div class="pkg-grid">
+    <div class="pkg-card">
+      <div class="pkg-name">Starter Scout</div>
+      <div class="pkg-price">$15 <span>/ report</span></div>
+      <div class="pkg-item">1 product report</div>
+      <div class="pkg-item">Market Score + Gap Index</div>
+      <div class="pkg-item">Margin Analysis</div>
+      <div class="pkg-item">6 Global Market Prices</div>
+      <div class="pkg-item">SEO Keywords + HS Code</div>
+    </div>
+    <div class="pkg-card featured">
+      <div class="pkg-name green">Pro Scout</div>
+      <div class="pkg-price">$50 <span>/ report</span></div>
+      <div class="pkg-item">3 product reports</div>
+      <div class="pkg-item">Everything in Starter Scout</div>
+      <div class="pkg-item">Manufacturer B2B Contact</div>
+      <div class="pkg-item">Brand · Website · Email</div>
+      <div class="pkg-item">Direct inquiry link</div>
+    </div>
+    <div class="pkg-card">
+      <div class="pkg-name">Elite Scout</div>
+      <div class="pkg-price">$100 <span>/ report</span></div>
+      <div class="pkg-item">5 product reports</div>
+      <div class="pkg-item">Everything in Pro Scout</div>
+      <div class="pkg-item">4K Field Footage (Raw)</div>
+      <div class="pkg-item">Product demo + texture</div>
+      <div class="pkg-item">Filmed in Seoul, Korea</div>
+    </div>
+  </div>
+
+  <div class="cta-bar">
+    <div class="cta-left">
+      <strong>We Scout. You Sell.</strong>
+      <span>Don't guess. Scout smarter. Message us on Fiverr.</span>
+    </div>
+    <div class="cta-right">Message on Fiverr →</div>
+  </div>
+
+</div>

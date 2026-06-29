@@ -181,6 +181,12 @@ export default function ScriptGeneratorPage() {
           >
             Script Generator
           </a>
+          <a
+            href="/admin/orders"
+            className="px-4 py-3 text-sm font-medium border-b-2 border-transparent text-[#9E9C98] hover:text-[#1A1916] transition-colors"
+          >
+            Orders
+          </a>
         </nav>
       </div>
 
