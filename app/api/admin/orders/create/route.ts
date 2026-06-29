@@ -66,7 +66,7 @@ export async function POST(req: NextRequest) {
 
     const { data: order, error: orderError } = await supabase
       .from("client_orders")
-      .insert({ buyer_name, platform, package_tier })
+      .insert({ buyer_name, platform: platform.toLowerCase(), package_tier })
       .select("id")
       .single();
 
