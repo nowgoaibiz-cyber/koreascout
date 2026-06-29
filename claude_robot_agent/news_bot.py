@@ -151,7 +151,7 @@ async def claude_filter(articles: list[dict]) -> list[dict]:
         "- Purely domestic Korean consumer news with zero global angle\n\n"
         "STEP 2 — PRIORITIZE:\n"
         "🔥 HIGH PRIORITY (aim for 70%):\n"
-        "- Celebrity × beauty collabs (Netflix, K-pop idols, actors)\n"
+        "- Celebrity x beauty collabs (Netflix, K-pop idols, actors)\n"
         "- Viral or sold-out products (품절, 바이럴, 틱톡)\n"
         "- Foreign tourists going crazy for K-beauty in Korea\n"
         "- Unexpected brand moments or surprising product launches\n"
@@ -162,10 +162,9 @@ async def claude_filter(articles: list[dict]) -> list[dict]:
         "- Brand entering new country/platform\n"
         "- Industry trend reports with global seller angle\n\n"
         "STEP 3 — SELECT MAX 15 articles total\n\n"
-        "OUTPUT RULES — STRICTLY FOLLOW:\n"
+        "OUTPUT RULES:\n"
         "- First line only: comma-separated 0-based indices like: 0,3,7,12\n"
-        "- NO explanation, NO reasoning, NO words\n"
-        "- Maximum 15 numbers\n\n"
+        "- NO explanation, NO words. Maximum 15 numbers.\n\n"
         f"Articles:\n{titles_text}"
     )
     message = await client.messages.create(
@@ -194,51 +193,38 @@ def decode_google_url(url: str) -> str:
 
 async def generate_x_post(article: dict, body: str) -> str:
     """
-    X 포스팅 — 저격수 스타일
-    규칙: 반드시 ONE sentence. 가장 날카로운 팩트 하나 + 셀러 임팩트.
+    X — 50~100자 저격수
+    데이터: <100자가 RT/좋아요 피크. em dash(—) 구조가 스크롤 스탑.
     """
     client = anthropic.AsyncAnthropic(api_key=ANTHROPIC_API_KEY)
     body_section = f"Article body:\n{body}\n\n" if body else ""
 
     prompt = (
-        "You are Tae-o. You write X (Twitter) posts about K-beauty for global sellers.\n\n"
-
-        "YOUR ONLY JOB: Find the sharpest fact in the article. Write ONE sentence about it.\n\n"
-
-        "HOW TO THINK (not a template — a mindset):\n"
-        "1. What is the single most surprising or money-relevant fact in this article?\n"
-        "2. What does that fact mean for a global seller RIGHT NOW?\n"
-        "3. Combine those two things into ONE sentence. No more.\n\n"
-
-        "SENTENCE STRUCTURES that work (vary these — don't copy them):\n"
-        "- [Specific fact]. [What it means for sellers who are paying attention].\n"
-        "- [Person/brand] just [did specific thing]. [Implication in seller terms].\n"
-        "- [Number or concrete detail] — [what that number actually means].\n\n"
-
-        "WHAT MAKES A FACT 'SHARP':\n"
-        "- Specific: a name, a number, a place, an action\n"
-        "- Surprising: something the reader didn't already assume\n"
-        "- Actionable: a seller can DO something with this information\n\n"
-
-        "ABSOLUTE RULES:\n"
-        "- ONE sentence only. If you write two, delete the second.\n"
-        "- STRICT MAX 217 characters (link adds 23 chars after — count carefully)\n"
-        "- No sign-off. No hashtags. No emoji. No ellipsis.\n"
-        "- No journalist words: 'amid', 'leverage', 'landscape', 'significant', 'amid growing'\n"
-        "- No consultant words: 'differentiation', 'synergy', 'pipeline', 'ecosystem'\n"
-        "- No clichés: 'behind the curve', 'planting flags', 'game changer'\n"
-        "- If it sounds like a news headline → rewrite it as a text to a friend\n\n"
-
+        "You write X posts for KoreaScout — K-beauty intelligence for global sellers.\n\n"
+        "TARGET LENGTH: 50–100 characters. This is data-proven peak engagement for B2B.\n"
+        "If you go over 100 characters, you have failed. Cut ruthlessly.\n\n"
+        "THE ONLY STRUCTURE THAT WORKS:\n"
+        "[Specific fact] — [What it means for sellers right now.]\n"
+        "Use em dash (—) or colon (:) as the pivot. Never a comma.\n\n"
+        "WHAT 'SPECIFIC FACT' MEANS:\n"
+        "- A brand name, number, place, or action from the article\n"
+        "- NOT: 'K-beauty is growing' (vague)\n"
+        "- YES: 'Maenyeo Factory just landed in Olive Young LA #2' (specific)\n\n"
+        "BANNED WORDS: significant, leverage, landscape, differentiation, "
+        "synergy, amid, planting flags, behind the curve, game changer\n\n"
+        "BANNED PATTERNS:\n"
+        "- Two sentences → delete the second\n"
+        "- Starting with 'The' or 'A' → rewrite\n"
+        "- Ending with a question → cut it\n\n"
         f"Article title: {article['title']}\n"
         f"Category: {article['category']}\n"
         f"{body_section}"
-        "Write the X post now. ONE sentence only.\n"
-        "Output only the post text, nothing else."
+        "Write ONE line. 50–100 characters. Em dash structure. Nothing else."
     )
 
     message = await client.messages.create(
         model="claude-sonnet-4-6",
-        max_tokens=100,
+        max_tokens=40,
         messages=[{"role": "user", "content": prompt}],
     )
     return message.content[0].text.strip()
@@ -246,46 +232,37 @@ async def generate_x_post(article: dict, body: str) -> str:
 
 async def generate_threads_post(article: dict, body: str) -> str:
     """
-    Threads 포스팅 — 현장 브리핑 스타일
-    규칙: 한 덩어리의 흐름. 팩트 + 배경 + 셀러 임팩트를 한 호흡에.
+    Threads — 1+2+1 구조, 200자 이내
+    데이터: 멀티센텐스 + 줄바꿈 + 질문 마무리가 Save 수 최고
     """
     client = anthropic.AsyncAnthropic(api_key=ANTHROPIC_API_KEY)
     body_section = f"Article body:\n{body}\n\n" if body else ""
 
     prompt = (
-        "You are Tae-o. You write Threads posts about K-beauty for global sellers.\n\n"
-
-        "YOUR JOB: Write a field briefing. You just read this article. Tell a seller friend\n"
-        "what happened, why it matters, and what they should think about — in one flowing thought.\n\n"
-
-        "HOW TO THINK:\n"
-        "1. What's the key fact? (specific, not vague)\n"
-        "2. What context makes this fact more interesting or alarming?\n"
-        "3. What's the concrete takeaway for a seller?\n"
-        "4. Write all three as ONE continuous sentence or thought — no line breaks.\n\n"
-
-        "THE FEEL:\n"
-        "- Like a sharp WhatsApp message from someone who just left a Seoul meeting\n"
-        "- More detail than X, but still punchy — not a paragraph, not a list\n"
-        "- The reader should finish it thinking 'I need to act on this'\n\n"
-
-        "ABSOLUTE RULES:\n"
-        "- No line breaks. One flowing thought.\n"
-        "- STRICT MAX 477 characters (link adds 23 chars after)\n"
-        "- No sign-off. No hashtags. No emoji.\n"
-        "- No journalist words, no consultant words, no clichés (same as X rules)\n"
-        "- Do NOT start with 'So,' or 'Look,' or 'Here's the thing'\n\n"
-
+        "You write Threads posts for KoreaScout — K-beauty intelligence for global sellers.\n\n"
+        "STRUCTURE (1-2-1 pattern — proven highest Save rate on Threads):\n"
+        "Line 1: Hook — one punchy fact, NO period at end (keeps reader moving)\n"
+        "[empty line]\n"
+        "Line 2: Context — what makes this fact surprising or important\n"
+        "Line 3: Seller angle — what this means in money or distribution terms\n"
+        "[empty line]\n"
+        "Line 4: Specific question — make industry insiders want to answer\n\n"
+        "LENGTH: Under 200 characters total (excluding the link added after).\n"
+        "Each line should be SHORT. Cut every unnecessary word.\n\n"
+        "THE QUESTION RULE:\n"
+        "- Must be specific enough that someone with real knowledge has a real answer\n"
+        "- NOT: 'What do you think?' → too vague\n"
+        "- YES: 'Which market is moving on NAD first — US or EU?' → specific\n\n"
+        "BANNED: sign-off, hashtags, journalist words, consultant words\n\n"
         f"Article title: {article['title']}\n"
         f"Category: {article['category']}\n"
         f"{body_section}"
-        "Write the Threads post now.\n"
-        "Output only the post text, nothing else."
+        "Write the 1-2-1 Threads post now. Under 200 chars. Nothing else."
     )
 
     message = await client.messages.create(
         model="claude-sonnet-4-6",
-        max_tokens=200,
+        max_tokens=80,
         messages=[{"role": "user", "content": prompt}],
     )
     return message.content[0].text.strip()
@@ -293,39 +270,29 @@ async def generate_threads_post(article: dict, body: str) -> str:
 
 async def generate_linkedin_post(article: dict, body: str) -> str:
     """
-    LinkedIn 포스팅 — 인사이더 분석 스타일
-    규칙: 한 방 오프닝 + 3개 불릿 + 질문
+    LinkedIn — 인사이더 분석
+    오프닝 한 방 + 불릿 3개(돈/시장 앵글) + 전문가 질문
     """
     client = anthropic.AsyncAnthropic(api_key=ANTHROPIC_API_KEY)
     body_section = f"Article body:\n{body}\n\n" if body else ""
 
     prompt = (
-        "You are Tae-o. You write LinkedIn posts about K-beauty for global sellers and industry insiders.\n\n"
-
-        "STRUCTURE (follow exactly):\n"
-        "Line 1: One punchy sentence — same Tae-o energy as X (fact + implication)\n"
-        "Lines 2-4: Three bullet points starting with •\n"
-        "  Each bullet = one specific market/money insight for global sellers\n"
-        "  Each bullet should answer: 'so what does this mean in dollars or distribution?'\n"
-        "Line 5: One question that makes industry insiders want to comment\n"
-        "  The question should be specific enough that someone with real knowledge has a real answer\n\n"
-
-        "WHAT MAKES GOOD BULLETS:\n"
-        "- Specific market size, gap, or trend (not vague 'opportunity')\n"
-        "- Something that reveals the seller's blind spot\n"
-        "- A connection between the article fact and a broader market reality\n\n"
-
-        "ABSOLUTE RULES:\n"
-        "- STRICT MAX 700 characters total\n"
-        "- No sign-off. No hashtags.\n"
-        "- No consultant words, no clichés\n"
-        "- The closing question must be SPECIFIC — not 'what do you think?' level\n\n"
-
+        "You write LinkedIn posts for KoreaScout — K-beauty intelligence for global sellers.\n\n"
+        "STRUCTURE:\n"
+        "Line 1: One punchy sentence — concrete fact + seller implication (same Tae-o energy)\n"
+        "Lines 2-4: Three bullets starting with •\n"
+        "  Each bullet = specific market/money insight (size, gap, timing, margin)\n"
+        "  Each bullet answers: 'so what does this mean in dollars or distribution?'\n"
+        "Line 5: One specific question — industry insiders should want to answer this\n\n"
+        "BULLET QUALITY CHECK:\n"
+        "- Contains a number, market name, or time window → GOOD\n"
+        "- Vague observation without data → REWRITE\n\n"
+        "STRICT MAX: 700 characters total\n"
+        "NO sign-off. NO hashtags. NO consultant words.\n\n"
         f"Article title: {article['title']}\n"
         f"Category: {article['category']}\n"
         f"{body_section}"
-        "Write the LinkedIn post now.\n"
-        "Output only the post text, nothing else."
+        "Write the LinkedIn post now. Under 700 chars. Nothing else."
     )
 
     message = await client.messages.create(
@@ -443,7 +410,6 @@ async def run_news_bot() -> None:
     save_seen_news(seen | {a["id"] for a in final_articles})
 
     for article in final_articles:
-        # 기사 본문 요청
         await bot.send_message(
             chat_id=chat_id,
             text=f"📋 기사 본문을 붙여넣어 주세요\n\n📰 {article['title']}\n🔗 {article['link']}\n\n기사 전체 내용을 복사해서 보내주세요 👇"
@@ -456,7 +422,6 @@ async def run_news_bot() -> None:
 
         article_body = body_reply.strip()
 
-        # 포스팅 생성 (플랫폼별 독립 호출)
         await bot.send_message(chat_id=chat_id, text="✍️ 포스팅 생성 중...")
         print(f"생성 중: {article['title']}")
 
@@ -491,12 +456,18 @@ async def run_news_bot() -> None:
 
 
 def run_scheduler() -> None:
+    # 06:05 KST → 미국 퇴근 직전 피드
+    # 08:00 KST → 미국 퇴근 후 피드
+    # 11:00 KST → 미국 저녁 먹고 피드
+    # 22:00 KST → 미국 아침 골든타임 (9AM ET) 🥇
+    # 23:00 KST → 미국 아침 피크 (10AM ET) 🥇
     schedule.every().day.at("06:05").do(lambda: asyncio.run(run_news_bot()))
+    schedule.every().day.at("08:00").do(lambda: asyncio.run(run_news_bot()))
     schedule.every().day.at("11:00").do(lambda: asyncio.run(run_news_bot()))
-    schedule.every().day.at("15:00").do(lambda: asyncio.run(run_news_bot()))
-    schedule.every().day.at("20:00").do(lambda: asyncio.run(run_news_bot()))
+    schedule.every().day.at("22:00").do(lambda: asyncio.run(run_news_bot()))
+    schedule.every().day.at("23:00").do(lambda: asyncio.run(run_news_bot()))
 
-    print(f"[{datetime.now().strftime('%H:%M:%S')}] 스케줄러 시작: 06:05 / 11:00 / 15:00 / 20:00 (KST)")
+    print(f"[{datetime.now().strftime('%H:%M:%S')}] 스케줄러 시작: 06:05 / 08:00 / 11:00 / 22:00 / 23:00 (KST)")
     while True:
         schedule.run_pending()
         time.sleep(30)
