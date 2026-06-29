@@ -406,8 +406,8 @@ export function SupplierContact({
                       </svg>
                     </div>
                     <div className="flex flex-col gap-0.5 min-w-0">
-                      <span className="text-sm font-bold text-[#1A1916]">Purchase Sample</span>
-                      <span className="text-xs text-[#9E9C98]">(Delivered Korea)</span>
+                      <span className="text-lg font-bold text-[#1A1916]">Purchase Sample</span>
+                      <span className="text-sm text-[#9E9C98]">(Delivered Korea)</span>
                     </div>
                   </a>
                   <p className="text-xs italic text-[#9E9C98] leading-relaxed border-t border-[#E8E6E1] pt-3">
@@ -575,14 +575,14 @@ function GlobalProofAccordion({ tags }: { tags: Array<{ region: string; fullName
               className="w-full flex items-center justify-between p-5 hover:bg-[#F8F7F4] transition-colors group"
             >
               <div className="flex items-center gap-4">
-                <span className="bg-[#1A1916] text-white px-3 py-1.5 rounded-md text-xs font-black uppercase tracking-widest shrink-0">
+                <span className="bg-[#1A1916] text-white px-3 py-1.5 rounded-md text-base font-black uppercase tracking-widest shrink-0">
                   {tag.region}
                 </span>
-                <span className="text-sm text-[#9E9C98] ml-2">{tag.fullName}</span>
+                <span className="text-lg text-[#9E9C98] ml-2">{tag.fullName}</span>
               </div>
               <div className="flex items-center gap-2 shrink-0 ml-3">
                 {sellerCount > 0 && (
-                  <span className="text-xs text-[#9E9C98]">{sellerCount} seller{sellerCount > 1 ? "s" : ""}</span>
+                  <span className="text-base text-[#9E9C98]">{sellerCount} seller{sellerCount > 1 ? "s" : ""}</span>
                 )}
                 <span className="text-[#9E9C98] group-hover:text-[#1A1916] transition-colors text-sm">
                   {isOpen ? "▲" : "▼"}
@@ -604,7 +604,7 @@ function GlobalProofAccordion({ tags }: { tags: Array<{ region: string; fullName
                       rel="noopener noreferrer"
                       className="flex items-center justify-between px-5 py-3.5 hover:bg-[#F8F7F4] transition-colors group/row"
                     >
-                      <span className="text-sm font-medium text-[#1A1916] truncate">
+                      <span className="text-lg font-medium text-[#1A1916] truncate">
                         {getPlatformLabel(l)}
                       </span>
                       <div className="flex items-center gap-2 shrink-0 ml-3">
@@ -614,7 +614,7 @@ function GlobalProofAccordion({ tags }: { tags: Array<{ region: string; fullName
                           </span>
                         )}
                         {hasPrice && (
-                          <span className="text-sm font-bold text-[#1A1916]">
+                          <span className="text-lg font-bold text-[#1A1916]">
                             ${l.price_usd!.toFixed(2)}
                           </span>
                         )}

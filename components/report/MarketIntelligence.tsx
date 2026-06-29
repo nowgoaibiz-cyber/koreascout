@@ -73,12 +73,12 @@ function ListingsBlock({ row }: { row: import("./utils").RegionPriceRow }) {
   return (
     <div className="space-y-3">
       <div>
-        <p className="text-[10px] font-black tracking-[0.15em] uppercase text-[#9E9C98] mb-1">
+        <p className="text-sm font-black tracking-[0.15em] uppercase text-[#9E9C98] mb-1">
           Best Price
         </p>
         <p className={priceTextSize}>{bestPriceDisplay ?? "—"}</p>
         {row.seller_type && row.seller_type !== "Untapped" && (
-          <p className="text-xs text-[#9E9C98] mt-0.5">{row.seller_type}</p>
+          <p className="text-base text-[#9E9C98] mt-0.5">{row.seller_type}</p>
         )}
       </div>
 
@@ -100,7 +100,7 @@ function ListingsBlock({ row }: { row: import("./utils").RegionPriceRow }) {
         <div className="pt-1">
           <button
             onClick={() => setOpen(v => !v)}
-            className="text-xs font-semibold text-[#6B6860] hover:text-[#1A1916] transition-colors flex items-center gap-1"
+            className="text-base font-semibold text-[#6B6860] hover:text-[#1A1916] transition-colors flex items-center gap-1"
           >
             <span>{open ? "▲" : "▼"}</span>
             <span>+ {moreSellersList.length} more sellers</span>
@@ -112,10 +112,10 @@ function ListingsBlock({ row }: { row: import("./utils").RegionPriceRow }) {
                 const hasPrice = (l.price_usd ?? 0) > 0;
                 return (
                   <div key={i} className="flex items-center justify-between">
-                    <span className="text-xs text-[#6B6860] truncate max-w-[120px]">
+                    <span className="text-sm text-[#6B6860] truncate max-w-[120px]">
                       {l.platform || getShopeeOrLazadaName(l.url) || l.title || "Unknown"}
                     </span>
-                    <span className="text-xs font-bold text-[#1A1916] shrink-0 ml-2 flex items-center gap-1.5">
+                    <span className="text-sm font-bold text-[#1A1916] shrink-0 ml-2 flex items-center gap-1.5">
                       {soldOut && (
                         <span className="text-[9px] font-black tracking-widest uppercase text-[#9E9C98] bg-[#F8F7F4] border border-[#E8E6E1] px-1.5 py-0.5 rounded-full">
                           Sold Out
@@ -337,7 +337,7 @@ export function MarketIntelligence({
                     <div key={market.code} className="border-l-4 border-[#16A34A] pl-8 py-6 min-h-[150px]">
                       <p className="text-2xl font-extrabold text-[#1A1916] uppercase tracking-widest mb-3">
                         {market.code}
-                        <span className="text-sm font-normal normal-case tracking-normal text-[#1A1916]/70 ml-2">
+                        <span className="text-base font-normal normal-case tracking-normal text-[#1A1916]/70 ml-2">
                           {market.label}
                         </span>
                       </p>
@@ -347,11 +347,11 @@ export function MarketIntelligence({
                             <>
                               <div className="flex items-center gap-2 mb-1">
                                 <div className="w-2 h-2 rounded-full bg-[#16A34A]" />
-                                <p className="text-sm font-semibold text-[#16A34A] tracking-widest uppercase">
+                                <p className="text-base font-semibold text-[#16A34A] tracking-widest uppercase">
                                   Untapped
                                 </p>
                               </div>
-                              <p className="text-xs italic text-[#1A1916]/70">
+                              <p className="text-sm italic text-[#1A1916]/70">
                                 No established sellers detected.
                               </p>
                             </>
