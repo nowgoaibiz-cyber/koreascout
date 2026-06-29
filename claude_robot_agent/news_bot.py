@@ -193,55 +193,55 @@ def decode_google_url(url: str) -> str:
     return url
 
 
-async def fetch_article_body(url: str) -> str:
-    try:
-        async with httpx.AsyncClient(timeout=10, follow_redirects=True) as client:
-            resp = await client.get(url, headers={"User-Agent": "Mozilla/5.0"})
-            clean = re.sub(r"<[^>]+>", " ", resp.text)
-            clean = re.sub(r"\s+", " ", clean).strip()
-            return clean[:3000]
-    except Exception:
-        return ""
-
-
-async def generate_posts(article: dict) -> tuple[str, str, str]:
+async def generate_posts(article: dict, body: str) -> tuple[str, str, str]:
     client = anthropic.AsyncAnthropic(api_key=ANTHROPIC_API_KEY)
-    body = await fetch_article_body(article["link"])
-    body_section = f"Article body (Korean):\n{body[:2000]}\n\n" if body else ""
+    body_section = f"Article body (Korean — read this carefully, extract the real facts):\n{body}\n\n" if body else ""
 
     prompt = (
-        "You are Tae-o. You live in Korea and you spot K-beauty signals before the rest of the world.\n"
-        "You write like a friend texting a seller — not a journalist, not a brand.\n"
-        "One fact. One reaction. Done.\n\n"
-        "GOOD examples (study these):\n"
+        "You are Tae-o. You live in Korea. You spot K-beauty moves before the world does.\n"
+        "You write like a friend texting a global seller — short, direct, real.\n"
+        "One concrete fact. One implication. That's it.\n\n"
+
+        "✅ GOOD — study and copy this energy:\n"
         "- Olive Young just opened store #2 in LA. Maenyeo Factory is already on the shelf. You're not.\n"
-        "- A $3 Daiso toner is outselling $40 US brands in Seoul right now. Someone's about to find the margin on this.\n"
+        "- A $3 Daiso toner is outselling $40 US brands in Seoul. Someone's about to find the margin on this.\n"
         "- Anua went viral in Vietnam 6 weeks ago. Nobody outside Korea saw it coming. That's the window.\n"
-        "- K-beauty just hit Sephora UK. The brands that got in didn't wait for an invitation.\n\n"
-        "BAD examples (never do this):\n"
-        "- Korean indie skincare is planting flags in America's most competitive retail real estate. (journalist talk)\n"
-        "- This is a significant development for the global K-beauty market. (press release)\n"
-        "- The brand-name era is over. (too vague, no fact)\n\n"
+        "- UCL showed up at MakeUp in Paris with a silicone-free blur cream. UK brands asked to produce at their Jeju factory on the spot.\n\n"
+
+        "❌ BANNED — never write like this:\n"
+        "- 'formulation differentiation' (consultant speak)\n"
+        "- 'behind the curve' (cliché)\n"
+        "- 'significant development' (press release)\n"
+        "- 'planting flags' (journalist metaphor)\n"
+        "- 'the X era is over' (too vague)\n"
+        "- Any sentence that sounds like a McKinsey deck → rewrite it\n"
+        "- Two sentences when one will do\n\n"
+
         f"Article title: {article['title']}\n"
         f"Category: {article['category']}\n"
         f"{body_section}"
-        "Now write THREE posts:\n\n"
+
+        "Now write THREE posts. Extract the sharpest fact from the article body above.\n\n"
+
         "[X]\n"
-        "- STRICT MAX 217 characters. Link (23 chars) added after — budget for it.\n"
-        "- EXACTLY one line. No line breaks. No ellipsis.\n"
-        "- Lead with the fact. End with the implication for the seller.\n"
-        "- NO sign-off. NO hashtags. NO emoji at end.\n\n"
+        "- STRICT MAX 217 characters (link adds 23 chars — budget for it)\n"
+        "- EXACTLY one line. Zero line breaks.\n"
+        "- Concrete fact first. Seller implication second. Done.\n"
+        "- NO sign-off. NO hashtags. NO emoji.\n\n"
+
         "[Threads]\n"
-        "- STRICT MAX 477 characters. Link (23 chars) added after.\n"
-        "- EXACTLY one line. No line breaks.\n"
-        "- Same punch as X, slightly more context — still one thought.\n"
+        "- STRICT MAX 477 characters (link adds 23 chars)\n"
+        "- EXACTLY one line. Zero line breaks.\n"
+        "- Same punch as X, slightly more detail — still one complete thought.\n"
         "- NO sign-off. NO hashtags.\n\n"
+
         "[LinkedIn]\n"
-        "- First line: same Tae-o punch (one fact, one implication)\n"
-        "- 3 bullet lines starting with • (what this means for global sellers, dollar/market angle)\n"
-        "- One closing question that makes industry people want to comment\n"
+        "- Line 1: same Tae-o punch (concrete fact + implication)\n"
+        "- Lines 2-4: three bullet points starting with • (specific market/money angle for global sellers)\n"
+        "- Line 5: one question that makes industry insiders want to comment\n"
         "- STRICT MAX 700 characters total\n"
         "- NO sign-off. NO hashtags.\n\n"
+
         "Format exactly:\n[X]\n<post>\n\n[Threads]\n<post>\n\n[LinkedIn]\n<post>"
     )
 
@@ -366,13 +366,27 @@ async def run_news_bot() -> None:
         final_indices = parse_selection(reply2, len(selected))
         final_articles = [selected[i] for i in final_indices] if final_indices else selected
 
-    # 7. 포스팅 생성 (X + Threads + LinkedIn)
-    await bot.send_message(chat_id=chat_id, text=f"✍️ {len(final_articles)}개 포스팅 생성 중...")
+    # 7. 기사별 본문 복붙 받고 포스팅 생성
     save_seen_news(seen | {a["id"] for a in final_articles})
 
     for article in final_articles:
+        # 기사 본문 요청
+        await bot.send_message(
+            chat_id=chat_id,
+            text=f"📋 기사 본문을 붙여넣어 주세요\n\n📰 {article['title']}\n🔗 {article['link']}\n\n기사 전체 내용을 복사해서 보내주세요 👇"
+        )
+
+        body_reply, last_update_id = await wait_for_message(bot, chat_id, last_update_id, timeout=600)
+        if body_reply == "TIMEOUT":
+            await bot.send_message(chat_id=chat_id, text="⏰ 시간 초과. 다음 기사로 넘어갑니다.")
+            continue
+
+        article_body = body_reply.strip()
+
+        # 포스팅 생성
+        await bot.send_message(chat_id=chat_id, text=f"✍️ 포스팅 생성 중...")
         print(f"생성 중: {article['title']}")
-        x_post, threads_post, linkedin_post = await generate_posts(article)
+        x_post, threads_post, linkedin_post = await generate_posts(article, article_body)
 
         await bot.send_message(
             chat_id=chat_id,
