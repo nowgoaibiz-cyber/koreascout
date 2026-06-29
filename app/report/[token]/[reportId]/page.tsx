@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
+import { Lock, Video } from "lucide-react";
 import { createServiceRoleClient } from "@/lib/supabase/admin";
 import { Logo } from "@/components/Logo";
 import ProductIdentity from "@/components/ProductIdentity";
@@ -19,6 +20,7 @@ type ClientOrderRow = {
   buyer_name: string;
   package_tier: string;
   platform: string;
+  notes: string | null;
 };
 
 type ShareTokenRow = {
@@ -29,6 +31,12 @@ type ShareTokenRow = {
 };
 
 const DISPLAY_TIER = "alpha" as const;
+
+const PACKAGE_LABELS: Record<string, string> = {
+  starter: "Starter",
+  pro: "Pro",
+  elite: "Elite",
+};
 
 function watermarkEmail(buyerName: string, token: string): string {
   const slug = buyerName.trim().toLowerCase().replace(/\s+/g, ".") || "guest";
@@ -59,7 +67,8 @@ async function loadShareDetail(token: string, reportId: string) {
         id,
         buyer_name,
         package_tier,
-        platform
+        platform,
+        notes
       )
     `
     )
@@ -134,6 +143,7 @@ export default async function SharedReportDetailPage({
       ? reportIds[currentIndex + 1]
       : null;
   const isMultiProduct = packageTier !== "starter" && reportIds.length > 1;
+  const packageLabel = PACKAGE_LABELS[packageTier] ?? order.package_tier;
 
   return (
     <div className="min-h-screen bg-[#F8F7F4]">
@@ -154,6 +164,28 @@ export default async function SharedReportDetailPage({
             >
               ← Back to products
             </Link>
+          )}
+
+          {packageTier === "starter" && (
+            <div>
+              <p className="text-2xl font-bold tracking-widest text-[#16A34A] uppercase mb-4">
+                {packageLabel} Package
+              </p>
+              <h1 className="text-6xl font-bold text-[#1A1916] mb-4">
+                Hi, {order.buyer_name}! 👋
+              </h1>
+              <p className="text-2xl text-[#6B6860] mb-3">
+                Your K-beauty intelligence report is ready — sourced directly from Korea.
+              </p>
+              {order.notes && (
+                <p className="text-2xl text-[#6B6860] mb-3">
+                  &ldquo;{order.notes}&rdquo;
+                </p>
+              )}
+              <p className="text-xl text-[#6B6860] mb-6">
+                {reportIds.length} product{reportIds.length !== 1 ? "s" : ""} · Prepared exclusively for you
+              </p>
+            </div>
           )}
 
           <ProductIdentity
@@ -178,6 +210,63 @@ export default async function SharedReportDetailPage({
                 isTeaser={false}
               />
             </div>
+          )}
+
+          {showSupplier && !showVideos && (
+            <div className="bg-white rounded-2xl border border-[#E8E6E1] p-6 shadow-[0_1px_3px_0_rgb(26_25_22/0.06)]">
+              <p className="text-sm font-semibold text-[#9E9C98] uppercase tracking-widest mb-3">
+                Creative Assets
+              </p>
+              <div className="flex items-start gap-3">
+                <Video className="w-7 h-7 text-[#9E9C98] mt-0.5 flex-shrink-0" />
+                <div>
+                  <p className="text-xl font-semibold text-[#1A1916] mb-1">4K Field Footage</p>
+                  <p className="text-base text-[#6B6860]">
+                    Available in Elite Scout package only.
+                    <br />
+                    Upgrade to access raw footage filmed inside Korean beauty stores — ready to use as ads or social content.
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {!showSupplier && !showVideos && (
+            <>
+              <div className="bg-white rounded-2xl border border-[#E8E6E1] p-6 shadow-[0_1px_3px_0_rgb(26_25_22/0.06)]">
+                <p className="text-sm font-semibold text-[#9E9C98] uppercase tracking-widest mb-3">
+                  Supplier & Brand Intel
+                </p>
+                <div className="flex items-start gap-3">
+                  <Lock className="w-7 h-7 text-[#9E9C98] mt-0.5 flex-shrink-0" />
+                  <div>
+                    <p className="text-xl font-semibold text-[#1A1916] mb-1">Manufacturer Contact</p>
+                    <p className="text-base text-[#6B6860]">
+                      Not included in Starter Scout.
+                      <br />
+                      Upgrade to Pro Scout to access verified manufacturer B2B contacts, email, phone, and sourcing details.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-white rounded-2xl border border-[#E8E6E1] p-6 shadow-[0_1px_3px_0_rgb(26_25_22/0.06)]">
+                <p className="text-sm font-semibold text-[#9E9C98] uppercase tracking-widest mb-3">
+                  Creative Assets
+                </p>
+                <div className="flex items-start gap-3">
+                  <Video className="w-7 h-7 text-[#9E9C98] mt-0.5 flex-shrink-0" />
+                  <div>
+                    <p className="text-xl font-semibold text-[#1A1916] mb-1">4K Field Footage</p>
+                    <p className="text-base text-[#6B6860]">
+                      Available in Elite Scout package only.
+                      <br />
+                      Upgrade to access raw footage filmed inside Korean beauty stores — ready to use as ads or social content.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </>
           )}
 
           {isMultiProduct && (
@@ -208,7 +297,7 @@ export default async function SharedReportDetailPage({
           )}
 
           <section className="bg-white rounded-2xl border border-[#E8E6E1] p-6 shadow-[0_1px_3px_0_rgb(26_25_22/0.06)]">
-            <p className="text-xs text-[#9E9C98] mb-4">
+            <p className="text-base text-[#9E9C98] mb-4">
               Link expires{" "}
               {new Date(expiresAt).toLocaleDateString("en-US", {
                 year: "numeric",
@@ -224,17 +313,17 @@ export default async function SharedReportDetailPage({
               </a>
             </p>
             <hr className="border-[#E8E6E1] mb-4" />
-            <p className="text-sm font-semibold text-[#1A1916] mb-1">
+            <p className="text-xl font-semibold text-[#1A1916] mb-1">
               Want to stay ahead of K-beauty trends every week?
             </p>
-            <p className="text-sm text-[#6B6860] mb-4">
+            <p className="text-base text-[#6B6860] mb-4">
               KoreaScout publishes weekly intelligence reports for global sellers — new products, new opportunities, every week.
             </p>
             <a
               href="https://koreascout.com"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-block bg-[#16A34A] hover:bg-[#15803D] text-white text-sm font-semibold px-5 py-2.5 rounded-xl transition-colors"
+              className="inline-block bg-[#16A34A] hover:bg-[#15803D] text-white text-base font-semibold px-6 py-3 rounded-xl transition-colors"
             >
               Explore KoreaScout →
             </a>

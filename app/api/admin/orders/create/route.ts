@@ -25,6 +25,7 @@ export async function POST(req: NextRequest) {
     platform?: string;
     package_tier?: string;
     report_ids?: string[];
+    note?: string;
   };
 
   try {
@@ -33,10 +34,10 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
   }
 
-  const buyer_name = body.buyer_name?.trim();
-  const platform = body.platform;
-  const package_tier = body.package_tier?.toLowerCase();
-  const report_ids = body.report_ids;
+  const { buyer_name: rawBuyerName, platform, package_tier: rawPackageTier, report_ids, note } =
+    body;
+  const buyer_name = rawBuyerName?.trim();
+  const package_tier = rawPackageTier?.toLowerCase();
 
   if (!buyer_name) {
     return NextResponse.json({ error: "buyer_name is required" }, { status: 400 });
@@ -66,7 +67,12 @@ export async function POST(req: NextRequest) {
 
     const { data: order, error: orderError } = await supabase
       .from("client_orders")
-      .insert({ buyer_name, platform: platform.toLowerCase(), package_tier })
+      .insert({
+        buyer_name,
+        platform: platform.toLowerCase(),
+        package_tier,
+        notes: note || null,
+      })
       .select("id")
       .single();
 

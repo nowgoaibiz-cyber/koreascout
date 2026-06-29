@@ -89,7 +89,10 @@ export default function AdminOrdersPage() {
   const [orders, setOrders] = useState<OrderRow[]>([]);
   const [ordersLoading, setOrdersLoading] = useState(true);
   const [deactivatingId, setDeactivatingId] = useState<string | null>(null);
+  const [reactivatingId, setReactivatingId] = useState<string | null>(null);
   const [extendingId, setExtendingId] = useState<string | null>(null);
+  const [note, setNote] = useState("");
+  const [toast, setToast] = useState("");
 
   const maxProducts = PACKAGE_LIMITS[packageTier];
 
@@ -180,6 +183,7 @@ export default function AdminOrdersPage() {
           platform,
           package_tier: packageTier,
           report_ids: selectedProducts.map((p) => p.id),
+          note,
         }),
       });
       const data = await res.json();
@@ -191,6 +195,7 @@ export default function AdminOrdersPage() {
       setBuyerName("");
       setSelectedProducts([]);
       setSearchQuery("");
+      setNote("");
       await fetchOrders();
     } catch {
       alert("Failed to create order");
@@ -207,8 +212,18 @@ export default function AdminOrdersPage() {
     }
   }
 
+  async function handleCopyOrderLink(text: string) {
+    try {
+      await navigator.clipboard.writeText(text);
+      setToast("Link copied!");
+      setTimeout(() => setToast(""), 2000);
+    } catch {
+      alert("Copy failed");
+    }
+  }
+
   async function handleDeactivate(orderId: string) {
-    if (!confirm("Deactivate this share link?")) return;
+    if (!window.confirm("이 주문을 비활성화할까요? 고객이 링크에 접근할 수 없게 됩니다.")) return;
     setDeactivatingId(orderId);
     try {
       const res = await fetch("/api/admin/orders/deactivate", {
@@ -228,7 +243,29 @@ export default function AdminOrdersPage() {
     }
   }
 
+  async function handleReactivate(orderId: string) {
+    if (!window.confirm("이 주문을 다시 활성화할까요?")) return;
+    setReactivatingId(orderId);
+    try {
+      const res = await fetch("/api/admin/orders/reactivate", {
+        method: "PATCH",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ orderId }),
+      });
+      if (!res.ok) {
+        const data = await res.json();
+        alert(data.error ?? "Failed to reactivate");
+        return;
+      }
+      await fetchOrders();
+    } finally {
+      setReactivatingId(null);
+    }
+  }
+
   async function handleExtend(orderId: string) {
+    if (!window.confirm("유효기간을 30일 연장할까요?")) return;
     setExtendingId(orderId);
     try {
       const res = await fetch("/api/admin/orders/extend", {
@@ -404,6 +441,19 @@ export default function AdminOrdersPage() {
             </div>
 
             <div>
+              <label className="text-sm font-medium text-[#1A1916] block mb-1">
+                Personal Note <span className="text-[#9E9C98] font-normal">(optional)</span>
+              </label>
+              <textarea
+                value={note}
+                onChange={(e) => setNote(e.target.value)}
+                placeholder="e.g. VT PDRN 계열 집중 요청해주셨는데, 이번 주 가장 핫한 3개 골랐어요!"
+                rows={3}
+                className="w-full border border-[#E8E6E1] rounded-xl px-3 py-2 text-sm text-[#1A1916] placeholder:text-[#9E9C98] focus:border-[#16A34A] outline-none resize-none"
+              />
+            </div>
+
+            <div>
               <p className="text-sm font-medium text-[#1A1916] mb-2">
                 Selected Products ({selectedProducts.length}/{maxProducts})
               </p>
@@ -526,8 +576,8 @@ export default function AdminOrdersPage() {
                           {order.url && (
                             <button
                               type="button"
-                              onClick={() => handleCopy(order.url)}
-                              className="text-xs text-[#16A34A] hover:text-[#15803D] font-medium transition-colors"
+                              onClick={() => handleCopyOrderLink(order.url)}
+                              className="text-xs font-medium px-3 py-1 rounded-full bg-[#DCFCE7] text-[#16A34A] hover:bg-[#16A34A] hover:text-white transition-colors"
                             >
                               Copy Link
                             </button>
@@ -538,7 +588,7 @@ export default function AdminOrdersPage() {
                                 type="button"
                                 disabled={deactivatingId === order.id}
                                 onClick={() => handleDeactivate(order.id)}
-                                className="text-xs text-[#DC2626] hover:text-[#B91C1C] font-medium transition-colors disabled:opacity-50"
+                                className="text-xs font-medium px-3 py-1 rounded-full bg-[#FEE2E2] text-[#DC2626] hover:bg-[#DC2626] hover:text-white transition-colors disabled:opacity-50"
                               >
                                 {deactivatingId === order.id ? "…" : "Deactivate"}
                               </button>
@@ -546,11 +596,21 @@ export default function AdminOrdersPage() {
                                 type="button"
                                 disabled={extendingId === order.id}
                                 onClick={() => handleExtend(order.id)}
-                                className="text-xs text-[#6B6860] hover:text-[#1A1916] underline ml-2 transition-colors disabled:opacity-50"
+                                className="text-xs font-medium px-3 py-1 rounded-full bg-[#EFF6FF] text-[#2563EB] hover:bg-[#2563EB] hover:text-white transition-colors disabled:opacity-50"
                               >
                                 {extendingId === order.id ? "…" : "Extend 30d"}
                               </button>
                             </>
+                          )}
+                          {order.status === "deactivated" && (
+                            <button
+                              type="button"
+                              disabled={reactivatingId === order.id}
+                              onClick={() => handleReactivate(order.id)}
+                              className="text-xs font-medium px-3 py-1 rounded-full bg-[#F2F1EE] text-[#6B6860] hover:bg-[#6B6860] hover:text-white transition-colors disabled:opacity-50"
+                            >
+                              {reactivatingId === order.id ? "…" : "Reactivate"}
+                            </button>
                           )}
                         </div>
                       </td>
@@ -562,6 +622,12 @@ export default function AdminOrdersPage() {
           )}
         </section>
       </main>
+
+      {toast && (
+        <div className="fixed bottom-6 right-6 bg-[#1A1916] text-white text-sm font-medium px-4 py-2 rounded-xl shadow-lg z-50">
+          {toast}
+        </div>
+      )}
     </div>
   );
 }

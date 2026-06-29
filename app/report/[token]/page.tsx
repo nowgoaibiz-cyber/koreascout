@@ -11,6 +11,7 @@ type ClientOrderRow = {
   buyer_name: string;
   package_tier: string;
   platform: string;
+  notes: string | null;
 };
 
 type ShareTokenRow = {
@@ -41,7 +42,8 @@ async function loadShareData(token: string) {
         id,
         buyer_name,
         package_tier,
-        platform
+        platform,
+        notes
       )
     `
     )
@@ -117,16 +119,21 @@ export default async function SharedReportPage({
       </header>
 
       <div className="max-w-5xl mx-auto px-6 sm:px-8 py-6 pb-20">
-        <p className="text-base font-bold text-[#16A34A] uppercase tracking-widest mb-2">
+        <p className="text-2xl font-bold tracking-widest text-[#16A34A] uppercase mb-4">
           {packageLabel} Package
         </p>
-        <h1 className="text-3xl font-bold text-[#1A1916]">
+        <h1 className="text-6xl font-bold text-[#1A1916] mb-4">
           Hi, {order.buyer_name}! 👋
         </h1>
-        <p className="text-sm text-[#6B6860] mt-2">
+        <p className="text-2xl text-[#6B6860] mb-3">
           Your personal K-beauty intelligence report is ready — sourced directly from Korea.
         </p>
-        <p className="text-sm text-[#6B6860] mt-1">
+        {order.notes && (
+          <p className="text-2xl text-[#6B6860] mb-3">
+            &ldquo;{order.notes}&rdquo;
+          </p>
+        )}
+        <p className="text-xl text-[#6B6860] mb-6">
           {reports.length} product{reports.length !== 1 ? "s" : ""} · Prepared exclusively for you
         </p>
 
