@@ -89,6 +89,7 @@ export default function AdminOrdersPage() {
   const [orders, setOrders] = useState<OrderRow[]>([]);
   const [ordersLoading, setOrdersLoading] = useState(true);
   const [deactivatingId, setDeactivatingId] = useState<string | null>(null);
+  const [extendingId, setExtendingId] = useState<string | null>(null);
 
   const maxProducts = PACKAGE_LIMITS[packageTier];
 
@@ -224,6 +225,26 @@ export default function AdminOrdersPage() {
       await fetchOrders();
     } finally {
       setDeactivatingId(null);
+    }
+  }
+
+  async function handleExtend(orderId: string) {
+    setExtendingId(orderId);
+    try {
+      const res = await fetch("/api/admin/orders/extend", {
+        method: "PATCH",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ orderId }),
+      });
+      if (!res.ok) {
+        const data = await res.json();
+        alert(data.error ?? "Failed to extend");
+        return;
+      }
+      await fetchOrders();
+    } finally {
+      setExtendingId(null);
     }
   }
 
@@ -512,14 +533,24 @@ export default function AdminOrdersPage() {
                             </button>
                           )}
                           {order.status === "active" && (
-                            <button
-                              type="button"
-                              disabled={deactivatingId === order.id}
-                              onClick={() => handleDeactivate(order.id)}
-                              className="text-xs text-[#DC2626] hover:text-[#B91C1C] font-medium transition-colors disabled:opacity-50"
-                            >
-                              {deactivatingId === order.id ? "…" : "Deactivate"}
-                            </button>
+                            <>
+                              <button
+                                type="button"
+                                disabled={deactivatingId === order.id}
+                                onClick={() => handleDeactivate(order.id)}
+                                className="text-xs text-[#DC2626] hover:text-[#B91C1C] font-medium transition-colors disabled:opacity-50"
+                              >
+                                {deactivatingId === order.id ? "…" : "Deactivate"}
+                              </button>
+                              <button
+                                type="button"
+                                disabled={extendingId === order.id}
+                                onClick={() => handleExtend(order.id)}
+                                className="text-xs text-[#6B6860] hover:text-[#1A1916] underline ml-2 transition-colors disabled:opacity-50"
+                              >
+                                {extendingId === order.id ? "…" : "Extend 30d"}
+                              </button>
+                            </>
                           )}
                         </div>
                       </td>

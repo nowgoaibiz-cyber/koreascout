@@ -26,14 +26,6 @@ const PACKAGE_LABELS: Record<string, string> = {
   elite: "Elite",
 };
 
-function formatExpiry(iso: string): string {
-  return new Date(iso).toLocaleDateString("en-US", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  });
-}
-
 async function loadShareData(token: string) {
   const supabase = createServiceRoleClient();
   const now = new Date().toISOString();
@@ -125,17 +117,17 @@ export default async function SharedReportPage({
       </header>
 
       <div className="max-w-5xl mx-auto px-6 sm:px-8 py-6 pb-20">
-        <p className="text-xs font-bold text-[#16A34A] uppercase tracking-widest mb-2">
+        <p className="text-base font-bold text-[#16A34A] uppercase tracking-widest mb-2">
           {packageLabel} Package
         </p>
-        <h1 className="text-3xl md:text-4xl font-black tracking-tighter text-[#1A1916]">
-          Your KoreaScout Reports
+        <h1 className="text-3xl font-bold text-[#1A1916]">
+          Hi, {order.buyer_name}! 👋
         </h1>
-        <p className="text-lg text-[#6B6860] mt-2">
-          {reports.length} product{reports.length !== 1 ? "s" : ""} included
+        <p className="text-sm text-[#6B6860] mt-2">
+          Your personal K-beauty intelligence report is ready — sourced directly from Korea.
         </p>
-        <p className="text-sm text-[#9E9C98] mt-1">
-          Link expires {formatExpiry(expiresAt)}
+        <p className="text-sm text-[#6B6860] mt-1">
+          {reports.length} product{reports.length !== 1 ? "s" : ""} · Prepared exclusively for you
         </p>
 
         <ul className="space-y-6 mt-10">
@@ -211,6 +203,39 @@ export default async function SharedReportPage({
             );
           })}
         </ul>
+
+        <section className="bg-white rounded-2xl border border-[#E8E6E1] p-6 shadow-[0_1px_3px_0_rgb(26_25_22/0.06)] mt-6">
+          <p className="text-xs text-[#9E9C98] mb-4">
+            Link expires{" "}
+            {new Date(expiresAt).toLocaleDateString("en-US", {
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+            })}{" "}
+            · Need more time? Contact{" "}
+            <a
+              href="mailto:support@koreascout.com"
+              className="text-[#16A34A] hover:underline"
+            >
+              support@koreascout.com
+            </a>
+          </p>
+          <hr className="border-[#E8E6E1] mb-4" />
+          <p className="text-sm font-semibold text-[#1A1916] mb-1">
+            Want to stay ahead of K-beauty trends every week?
+          </p>
+          <p className="text-sm text-[#6B6860] mb-4">
+            KoreaScout publishes weekly intelligence reports for global sellers — new products, new opportunities, every week.
+          </p>
+          <a
+            href="https://koreascout.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-block bg-[#16A34A] hover:bg-[#15803D] text-white text-sm font-semibold px-5 py-2.5 rounded-xl transition-colors"
+          >
+            Explore KoreaScout →
+          </a>
+        </section>
       </div>
     </div>
   );

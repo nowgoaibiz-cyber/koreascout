@@ -156,15 +156,6 @@ export default async function SharedReportDetailPage({
             </Link>
           )}
 
-          <p className="text-xs text-[#9E9C98]">
-            Link expires{" "}
-            {new Date(expiresAt).toLocaleDateString("en-US", {
-              year: "numeric",
-              month: "long",
-              day: "numeric",
-            })}
-          </p>
-
           <ProductIdentity
             report={report}
             tier={DISPLAY_TIER}
@@ -215,6 +206,39 @@ export default async function SharedReportDetailPage({
               </div>
             </section>
           )}
+
+          <section className="bg-white rounded-2xl border border-[#E8E6E1] p-6 shadow-[0_1px_3px_0_rgb(26_25_22/0.06)]">
+            <p className="text-xs text-[#9E9C98] mb-4">
+              Link expires{" "}
+              {new Date(expiresAt).toLocaleDateString("en-US", {
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+              })}{" "}
+              · Need more time? Contact{" "}
+              <a
+                href="mailto:support@koreascout.com"
+                className="text-[#16A34A] hover:underline"
+              >
+                support@koreascout.com
+              </a>
+            </p>
+            <hr className="border-[#E8E6E1] mb-4" />
+            <p className="text-sm font-semibold text-[#1A1916] mb-1">
+              Want to stay ahead of K-beauty trends every week?
+            </p>
+            <p className="text-sm text-[#6B6860] mb-4">
+              KoreaScout publishes weekly intelligence reports for global sellers — new products, new opportunities, every week.
+            </p>
+            <a
+              href="https://koreascout.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-block bg-[#16A34A] hover:bg-[#15803D] text-white text-sm font-semibold px-5 py-2.5 rounded-xl transition-colors"
+            >
+              Explore KoreaScout →
+            </a>
+          </section>
         </div>
       </div>
     </div>
