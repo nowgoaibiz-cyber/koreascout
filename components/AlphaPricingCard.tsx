@@ -8,12 +8,12 @@ const ALPHA_CHECKOUT_URL =
   "https://getkoreascout.lemonsqueezy.com/checkout/buy/60ceb399-f681-4d65-a067-e250cf7d7e0d";
 
 const EARLYBIRD = {
-  code: "EARLYBIRD",
-  discountPct: 60,
+  code: "EARLYBIRD2",
+  discountPct: 47,
   maxSlots: 20,
-  earlyPrice: 59,
-  deadline: new Date("2026-07-06T00:00:00Z"),
-  betaEndDate: "July 6th",
+  earlyPrice: 79,
+  deadline: new Date("2026-07-31T00:00:00Z"),
+  betaEndDate: "July 31st",
 } as const;
 
 interface AlphaPricingCardProps {
@@ -61,7 +61,7 @@ export default function AlphaPricingCard({
       <div className="min-h-[100px]">
         {isEarlyBirdActive && (
           <span className="inline-block mb-4 bg-[#DCFCE7] text-[#16A34A] text-xs font-bold px-3 py-1 rounded-full">
-            🔥 EARLY BIRD — 1ST ROUND · {EARLYBIRD.discountPct}% OFF
+            🔥 EARLY BIRD — 2ND ROUND · {EARLYBIRD.discountPct}% OFF
           </span>
         )}
         <p className="text-3xl md:text-4xl font-black text-[#1A1916] tracking-tighter leading-none mb-8">
@@ -86,7 +86,7 @@ export default function AlphaPricingCard({
               <p className="text-xs font-bold text-[#16A34A] mt-1">Locked forever at this price</p>
             </div>
             <div className="flex items-center gap-2 mt-3">
-              <span className="text-xs text-[#6B6860]">Closes July 6th, 9AM KST</span>
+              <span className="text-xs text-[#6B6860]">Closes July 31st, 9AM KST</span>
               <div className="flex items-center gap-1 bg-[#DCFCE7] text-[#16A34A] px-2 py-0.5 rounded-full">
                 <span className="relative flex h-1.5 w-1.5">
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#16A34A] opacity-75"></span>

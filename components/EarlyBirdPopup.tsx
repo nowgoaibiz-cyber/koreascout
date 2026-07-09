@@ -2,13 +2,13 @@
 
 import { useEffect, useState } from "react";
 
-const STORAGE_KEY = "eb_seen_v1";
+const STORAGE_KEY = "eb_seen_v2";
 
 const EARLYBIRD = {
   slots: 20,
-  price: 59,
+  price: 79,
   originalPrice: 149,
-  deadline: "July 6th, 9AM KST",
+  deadline: "July 31st, 9AM KST",
 } as const;
 
 export default function EarlyBirdPopup() {
@@ -75,14 +75,14 @@ export default function EarlyBirdPopup() {
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#16A34A] opacity-75" />
             <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-[#16A34A]" />
           </span>
-          EARLY BIRD — 1ST ROUND
+          EARLY BIRD — 2ND ROUND
         </div>
 
         <h2
           id="early-bird-popup-title"
           className="text-2xl font-black text-white leading-tight mb-2"
         >
-          Lock in 60% OFF.
+          Lock in 47% OFF.
           <br />
           <span className="text-[#16A34A]">Forever.</span>
         </h2>
@@ -91,11 +91,11 @@ export default function EarlyBirdPopup() {
           <div className="flex items-center gap-2 mb-1">
             <span className="text-xl font-black text-[#9E9C98] line-through">$149</span>
             <span className="text-xs font-black bg-[#16A34A]/20 text-[#16A34A] px-2 py-0.5 rounded-md">
-              -60% OFF
+              -47% OFF
             </span>
           </div>
           <div className="flex items-baseline gap-2">
-            <span className="text-5xl font-black text-white leading-none">$59</span>
+            <span className="text-5xl font-black text-white leading-none">$79</span>
             <span className="text-base text-[#9E9C98]">/ month</span>
           </div>
         </div>
